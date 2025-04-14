@@ -4,7 +4,7 @@ const Button = () => {
     const [count, setCount] = useState(0);
 
     const handleClick = () => {
-        setCount(count + 1);
+        setCount(count +3);
     };
 
     return (
