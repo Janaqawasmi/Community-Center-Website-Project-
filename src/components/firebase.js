@@ -1,8 +1,13 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getAuth, getFirestore } from "firebase/app";
-import { collection, addDoc } from "firebase/firestore";
+import { initializeApp} from "firebase/app";
+import  {getAuth} from "firebase/auth" ;
+import {getFirestore} from "firebase/firestore"
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDyHPkXUFlEd7cYOIKnY_Gz8UUNHMsJRW4",
   authDomain: "public-center-website.firebaseapp.com",
@@ -16,60 +21,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db =getFirestore(app);
 
-// Function to add section data to Firestore
-const addSection = async (sectionData) => {
-  try {
-    // Add a new document to the 'sections' collection
-    const docRef = await addDoc(collection(db, "sections"), sectionData);
-    console.log("Section added with ID: ", docRef.id);  // Log the new document ID
-  } catch (e) {
-    console.error("Error adding section: ", e);
-  }
-};
-
-// Example section data for "قسم النساء"
-const sectionDataWomen = {
-  title: "قسم النساء",
-  vision: "تمكين المرأة هو أحد الركائز الأساسية التي يهتم بها مركز جماهيري بيت حنينا.نعمل في مركز جماهيري بيت حنينا على تمكين النساء في عدد من النواحي...",
-  goals: [
-    "تمكين النساء ابتداء من الفئة العمرية 18 وحتى 50 عام...",
-    "رفع وعي المجتمع بأهمية مكانة المرأة وتعزيز حقوقها...",
-    "توفير التدريبات والمحاضرات والورشات لألمهات..."
-  ],
-  programs: [
-    "دورات الوالدية الإيجابية...",
-    "دورات التمكين الاقتصادي...",
-    "إطلاق مبادرة صحية رياضية ‘سوا بنمشي’..."
-  ]
-};
-
-// Example section data for "قسم المسنين"
-const sectionDataElderly = {
-  title: "قسم المسنين",
-  vision: "الرؤية: نعمل على توفير بيئة مريحة وآمنة للمسنين من خلال برامج وأنشطة تهدف لتحسين نوعية حياتهم...",
-  goals: [
-    "دعم المسنين نفسياً واجتماعياً.",
-    "تنظيم فعاليات ترفيهية وتعليمية.",
-    "تشجيع على ممارسة الرياضة البدنية والعقلية."
-  ],
-  programs: [
-    "دورات رياضية للمسنين.",
-    "جلسات استشارية نفسية.",
-    "ورشات عمل لتحسين مهارات التواصل."
-  ]
-};
-
-// Add each section
-addSection(sectionDataWomen);
-addSection(sectionDataElderly);
-
-// You can continue with more sections using the same structure
-
-
-
-
-
-
-
+export {app,auth,db};
