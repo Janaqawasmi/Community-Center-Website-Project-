@@ -77,6 +77,15 @@ function SectionPage() {
           </div>
         )}
 
+
+          {/* Extra Goals */}
+          {section.extra_goals_title && <h3>{section.extra_goals_title}</h3>}
+          {Array.isArray(section.extra_goals) && (
+            <ul>
+              {section.extra_goals.map((g, i) => <li key={i}>{g}</li>)}
+            </ul>
+          )}
+
         {/* Programs */}
         {section.programs && (
           <div className="section-block">
@@ -89,6 +98,24 @@ function SectionPage() {
           </div>
         )}
 
+             {/* Curricular Programs */}
+             {section.curricular_programs_title && <h3>{section.curricular_programs_title}</h3>}
+          {section.curricular_programs_subtitle && <p><strong>{section.curricular_programs_subtitle}</strong></p>}
+          {Array.isArray(section.curricular_programs) && (
+            <ul>
+              {section.curricular_programs.map((item, i) => <li key={i}>{item}</li>)}
+
+
+            </ul>
+          )}
+                 {/* Non-Curricular Programs */}
+                 {section.non_curricular_programs_title && <h3>{section.non_curricular_programs_title}</h3>}
+          {Array.isArray(section.non_curricular_programs) && (
+            <ul>
+              {section.non_curricular_programs.map((item, i) => <li key={i}>{item}</li>)}
+            </ul>
+          )}
+          
         <div className="section-illustration-placeholder">
           [رسم توضيحي أو صورة لاحقاً]
         </div>
