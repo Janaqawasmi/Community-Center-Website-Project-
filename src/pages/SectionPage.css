@@ -32,7 +32,7 @@
 }
 .section-header-image {
     width: 100%;             /* Full width of the page */
-    height: 600px;           /* 🔧 Change this to control the image height */
+    height: 100%;           /* 🔧 Change this to control the image height */
     position: relative;
     background-color: #f3f3f3;
     background-size: cover;
