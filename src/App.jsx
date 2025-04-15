@@ -3,6 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from './components/firebase';
 import './App.css';
 import logo from './logo_final.png'; 
+import headerImage from './assets/headerPic.jpg';
 
 import {
   FaFemale,
@@ -40,13 +41,23 @@ function App() {
     section_attaa: <FaHandHoldingHeart />
   };
 
-  const colors = [
-    "#fbc21f", // قسم المسنين
-    "#f26d2c", // قسم النساء
-    "#cf2929", // قسم الشبيبة
-    "#68a144", // قسم الاحتياجات الخاصة (أبيض تقريباً)
-    "#2baadc"  // قسم رياض الأطفال
-  ];
+ 
+  const sectionColors = {
+    section_women: "#fbc21f",//اصفر
+    section_youth: "#fbc21f",//اصفر
+    section_engineering: "#fbc21f", //اصفر
+    section_kindergarten: "#68a144", //اخضر
+    section_community_work: "#68a144", //اخضر
+    section_attaa: "#68a144", //اخضر
+    section_nursery: "#2baadc", //ازرق
+    section_culture: "#2baadc", //ازرق
+    section_special: "#f26d2c", //برتقالي 
+    section_curricular: "#f26d2c", //برتقالي 
+    section_sports: "#cf2929", //احمر
+    section_elderly: "#cf2929", //احمر
+
+  };
+  
     
   useEffect(() => {
     const fetchSections = async () => {
@@ -86,10 +97,13 @@ function App() {
 
 
       {/* الهيدر */}
-      <div className="hero-section">
-        <h1>مرحباً بكم في المركز الجماهيري بيت حنينا</h1>
-        <p>نُقدم خدماتنا المجتمعية لجميع الفئات والأجيال</p>
-      </div>
+      <div className="hero-section" style={{ backgroundImage: `url(${headerImage})` }}>
+  <div className="hero-overlay">
+    <h1>مرحباً بكم في المركز الجماهيري بيت حنينا</h1>
+    <p>نُقدم خدماتنا المجتمعية لجميع الفئات والأجيال</p>
+  </div>
+</div>
+
 
       {/* الأقسام */}
       <h2 className="sections-title">الأقسام</h2>
@@ -98,8 +112,8 @@ function App() {
           <div
             key={section.id}
             className="section-circle"
-            style={{ backgroundColor: colors[index % colors.length] }}
-          >
+            style={{ backgroundColor: sectionColors[section.id] || '#ccc' }}
+            >
             <div className="icon">
               {iconMap[section.id] || <FaStar />}
             </div>
