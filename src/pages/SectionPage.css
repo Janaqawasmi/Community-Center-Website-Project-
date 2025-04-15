@@ -1,60 +1,90 @@
-.section-page {
-    direction: rtl;
-    font-family: 'Arial', sans-serif;
-    background-color: #fdfdfd;
+.section-page-magazine {
+  direction: rtl;
+  font-family: 'Cairo', 'Arial', sans-serif;
+  background-color: #fcfcfc;
+  color: #222;
+}
+
+/* Top angled banner */
+.section-banner {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  background-color: #e7352b;
+  color: white;
+}
+
+.banner-color-box {
+  padding: 2rem;
+  flex: 1 1 50%;
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 0% 100%);
+  background-color: #e7352b;
+}
+
+.banner-color-box h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.banner-color-box h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+.section-header-image {
+    width: 100%;             /* Full width of the page */
+    height: 600px;           /* 🔧 Change this to control the image height */
+    position: relative;
+    background-color: #f3f3f3;
+    background-size: cover;
+    background-position: center;
   }
   
-  .section-banner {
-    background-color: #FFD700;
-    padding: 2rem 1rem;
-    text-align: right;
-  }
+.banner-image-placeholder {
+  flex: 1 1 50%;
+  background-color: #ddd;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+}
+
   
-  .section-banner h1 {
-    margin: 0;
-    font-size: 2rem;
-    color: white;
-  }
-  
-  .section-banner h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: white;
-  }
-  
-  .section-content {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 2rem;
-  }
-  
-  .section-image {
-    flex: 1 1 300px;
-    margin: 1rem;
-  }
-  
-  .section-image img {
-    width: 100%;
-    border-radius: 10px;
-  }
-  
-  .section-text {
-    flex: 2 1 500px;
-    margin: 1rem;
-  }
-  
-  .section-text h3 {
-    color: #f5a623;
-    margin-top: 2rem;
-  }
-  
-  .section-text ul {
-    line-height: 2;
-    padding-right: 1.5rem;
-  }
-  
-  .section-text p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-  }
-  
+
+/* Content blocks */
+.section-content {
+  padding: 2rem;
+}
+
+.section-block {
+  margin-bottom: 2.5rem;
+}
+
+.section-icon-heading {
+  font-size: 1.4rem;
+  color: #e7352b;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-block ul {
+  padding-right: 1.5rem;
+  line-height: 2;
+}
+
+.section-block li {
+  margin-bottom: 0.5rem;
+}
+
+/* Illustration placeholder */
+.section-illustration-placeholder {
+  margin-top: 3rem;
+  height: 180px;
+  background-color: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+}
