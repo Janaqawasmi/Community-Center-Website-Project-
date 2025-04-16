@@ -1,5 +1,3 @@
-/* SectionPage.css */
-
 .section-page-magazine {
   direction: rtl;
   font-family: 'Cairo', 'Arial', sans-serif;
@@ -7,59 +5,53 @@
   color: #222;
 }
 
-/* Header */
-.section-header {
-  width: 100%;
-  background-color: #fff;
-}
-
-.section-header-top {
+/* Top angled banner */
+.section-banner {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #fff;
-  border-bottom: 2px solid #eee;
-}
-
-.section-header-title h1 {
-  font-size: 2rem;
-  color: #e7352b;
-  margin: 0;
-}
-
-.section-header-title h2 {
-  font-size: 1.2rem;
-  color: #888;
-  margin: 0;
-}
-
-.section-header-logo img {
-  max-height: 70px;
-  width: auto;
-}
-
-/* Banner background image area */
-.section-header-image {
-  width: 100%;
-  height: 200px;
+  flex-wrap: wrap;
   position: relative;
-  background-color: #f3f3f3;
+  background-color: #e7352b;
+  color: white;
 }
 
-.header-image-placeholder {
-  width: 100%;
-  height: 100%;
-  font-style: italic;
-  font-size: 1.1rem;
-  color: #666;
+.banner-color-box {
+  padding: 2rem;
+  flex: 1 1 50%;
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 0% 100%);
+  background-color: #e7352b;
+}
+
+.banner-color-box h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.banner-color-box h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+.section-header-image {
+    width: 100%;             /* Full width of the page */
+    height: 100%;           /* 🔧 Change this to control the image height */
+    position: relative;
+    background-color: #f3f3f3;
+    background-size: cover;
+    background-position: center;
+  }
+  
+.banner-image-placeholder {
+  flex: 1 1 50%;
+  background-color: #ddd;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to left, #fff 30%, #eee 100%);
+  font-style: italic;
 }
 
-/* Section content */
+  
+
+/* Content blocks */
 .section-content {
   padding: 2rem;
 }
@@ -86,6 +78,7 @@
   margin-bottom: 0.5rem;
 }
 
+/* Illustration placeholder */
 .section-illustration-placeholder {
   margin-top: 3rem;
   height: 180px;

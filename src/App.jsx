@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import { useEffect, useState } from 'react';
+import './App.css';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
+
+import { fetchSections } from './utils/fetchSections';
+import AppRoutes from './routes/AppRoutes'; // ✅ import routes separately
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sections, setSections] = useState([]);
+
+  useEffect(() => {
+    const loadSections = async () => {
+      const list = await fetchSections();
+      setSections(list);
+    };
+    loadSections();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="App">
+        {/* Navigation */}
+        <nav style={{ padding: '1rem', background: '#eee', display: 'flex', gap: '1rem' }}>
+          <Link to="/">الرئيسية</Link>
+          <Link to="/about">عن المركز</Link>
+          <Link to="/contact">تواصل معنا</Link>
+        </nav>
+
+        {/* Routes */}
+        <AppRoutes sections={sections} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
