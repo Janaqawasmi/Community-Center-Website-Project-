@@ -14,19 +14,14 @@ import {
 function HomePage({ sections }) {
   return (
     <div className="main-page">
-      <div className="floating-logo">
-        <img src={logo} alt="Logo" />
-      </div>
-
-      {/* ✅ Start scalable layout */}
       <div className="page-container">
-        <div className="nav-icons">
-          <FaSearch className="nav-icon" title="بحث" />
-          <FaUser className="nav-icon" title="تسجيل الدخول" />
-          <FaUniversalAccess className="nav-icon" title="إمكانية الوصول" />
+
+        {/* ✅ Logo connected with layout */}
+        <div className="logo-wrapper">
+          <img src={logo} alt="Logo" />
         </div>
 
-        {/* Hero section */}
+        {/* ✅ Hero section */}
         <div className="hero-section" style={{ backgroundImage: `url(${headerImage})` }}>
           <div className="hero-overlay">
             <h1>مرحباً بكم في المركز الجماهيري بيت حنينا</h1>
@@ -34,7 +29,7 @@ function HomePage({ sections }) {
           </div>
         </div>
 
-        {/* Sections */}
+        {/* ✅ Sections */}
         <h2 className="sections-title">الأقسام</h2>
         <div className="sections-grid">
           {sections.map((section) => (

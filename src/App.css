@@ -1,20 +1,28 @@
-/* src/App.css */
-
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #00334e;
   color: white;
-  padding: 12px 30px;
+  padding: 12px clamp(10px, 4vw, 30px);
   direction: rtl;
+  flex-wrap: wrap;
 }
 
+/* ✅ Logo styles */
+.nav-logo img {
+  width: clamp(80px, 10vw, 140px);
+  height: auto;
+  object-fit: contain;
+}
+
+/* Nav Links */
 .nav-links {
   display: flex;
-  gap: 20px;
+  gap: clamp(10px, 2vw, 25px);
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -22,20 +30,22 @@
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
 }
 
 .nav-links a:hover {
   color: #ffcc00;
 }
 
+/* Nav Icons */
 .nav-icons {
   display: flex;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 20px);
   align-items: center;
 }
 
 .nav-icon {
-  font-size: 18px;
+  font-size: clamp(1rem, 2vw, 1.4rem);
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -43,30 +53,3 @@
 .nav-icon:hover {
   transform: scale(1.2);
 }
-
-.floating-logo {
-  position: fixed;
-  top: -20px;     /* تحريك الشعار لفوق أكثر */
-  right: -20px;   /* تحريكه لليمين لخارج الحافة */
-  background-color: white;
-  border-radius: 50%;
-  width: 180px;
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-}
-
-.floating-logo img {
-  border-radius: 50%;
-  width: 130px;
-  height: 150px;
-  object-fit: contain;
-  margin-top: 10px; /* ✅ هذه تحرّك الصورة للأسفل */
-
-}
-
-
-
