@@ -36,6 +36,8 @@ function Layout() {
         <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>عن المركز</Link>
         <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>الدورات</Link>
         <Link to="/" className={location.pathname === '/' ? 'active' : ''}>الرئيسية</Link>
+        <Link to="/registration" className={location.pathname === '/registration' ? 'active' : ''}>تسجيل</Link>
+
         </div>
       </nav>
 
