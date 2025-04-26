@@ -12,7 +12,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   background: whitesmoke;
-  color: rgb(0, 0, 0);
+  color: rgb(1, 1, 92);
   padding: 0.5rem 2rem;
   height: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -43,7 +43,7 @@ html, body {
 }
 
 .nav-center a {
-  color: rgb(0, 0, 0);
+  color: rgb(1, 1, 112);
   text-decoration: none;
   font-weight: 600;
   font-size: 1.2rem;
@@ -53,8 +53,8 @@ html, body {
 
 .nav-center a:hover,
 .nav-center a.active {
-  color: #f0a14d;
-  border-bottom: 1px solid #edd1a5;
+  color: #351fd7;
+  border-bottom: 1px solid #351fd7;
 }
 
 
@@ -75,11 +75,11 @@ html, body {
 
 /* Logo in the top right with wave-style shape */
 .nav-logo-container {
-  background-color: white;
-  padding: 1rem; /* Reduced padding */
-  border: 3px solid #dc6e0d; /* Slightly thinner border */
-  width: 150px; /* Reduced width */
-  height: 80px; /* Reduced height */
+  background-color: whitesmoke;
+  padding: 0.5rem; /* Reduced padding */
+  /*border: 1.5px solid rgb(112, 31, 1); /* Slightly thinner border */
+  width: 140px; /* Reduced width */
+  height: 65px; /* Reduced height */
   position: absolute;
   top: 0;
   right: 0;
@@ -87,19 +87,26 @@ html, body {
   cursor: pointer;
 
   /* Wave-like container shape */
-  border-radius: 20% 15% 47% 50% /  36% 2% 16% 36%;
-  transform: rotate(0deg); /* Adjust rotation if needed */     
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 30% 30% 60% 50% /  36% 36% 36% 36%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
 .nav-logo {
-  width: 90%; /* Reduced width */
+  width: 80%; /* Reduced width */
   height: auto;
   object-fit: contain;
   position: relative;
-  top: -30px; /* Adjusted to fit smaller container */
-  right: -5px; /* Adjusted to fit smaller container */
+  top: -20px; /* Adjusted to fit smaller container */
+  right: -2px; /* Adjusted to fit smaller container */
+}
+
+.navbar-underline {
+  width: calc1(100% - rem); /* Add space on both sides */
+  margin: 0 0rem; /* 1rem space on the left and right */  
+  height: 0rem;
+  background-color: rgb(1, 1, 121); /* Dark blue line */
+  position: relative;
 }
 
 

@@ -1,4 +1,4 @@
-// src/pages/HomePage.jsx
+// HomePage.jsx
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 
@@ -14,17 +14,17 @@ function HomePage({ sections }) {
 
   return (
     <div className="main-page">
+      {/* Hero section */}    
+      <div className="hero-wrapper">
+  <div className="hero-text">
+    <h1>مرحبًا بكم في مركز جماهيري بيت حنينا</h1>
+  </div>
+  <div
+    className="hero-section"
+    style={{ backgroundImage: `url(${headerImage})` }}
+  ></div>
+</div>
 
-      {/* Hero section */}
-      <div
-        className="hero-section"
-        style={{ backgroundImage: `url(${headerImage})` }}
-      >
-        {/* <div className="hero-overlay">
-          <h1>مرحباً بكم في المركز الجماهيري بيت حنينا</h1>
-          <p>نُقدم خدماتنا المجتمعية لجميع الفئات والأجيال</p>
-        </div> */}
-      </div>
 
       {/* Sections */}
       <h2 className="sections-title">الأقسام</h2>
@@ -37,9 +37,12 @@ function HomePage({ sections }) {
           >
             <div
               className="section-circle"
-              style={{ backgroundColor: sectionColors[section.id] || '#ccc' }}
+              style={{ backgroundColor: '#ffffff' }}
             >
-              <div className="icon">
+              <div
+                className="icon-circle"
+                style={{ backgroundColor: sectionColors[section.id] || '#ccc' }}
+              >
                 {iconMap[section.id] || <FaStar />}
               </div>
               <div className="label">{section.title}</div>

@@ -30,17 +30,17 @@ import {
   };
   
   export const sectionColors = {
-    section_women: "#fbc21f",
-    section_youth: "#fbc21f",
+    section_women: "#68a144",
+    section_youth: "#68a144",
     section_engineering: "#fbc21f",
-    section_kindergarten: "#68a144",
-    section_community_work: "#68a144",
-    section_attaa: "#68a144",
-    section_nursery: "#2baadc",
+    section_kindergarten: "#fbc21f",
+    section_community_work: "#cf2929",
+    section_attaa: "#fbc21f",
+    section_nursery: "#cf2929",
     section_culture: "#2baadc",
-    section_special: "#f26d2c",
-    section_curricular: "#f26d2c",
-    section_sports: "#cf2929",
-    section_elderly: "#cf2929"
+    section_special: "#cf2929",
+    section_curricular: "#2baadc",
+    section_sports: "#2baadc",
+    section_elderly: "#68a144"
   };
-  
+  //f26d2c orange shade 

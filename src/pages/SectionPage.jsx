@@ -58,7 +58,8 @@ function SectionPage() {
       <div className="section-content">
         {/* Description */}
         <div className="section-block">
-          <h3 className="section-icon-heading">📝 {section.description_title}</h3>
+          <h3 className="section-icon-heading">📝 
+            {section.description_title}</h3>
           <p>{section.description}</p>
         </div>
 
