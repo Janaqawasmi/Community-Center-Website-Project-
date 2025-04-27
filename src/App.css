@@ -110,3 +110,71 @@ html, body {
   background: whitesmoke;
   background-size: cover;
 }
+
+
+
+/* ====== Responsive adjustments for mobile ====== */
+@media (max-width: 600px) {
+  .nav-logo-container {
+    top: 50px; /* بدل 5px أو 8px نضعه 30px مثلا */
+    right: 10px;
+    width: 100px;
+    height: 60px;
+    padding: 0.5rem;
+    border-width: 2px;
+  }
+
+  .nav-logo {
+    width: 80%;
+    top: 0; /* نحذف التحريك العشوائي للصورة */
+    right: 0;
+  }
+
+  /* Navigation center links */
+  .nav-center {
+    margin-top: 10px; /* Move links a little down */
+  }
+
+  .nav-center a {
+    font-size: 0.85rem;
+    margin: 0 6px;
+  }
+
+  /* Adjust left icons */
+  .nav-left {
+    gap: 10px;
+  }
+}
+
+/* ====== Responsive adjustments for landscape mode ====== */
+@media (orientation: landscape) and (max-height: 500px) {
+  
+  /* Adjust logo container position and size in landscape mode */
+  .nav-logo-container {
+    top: 20px; /* Move logo closer to the top when screen height is small */
+    width: 80px; /* Smaller logo width */
+    height: 50px; /* Smaller logo height */
+    padding: 0.3rem; /* Reduce inner padding */
+  }
+
+  /* Adjust logo image size */
+  .nav-logo {
+    width: 75%; /* Slightly smaller logo image to fit container */
+    top: 0; /* Center inside the container */
+    right: 0;
+  }
+
+  /* Adjust navbar height in landscape */
+  .navbar {
+    height: 3.5rem; /* Decrease navbar height to fit smaller screen height */
+    padding: 0.5rem 1rem; /* Adjust padding for landscape */
+  }
+
+  /* Adjust center navigation links */
+  .nav-center a {
+    font-size: 0.75rem; /* Reduce font size for better fit */
+    margin: 0 4px; /* Smaller gap between links */
+  }
+}
+
+

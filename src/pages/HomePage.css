@@ -5,46 +5,24 @@
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
   overflow-x: hidden;
+  background-color: #f8f8f8;
 }
 
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  transform: scale(1);
-  transform-origin: top center;
-  transition: transform 0.3s ease;
+.main-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (max-width: 1200px) {
-  .page-container {
-    transform: scale(0.95);
-  }
-}
-
-@media (max-width: 1000px) {
-  .page-container {
-    transform: scale(0.9);
-  }
-}
-
-@media (max-width: 800px) {
-  .page-container {
-    transform: scale(0.8);
-  }
-}
-
-@media (max-width: 600px) {
-  .page-container {
-    transform: scale(0.7);
-  }
-}
-
+/* Hero section */
 .hero-section {
-  margin-top: -0.1rem; /* Adjust as needed */
+  margin-top: 0;
   z-index: 1;
-  height: 12rem; /* Increased height for better visibility */
+  height: 12rem;
   width: 100%;
   background-size: cover;
   background-position: center;
@@ -56,32 +34,29 @@ body {
   color: white;
 }
 
-/* .hero-overlay {
-  background-color: rgba(0, 0, 0, 0.196);
-  padding: rem 1rem;
-  border-radius: 10px;
-} */
-
-.sections-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 0 20px;
-  margin-bottom: 30px;
-}
-
+/* Title for sections */
 .sections-title {
-  margin: 20px 0 10px;
+  margin: 2rem 0 1rem;
   font-size: var(--fs-large);
   text-align: center;
+  color: #007cb9;
 }
 
+/* Sections grid */
+.sections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+  margin-bottom: 40px;
+}
+
+/* Section circle */
 .section-circle {
   width: 7rem;
   height: 7rem;
   border-radius: 50%;
-  color: rgb(255, 255, 255);
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,13 +65,15 @@ body {
   transition: transform 0.3s ease;
   text-align: center;
   cursor: pointer;
-  border-radius: 50% 20% 40% 30% / 30% 40% 20% 50%;
+  background-color: #007cb9;
+  overflow: hidden;
 }
 
 .section-circle:hover {
   transform: scale(1.05);
 }
 
+/* Inside the circle */
 .section-circle .icon {
   font-size: clamp(1.3rem, 2.5vw, 1.7rem);
   margin-bottom: 8px;
@@ -108,3 +85,32 @@ body {
   line-height: 1.3;
 }
 
+/* Responsive adjustments (if needed) */
+@media (max-width: 600px) {
+  .hero-section {
+    height: 10rem;
+  }
+}
+
+/*for mobile*/
+
+@media (max-width: 500px) {
+  .sections-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* ✅ أعمدة أصغر */
+    padding: 10px; /* ✅ أقل هامش */
+  }
+
+  .section-circle {
+    width: 5.5rem;
+    height: 5.5rem;
+    font-size: 0.8rem;
+  }
+
+  .section-circle .icon {
+    font-size: 1.2rem;
+  }
+
+  .section-circle .label {
+    font-size: 0.75rem;
+  }
+}
