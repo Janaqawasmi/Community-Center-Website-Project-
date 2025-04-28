@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import logo from './assets/logo.png';
+import logo from './assets/logo2.jpg';
 import './App.css';
 
 import {

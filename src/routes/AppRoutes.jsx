@@ -3,7 +3,7 @@ import Layout from '../Layout'; // Import the layout
 import HomePage from '../pages/HomePage';
 import SectionPage from '../pages/SectionPage';
 import Contact from '../pages/Contact';
-import Registration from '../pages/registration'
+import Registration from '../pages/registration';
 
 
 function AppRoutes({ sections }) {

@@ -1,0 +1,5086 @@
+[
+  {
+     "code":"7",
+     "hebrew_name":"שחר                      "
+  },
+  {
+     "code":"10",
+     "hebrew_name":"תירוש                    "
+  },
+  {
+     "code":"11",
+     "hebrew_name":"ניר ח\"ן                  "
+  },
+  {
+     "code":"13",
+     "hebrew_name":"חצבה                     "
+  },
+  {
+     "code":"15",
+     "hebrew_name":"נועם                     "
+  },
+  {
+     "code":"16",
+     "hebrew_name":"בית ניר                  "
+  },
+  {
+     "code":"18",
+     "hebrew_name":"שדה משה                  "
+  },
+  {
+     "code":"21",
+     "hebrew_name":"באר אורה                 "
+  },
+  {
+     "code":"22",
+     "hebrew_name":"מקווה ישראל              "
+  },
+  {
+     "code":"23",
+     "hebrew_name":"אמציה                    "
+  },
+  {
+     "code":"24",
+     "hebrew_name":"לכיש                     "
+  },
+  {
+     "code":"26",
+     "hebrew_name":"ראש פינה                 "
+  },
+  {
+     "code":"27",
+     "hebrew_name":"שדות מיכה                "
+  },
+  {
+     "code":"28",
+     "hebrew_name":"מזכרת בתיה               "
+  },
+  {
+     "code":"29",
+     "hebrew_name":"יסוד המעלה               "
+  },
+  {
+     "code":"31",
+     "hebrew_name":"אופקים                   "
+  },
+  {
+     "code":"32",
+     "hebrew_name":"עוצם                     "
+  },
+  {
+     "code":"33",
+     "hebrew_name":"בת שלמה                  "
+  },
+  {
+     "code":"35",
+     "hebrew_name":"גדות                     "
+  },
+  {
+     "code":"36",
+     "hebrew_name":"שדה דוד                  "
+  },
+  {
+     "code":"37",
+     "hebrew_name":"איתן                     "
+  },
+  {
+     "code":"38",
+     "hebrew_name":"כרי דשא                  "
+  },
+  {
+     "code":"39",
+     "hebrew_name":"גפן                      "
+  },
+  {
+     "code":"41",
+     "hebrew_name":"אליכין                   "
+  },
+  {
+     "code":"43",
+     "hebrew_name":"מטולה                    "
+  },
+  {
+     "code":"44",
+     "hebrew_name":"זוהר                     "
+  },
+  {
+     "code":"46",
+     "hebrew_name":"יבנאל                    "
+  },
+  {
+     "code":"47",
+     "hebrew_name":"כפר תבור                 "
+  },
+  {
+     "code":"48",
+     "hebrew_name":"מנחמיה                   "
+  },
+  {
+     "code":"49",
+     "hebrew_name":"אילניה                   "
+  },
+  {
+     "code":"52",
+     "hebrew_name":"לוזית                    "
+  },
+  {
+     "code":"53",
+     "hebrew_name":"עתלית                    "
+  },
+  {
+     "code":"55",
+     "hebrew_name":"נוגה                     "
+  },
+  {
+     "code":"57",
+     "hebrew_name":"כנרת )קבוצה(             "
+  },
+  {
+     "code":"58",
+     "hebrew_name":"מצפה                     "
+  },
+  {
+     "code":"59",
+     "hebrew_name":"נחושה                    "
+  },
+  {
+     "code":"62",
+     "hebrew_name":"דגניה א'                 "
+  },
+  {
+     "code":"63",
+     "hebrew_name":"כנרת )מושבה(             "
+  },
+  {
+     "code":"64",
+     "hebrew_name":"יד רמב\"ם                 "
+  },
+  {
+     "code":"65",
+     "hebrew_name":"מגדל                     "
+  },
+  {
+     "code":"66",
+     "hebrew_name":"מרחביה )קיבוץ(           "
+  },
+  {
+     "code":"67",
+     "hebrew_name":"אור הנר                  "
+  },
+  {
+     "code":"69",
+     "hebrew_name":"ניר עוז                  "
+  },
+  {
+     "code":"70",
+     "hebrew_name":"אשדוד                    "
+  },
+  {
+     "code":"71",
+     "hebrew_name":"אשבול                    "
+  },
+  {
+     "code":"72",
+     "hebrew_name":"גן שמואל                 "
+  },
+  {
+     "code":"74",
+     "hebrew_name":"עין הוד                  "
+  },
+  {
+     "code":"76",
+     "hebrew_name":"כפר גלעדי                "
+  },
+  {
+     "code":"77",
+     "hebrew_name":"איילת השחר               "
+  },
+  {
+     "code":"78",
+     "hebrew_name":"קרית ענבים               "
+  },
+  {
+     "code":"79",
+     "hebrew_name":"דגניה ב'                 "
+  },
+  {
+     "code":"80",
+     "hebrew_name":"נהלל                     "
+  },
+  {
+     "code":"82",
+     "hebrew_name":"עין חרוד )מאוחד(         "
+  },
+  {
+     "code":"84",
+     "hebrew_name":"תל יוסף                  "
+  },
+  {
+     "code":"85",
+     "hebrew_name":"כפר יחזקאל               "
+  },
+  {
+     "code":"86",
+     "hebrew_name":"גבע                      "
+  },
+  {
+     "code":"88",
+     "hebrew_name":"כרם בן שמן               "
+  },
+  {
+     "code":"89",
+     "hebrew_name":"עין חרוד )איחוד(         "
+  },
+  {
+     "code":"90",
+     "hebrew_name":"חפצי-בה                  "
+  },
+  {
+     "code":"92",
+     "hebrew_name":"גיניגר                   "
+  },
+  {
+     "code":"94",
+     "hebrew_name":"בלפוריה                  "
+  },
+  {
+     "code":"95",
+     "hebrew_name":"בית אלפא                 "
+  },
+  {
+     "code":"96",
+     "hebrew_name":"יגור                     "
+  },
+  {
+     "code":"97",
+     "hebrew_name":"מרחביה )מושב(            "
+  },
+  {
+     "code":"98",
+     "hebrew_name":"כפר מל\"ל                 "
+  },
+  {
+     "code":"99",
+     "hebrew_name":"מצפה רמון                "
+  },
+  {
+     "code":"102",
+     "hebrew_name":"מאיר שפיה                "
+  },
+  {
+     "code":"103",
+     "hebrew_name":"תל עדשים                 "
+  },
+  {
+     "code":"104",
+     "hebrew_name":"מזרע                     "
+  },
+  {
+     "code":"106",
+     "hebrew_name":"כפר גדעון                "
+  },
+  {
+     "code":"107",
+     "hebrew_name":"כפר סילבר                "
+  },
+  {
+     "code":"112",
+     "hebrew_name":"כפר חסידים א'            "
+  },
+  {
+     "code":"113",
+     "hebrew_name":"אדירים                   "
+  },
+  {
+     "code":"115",
+     "hebrew_name":"חופית                    "
+  },
+  {
+     "code":"122",
+     "hebrew_name":"רמת ישי                  "
+  },
+  {
+     "code":"126",
+     "hebrew_name":"שריד                     "
+  },
+  {
+     "code":"127",
+     "hebrew_name":"רמת רחל                  "
+  },
+  {
+     "code":"128",
+     "hebrew_name":"גת רימון                 "
+  },
+  {
+     "code":"130",
+     "hebrew_name":"משמר העמק                "
+  },
+  {
+     "code":"132",
+     "hebrew_name":"כפר ברוך                 "
+  },
+  {
+     "code":"133",
+     "hebrew_name":"גבת                      "
+  },
+  {
+     "code":"134",
+     "hebrew_name":"יפעת                     "
+  },
+  {
+     "code":"135",
+     "hebrew_name":"רמת דוד                  "
+  },
+  {
+     "code":"139",
+     "hebrew_name":"עין שמר                  "
+  },
+  {
+     "code":"140",
+     "hebrew_name":"כפר יהושע                "
+  },
+  {
+     "code":"141",
+     "hebrew_name":"ברק                      "
+  },
+  {
+     "code":"142",
+     "hebrew_name":"שדה יעקב                 "
+  },
+  {
+     "code":"143",
+     "hebrew_name":"בית זרע                  "
+  },
+  {
+     "code":"144",
+     "hebrew_name":"גן שלמה                  "
+  },
+  {
+     "code":"145",
+     "hebrew_name":"גדיש                     "
+  },
+  {
+     "code":"146",
+     "hebrew_name":"דבורה                    "
+  },
+  {
+     "code":"147",
+     "hebrew_name":"גבעת ברנר                "
+  },
+  {
+     "code":"154",
+     "hebrew_name":"תל מונד                  "
+  },
+  {
+     "code":"155",
+     "hebrew_name":"באר טוביה                "
+  },
+  {
+     "code":"156",
+     "hebrew_name":"עיינות                   "
+  },
+  {
+     "code":"157",
+     "hebrew_name":"עין ורד                  "
+  },
+  {
+     "code":"158",
+     "hebrew_name":"נען                      "
+  },
+  {
+     "code":"159",
+     "hebrew_name":"בית חנן                  "
+  },
+  {
+     "code":"160",
+     "hebrew_name":"חולדה                    "
+  },
+  {
+     "code":"162",
+     "hebrew_name":"חירות                    "
+  },
+  {
+     "code":"163",
+     "hebrew_name":"תימורים                  "
+  },
+  {
+     "code":"164",
+     "hebrew_name":"מלאה                     "
+  },
+  {
+     "code":"165",
+     "hebrew_name":"ניר יפה                  "
+  },
+  {
+     "code":"166",
+     "hebrew_name":"גן יבנה                  "
+  },
+  {
+     "code":"167",
+     "hebrew_name":"עין החורש                "
+  },
+  {
+     "code":"168",
+     "hebrew_name":"כפר יונה                 "
+  },
+  {
+     "code":"170",
+     "hebrew_name":"כפר יעבץ                 "
+  },
+  {
+     "code":"171",
+     "hebrew_name":"פרדסיה                   "
+  },
+  {
+     "code":"173",
+     "hebrew_name":"גבעת חיים )מאוחד(        "
+  },
+  {
+     "code":"174",
+     "hebrew_name":"נטעים                    "
+  },
+  {
+     "code":"175",
+     "hebrew_name":"אביחיל                   "
+  },
+  {
+     "code":"176",
+     "hebrew_name":"אפיקים                   "
+  },
+  {
+     "code":"177",
+     "hebrew_name":"כפר ביל\"ו                "
+  },
+  {
+     "code":"178",
+     "hebrew_name":"רמת יוחנן                "
+  },
+  {
+     "code":"182",
+     "hebrew_name":"אבן יהודה                "
+  },
+  {
+     "code":"183",
+     "hebrew_name":"ירקונה                   "
+  },
+  {
+     "code":"184",
+     "hebrew_name":"רמת הכובש                "
+  },
+  {
+     "code":"186",
+     "hebrew_name":"נעורים                   "
+  },
+  {
+     "code":"187",
+     "hebrew_name":"כפר הס                   "
+  },
+  {
+     "code":"188",
+     "hebrew_name":"אשדות יעקב  )מאוחד(      "
+  },
+  {
+     "code":"189",
+     "hebrew_name":"כפר פינס                 "
+  },
+  {
+     "code":"190",
+     "hebrew_name":"כפר ויתקין               "
+  },
+  {
+     "code":"191",
+     "hebrew_name":"הדר עם                   "
+  },
+  {
+     "code":"192",
+     "hebrew_name":"כפר החורש                "
+  },
+  {
+     "code":"193",
+     "hebrew_name":"כפר חיים                 "
+  },
+  {
+     "code":"194",
+     "hebrew_name":"משמר השרון               "
+  },
+  {
+     "code":"195",
+     "hebrew_name":"קדימה-צורן               "
+  },
+  {
+     "code":"196",
+     "hebrew_name":"גיבתון                   "
+  },
+  {
+     "code":"197",
+     "hebrew_name":"מעברות                   "
+  },
+  {
+     "code":"198",
+     "hebrew_name":"צופית                    "
+  },
+  {
+     "code":"199",
+     "hebrew_name":"אשדות יעקב  )איחוד(      "
+  },
+  {
+     "code":"200",
+     "hebrew_name":"בית ינאי                 "
+  },
+  {
+     "code":"202",
+     "hebrew_name":"בית עובד                 "
+  },
+  {
+     "code":"204",
+     "hebrew_name":"אלישיב                   "
+  },
+  {
+     "code":"205",
+     "hebrew_name":"חגלה                     "
+  },
+  {
+     "code":"206",
+     "hebrew_name":"רמות השבים               "
+  },
+  {
+     "code":"207",
+     "hebrew_name":"גבעת ח\"ן                 "
+  },
+  {
+     "code":"208",
+     "hebrew_name":"מוצא עילית               "
+  },
+  {
+     "code":"212",
+     "hebrew_name":"בית צבי                  "
+  },
+  {
+     "code":"213",
+     "hebrew_name":"משמרות                   "
+  },
+  {
+     "code":"217",
+     "hebrew_name":"כפר הרא\"ה                "
+  },
+  {
+     "code":"218",
+     "hebrew_name":"גני עם                   "
+  },
+  {
+     "code":"219",
+     "hebrew_name":"חיבת ציון                "
+  },
+  {
+     "code":"220",
+     "hebrew_name":"כפר ביאליק               "
+  },
+  {
+     "code":"223",
+     "hebrew_name":"עין עירון                "
+  },
+  {
+     "code":"224",
+     "hebrew_name":"שושנת העמקים             "
+  },
+  {
+     "code":"225",
+     "hebrew_name":"גן השומרון               "
+  },
+  {
+     "code":"229",
+     "hebrew_name":"גני תקווה                "
+  },
+  {
+     "code":"230",
+     "hebrew_name":"מעש                      "
+  },
+  {
+     "code":"232",
+     "hebrew_name":"שפיים                    "
+  },
+  {
+     "code":"233",
+     "hebrew_name":"כפר ידידיה               "
+  },
+  {
+     "code":"234",
+     "hebrew_name":"ביצרון                   "
+  },
+  {
+     "code":"235",
+     "hebrew_name":"חבצלת השרון              "
+  },
+  {
+     "code":"237",
+     "hebrew_name":"שער העמקים               "
+  },
+  {
+     "code":"239",
+     "hebrew_name":"גן חיים                  "
+  },
+  {
+     "code":"240",
+     "hebrew_name":"יקנעם עילית              "
+  },
+  {
+     "code":"241",
+     "hebrew_name":"יקנעם )מושבה(            "
+  },
+  {
+     "code":"242",
+     "hebrew_name":"בית השיטה                "
+  },
+  {
+     "code":"246",
+     "hebrew_name":"נתיבות                   "
+  },
+  {
+     "code":"247",
+     "hebrew_name":"רשפון                    "
+  },
+  {
+     "code":"248",
+     "hebrew_name":"בית שערים                "
+  },
+  {
+     "code":"249",
+     "hebrew_name":"כפר סירקין               "
+  },
+  {
+     "code":"250",
+     "hebrew_name":"הזורע                    "
+  },
+  {
+     "code":"252",
+     "hebrew_name":"ביתן אהרן                "
+  },
+  {
+     "code":"253",
+     "hebrew_name":"חולתה                    "
+  },
+  {
+     "code":"254",
+     "hebrew_name":"כפר המכבי                "
+  },
+  {
+     "code":"255",
+     "hebrew_name":"כפר חיטים                "
+  },
+  {
+     "code":"256",
+     "hebrew_name":"ניר דוד )תל עמל(         "
+  },
+  {
+     "code":"257",
+     "hebrew_name":"נופך                     "
+  },
+  {
+     "code":"259",
+     "hebrew_name":"שדה נחום                 "
+  },
+  {
+     "code":"262",
+     "hebrew_name":"גינוסר                   "
+  },
+  {
+     "code":"263",
+     "hebrew_name":"מסדה                     "
+  },
+  {
+     "code":"264",
+     "hebrew_name":"שער הגולן                "
+  },
+  {
+     "code":"265",
+     "hebrew_name":"בית יוסף                 "
+  },
+  {
+     "code":"267",
+     "hebrew_name":"כפר שמריהו               "
+  },
+  {
+     "code":"268",
+     "hebrew_name":"טירת צבי                 "
+  },
+  {
+     "code":"269",
+     "hebrew_name":"מולדת                    "
+  },
+  {
+     "code":"270",
+     "hebrew_name":"עין השופט                "
+  },
+  {
+     "code":"272",
+     "hebrew_name":"מעוז חיים                "
+  },
+  {
+     "code":"273",
+     "hebrew_name":"עין גב                   "
+  },
+  {
+     "code":"274",
+     "hebrew_name":"כפר מנחם                 "
+  },
+  {
+     "code":"276",
+     "hebrew_name":"צור משה                  "
+  },
+  {
+     "code":"278",
+     "hebrew_name":"אושה                     "
+  },
+  {
+     "code":"280",
+     "hebrew_name":"חניתה                    "
+  },
+  {
+     "code":"281",
+     "hebrew_name":"פקיעין חדשה              "
+  },
+  {
+     "code":"282",
+     "hebrew_name":"שבי ציון                 "
+  },
+  {
+     "code":"284",
+     "hebrew_name":"שדה ורבורג               "
+  },
+  {
+     "code":"285",
+     "hebrew_name":"אלונים                   "
+  },
+  {
+     "code":"286",
+     "hebrew_name":"מעלה החמישה              "
+  },
+  {
+     "code":"287",
+     "hebrew_name":"תל יצחק                  "
+  },
+  {
+     "code":"288",
+     "hebrew_name":"בית יהושע                "
+  },
+  {
+     "code":"289",
+     "hebrew_name":"עין המפרץ                "
+  },
+  {
+     "code":"290",
+     "hebrew_name":"מעין צבי                 "
+  },
+  {
+     "code":"292",
+     "hebrew_name":"שרונה                    "
+  },
+  {
+     "code":"293",
+     "hebrew_name":"שדה יואב                 "
+  },
+  {
+     "code":"294",
+     "hebrew_name":"אילון                    "
+  },
+  {
+     "code":"295",
+     "hebrew_name":"כפר רופין                "
+  },
+  {
+     "code":"296",
+     "hebrew_name":"נווה איתן                "
+  },
+  {
+     "code":"297",
+     "hebrew_name":"כפר מסריק                "
+  },
+  {
+     "code":"298",
+     "hebrew_name":"מסילות                   "
+  },
+  {
+     "code":"300",
+     "hebrew_name":"דליה                     "
+  },
+  {
+     "code":"301",
+     "hebrew_name":"בית עוזיאל               "
+  },
+  {
+     "code":"302",
+     "hebrew_name":"דפנה                     "
+  },
+  {
+     "code":"303",
+     "hebrew_name":"דן                       "
+  },
+  {
+     "code":"304",
+     "hebrew_name":"שדה אליהו                "
+  },
+  {
+     "code":"305",
+     "hebrew_name":"גשר                      "
+  },
+  {
+     "code":"306",
+     "hebrew_name":"שדמות דבורה              "
+  },
+  {
+     "code":"307",
+     "hebrew_name":"הזורעים                  "
+  },
+  {
+     "code":"308",
+     "hebrew_name":"מחניים                   "
+  },
+  {
+     "code":"309",
+     "hebrew_name":"נהורה                    "
+  },
+  {
+     "code":"310",
+     "hebrew_name":"כפר גליקסון              "
+  },
+  {
+     "code":"311",
+     "hebrew_name":"גן שורק                  "
+  },
+  {
+     "code":"312",
+     "hebrew_name":"נווה ים                  "
+  },
+  {
+     "code":"313",
+     "hebrew_name":"אפק                      "
+  },
+  {
+     "code":"315",
+     "hebrew_name":"נגבה                     "
+  },
+  {
+     "code":"316",
+     "hebrew_name":"כפר נטר                  "
+  },
+  {
+     "code":"317",
+     "hebrew_name":"בית אורן                 "
+  },
+  {
+     "code":"318",
+     "hebrew_name":"עמיעוז                   "
+  },
+  {
+     "code":"319",
+     "hebrew_name":"עמיר                     "
+  },
+  {
+     "code":"320",
+     "hebrew_name":"כפר ורבורג               "
+  },
+  {
+     "code":"322",
+     "hebrew_name":"בית הלל                  "
+  },
+  {
+     "code":"324",
+     "hebrew_name":"שאר ישוב                 "
+  },
+  {
+     "code":"325",
+     "hebrew_name":"מצובה                    "
+  },
+  {
+     "code":"326",
+     "hebrew_name":"בית יצחק-שער חפר         "
+  },
+  {
+     "code":"327",
+     "hebrew_name":"שדות ים                  "
+  },
+  {
+     "code":"328",
+     "hebrew_name":"עזוז                     "
+  },
+  {
+     "code":"329",
+     "hebrew_name":"שדה נחמיה                "
+  },
+  {
+     "code":"330",
+     "hebrew_name":"אלומות                   "
+  },
+  {
+     "code":"331",
+     "hebrew_name":"ניר צבי                  "
+  },
+  {
+     "code":"334",
+     "hebrew_name":"קבוצת יבנה               "
+  },
+  {
+     "code":"335",
+     "hebrew_name":"רמת השופט                "
+  },
+  {
+     "code":"336",
+     "hebrew_name":"דורות                    "
+  },
+  {
+     "code":"338",
+     "hebrew_name":"איבים                    "
+  },
+  {
+     "code":"339",
+     "hebrew_name":"רמת צבי                  "
+  },
+  {
+     "code":"340",
+     "hebrew_name":"גת )קיבוץ(               "
+  },
+  {
+     "code":"342",
+     "hebrew_name":"גברעם                    "
+  },
+  {
+     "code":"343",
+     "hebrew_name":"חמדיה                    "
+  },
+  {
+     "code":"344",
+     "hebrew_name":"מענית                    "
+  },
+  {
+     "code":"345",
+     "hebrew_name":"כפר סאלד                 "
+  },
+  {
+     "code":"346",
+     "hebrew_name":"גליל ים                  "
+  },
+  {
+     "code":"347",
+     "hebrew_name":"מנרה                     "
+  },
+  {
+     "code":"348",
+     "hebrew_name":"ניר עם                   "
+  },
+  {
+     "code":"351",
+     "hebrew_name":"ניצן                     "
+  },
+  {
+     "code":"352",
+     "hebrew_name":"גבולות                   "
+  },
+  {
+     "code":"353",
+     "hebrew_name":"בית זיד                  "
+  },
+  {
+     "code":"354",
+     "hebrew_name":"רביבים                   "
+  },
+  {
+     "code":"355",
+     "hebrew_name":"חורשים                   "
+  },
+  {
+     "code":"356",
+     "hebrew_name":"הגושרים                  "
+  },
+  {
+     "code":"357",
+     "hebrew_name":"כפר בלום                 "
+  },
+  {
+     "code":"358",
+     "hebrew_name":"יד מרדכי                 "
+  },
+  {
+     "code":"359",
+     "hebrew_name":"ניצנים                   "
+  },
+  {
+     "code":"360",
+     "hebrew_name":"גבעת ניל\"י               "
+  },
+  {
+     "code":"362",
+     "hebrew_name":"רוחמה                    "
+  },
+  {
+     "code":"363",
+     "hebrew_name":"חפץ חיים                 "
+  },
+  {
+     "code":"364",
+     "hebrew_name":"כפר אוריה                "
+  },
+  {
+     "code":"365",
+     "hebrew_name":"בית קשת                  "
+  },
+  {
+     "code":"366",
+     "hebrew_name":"שמיר                     "
+  },
+  {
+     "code":"367",
+     "hebrew_name":"עין העמק                 "
+  },
+  {
+     "code":"368",
+     "hebrew_name":"ביריה                    "
+  },
+  {
+     "code":"369",
+     "hebrew_name":"גלעד )אבן יצחק(          "
+  },
+  {
+     "code":"370",
+     "hebrew_name":"גזר                      "
+  },
+  {
+     "code":"371",
+     "hebrew_name":"כדורי                    "
+  },
+  {
+     "code":"372",
+     "hebrew_name":"רמות נפתלי               "
+  },
+  {
+     "code":"373",
+     "hebrew_name":"בית הלוי                 "
+  },
+  {
+     "code":"374",
+     "hebrew_name":"חוקוק                    "
+  },
+  {
+     "code":"375",
+     "hebrew_name":"מגל                      "
+  },
+  {
+     "code":"376",
+     "hebrew_name":"עברון                    "
+  },
+  {
+     "code":"377",
+     "hebrew_name":"המעפיל                   "
+  },
+  {
+     "code":"378",
+     "hebrew_name":"משגב עם                  "
+  },
+  {
+     "code":"379",
+     "hebrew_name":"גאולים                   "
+  },
+  {
+     "code":"380",
+     "hebrew_name":"להבות הבשן               "
+  },
+  {
+     "code":"382",
+     "hebrew_name":"מכמורת                   "
+  },
+  {
+     "code":"383",
+     "hebrew_name":"עין הנצי\"ב               "
+  },
+  {
+     "code":"385",
+     "hebrew_name":"עמיעד                    "
+  },
+  {
+     "code":"386",
+     "hebrew_name":"בני דרור                 "
+  },
+  {
+     "code":"387",
+     "hebrew_name":"כפר מונש                 "
+  },
+  {
+     "code":"388",
+     "hebrew_name":"כפר קיש                  "
+  },
+  {
+     "code":"389",
+     "hebrew_name":"בצרה                     "
+  },
+  {
+     "code":"390",
+     "hebrew_name":"רגבה                     "
+  },
+  {
+     "code":"392",
+     "hebrew_name":"קדמה                     "
+  },
+  {
+     "code":"393",
+     "hebrew_name":"גלאון                    "
+  },
+  {
+     "code":"394",
+     "hebrew_name":"שובל                     "
+  },
+  {
+     "code":"395",
+     "hebrew_name":"משמר הנגב                "
+  },
+  {
+     "code":"396",
+     "hebrew_name":"נבטים                    "
+  },
+  {
+     "code":"397",
+     "hebrew_name":"חצרים                    "
+  },
+  {
+     "code":"398",
+     "hebrew_name":"שרשרת                    "
+  },
+  {
+     "code":"399",
+     "hebrew_name":"בארי                     "
+  },
+  {
+     "code":"400",
+     "hebrew_name":"אבן שמואל                "
+  },
+  {
+     "code":"402",
+     "hebrew_name":"ניר יצחק                 "
+  },
+  {
+     "code":"403",
+     "hebrew_name":"אורים                    "
+  },
+  {
+     "code":"405",
+     "hebrew_name":"נווה אילן                "
+  },
+  {
+     "code":"406",
+     "hebrew_name":"חצור-אשדוד               "
+  },
+  {
+     "code":"407",
+     "hebrew_name":"דברת                     "
+  },
+  {
+     "code":"408",
+     "hebrew_name":"נאות מרדכי               "
+  },
+  {
+     "code":"409",
+     "hebrew_name":"יחיעם                    "
+  },
+  {
+     "code":"412",
+     "hebrew_name":"קרית שלמה                "
+  },
+  {
+     "code":"413",
+     "hebrew_name":"צאלים                    "
+  },
+  {
+     "code":"414",
+     "hebrew_name":"קלחים                    "
+  },
+  {
+     "code":"415",
+     "hebrew_name":"שוקדה                    "
+  },
+  {
+     "code":"416",
+     "hebrew_name":"מעין ברוך                "
+  },
+  {
+     "code":"417",
+     "hebrew_name":"יקום                     "
+  },
+  {
+     "code":"418",
+     "hebrew_name":"בני ציון                 "
+  },
+  {
+     "code":"419",
+     "hebrew_name":"סעד                      "
+  },
+  {
+     "code":"421",
+     "hebrew_name":"משאבי שדה                "
+  },
+  {
+     "code":"422",
+     "hebrew_name":"חרב לאת                  "
+  },
+  {
+     "code":"423",
+     "hebrew_name":"העוגן                    "
+  },
+  {
+     "code":"424",
+     "hebrew_name":"גבים                     "
+  },
+  {
+     "code":"425",
+     "hebrew_name":"משמרת                    "
+  },
+  {
+     "code":"426",
+     "hebrew_name":"עין כרמל                 "
+  },
+  {
+     "code":"427",
+     "hebrew_name":"כפר גלים                 "
+  },
+  {
+     "code":"428",
+     "hebrew_name":"ברור חיל                 "
+  },
+  {
+     "code":"429",
+     "hebrew_name":"אלוני אבא                "
+  },
+  {
+     "code":"430",
+     "hebrew_name":"בית לחם הגלילית          "
+  },
+  {
+     "code":"431",
+     "hebrew_name":"דלתון                    "
+  },
+  {
+     "code":"432",
+     "hebrew_name":"שמרת                     "
+  },
+  {
+     "code":"433",
+     "hebrew_name":"נחשולים                  "
+  },
+  {
+     "code":"434",
+     "hebrew_name":"החותרים                  "
+  },
+  {
+     "code":"435",
+     "hebrew_name":"נצר סרני                 "
+  },
+  {
+     "code":"436",
+     "hebrew_name":"עין דור                  "
+  },
+  {
+     "code":"437",
+     "hebrew_name":"רשפים                    "
+  },
+  {
+     "code":"439",
+     "hebrew_name":"שלוחות                   "
+  },
+  {
+     "code":"440",
+     "hebrew_name":"יסודות                   "
+  },
+  {
+     "code":"442",
+     "hebrew_name":"גדעונה                   "
+  },
+  {
+     "code":"443",
+     "hebrew_name":"כפר הנשיא                "
+  },
+  {
+     "code":"444",
+     "hebrew_name":"רגבים                    "
+  },
+  {
+     "code":"445",
+     "hebrew_name":"רמות מנשה                "
+  },
+  {
+     "code":"446",
+     "hebrew_name":"אודים                    "
+  },
+  {
+     "code":"447",
+     "hebrew_name":"נורדיה                   "
+  },
+  {
+     "code":"448",
+     "hebrew_name":"בני עטרות                "
+  },
+  {
+     "code":"449",
+     "hebrew_name":"נחלים                    "
+  },
+  {
+     "code":"450",
+     "hebrew_name":"בארות יצחק               "
+  },
+  {
+     "code":"452",
+     "hebrew_name":"יזרעאל                   "
+  },
+  {
+     "code":"453",
+     "hebrew_name":"יפתח                     "
+  },
+  {
+     "code":"454",
+     "hebrew_name":"סער                      "
+  },
+  {
+     "code":"456",
+     "hebrew_name":"שורש                     "
+  },
+  {
+     "code":"457",
+     "hebrew_name":"גזית                     "
+  },
+  {
+     "code":"460",
+     "hebrew_name":"רמת רזיאל                "
+  },
+  {
+     "code":"462",
+     "hebrew_name":"טל שחר                   "
+  },
+  {
+     "code":"463",
+     "hebrew_name":"געתון                    "
+  },
+  {
+     "code":"464",
+     "hebrew_name":"הראל                     "
+  },
+  {
+     "code":"465",
+     "hebrew_name":"צובה                     "
+  },
+  {
+     "code":"466",
+     "hebrew_name":"בית דגן                  "
+  },
+  {
+     "code":"469",
+     "hebrew_name":"קרית עקרון               "
+  },
+  {
+     "code":"472",
+     "hebrew_name":"אבו גוש                  "
+  },
+  {
+     "code":"473",
+     "hebrew_name":"אבו סנאן                 "
+  },
+  {
+     "code":"475",
+     "hebrew_name":"דחי                      "
+  },
+  {
+     "code":"478",
+     "hebrew_name":"אכסאל                    "
+  },
+  {
+     "code":"480",
+     "hebrew_name":"בית ג'ן                  "
+  },
+  {
+     "code":"481",
+     "hebrew_name":"מגאר                     "
+  },
+  {
+     "code":"482",
+     "hebrew_name":"בועיינה-נוג'ידאת         "
+  },
+  {
+     "code":"483",
+     "hebrew_name":"בענה                     "
+  },
+  {
+     "code":"485",
+     "hebrew_name":"ג'ולס                    "
+  },
+  {
+     "code":"487",
+     "hebrew_name":"ג'ש )גוש חלב(            "
+  },
+  {
+     "code":"489",
+     "hebrew_name":"דבוריה                   "
+  },
+  {
+     "code":"490",
+     "hebrew_name":"דייר אל-אסד              "
+  },
+  {
+     "code":"492",
+     "hebrew_name":"דייר חנא                 "
+  },
+  {
+     "code":"493",
+     "hebrew_name":"דייר ראפאת               "
+  },
+  {
+     "code":"494",
+     "hebrew_name":"דאלית אל-כרמל            "
+  },
+  {
+     "code":"496",
+     "hebrew_name":"חורפיש                   "
+  },
+  {
+     "code":"497",
+     "hebrew_name":"טייבה )בעמק(             "
+  },
+  {
+     "code":"498",
+     "hebrew_name":"טורעאן                   "
+  },
+  {
+     "code":"499",
+     "hebrew_name":"יפיע                     "
+  },
+  {
+     "code":"502",
+     "hebrew_name":"ירכא                     "
+  },
+  {
+     "code":"504",
+     "hebrew_name":"כאבול                    "
+  },
+  {
+     "code":"505",
+     "hebrew_name":"כאוכב אבו אל-היג'א       "
+  },
+  {
+     "code":"507",
+     "hebrew_name":"כפר יאסיף                "
+  },
+  {
+     "code":"508",
+     "hebrew_name":"כפר כמא                  "
+  },
+  {
+     "code":"509",
+     "hebrew_name":"כפר כנא                  "
+  },
+  {
+     "code":"510",
+     "hebrew_name":"כפר מנדא                 "
+  },
+  {
+     "code":"511",
+     "hebrew_name":"עילוט                    "
+  },
+  {
+     "code":"512",
+     "hebrew_name":"כפר מצר                  "
+  },
+  {
+     "code":"514",
+     "hebrew_name":"עין ראפה                 "
+  },
+  {
+     "code":"516",
+     "hebrew_name":"מג'ד אל-כרום             "
+  },
+  {
+     "code":"517",
+     "hebrew_name":"מזרעה                    "
+  },
+  {
+     "code":"518",
+     "hebrew_name":"מעיליא                   "
+  },
+  {
+     "code":"520",
+     "hebrew_name":"משהד                     "
+  },
+  {
+     "code":"521",
+     "hebrew_name":"עין נקובא                "
+  },
+  {
+     "code":"522",
+     "hebrew_name":"נחף                      "
+  },
+  {
+     "code":"523",
+     "hebrew_name":"ניין                     "
+  },
+  {
+     "code":"524",
+     "hebrew_name":"נאעורה                   "
+  },
+  {
+     "code":"525",
+     "hebrew_name":"סאג'ור                   "
+  },
+  {
+     "code":"526",
+     "hebrew_name":"סולם                     "
+  },
+  {
+     "code":"527",
+     "hebrew_name":"שזור                     "
+  },
+  {
+     "code":"528",
+     "hebrew_name":"עוזייר                   "
+  },
+  {
+     "code":"529",
+     "hebrew_name":"אעבלין                   "
+  },
+  {
+     "code":"530",
+     "hebrew_name":"עיילבון                  "
+  },
+  {
+     "code":"531",
+     "hebrew_name":"עראבה                    "
+  },
+  {
+     "code":"532",
+     "hebrew_name":"עין מאהל                 "
+  },
+  {
+     "code":"534",
+     "hebrew_name":"עספיא                    "
+  },
+  {
+     "code":"535",
+     "hebrew_name":"פסוטה                    "
+  },
+  {
+     "code":"536",
+     "hebrew_name":"פקיעין )בוקייעה(         "
+  },
+  {
+     "code":"537",
+     "hebrew_name":"פוריידיס                 "
+  },
+  {
+     "code":"538",
+     "hebrew_name":"שעב                      "
+  },
+  {
+     "code":"539",
+     "hebrew_name":"רומאנה                   "
+  },
+  {
+     "code":"540",
+     "hebrew_name":"ריחאניה                  "
+  },
+  {
+     "code":"541",
+     "hebrew_name":"ג'סר א-זרקא              "
+  },
+  {
+     "code":"542",
+     "hebrew_name":"ריינה                    "
+  },
+  {
+     "code":"543",
+     "hebrew_name":"ראמה                     "
+  },
+  {
+     "code":"546",
+     "hebrew_name":"עין אל-אסד               "
+  },
+  {
+     "code":"547",
+     "hebrew_name":"טמרה )יזרעאל(            "
+  },
+  {
+     "code":"549",
+     "hebrew_name":"גנות הדר                 "
+  },
+  {
+     "code":"553",
+     "hebrew_name":"ניר בנים                 "
+  },
+  {
+     "code":"555",
+     "hebrew_name":"שדמה                     "
+  },
+  {
+     "code":"559",
+     "hebrew_name":"בוסתן הגליל              "
+  },
+  {
+     "code":"562",
+     "hebrew_name":"בית אלעזרי               "
+  },
+  {
+     "code":"563",
+     "hebrew_name":"משמר דוד                 "
+  },
+  {
+     "code":"564",
+     "hebrew_name":"רבדים                    "
+  },
+  {
+     "code":"565",
+     "hebrew_name":"אזור                     "
+  },
+  {
+     "code":"566",
+     "hebrew_name":"גבעת שמש                 "
+  },
+  {
+     "code":"567",
+     "hebrew_name":"צרעה                     "
+  },
+  {
+     "code":"570",
+     "hebrew_name":"מעונה                    "
+  },
+  {
+     "code":"571",
+     "hebrew_name":"בית גמליאל               "
+  },
+  {
+     "code":"572",
+     "hebrew_name":"בית העמק                 "
+  },
+  {
+     "code":"573",
+     "hebrew_name":"מבקיעים                  "
+  },
+  {
+     "code":"574",
+     "hebrew_name":"גשר הזיו                 "
+  },
+  {
+     "code":"575",
+     "hebrew_name":"יסעור                    "
+  },
+  {
+     "code":"576",
+     "hebrew_name":"כברי                     "
+  },
+  {
+     "code":"577",
+     "hebrew_name":"יד בנימין                "
+  },
+  {
+     "code":"578",
+     "hebrew_name":"סאסא                     "
+  },
+  {
+     "code":"579",
+     "hebrew_name":"כפר ראש הנקרה            "
+  },
+  {
+     "code":"580",
+     "hebrew_name":"כרם מהר\"ל                "
+  },
+  {
+     "code":"582",
+     "hebrew_name":"כפר הנגיד                "
+  },
+  {
+     "code":"584",
+     "hebrew_name":"זיקים                    "
+  },
+  {
+     "code":"585",
+     "hebrew_name":"לביא                     "
+  },
+  {
+     "code":"586",
+     "hebrew_name":"מגידו                    "
+  },
+  {
+     "code":"587",
+     "hebrew_name":"סביון                    "
+  },
+  {
+     "code":"588",
+     "hebrew_name":"בני ראם                  "
+  },
+  {
+     "code":"589",
+     "hebrew_name":"בצת                      "
+  },
+  {
+     "code":"590",
+     "hebrew_name":"נווה אור                 "
+  },
+  {
+     "code":"591",
+     "hebrew_name":"עשרת                     "
+  },
+  {
+     "code":"592",
+     "hebrew_name":"בני דרום                 "
+  },
+  {
+     "code":"593",
+     "hebrew_name":"ערוגות                   "
+  },
+  {
+     "code":"594",
+     "hebrew_name":"צפריה                    "
+  },
+  {
+     "code":"595",
+     "hebrew_name":"לוחמי הגיטאות            "
+  },
+  {
+     "code":"596",
+     "hebrew_name":"מלכיה                    "
+  },
+  {
+     "code":"597",
+     "hebrew_name":"פלמחים                   "
+  },
+  {
+     "code":"598",
+     "hebrew_name":"בית קמה                  "
+  },
+  {
+     "code":"599",
+     "hebrew_name":"פרוד                     "
+  },
+  {
+     "code":"602",
+     "hebrew_name":"נירים                    "
+  },
+  {
+     "code":"603",
+     "hebrew_name":"אלקוש                    "
+  },
+  {
+     "code":"604",
+     "hebrew_name":"בית עריף                 "
+  },
+  {
+     "code":"605",
+     "hebrew_name":"כפר שמאי                 "
+  },
+  {
+     "code":"606",
+     "hebrew_name":"מזור                     "
+  },
+  {
+     "code":"607",
+     "hebrew_name":"מירון                    "
+  },
+  {
+     "code":"609",
+     "hebrew_name":"כפר חושן                 "
+  },
+  {
+     "code":"610",
+     "hebrew_name":"סתריה                    "
+  },
+  {
+     "code":"612",
+     "hebrew_name":"צרופה                    "
+  },
+  {
+     "code":"613",
+     "hebrew_name":"ציפורי                   "
+  },
+  {
+     "code":"614",
+     "hebrew_name":"שומרה                    "
+  },
+  {
+     "code":"615",
+     "hebrew_name":"קדרון                    "
+  },
+  {
+     "code":"616",
+     "hebrew_name":"רינתיה                   "
+  },
+  {
+     "code":"617",
+     "hebrew_name":"ברקאי                    "
+  },
+  {
+     "code":"618",
+     "hebrew_name":"חדיד                     "
+  },
+  {
+     "code":"619",
+     "hebrew_name":"בית גוברין               "
+  },
+  {
+     "code":"620",
+     "hebrew_name":"משואות יצחק              "
+  },
+  {
+     "code":"622",
+     "hebrew_name":"עין צורים                "
+  },
+  {
+     "code":"623",
+     "hebrew_name":"יראון                    "
+  },
+  {
+     "code":"627",
+     "hebrew_name":"ג'לג'וליה                "
+  },
+  {
+     "code":"628",
+     "hebrew_name":"ג'ת                      "
+  },
+  {
+     "code":"633",
+     "hebrew_name":"כפר ברא                  "
+  },
+  {
+     "code":"634",
+     "hebrew_name":"כפר קאסם                 "
+  },
+  {
+     "code":"635",
+     "hebrew_name":"מוקייבלה                 "
+  },
+  {
+     "code":"636",
+     "hebrew_name":"צנדלה                    "
+  },
+  {
+     "code":"637",
+     "hebrew_name":"ערערה                    "
+  },
+  {
+     "code":"638",
+     "hebrew_name":"קלנסווה                  "
+  },
+  {
+     "code":"648",
+     "hebrew_name":"מצר                      "
+  },
+  {
+     "code":"649",
+     "hebrew_name":"מייסר                    "
+  },
+  {
+     "code":"652",
+     "hebrew_name":"אבטין                    "
+  },
+  {
+     "code":"654",
+     "hebrew_name":"כפר קרע                  "
+  },
+  {
+     "code":"658",
+     "hebrew_name":"שייח' דנון               "
+  },
+  {
+     "code":"661",
+     "hebrew_name":"שער אפרים                "
+  },
+  {
+     "code":"662",
+     "hebrew_name":"חוסן                     "
+  },
+  {
+     "code":"663",
+     "hebrew_name":"טירת יהודה               "
+  },
+  {
+     "code":"664",
+     "hebrew_name":"כרם בן זמרה              "
+  },
+  {
+     "code":"665",
+     "hebrew_name":"תקומה                    "
+  },
+  {
+     "code":"666",
+     "hebrew_name":"עומר                     "
+  },
+  {
+     "code":"667",
+     "hebrew_name":"ברעם                     "
+  },
+  {
+     "code":"668",
+     "hebrew_name":"מפלסים                   "
+  },
+  {
+     "code":"670",
+     "hebrew_name":"משמר איילון              "
+  },
+  {
+     "code":"672",
+     "hebrew_name":"בית נקופה                "
+  },
+  {
+     "code":"673",
+     "hebrew_name":"כפר טרומן                "
+  },
+  {
+     "code":"674",
+     "hebrew_name":"לימן                     "
+  },
+  {
+     "code":"675",
+     "hebrew_name":"הבונים                   "
+  },
+  {
+     "code":"676",
+     "hebrew_name":"עין השלושה               "
+  },
+  {
+     "code":"677",
+     "hebrew_name":"הסוללים                  "
+  },
+  {
+     "code":"678",
+     "hebrew_name":"מעגן                     "
+  },
+  {
+     "code":"679",
+     "hebrew_name":"אביאל                    "
+  },
+  {
+     "code":"680",
+     "hebrew_name":"אומץ                     "
+  },
+  {
+     "code":"681",
+     "hebrew_name":"גבעת שמואל               "
+  },
+  {
+     "code":"682",
+     "hebrew_name":"אליקים                   "
+  },
+  {
+     "code":"683",
+     "hebrew_name":"גבע כרמל                 "
+  },
+  {
+     "code":"684",
+     "hebrew_name":"היוגב                    "
+  },
+  {
+     "code":"685",
+     "hebrew_name":"בניה                     "
+  },
+  {
+     "code":"686",
+     "hebrew_name":"נווה ימין                "
+  },
+  {
+     "code":"687",
+     "hebrew_name":"עין איילה                "
+  },
+  {
+     "code":"688",
+     "hebrew_name":"עלמה                     "
+  },
+  {
+     "code":"689",
+     "hebrew_name":"מגדים                    "
+  },
+  {
+     "code":"690",
+     "hebrew_name":"כפר אחים                 "
+  },
+  {
+     "code":"692",
+     "hebrew_name":"שפיר                     "
+  },
+  {
+     "code":"693",
+     "hebrew_name":"נתיב הל\"ה                "
+  },
+  {
+     "code":"694",
+     "hebrew_name":"מעגן מיכאל               "
+  },
+  {
+     "code":"695",
+     "hebrew_name":"מגן                      "
+  },
+  {
+     "code":"696",
+     "hebrew_name":"כפר חב\"ד                 "
+  },
+  {
+     "code":"697",
+     "hebrew_name":"בארותיים                 "
+  },
+  {
+     "code":"698",
+     "hebrew_name":"בורגתה                   "
+  },
+  {
+     "code":"699",
+     "hebrew_name":"ניר ישראל                "
+  },
+  {
+     "code":"700",
+     "hebrew_name":"חצב                      "
+  },
+  {
+     "code":"701",
+     "hebrew_name":"ארבל                     "
+  },
+  {
+     "code":"702",
+     "hebrew_name":"האון                     "
+  },
+  {
+     "code":"703",
+     "hebrew_name":"גבעת עוז                 "
+  },
+  {
+     "code":"705",
+     "hebrew_name":"נחשונים                  "
+  },
+  {
+     "code":"706",
+     "hebrew_name":"גיאה                     "
+  },
+  {
+     "code":"707",
+     "hebrew_name":"כפר דניאל                "
+  },
+  {
+     "code":"708",
+     "hebrew_name":"עמקה                     "
+  },
+  {
+     "code":"709",
+     "hebrew_name":"תפרח                     "
+  },
+  {
+     "code":"710",
+     "hebrew_name":"בית זית                  "
+  },
+  {
+     "code":"711",
+     "hebrew_name":"עזריה                    "
+  },
+  {
+     "code":"712",
+     "hebrew_name":"בן עמי                   "
+  },
+  {
+     "code":"713",
+     "hebrew_name":"רעים                     "
+  },
+  {
+     "code":"714",
+     "hebrew_name":"ארז                      "
+  },
+  {
+     "code":"715",
+     "hebrew_name":"להבות חביבה              "
+  },
+  {
+     "code":"716",
+     "hebrew_name":"אייל                     "
+  },
+  {
+     "code":"717",
+     "hebrew_name":"חגור                     "
+  },
+  {
+     "code":"718",
+     "hebrew_name":"ירחיב                    "
+  },
+  {
+     "code":"719",
+     "hebrew_name":"תל קציר                  "
+  },
+  {
+     "code":"720",
+     "hebrew_name":"ניר גלים                 "
+  },
+  {
+     "code":"721",
+     "hebrew_name":"שדה אילן                 "
+  },
+  {
+     "code":"722",
+     "hebrew_name":"מגשימים                  "
+  },
+  {
+     "code":"723",
+     "hebrew_name":"בית הגדי                 "
+  },
+  {
+     "code":"726",
+     "hebrew_name":"הודיה                    "
+  },
+  {
+     "code":"727",
+     "hebrew_name":"תלמי יחיאל               "
+  },
+  {
+     "code":"729",
+     "hebrew_name":"משמר השבעה               "
+  },
+  {
+     "code":"730",
+     "hebrew_name":"אליפלט                   "
+  },
+  {
+     "code":"731",
+     "hebrew_name":"מישר                     "
+  },
+  {
+     "code":"732",
+     "hebrew_name":"משמר הירדן               "
+  },
+  {
+     "code":"734",
+     "hebrew_name":"גן יאשיה                 "
+  },
+  {
+     "code":"735",
+     "hebrew_name":"רמות מאיר                "
+  },
+  {
+     "code":"736",
+     "hebrew_name":"גילת                     "
+  },
+  {
+     "code":"737",
+     "hebrew_name":"עולש                     "
+  },
+  {
+     "code":"738",
+     "hebrew_name":"דור                      "
+  },
+  {
+     "code":"739",
+     "hebrew_name":"שדה עוזיהו               "
+  },
+  {
+     "code":"740",
+     "hebrew_name":"אשתאול                   "
+  },
+  {
+     "code":"741",
+     "hebrew_name":"שואבה                    "
+  },
+  {
+     "code":"742",
+     "hebrew_name":"מסילת ציון               "
+  },
+  {
+     "code":"743",
+     "hebrew_name":"כפר שמואל                "
+  },
+  {
+     "code":"744",
+     "hebrew_name":"תלמי יפה                 "
+  },
+  {
+     "code":"745",
+     "hebrew_name":"גמזו                     "
+  },
+  {
+     "code":"746",
+     "hebrew_name":"ברכיה                    "
+  },
+  {
+     "code":"747",
+     "hebrew_name":"בית שקמה                 "
+  },
+  {
+     "code":"748",
+     "hebrew_name":"מסלול                    "
+  },
+  {
+     "code":"749",
+     "hebrew_name":"פטיש                     "
+  },
+  {
+     "code":"750",
+     "hebrew_name":"פדויים                   "
+  },
+  {
+     "code":"751",
+     "hebrew_name":"בית מאיר                 "
+  },
+  {
+     "code":"752",
+     "hebrew_name":"תעוז                     "
+  },
+  {
+     "code":"753",
+     "hebrew_name":"ינוב                     "
+  },
+  {
+     "code":"755",
+     "hebrew_name":"גורן                     "
+  },
+  {
+     "code":"756",
+     "hebrew_name":"בית עזרא                 "
+  },
+  {
+     "code":"757",
+     "hebrew_name":"מצליח                    "
+  },
+  {
+     "code":"758",
+     "hebrew_name":"יד חנה                   "
+  },
+  {
+     "code":"759",
+     "hebrew_name":"יציץ                     "
+  },
+  {
+     "code":"760",
+     "hebrew_name":"בן זכאי                  "
+  },
+  {
+     "code":"761",
+     "hebrew_name":"שובה                     "
+  },
+  {
+     "code":"762",
+     "hebrew_name":"בטחה                     "
+  },
+  {
+     "code":"763",
+     "hebrew_name":"שתולים                   "
+  },
+  {
+     "code":"764",
+     "hebrew_name":"כפר מרדכי                "
+  },
+  {
+     "code":"765",
+     "hebrew_name":"משגב דב                  "
+  },
+  {
+     "code":"766",
+     "hebrew_name":"קוממיות                  "
+  },
+  {
+     "code":"767",
+     "hebrew_name":"פורת                     "
+  },
+  {
+     "code":"768",
+     "hebrew_name":"כרמיה                    "
+  },
+  {
+     "code":"769",
+     "hebrew_name":"ניר עציון                "
+  },
+  {
+     "code":"771",
+     "hebrew_name":"מבוא ביתר                "
+  },
+  {
+     "code":"772",
+     "hebrew_name":"אמונים                   "
+  },
+  {
+     "code":"773",
+     "hebrew_name":"עמיקם                    "
+  },
+  {
+     "code":"774",
+     "hebrew_name":"צוריאל                   "
+  },
+  {
+     "code":"775",
+     "hebrew_name":"יד נתן                   "
+  },
+  {
+     "code":"776",
+     "hebrew_name":"מחסיה                    "
+  },
+  {
+     "code":"777",
+     "hebrew_name":"נחשון                    "
+  },
+  {
+     "code":"778",
+     "hebrew_name":"תרום                     "
+  },
+  {
+     "code":"779",
+     "hebrew_name":"עמינדב                   "
+  },
+  {
+     "code":"780",
+     "hebrew_name":"אורה                     "
+  },
+  {
+     "code":"783",
+     "hebrew_name":"אבן ספיר                 "
+  },
+  {
+     "code":"784",
+     "hebrew_name":"בית נחמיה                "
+  },
+  {
+     "code":"785",
+     "hebrew_name":"אחיהוד                   "
+  },
+  {
+     "code":"786",
+     "hebrew_name":"כפר זיתים                "
+  },
+  {
+     "code":"787",
+     "hebrew_name":"גבעת יערים               "
+  },
+  {
+     "code":"788",
+     "hebrew_name":"זיתן                     "
+  },
+  {
+     "code":"789",
+     "hebrew_name":"רנן                      "
+  },
+  {
+     "code":"791",
+     "hebrew_name":"משען                     "
+  },
+  {
+     "code":"792",
+     "hebrew_name":"נתיב השיירה              "
+  },
+  {
+     "code":"793",
+     "hebrew_name":"גבעתי                    "
+  },
+  {
+     "code":"794",
+     "hebrew_name":"עגור                     "
+  },
+  {
+     "code":"795",
+     "hebrew_name":"יערה                     "
+  },
+  {
+     "code":"796",
+     "hebrew_name":"צלפון                    "
+  },
+  {
+     "code":"797",
+     "hebrew_name":"אחיעזר                   "
+  },
+  {
+     "code":"798",
+     "hebrew_name":"יגל                      "
+  },
+  {
+     "code":"799",
+     "hebrew_name":"זכריה                    "
+  },
+  {
+     "code":"800",
+     "hebrew_name":"בית חנניה                "
+  },
+  {
+     "code":"801",
+     "hebrew_name":"חמד                      "
+  },
+  {
+     "code":"802",
+     "hebrew_name":"גבעת כ\"ח                 "
+  },
+  {
+     "code":"803",
+     "hebrew_name":"יושיביה                  "
+  },
+  {
+     "code":"804",
+     "hebrew_name":"אחיסמך                   "
+  },
+  {
+     "code":"805",
+     "hebrew_name":"ישעי                     "
+  },
+  {
+     "code":"806",
+     "hebrew_name":"עין יהב                  "
+  },
+  {
+     "code":"807",
+     "hebrew_name":"חניאל                    "
+  },
+  {
+     "code":"808",
+     "hebrew_name":"ניר אליהו                "
+  },
+  {
+     "code":"809",
+     "hebrew_name":"נחם                      "
+  },
+  {
+     "code":"810",
+     "hebrew_name":"עופר                     "
+  },
+  {
+     "code":"811",
+     "hebrew_name":"יכיני                    "
+  },
+  {
+     "code":"812",
+     "hebrew_name":"שלומי                    "
+  },
+  {
+     "code":"813",
+     "hebrew_name":"עין יעקב                 "
+  },
+  {
+     "code":"814",
+     "hebrew_name":"תלמים                    "
+  },
+  {
+     "code":"815",
+     "hebrew_name":"זבדיאל                   "
+  },
+  {
+     "code":"816",
+     "hebrew_name":"זנוח                     "
+  },
+  {
+     "code":"817",
+     "hebrew_name":"עזריקם                   "
+  },
+  {
+     "code":"818",
+     "hebrew_name":"זרחיה                    "
+  },
+  {
+     "code":"819",
+     "hebrew_name":"אביגדור                  "
+  },
+  {
+     "code":"820",
+     "hebrew_name":"חלץ                      "
+  },
+  {
+     "code":"821",
+     "hebrew_name":"אחוזם                    "
+  },
+  {
+     "code":"822",
+     "hebrew_name":"מטע                      "
+  },
+  {
+     "code":"823",
+     "hebrew_name":"בר גיורא                 "
+  },
+  {
+     "code":"824",
+     "hebrew_name":"כוכב מיכאל               "
+  },
+  {
+     "code":"825",
+     "hebrew_name":"נס הרים                  "
+  },
+  {
+     "code":"826",
+     "hebrew_name":"עוזה                     "
+  },
+  {
+     "code":"827",
+     "hebrew_name":"נווה מבטח                "
+  },
+  {
+     "code":"828",
+     "hebrew_name":"ישרש                     "
+  },
+  {
+     "code":"829",
+     "hebrew_name":"מבטחים                   "
+  },
+  {
+     "code":"831",
+     "hebrew_name":"ירוחם                    "
+  },
+  {
+     "code":"833",
+     "hebrew_name":"נורית                    "
+  },
+  {
+     "code":"836",
+     "hebrew_name":"גנות                     "
+  },
+  {
+     "code":"837",
+     "hebrew_name":"עזריאל                   "
+  },
+  {
+     "code":"838",
+     "hebrew_name":"פדיה                     "
+  },
+  {
+     "code":"839",
+     "hebrew_name":"פתחיה                    "
+  },
+  {
+     "code":"840",
+     "hebrew_name":"כיסופים                  "
+  },
+  {
+     "code":"841",
+     "hebrew_name":"אלישמע                   "
+  },
+  {
+     "code":"842",
+     "hebrew_name":"געש                      "
+  },
+  {
+     "code":"843",
+     "hebrew_name":"מרגליות                  "
+  },
+  {
+     "code":"844",
+     "hebrew_name":"נחל עוז                  "
+  },
+  {
+     "code":"845",
+     "hebrew_name":"כפר עזה                  "
+  },
+  {
+     "code":"846",
+     "hebrew_name":"שפר                      "
+  },
+  {
+     "code":"848",
+     "hebrew_name":"בית רבן                  "
+  },
+  {
+     "code":"849",
+     "hebrew_name":"דבירה                    "
+  },
+  {
+     "code":"850",
+     "hebrew_name":"אחיטוב                   "
+  },
+  {
+     "code":"851",
+     "hebrew_name":"ניצני עוז                "
+  },
+  {
+     "code":"852",
+     "hebrew_name":"גונן                     "
+  },
+  {
+     "code":"853",
+     "hebrew_name":"גאליה                    "
+  },
+  {
+     "code":"854",
+     "hebrew_name":"רחוב                     "
+  },
+  {
+     "code":"856",
+     "hebrew_name":"שעלבים                   "
+  },
+  {
+     "code":"857",
+     "hebrew_name":"כפר אביב                 "
+  },
+  {
+     "code":"858",
+     "hebrew_name":"נווה ירק                 "
+  },
+  {
+     "code":"859",
+     "hebrew_name":"כסלון                    "
+  },
+  {
+     "code":"861",
+     "hebrew_name":"שדה אליעזר               "
+  },
+  {
+     "code":"862",
+     "hebrew_name":"גני יוחנן                "
+  },
+  {
+     "code":"863",
+     "hebrew_name":"גינתון                   "
+  },
+  {
+     "code":"864",
+     "hebrew_name":"בקוע                     "
+  },
+  {
+     "code":"865",
+     "hebrew_name":"שיבולים                  "
+  },
+  {
+     "code":"866",
+     "hebrew_name":"יטבתה                    "
+  },
+  {
+     "code":"868",
+     "hebrew_name":"אלוני יצחק               "
+  },
+  {
+     "code":"870",
+     "hebrew_name":"גבעת השלושה              "
+  },
+  {
+     "code":"871",
+     "hebrew_name":"עינת                     "
+  },
+  {
+     "code":"872",
+     "hebrew_name":"גאולי תימן               "
+  },
+  {
+     "code":"873",
+     "hebrew_name":"שלווה                    "
+  },
+  {
+     "code":"874",
+     "hebrew_name":"מגדל העמק                "
+  },
+  {
+     "code":"875",
+     "hebrew_name":"כפר עבודה                "
+  },
+  {
+     "code":"877",
+     "hebrew_name":"בית חירות                "
+  },
+  {
+     "code":"880",
+     "hebrew_name":"עין שריד                 "
+  },
+  {
+     "code":"882",
+     "hebrew_name":"אורנים                   "
+  },
+  {
+     "code":"885",
+     "hebrew_name":"שדה בוקר                 "
+  },
+  {
+     "code":"886",
+     "hebrew_name":"איתנים                   "
+  },
+  {
+     "code":"888",
+     "hebrew_name":"כפר הרי\"ף                "
+  },
+  {
+     "code":"889",
+     "hebrew_name":"כפר חסידים ב'            "
+  },
+  {
+     "code":"890",
+     "hebrew_name":"כפר הנוער הדתי           "
+  },
+  {
+     "code":"892",
+     "hebrew_name":"עבדון                    "
+  },
+  {
+     "code":"897",
+     "hebrew_name":"מדרשת רופין              "
+  },
+  {
+     "code":"913",
+     "hebrew_name":"שבלי - אום אל-גנם        "
+  },
+  {
+     "code":"916",
+     "hebrew_name":"ישע                      "
+  },
+  {
+     "code":"917",
+     "hebrew_name":"עצמון שגב                "
+  },
+  {
+     "code":"919",
+     "hebrew_name":"גבעת ישעיהו              "
+  },
+  {
+     "code":"921",
+     "hebrew_name":"שער מנשה                 "
+  },
+  {
+     "code":"922",
+     "hebrew_name":"רכסים                    "
+  },
+  {
+     "code":"926",
+     "hebrew_name":"נווה אבות                "
+  },
+  {
+     "code":"932",
+     "hebrew_name":"אבו עמרה )שבט(           "
+  },
+  {
+     "code":"935",
+     "hebrew_name":"אבו סריחאן )שבט(         "
+  },
+  {
+     "code":"939",
+     "hebrew_name":"מסעודין אל-עזאזמה        "
+  },
+  {
+     "code":"942",
+     "hebrew_name":"סואעד )חמרייה(           "
+  },
+  {
+     "code":"944",
+     "hebrew_name":"בסמת טבעון               "
+  },
+  {
+     "code":"948",
+     "hebrew_name":"חוג'ייראת )ד'הרה(        "
+  },
+  {
+     "code":"956",
+     "hebrew_name":"הוזייל )שבט(             "
+  },
+  {
+     "code":"957",
+     "hebrew_name":"עוקבי )בנו עוקבה(        "
+  },
+  {
+     "code":"958",
+     "hebrew_name":"אבו עבדון )שבט(          "
+  },
+  {
+     "code":"959",
+     "hebrew_name":"אפיניש )שבט(             "
+  },
+  {
+     "code":"960",
+     "hebrew_name":"אסד )שבט(                "
+  },
+  {
+     "code":"961",
+     "hebrew_name":"אבו רוקייק )שבט(         "
+  },
+  {
+     "code":"962",
+     "hebrew_name":"טובא-זנגריה              "
+  },
+  {
+     "code":"963",
+     "hebrew_name":"אעצם )שבט(               "
+  },
+  {
+     "code":"964",
+     "hebrew_name":"קודייראת א-צאנע)שבט(     "
+  },
+  {
+     "code":"965",
+     "hebrew_name":"אטרש )שבט(               "
+  },
+  {
+     "code":"966",
+     "hebrew_name":"אבו רובייעה )שבט(        "
+  },
+  {
+     "code":"967",
+     "hebrew_name":"אבו ג'ווייעד )שבט(       "
+  },
+  {
+     "code":"968",
+     "hebrew_name":"אבו קורינאת )שבט(        "
+  },
+  {
+     "code":"969",
+     "hebrew_name":"עטאוונה )שבט(            "
+  },
+  {
+     "code":"970",
+     "hebrew_name":"תראבין א-צאנע )שבט(      "
+  },
+  {
+     "code":"972",
+     "hebrew_name":"קוואעין )שבט(            "
+  },
+  {
+     "code":"975",
+     "hebrew_name":"זרזיר                    "
+  },
+  {
+     "code":"976",
+     "hebrew_name":"ג'נאביב )שבט(            "
+  },
+  {
+     "code":"978",
+     "hebrew_name":"כעביה-טבאש-חג'אג'רה      "
+  },
+  {
+     "code":"986",
+     "hebrew_name":"ח'ואלד )שבט(             "
+  },
+  {
+     "code":"989",
+     "hebrew_name":"סואעד )כמאנה( )שבט(      "
+  },
+  {
+     "code":"990",
+     "hebrew_name":"ראס עלי                  "
+  },
+  {
+     "code":"993",
+     "hebrew_name":"חמאם                     "
+  },
+  {
+     "code":"994",
+     "hebrew_name":"מנשית זבדה               "
+  },
+  {
+     "code":"997",
+     "hebrew_name":"רומת הייב                "
+  },
+  {
+     "code":"998",
+     "hebrew_name":"ביר אל-מכסור             "
+  },
+  {
+     "code":"1015",
+     "hebrew_name":"מבשרת ציון               "
+  },
+  {
+     "code":"1020",
+     "hebrew_name":"אור עקיבא                "
+  },
+  {
+     "code":"1024",
+     "hebrew_name":"חרוצים                   "
+  },
+  {
+     "code":"1031",
+     "hebrew_name":"שדרות                    "
+  },
+  {
+     "code":"1034",
+     "hebrew_name":"קרית מלאכי               "
+  },
+  {
+     "code":"1041",
+     "hebrew_name":"נצאצרה )שבט(             "
+  },
+  {
+     "code":"1042",
+     "hebrew_name":"אבו עמאר )שבט(           "
+  },
+  {
+     "code":"1043",
+     "hebrew_name":"גיזו                     "
+  },
+  {
+     "code":"1044",
+     "hebrew_name":"יעף                      "
+  },
+  {
+     "code":"1045",
+     "hebrew_name":"שתולה                    "
+  },
+  {
+     "code":"1046",
+     "hebrew_name":"אוהד                     "
+  },
+  {
+     "code":"1047",
+     "hebrew_name":"חזון                     "
+  },
+  {
+     "code":"1050",
+     "hebrew_name":"בית חשמונאי              "
+  },
+  {
+     "code":"1051",
+     "hebrew_name":"תלמי אליהו               "
+  },
+  {
+     "code":"1052",
+     "hebrew_name":"קטורה                    "
+  },
+  {
+     "code":"1053",
+     "hebrew_name":"עין חצבה                 "
+  },
+  {
+     "code":"1054",
+     "hebrew_name":"תל שבע                   "
+  },
+  {
+     "code":"1056",
+     "hebrew_name":"עין כרם-בי\"ס חקלאי       "
+  },
+  {
+     "code":"1057",
+     "hebrew_name":"נווה זוהר                "
+  },
+  {
+     "code":"1058",
+     "hebrew_name":"שדה ניצן                 "
+  },
+  {
+     "code":"1059",
+     "hebrew_name":"כסיפה                    "
+  },
+  {
+     "code":"1060",
+     "hebrew_name":"לקיה                     "
+  },
+  {
+     "code":"1061",
+     "hebrew_name":"נצרת עילית               "
+  },
+  {
+     "code":"1063",
+     "hebrew_name":"מעלות-תרשיחא             "
+  },
+  {
+     "code":"1064",
+     "hebrew_name":"אמירים                   "
+  },
+  {
+     "code":"1065",
+     "hebrew_name":"זמרת                     "
+  },
+  {
+     "code":"1066",
+     "hebrew_name":"בני עי\"ש                 "
+  },
+  {
+     "code":"1067",
+     "hebrew_name":"דוב\"ב                    "
+  },
+  {
+     "code":"1068",
+     "hebrew_name":"אדמית                    "
+  },
+  {
+     "code":"1069",
+     "hebrew_name":"רם-און                   "
+  },
+  {
+     "code":"1070",
+     "hebrew_name":"אביעזר                   "
+  },
+  {
+     "code":"1071",
+     "hebrew_name":"נווה מיכאל               "
+  },
+  {
+     "code":"1072",
+     "hebrew_name":"גן הדרום                 "
+  },
+  {
+     "code":"1076",
+     "hebrew_name":"בית ברל                  "
+  },
+  {
+     "code":"1077",
+     "hebrew_name":"גבעת שפירא               "
+  },
+  {
+     "code":"1079",
+     "hebrew_name":"צפרירים                  "
+  },
+  {
+     "code":"1080",
+     "hebrew_name":"מבועים                   "
+  },
+  {
+     "code":"1081",
+     "hebrew_name":"אבן מנחם                 "
+  },
+  {
+     "code":"1082",
+     "hebrew_name":"מעגלים                   "
+  },
+  {
+     "code":"1083",
+     "hebrew_name":"תושיה                    "
+  },
+  {
+     "code":"1084",
+     "hebrew_name":"בן שמן )כפר נוער(        "
+  },
+  {
+     "code":"1085",
+     "hebrew_name":"כרם שלום                 "
+  },
+  {
+     "code":"1094",
+     "hebrew_name":"כרם יבנה )ישיבה(         "
+  },
+  {
+     "code":"1095",
+     "hebrew_name":"כפר מימון                "
+  },
+  {
+     "code":"1098",
+     "hebrew_name":"מרכז שפירא               "
+  },
+  {
+     "code":"1102",
+     "hebrew_name":"צוקי ים                  "
+  },
+  {
+     "code":"1103",
+     "hebrew_name":"גני הדר                  "
+  },
+  {
+     "code":"1104",
+     "hebrew_name":"פוריה - כפר עבודה        "
+  },
+  {
+     "code":"1105",
+     "hebrew_name":"פוריה - נווה עובד        "
+  },
+  {
+     "code":"1108",
+     "hebrew_name":"אומן                     "
+  },
+  {
+     "code":"1110",
+     "hebrew_name":"חבר                      "
+  },
+  {
+     "code":"1111",
+     "hebrew_name":"צופיה                    "
+  },
+  {
+     "code":"1112",
+     "hebrew_name":"יודפת                    "
+  },
+  {
+     "code":"1113",
+     "hebrew_name":"צור הדסה                 "
+  },
+  {
+     "code":"1114",
+     "hebrew_name":"שריגים )לי-און(          "
+  },
+  {
+     "code":"1115",
+     "hebrew_name":"אביבים                   "
+  },
+  {
+     "code":"1117",
+     "hebrew_name":"יעל                      "
+  },
+  {
+     "code":"1123",
+     "hebrew_name":"אדרת                     "
+  },
+  {
+     "code":"1124",
+     "hebrew_name":"נאות הכיכר               "
+  },
+  {
+     "code":"1125",
+     "hebrew_name":"אלמגור                   "
+  },
+  {
+     "code":"1126",
+     "hebrew_name":"אילות                    "
+  },
+  {
+     "code":"1127",
+     "hebrew_name":"מעלה גלבוע               "
+  },
+  {
+     "code":"1128",
+     "hebrew_name":"מי עמי                   "
+  },
+  {
+     "code":"1129",
+     "hebrew_name":"גרופית                   "
+  },
+  {
+     "code":"1130",
+     "hebrew_name":"כפר רוזנואלד )זרעית(     "
+  },
+  {
+     "code":"1132",
+     "hebrew_name":"שניר                     "
+  },
+  {
+     "code":"1133",
+     "hebrew_name":"ורדון                    "
+  },
+  {
+     "code":"1134",
+     "hebrew_name":"יד השמונה                "
+  },
+  {
+     "code":"1136",
+     "hebrew_name":"צוחר                     "
+  },
+  {
+     "code":"1137",
+     "hebrew_name":"קרית יערים               "
+  },
+  {
+     "code":"1138",
+     "hebrew_name":"יעד                      "
+  },
+  {
+     "code":"1139",
+     "hebrew_name":"כרמיאל                   "
+  },
+  {
+     "code":"1140",
+     "hebrew_name":"מדרשת בן גוריון          "
+  },
+  {
+     "code":"1141",
+     "hebrew_name":"מבוא מודיעים             "
+  },
+  {
+     "code":"1143",
+     "hebrew_name":"נס עמים                  "
+  },
+  {
+     "code":"1144",
+     "hebrew_name":"ידידה                    "
+  },
+  {
+     "code":"1145",
+     "hebrew_name":"אלומה                    "
+  },
+  {
+     "code":"1146",
+     "hebrew_name":"עלומים                   "
+  },
+  {
+     "code":"1147",
+     "hebrew_name":"נטועה                    "
+  },
+  {
+     "code":"1148",
+     "hebrew_name":"צור נתן                  "
+  },
+  {
+     "code":"1149",
+     "hebrew_name":"עזר                      "
+  },
+  {
+     "code":"1150",
+     "hebrew_name":"צופר                     "
+  },
+  {
+     "code":"1151",
+     "hebrew_name":"פארן                     "
+  },
+  {
+     "code":"1152",
+     "hebrew_name":"אשלים                    "
+  },
+  {
+     "code":"1153",
+     "hebrew_name":"כישור                    "
+  },
+  {
+     "code":"1154",
+     "hebrew_name":"מלכישוע                  "
+  },
+  {
+     "code":"1155",
+     "hebrew_name":"מגן שאול                 "
+  },
+  {
+     "code":"1156",
+     "hebrew_name":"סמר                      "
+  },
+  {
+     "code":"1157",
+     "hebrew_name":"אחווה                    "
+  },
+  {
+     "code":"1158",
+     "hebrew_name":"יהל                      "
+  },
+  {
+     "code":"1160",
+     "hebrew_name":"שכניה                    "
+  },
+  {
+     "code":"1161",
+     "hebrew_name":"רהט                      "
+  },
+  {
+     "code":"1162",
+     "hebrew_name":"בית רימון                "
+  },
+  {
+     "code":"1163",
+     "hebrew_name":"מורן                     "
+  },
+  {
+     "code":"1165",
+     "hebrew_name":"שילת                     "
+  },
+  {
+     "code":"1166",
+     "hebrew_name":"כפר רות                  "
+  },
+  {
+     "code":"1167",
+     "hebrew_name":"קיסריה                   "
+  },
+  {
+     "code":"1169",
+     "hebrew_name":"הוואשלה )שבט(            "
+  },
+  {
+     "code":"1170",
+     "hebrew_name":"סייד )שבט(               "
+  },
+  {
+     "code":"1171",
+     "hebrew_name":"לוטם                     "
+  },
+  {
+     "code":"1172",
+     "hebrew_name":"תובל                     "
+  },
+  {
+     "code":"1173",
+     "hebrew_name":"לפידות                   "
+  },
+  {
+     "code":"1174",
+     "hebrew_name":"מנוף                     "
+  },
+  {
+     "code":"1175",
+     "hebrew_name":"עידן                     "
+  },
+  {
+     "code":"1176",
+     "hebrew_name":"ספיר                     "
+  },
+  {
+     "code":"1177",
+     "hebrew_name":"טללים                    "
+  },
+  {
+     "code":"1178",
+     "hebrew_name":"מורשת                    "
+  },
+  {
+     "code":"1179",
+     "hebrew_name":"קורנית                   "
+  },
+  {
+     "code":"1180",
+     "hebrew_name":"צביה                     "
+  },
+  {
+     "code":"1181",
+     "hebrew_name":"טל-אל                    "
+  },
+  {
+     "code":"1182",
+     "hebrew_name":"אלון הגליל               "
+  },
+  {
+     "code":"1183",
+     "hebrew_name":"כליל                     "
+  },
+  {
+     "code":"1184",
+     "hebrew_name":"מתת                      "
+  },
+  {
+     "code":"1185",
+     "hebrew_name":"פלך                      "
+  },
+  {
+     "code":"1186",
+     "hebrew_name":"הושעיה                   "
+  },
+  {
+     "code":"1187",
+     "hebrew_name":"עיר אובות                "
+  },
+  {
+     "code":"1188",
+     "hebrew_name":"אשחר                     "
+  },
+  {
+     "code":"1190",
+     "hebrew_name":"מצפה נטופה               "
+  },
+  {
+     "code":"1191",
+     "hebrew_name":"בר יוחאי                 "
+  },
+  {
+     "code":"1192",
+     "hebrew_name":"ערערה-בנגב               "
+  },
+  {
+     "code":"1195",
+     "hebrew_name":"ניצנה )קהילת חינוך(      "
+  },
+  {
+     "code":"1196",
+     "hebrew_name":"מחנה יתיר                "
+  },
+  {
+     "code":"1197",
+     "hebrew_name":"נאות סמדר                "
+  },
+  {
+     "code":"1198",
+     "hebrew_name":"כרמים                    "
+  },
+  {
+     "code":"1199",
+     "hebrew_name":"עדי                      "
+  },
+  {
+     "code":"1200",
+     "hebrew_name":"מודיעין-מכבים-רעות       "
+  },
+  {
+     "code":"1201",
+     "hebrew_name":"כמון                     "
+  },
+  {
+     "code":"1202",
+     "hebrew_name":"מכמנים                   "
+  },
+  {
+     "code":"1203",
+     "hebrew_name":"הררית                    "
+  },
+  {
+     "code":"1204",
+     "hebrew_name":"גילון                    "
+  },
+  {
+     "code":"1205",
+     "hebrew_name":"מנות                     "
+  },
+  {
+     "code":"1206",
+     "hebrew_name":"גיתה                     "
+  },
+  {
+     "code":"1207",
+     "hebrew_name":"לבון                     "
+  },
+  {
+     "code":"1208",
+     "hebrew_name":"הילה                     "
+  },
+  {
+     "code":"1209",
+     "hebrew_name":"חרשים                    "
+  },
+  {
+     "code":"1210",
+     "hebrew_name":"כחל                      "
+  },
+  {
+     "code":"1211",
+     "hebrew_name":"קדרים                    "
+  },
+  {
+     "code":"1212",
+     "hebrew_name":"עמוקה                    "
+  },
+  {
+     "code":"1213",
+     "hebrew_name":"צבעון                    "
+  },
+  {
+     "code":"1214",
+     "hebrew_name":"טפחות                    "
+  },
+  {
+     "code":"1219",
+     "hebrew_name":"גורנות הגליל             "
+  },
+  {
+     "code":"1220",
+     "hebrew_name":"אבירים                   "
+  },
+  {
+     "code":"1221",
+     "hebrew_name":"צורית                    "
+  },
+  {
+     "code":"1222",
+     "hebrew_name":"מצפה אבי\"ב               "
+  },
+  {
+     "code":"1223",
+     "hebrew_name":"שדי אברהם                "
+  },
+  {
+     "code":"1224",
+     "hebrew_name":"כוכב יאיר                "
+  },
+  {
+     "code":"1225",
+     "hebrew_name":"רביד                     "
+  },
+  {
+     "code":"1226",
+     "hebrew_name":"יובלים                   "
+  },
+  {
+     "code":"1227",
+     "hebrew_name":"יתד                      "
+  },
+  {
+     "code":"1228",
+     "hebrew_name":"רקפת                     "
+  },
+  {
+     "code":"1229",
+     "hebrew_name":"כלנית                    "
+  },
+  {
+     "code":"1230",
+     "hebrew_name":"לבנים                    "
+  },
+  {
+     "code":"1231",
+     "hebrew_name":"פרי גן                   "
+  },
+  {
+     "code":"1232",
+     "hebrew_name":"יבול                     "
+  },
+  {
+     "code":"1233",
+     "hebrew_name":"שקף                      "
+  },
+  {
+     "code":"1234",
+     "hebrew_name":"קבועה )שבט(              "
+  },
+  {
+     "code":"1235",
+     "hebrew_name":"שורשים                   "
+  },
+  {
+     "code":"1236",
+     "hebrew_name":"נירית                    "
+  },
+  {
+     "code":"1237",
+     "hebrew_name":"תלמי יוסף                "
+  },
+  {
+     "code":"1238",
+     "hebrew_name":"סופה                     "
+  },
+  {
+     "code":"1239",
+     "hebrew_name":"חולית                    "
+  },
+  {
+     "code":"1240",
+     "hebrew_name":"עין הבשור                "
+  },
+  {
+     "code":"1241",
+     "hebrew_name":"דקל                      "
+  },
+  {
+     "code":"1242",
+     "hebrew_name":"נתיב העשרה               "
+  },
+  {
+     "code":"1243",
+     "hebrew_name":"קציר                     "
+  },
+  {
+     "code":"1244",
+     "hebrew_name":"תמרת                     "
+  },
+  {
+     "code":"1245",
+     "hebrew_name":"סלמה                     "
+  },
+  {
+     "code":"1246",
+     "hebrew_name":"עראמשה                   "
+  },
+  {
+     "code":"1247",
+     "hebrew_name":"חריש                     "
+  },
+  {
+     "code":"1248",
+     "hebrew_name":"אליפז                    "
+  },
+  {
+     "code":"1249",
+     "hebrew_name":"הרדוף                    "
+  },
+  {
+     "code":"1251",
+     "hebrew_name":"עין תמר                  "
+  },
+  {
+     "code":"1252",
+     "hebrew_name":"כורזים                   "
+  },
+  {
+     "code":"1253",
+     "hebrew_name":"אמנון                    "
+  },
+  {
+     "code":"1254",
+     "hebrew_name":"נטף                      "
+  },
+  {
+     "code":"1255",
+     "hebrew_name":"לוטן                     "
+  },
+  {
+     "code":"1256",
+     "hebrew_name":"אשרת                     "
+  },
+  {
+     "code":"1257",
+     "hebrew_name":"חנתון                    "
+  },
+  {
+     "code":"1258",
+     "hebrew_name":"מסד                      "
+  },
+  {
+     "code":"1259",
+     "hebrew_name":"נווה שלום                "
+  },
+  {
+     "code":"1260",
+     "hebrew_name":"רתמים                    "
+  },
+  {
+     "code":"1261",
+     "hebrew_name":"הר עמשא                  "
+  },
+  {
+     "code":"1262",
+     "hebrew_name":"צוקים                    "
+  },
+  {
+     "code":"1263",
+     "hebrew_name":"כפר ורדים                "
+  },
+  {
+     "code":"1264",
+     "hebrew_name":"כרמי יוסף                "
+  },
+  {
+     "code":"1265",
+     "hebrew_name":"שומריה                   "
+  },
+  {
+     "code":"1266",
+     "hebrew_name":"שחרות                    "
+  },
+  {
+     "code":"1267",
+     "hebrew_name":"שיטים                    "
+  },
+  {
+     "code":"1268",
+     "hebrew_name":"מיתר                     "
+  },
+  {
+     "code":"1271",
+     "hebrew_name":"להבים                    "
+  },
+  {
+     "code":"1272",
+     "hebrew_name":"חלוץ                     "
+  },
+  {
+     "code":"1274",
+     "hebrew_name":"גן נר                    "
+  },
+  {
+     "code":"1275",
+     "hebrew_name":"אבטליון                  "
+  },
+  {
+     "code":"1276",
+     "hebrew_name":"אשבל                     "
+  },
+  {
+     "code":"1278",
+     "hebrew_name":"באר מילכה                "
+  },
+  {
+     "code":"1279",
+     "hebrew_name":"נווה חריף                "
+  },
+  {
+     "code":"1280",
+     "hebrew_name":"ניצני סיני               "
+  },
+  {
+     "code":"1282",
+     "hebrew_name":"מירב                     "
+  },
+  {
+     "code":"1283",
+     "hebrew_name":"תל תאומים                "
+  },
+  {
+     "code":"1284",
+     "hebrew_name":"נופית                    "
+  },
+  {
+     "code":"1285",
+     "hebrew_name":"כרכום                    "
+  },
+  {
+     "code":"1286",
+     "hebrew_name":"שגב-שלום                 "
+  },
+  {
+     "code":"1287",
+     "hebrew_name":"שני                      "
+  },
+  {
+     "code":"1288",
+     "hebrew_name":"גבעת אלה                 "
+  },
+  {
+     "code":"1290",
+     "hebrew_name":"זמר                      "
+  },
+  {
+     "code":"1291",
+     "hebrew_name":"כמהין                    "
+  },
+  {
+     "code":"1292",
+     "hebrew_name":"ג'דיידה-מכר              "
+  },
+  {
+     "code":"1293",
+     "hebrew_name":"גבעת אבני                "
+  },
+  {
+     "code":"1294",
+     "hebrew_name":"אור הגנוז                "
+  },
+  {
+     "code":"1295",
+     "hebrew_name":"יאנוח-ג'ת                "
+  },
+  {
+     "code":"1296",
+     "hebrew_name":"כסרא-סמיע                "
+  },
+  {
+     "code":"1297",
+     "hebrew_name":"כפר חנניה                "
+  },
+  {
+     "code":"1298",
+     "hebrew_name":"אתגר                     "
+  },
+  {
+     "code":"1299",
+     "hebrew_name":"שעורים                   "
+  },
+  {
+     "code":"1303",
+     "hebrew_name":"חורה                     "
+  },
+  {
+     "code":"1304",
+     "hebrew_name":"שוהם                     "
+  },
+  {
+     "code":"1309",
+     "hebrew_name":"אלעד                     "
+  },
+  {
+     "code":"1310",
+     "hebrew_name":"לפיד                     "
+  },
+  {
+     "code":"1311",
+     "hebrew_name":"אבשלום                   "
+  },
+  {
+     "code":"1313",
+     "hebrew_name":"פוריה עילית              "
+  },
+  {
+     "code":"1314",
+     "hebrew_name":"נווה זיו                 "
+  },
+  {
+     "code":"1315",
+     "hebrew_name":"מתן                      "
+  },
+  {
+     "code":"1316",
+     "hebrew_name":"אל-עריאן                 "
+  },
+  {
+     "code":"1317",
+     "hebrew_name":"דמיידה                   "
+  },
+  {
+     "code":"1318",
+     "hebrew_name":"מבואות ים                "
+  },
+  {
+     "code":"1319",
+     "hebrew_name":"בת חפר                   "
+  },
+  {
+     "code":"1320",
+     "hebrew_name":"עין חוד                  "
+  },
+  {
+     "code":"1321",
+     "hebrew_name":"ח'ואלד                   "
+  },
+  {
+     "code":"1322",
+     "hebrew_name":"הודיות                   "
+  },
+  {
+     "code":"1323",
+     "hebrew_name":"בת הדר                   "
+  },
+  {
+     "code":"1324",
+     "hebrew_name":"ארסוף                    "
+  },
+  {
+     "code":"1325",
+     "hebrew_name":"כפר זוהרים               "
+  },
+  {
+     "code":"1326",
+     "hebrew_name":"בסמ\"ה                    "
+  },
+  {
+     "code":"1327",
+     "hebrew_name":"מעלה עירון               "
+  },
+  {
+     "code":"1329",
+     "hebrew_name":"יתיר                     "
+  },
+  {
+     "code":"1330",
+     "hebrew_name":"אחוזת ברק                "
+  },
+  {
+     "code":"1331",
+     "hebrew_name":"כמאנה                    "
+  },
+  {
+     "code":"1332",
+     "hebrew_name":"חוסנייה                  "
+  },
+  {
+     "code":"1333",
+     "hebrew_name":"נוף איילון               "
+  },
+  {
+     "code":"1334",
+     "hebrew_name":"ראס אל-עין               "
+  },
+  {
+     "code":"1335",
+     "hebrew_name":"ערב אל נעים              "
+  },
+  {
+     "code":"1336",
+     "hebrew_name":"אירוס                    "
+  },
+  {
+     "code":"1337",
+     "hebrew_name":"שמשית                    "
+  },
+  {
+     "code":"1338",
+     "hebrew_name":"כדיתה                    "
+  },
+  {
+     "code":"1339",
+     "hebrew_name":"אל-עזי                   "
+  },
+  {
+     "code":"1340",
+     "hebrew_name":"מרחב עם                  "
+  },
+  {
+     "code":"1341",
+     "hebrew_name":"רוח מדבר                 "
+  },
+  {
+     "code":"1342",
+     "hebrew_name":"אבו קרינאת )יישוב(       "
+  },
+  {
+     "code":"1343",
+     "hebrew_name":"מכחול                    "
+  },
+  {
+     "code":"1344",
+     "hebrew_name":"גבעות בר                 "
+  },
+  {
+     "code":"1345",
+     "hebrew_name":"צור יצחק                 "
+  },
+  {
+     "code":"1346",
+     "hebrew_name":"תראבין א-צאנע)ישוב(      "
+  },
+  {
+     "code":"1347",
+     "hebrew_name":"קצר א-סר                 "
+  },
+  {
+     "code":"1348",
+     "hebrew_name":"ביר הדאג'                "
+  },
+  {
+     "code":"1349",
+     "hebrew_name":"דריג'את                  "
+  },
+  {
+     "code":"1358",
+     "hebrew_name":"אום בטין                 "
+  },
+  {
+     "code":"1359",
+     "hebrew_name":"אל סייד                  "
+  },
+  {
+     "code":"1360",
+     "hebrew_name":"סעוה                     "
+  },
+  {
+     "code":"1361",
+     "hebrew_name":"בת חן                    "
+  },
+  {
+     "code":"1363",
+     "hebrew_name":"בני נצרים                "
+  },
+  {
+     "code":"1364",
+     "hebrew_name":"שלומית                   "
+  },
+  {
+     "code":"1365",
+     "hebrew_name":"אליאב                    "
+  },
+  {
+     "code":"1366",
+     "hebrew_name":"נווה                     "
+  },
+  {
+     "code":"1367",
+     "hebrew_name":"כחלה                     "
+  },
+  {
+     "code":"1368",
+     "hebrew_name":"בני דקלים                "
+  },
+  {
+     "code":"1369",
+     "hebrew_name":"נטע                      "
+  },
+  {
+     "code":"1370",
+     "hebrew_name":"מצפה אילן                "
+  },
+  {
+     "code":"1371",
+     "hebrew_name":"גני טל                   "
+  },
+  {
+     "code":"1372",
+     "hebrew_name":"נצר חזני                 "
+  },
+  {
+     "code":"1373",
+     "hebrew_name":"שלווה במדבר              "
+  },
+  {
+     "code":"1374",
+     "hebrew_name":"כרמי קטיף                "
+  },
+  {
+     "code":"1375",
+     "hebrew_name":"אבו תלול                 "
+  },
+  {
+     "code":"1376",
+     "hebrew_name":"באר גנים                 "
+  },
+  {
+     "code":"1377",
+     "hebrew_name":"שבי דרום                 "
+  },
+  {
+     "code":"1401",
+     "hebrew_name":"בת חצור                  "
+  },
+  {
+     "code":"1402",
+     "hebrew_name":"חצרות חולדה              "
+  },
+  {
+     "code":"1404",
+     "hebrew_name":"חצרות יסף                "
+  },
+  {
+     "code":"1405",
+     "hebrew_name":"חצרות כ\"ח                "
+  },
+  {
+     "code":"1409",
+     "hebrew_name":"חצר בארותיים             "
+  },
+  {
+     "code":"1411",
+     "hebrew_name":"מחנה הילה                "
+  },
+  {
+     "code":"1412",
+     "hebrew_name":"מחנה תל נוף              "
+  },
+  {
+     "code":"1413",
+     "hebrew_name":"מחנה יהודית              "
+  },
+  {
+     "code":"1414",
+     "hebrew_name":"מחנה מרים                "
+  },
+  {
+     "code":"1415",
+     "hebrew_name":"מחנה יפה                 "
+  },
+  {
+     "code":"1416",
+     "hebrew_name":"מחנה יוכבד               "
+  },
+  {
+     "code":"1418",
+     "hebrew_name":"מחנה טלי                 "
+  },
+  {
+     "code":"1419",
+     "hebrew_name":"ניצן ב'                  "
+  },
+  {
+     "code":"2002",
+     "hebrew_name":"תנובות                   "
+  },
+  {
+     "code":"2003",
+     "hebrew_name":"תלמי אלעזר               "
+  },
+  {
+     "code":"2006",
+     "hebrew_name":"כנות                     "
+  },
+  {
+     "code":"2008",
+     "hebrew_name":"שדה יצחק                 "
+  },
+  {
+     "code":"2009",
+     "hebrew_name":"יובל                     "
+  },
+  {
+     "code":"2010",
+     "hebrew_name":"כפר בן נון               "
+  },
+  {
+     "code":"2011",
+     "hebrew_name":"ינון                     "
+  },
+  {
+     "code":"2012",
+     "hebrew_name":"אורות                    "
+  },
+  {
+     "code":"2013",
+     "hebrew_name":"בן שמן )מושב(            "
+  },
+  {
+     "code":"2014",
+     "hebrew_name":"גבעולים                  "
+  },
+  {
+     "code":"2015",
+     "hebrew_name":"שדי חמד                  "
+  },
+  {
+     "code":"2016",
+     "hebrew_name":"רוויה                    "
+  },
+  {
+     "code":"2018",
+     "hebrew_name":"גבעת חיים )איחוד(        "
+  },
+  {
+     "code":"2021",
+     "hebrew_name":"אשל הנשיא                "
+  },
+  {
+     "code":"2023",
+     "hebrew_name":"להב                      "
+  },
+  {
+     "code":"2024",
+     "hebrew_name":"אום אל-קוטוף             "
+  },
+  {
+     "code":"2026",
+     "hebrew_name":"ירדנה                    "
+  },
+  {
+     "code":"2029",
+     "hebrew_name":"מדרך עוז                 "
+  },
+  {
+     "code":"2030",
+     "hebrew_name":"מנוחה                    "
+  },
+  {
+     "code":"2033",
+     "hebrew_name":"בית חלקיה                "
+  },
+  {
+     "code":"2034",
+     "hebrew_name":"חצור הגלילית             "
+  },
+  {
+     "code":"2035",
+     "hebrew_name":"עדנים                    "
+  },
+  {
+     "code":"2038",
+     "hebrew_name":"ברקת                     "
+  },
+  {
+     "code":"2039",
+     "hebrew_name":"קרית יערים)מוסד(         "
+  },
+  {
+     "code":"2042",
+     "hebrew_name":"עין גדי                  "
+  },
+  {
+     "code":"2043",
+     "hebrew_name":"בחן                      "
+  },
+  {
+     "code":"2044",
+     "hebrew_name":"מלילות                   "
+  },
+  {
+     "code":"2045",
+     "hebrew_name":"נחלה                     "
+  },
+  {
+     "code":"2046",
+     "hebrew_name":"סגולה                    "
+  },
+  {
+     "code":"2047",
+     "hebrew_name":"ניר משה                  "
+  },
+  {
+     "code":"2048",
+     "hebrew_name":"ניר עקיבא                "
+  },
+  {
+     "code":"2049",
+     "hebrew_name":"שדה צבי                  "
+  },
+  {
+     "code":"2050",
+     "hebrew_name":"תלמי ביל\"ו               "
+  },
+  {
+     "code":"2051",
+     "hebrew_name":"רווחה                    "
+  },
+  {
+     "code":"2052",
+     "hebrew_name":"אביטל                    "
+  },
+  {
+     "code":"2053",
+     "hebrew_name":"פרזון                    "
+  },
+  {
+     "code":"2054",
+     "hebrew_name":"מיטב                     "
+  },
+  {
+     "code":"2055",
+     "hebrew_name":"מאור                     "
+  },
+  {
+     "code":"2057",
+     "hebrew_name":"שדי תרומות               "
+  },
+  {
+     "code":"2059",
+     "hebrew_name":"פעמי תש\"ז                "
+  },
+  {
+     "code":"2060",
+     "hebrew_name":"ברוש                     "
+  },
+  {
+     "code":"2061",
+     "hebrew_name":"תדהר                     "
+  },
+  {
+     "code":"2062",
+     "hebrew_name":"תאשור                    "
+  },
+  {
+     "code":"2063",
+     "hebrew_name":"דישון                    "
+  },
+  {
+     "code":"2064",
+     "hebrew_name":"זרועה                    "
+  },
+  {
+     "code":"2100",
+     "hebrew_name":"טירת כרמל                "
+  },
+  {
+     "code":"2200",
+     "hebrew_name":"דימונה                   "
+  },
+  {
+     "code":"2300",
+     "hebrew_name":"קרית טבעון               "
+  },
+  {
+     "code":"2400",
+     "hebrew_name":"אור יהודה                "
+  },
+  {
+     "code":"2500",
+     "hebrew_name":"נשר                      "
+  },
+  {
+     "code":"2530",
+     "hebrew_name":"באר יעקב                 "
+  },
+  {
+     "code":"2550",
+     "hebrew_name":"גדרה                     "
+  },
+  {
+     "code":"2560",
+     "hebrew_name":"ערד                      "
+  },
+  {
+     "code":"2600",
+     "hebrew_name":"אילת                     "
+  },
+  {
+     "code":"2610",
+     "hebrew_name":"בית שמש                  "
+  },
+  {
+     "code":"2620",
+     "hebrew_name":"קרית אונו                "
+  },
+  {
+     "code":"2630",
+     "hebrew_name":"קרית גת                  "
+  },
+  {
+     "code":"2640",
+     "hebrew_name":"ראש העין                 "
+  },
+  {
+     "code":"2650",
+     "hebrew_name":"רמת השרון                "
+  },
+  {
+     "code":"2660",
+     "hebrew_name":"יבנה                     "
+  },
+  {
+     "code":"2710",
+     "hebrew_name":"אום אל-פחם               "
+  },
+  {
+     "code":"2720",
+     "hebrew_name":"טירה                     "
+  },
+  {
+     "code":"2730",
+     "hebrew_name":"טייבה                    "
+  },
+  {
+     "code":"2742",
+     "hebrew_name":"זבארגה )שבט(             "
+  },
+  {
+     "code":"2800",
+     "hebrew_name":"קרית שמונה               "
+  },
+  {
+     "code":"3000",
+     "hebrew_name":"ירושלים                  "
+  },
+  {
+     "code":"3400",
+     "hebrew_name":"חברון                    "
+  },
+  {
+     "code":"3488",
+     "hebrew_name":"כפר עציון                "
+  },
+  {
+     "code":"3555",
+     "hebrew_name":"נתיב הגדוד               "
+  },
+  {
+     "code":"3556",
+     "hebrew_name":"אלמוג                    "
+  },
+  {
+     "code":"3557",
+     "hebrew_name":"קדומים                   "
+  },
+  {
+     "code":"3558",
+     "hebrew_name":"תומר                     "
+  },
+  {
+     "code":"3560",
+     "hebrew_name":"אלקנה                    "
+  },
+  {
+     "code":"3561",
+     "hebrew_name":"מגדל עוז                 "
+  },
+  {
+     "code":"3563",
+     "hebrew_name":"תקוע                     "
+  },
+  {
+     "code":"3564",
+     "hebrew_name":"כוכב השחר                "
+  },
+  {
+     "code":"3565",
+     "hebrew_name":"רימונים                  "
+  },
+  {
+     "code":"3566",
+     "hebrew_name":"יפית                     "
+  },
+  {
+     "code":"3567",
+     "hebrew_name":"סלעית                    "
+  },
+  {
+     "code":"3568",
+     "hebrew_name":"ריחן                     "
+  },
+  {
+     "code":"3569",
+     "hebrew_name":"מבוא דותן                "
+  },
+  {
+     "code":"3570",
+     "hebrew_name":"אריאל                    "
+  },
+  {
+     "code":"3571",
+     "hebrew_name":"שבי שומרון               "
+  },
+  {
+     "code":"3572",
+     "hebrew_name":"כפר תפוח                 "
+  },
+  {
+     "code":"3573",
+     "hebrew_name":"חלמיש                    "
+  },
+  {
+     "code":"3574",
+     "hebrew_name":"בית אל                   "
+  },
+  {
+     "code":"3575",
+     "hebrew_name":"בית חורון                "
+  },
+  {
+     "code":"3576",
+     "hebrew_name":"מצפה יריחו               "
+  },
+  {
+     "code":"3578",
+     "hebrew_name":"שדמות מחולה              "
+  },
+  {
+     "code":"3579",
+     "hebrew_name":"אלון מורה                "
+  },
+  {
+     "code":"3598",
+     "hebrew_name":"ארגמן                    "
+  },
+  {
+     "code":"3599",
+     "hebrew_name":"מחולה                    "
+  },
+  {
+     "code":"3601",
+     "hebrew_name":"קליה                     "
+  },
+  {
+     "code":"3602",
+     "hebrew_name":"ראש צורים                "
+  },
+  {
+     "code":"3603",
+     "hebrew_name":"הר גילה                  "
+  },
+  {
+     "code":"3604",
+     "hebrew_name":"אלון שבות                "
+  },
+  {
+     "code":"3605",
+     "hebrew_name":"משואה                    "
+  },
+  {
+     "code":"3606",
+     "hebrew_name":"גלגל                     "
+  },
+  {
+     "code":"3607",
+     "hebrew_name":"ייט\"ב                    "
+  },
+  {
+     "code":"3608",
+     "hebrew_name":"מעלה אפרים               "
+  },
+  {
+     "code":"3609",
+     "hebrew_name":"חמרה                     "
+  },
+  {
+     "code":"3610",
+     "hebrew_name":"מצפה שלם                 "
+  },
+  {
+     "code":"3611",
+     "hebrew_name":"קרית ארבע                "
+  },
+  {
+     "code":"3612",
+     "hebrew_name":"בקעות                    "
+  },
+  {
+     "code":"3613",
+     "hebrew_name":"גיתית                    "
+  },
+  {
+     "code":"3614",
+     "hebrew_name":"מכורה                    "
+  },
+  {
+     "code":"3615",
+     "hebrew_name":"פצאל                     "
+  },
+  {
+     "code":"3616",
+     "hebrew_name":"מעלה אדומים              "
+  },
+  {
+     "code":"3617",
+     "hebrew_name":"עופרה                    "
+  },
+  {
+     "code":"3618",
+     "hebrew_name":"אלעזר                    "
+  },
+  {
+     "code":"3619",
+     "hebrew_name":"רועי                     "
+  },
+  {
+     "code":"3620",
+     "hebrew_name":"נירן                     "
+  },
+  {
+     "code":"3637",
+     "hebrew_name":"מעלה שומרון              "
+  },
+  {
+     "code":"3638",
+     "hebrew_name":"כפר אדומים               "
+  },
+  {
+     "code":"3639",
+     "hebrew_name":"ורד יריחו                "
+  },
+  {
+     "code":"3640",
+     "hebrew_name":"קרני שומרון              "
+  },
+  {
+     "code":"3641",
+     "hebrew_name":"שילה                     "
+  },
+  {
+     "code":"3643",
+     "hebrew_name":"חיננית                   "
+  },
+  {
+     "code":"3644",
+     "hebrew_name":"גבעון החדשה              "
+  },
+  {
+     "code":"3645",
+     "hebrew_name":"בית הערבה                "
+  },
+  {
+     "code":"3646",
+     "hebrew_name":"חמדת                     "
+  },
+  {
+     "code":"3647",
+     "hebrew_name":"יקיר                     "
+  },
+  {
+     "code":"3648",
+     "hebrew_name":"מתתיהו                   "
+  },
+  {
+     "code":"3649",
+     "hebrew_name":"שקד                      "
+  },
+  {
+     "code":"3650",
+     "hebrew_name":"אפרת                     "
+  },
+  {
+     "code":"3651",
+     "hebrew_name":"מעלה מכמש                "
+  },
+  {
+     "code":"3652",
+     "hebrew_name":"בית אריה                 "
+  },
+  {
+     "code":"3653",
+     "hebrew_name":"מעלה עמוס                "
+  },
+  {
+     "code":"3654",
+     "hebrew_name":"ברקן                     "
+  },
+  {
+     "code":"3655",
+     "hebrew_name":"ניל\"י                    "
+  },
+  {
+     "code":"3656",
+     "hebrew_name":"כרמל                     "
+  },
+  {
+     "code":"3657",
+     "hebrew_name":"מעון                     "
+  },
+  {
+     "code":"3658",
+     "hebrew_name":"עטרת                     "
+  },
+  {
+     "code":"3659",
+     "hebrew_name":"פסגות                    "
+  },
+  {
+     "code":"3660",
+     "hebrew_name":"עמנואל                   "
+  },
+  {
+     "code":"3709",
+     "hebrew_name":"מבוא חורון               "
+  },
+  {
+     "code":"3710",
+     "hebrew_name":"ברכה                     "
+  },
+  {
+     "code":"3712",
+     "hebrew_name":"ענב                      "
+  },
+  {
+     "code":"3713",
+     "hebrew_name":"נעמ\"ה                    "
+  },
+  {
+     "code":"3715",
+     "hebrew_name":"עלמון                    "
+  },
+  {
+     "code":"3717",
+     "hebrew_name":"חרמש                     "
+  },
+  {
+     "code":"3719",
+     "hebrew_name":"תלם                      "
+  },
+  {
+     "code":"3720",
+     "hebrew_name":"שערי תקווה               "
+  },
+  {
+     "code":"3722",
+     "hebrew_name":"אשכולות                  "
+  },
+  {
+     "code":"3723",
+     "hebrew_name":"פני חבר                  "
+  },
+  {
+     "code":"3724",
+     "hebrew_name":"נגוהות                   "
+  },
+  {
+     "code":"3725",
+     "hebrew_name":"נווה דניאל               "
+  },
+  {
+     "code":"3726",
+     "hebrew_name":"נוקדים                   "
+  },
+  {
+     "code":"3727",
+     "hebrew_name":"עלי זהב                  "
+  },
+  {
+     "code":"3730",
+     "hebrew_name":"גבעת זאב                 "
+  },
+  {
+     "code":"3743",
+     "hebrew_name":"טנא                      "
+  },
+  {
+     "code":"3744",
+     "hebrew_name":"ברוכין                   "
+  },
+  {
+     "code":"3745",
+     "hebrew_name":"מצדות יהודה              "
+  },
+  {
+     "code":"3746",
+     "hebrew_name":"קרית נטפים               "
+  },
+  {
+     "code":"3747",
+     "hebrew_name":"דולב                     "
+  },
+  {
+     "code":"3748",
+     "hebrew_name":"עתניאל                   "
+  },
+  {
+     "code":"3749",
+     "hebrew_name":"יצהר                     "
+  },
+  {
+     "code":"3750",
+     "hebrew_name":"אלפי מנשה                "
+  },
+  {
+     "code":"3751",
+     "hebrew_name":"מגדלים                   "
+  },
+  {
+     "code":"3752",
+     "hebrew_name":"מעלה לבונה               "
+  },
+  {
+     "code":"3754",
+     "hebrew_name":"אספר                     "
+  },
+  {
+     "code":"3756",
+     "hebrew_name":"סוסיה                    "
+  },
+  {
+     "code":"3759",
+     "hebrew_name":"אדורה                    "
+  },
+  {
+     "code":"3760",
+     "hebrew_name":"אורנית                   "
+  },
+  {
+     "code":"3762",
+     "hebrew_name":"איתמר                    "
+  },
+  {
+     "code":"3763",
+     "hebrew_name":"גבע בנימין               "
+  },
+  {
+     "code":"3764",
+     "hebrew_name":"חגי                      "
+  },
+  {
+     "code":"3765",
+     "hebrew_name":"עלי                      "
+  },
+  {
+     "code":"3766",
+     "hebrew_name":"כרמי צור                 "
+  },
+  {
+     "code":"3767",
+     "hebrew_name":"נחליאל                   "
+  },
+  {
+     "code":"3768",
+     "hebrew_name":"פדואל                    "
+  },
+  {
+     "code":"3769",
+     "hebrew_name":"הר אדר                   "
+  },
+  {
+     "code":"3770",
+     "hebrew_name":"חשמונאים                 "
+  },
+  {
+     "code":"3777",
+     "hebrew_name":"סנסנה                    "
+  },
+  {
+     "code":"3778",
+     "hebrew_name":"עץ אפרים                 "
+  },
+  {
+     "code":"3779",
+     "hebrew_name":"כוכב יעקב                "
+  },
+  {
+     "code":"3780",
+     "hebrew_name":"ביתר עילית               "
+  },
+  {
+     "code":"3781",
+     "hebrew_name":"קדר                      "
+  },
+  {
+     "code":"3782",
+     "hebrew_name":"רותם                     "
+  },
+  {
+     "code":"3784",
+     "hebrew_name":"שמעה                     "
+  },
+  {
+     "code":"3785",
+     "hebrew_name":"משכיות                   "
+  },
+  {
+     "code":"3786",
+     "hebrew_name":"אבנת                     "
+  },
+  {
+     "code":"3787",
+     "hebrew_name":"נעלה                     "
+  },
+  {
+     "code":"3788",
+     "hebrew_name":"טלמון                    "
+  },
+  {
+     "code":"3790",
+     "hebrew_name":"נופים                    "
+  },
+  {
+     "code":"3791",
+     "hebrew_name":"צופים                    "
+  },
+  {
+     "code":"3793",
+     "hebrew_name":"אבני חפץ                 "
+  },
+  {
+     "code":"3794",
+     "hebrew_name":"בת עין                   "
+  },
+  {
+     "code":"3795",
+     "hebrew_name":"רבבה                     "
+  },
+  {
+     "code":"3796",
+     "hebrew_name":"כפר האורנים              "
+  },
+  {
+     "code":"3797",
+     "hebrew_name":"מודיעין עילית            "
+  },
+  {
+     "code":"3822",
+     "hebrew_name":"רחלים                    "
+  },
+  {
+     "code":"3823",
+     "hebrew_name":"גני מודיעין              "
+  },
+  {
+     "code":"3824",
+     "hebrew_name":"עמיחי                    "
+  },
+  {
+     "code":"4000",
+     "hebrew_name":"חיפה                     "
+  },
+  {
+     "code":"4001",
+     "hebrew_name":"בוקעאתא                  "
+  },
+  {
+     "code":"4002",
+     "hebrew_name":"אלי-עד                   "
+  },
+  {
+     "code":"4003",
+     "hebrew_name":"אל-רום                   "
+  },
+  {
+     "code":"4004",
+     "hebrew_name":"כפר חרוב                 "
+  },
+  {
+     "code":"4005",
+     "hebrew_name":"חספין                    "
+  },
+  {
+     "code":"4006",
+     "hebrew_name":"קשת                      "
+  },
+  {
+     "code":"4007",
+     "hebrew_name":"יונתן                    "
+  },
+  {
+     "code":"4008",
+     "hebrew_name":"מעלה גמלא                "
+  },
+  {
+     "code":"4009",
+     "hebrew_name":"שעל                      "
+  },
+  {
+     "code":"4010",
+     "hebrew_name":"אודם                     "
+  },
+  {
+     "code":"4011",
+     "hebrew_name":"אבני איתן                "
+  },
+  {
+     "code":"4012",
+     "hebrew_name":"אניעם                    "
+  },
+  {
+     "code":"4013",
+     "hebrew_name":"אורטל                    "
+  },
+  {
+     "code":"4014",
+     "hebrew_name":"נטור                     "
+  },
+  {
+     "code":"4015",
+     "hebrew_name":"בני יהודה                "
+  },
+  {
+     "code":"4017",
+     "hebrew_name":"אלוני הבשן               "
+  },
+  {
+     "code":"4019",
+     "hebrew_name":"מיצר                     "
+  },
+  {
+     "code":"4021",
+     "hebrew_name":"גבעת יואב                "
+  },
+  {
+     "code":"4022",
+     "hebrew_name":"גשור                     "
+  },
+  {
+     "code":"4024",
+     "hebrew_name":"קלע                      "
+  },
+  {
+     "code":"4025",
+     "hebrew_name":"קדמת צבי                 "
+  },
+  {
+     "code":"4026",
+     "hebrew_name":"חד-נס                    "
+  },
+  {
+     "code":"4028",
+     "hebrew_name":"כנף                      "
+  },
+  {
+     "code":"4035",
+     "hebrew_name":"נמרוד                    "
+  },
+  {
+     "code":"4100",
+     "hebrew_name":"קצרין                    "
+  },
+  {
+     "code":"4101",
+     "hebrew_name":"מרום גולן                "
+  },
+  {
+     "code":"4201",
+     "hebrew_name":"מג'דל שמס                "
+  },
+  {
+     "code":"4203",
+     "hebrew_name":"מסעדה                    "
+  },
+  {
+     "code":"4204",
+     "hebrew_name":"מבוא חמה                 "
+  },
+  {
+     "code":"4301",
+     "hebrew_name":"אפיק                     "
+  },
+  {
+     "code":"4303",
+     "hebrew_name":"נווה אטי\"ב               "
+  },
+  {
+     "code":"4304",
+     "hebrew_name":"נוב                      "
+  },
+  {
+     "code":"4501",
+     "hebrew_name":"ע'ג'ר                    "
+  },
+  {
+     "code":"4502",
+     "hebrew_name":"עין קנייא                "
+  },
+  {
+     "code":"4503",
+     "hebrew_name":"עין זיוון                "
+  },
+  {
+     "code":"4551",
+     "hebrew_name":"נאות גולן                "
+  },
+  {
+     "code":"4701",
+     "hebrew_name":"רמת מגשימים              "
+  },
+  {
+     "code":"4702",
+     "hebrew_name":"רמות                     "
+  },
+  {
+     "code":"5000",
+     "hebrew_name":"תל אביב - יפו            "
+  },
+  {
+     "code":"6000",
+     "hebrew_name":"באקה אל-גרביה            "
+  },
+  {
+     "code":"6100",
+     "hebrew_name":"בני ברק                  "
+  },
+  {
+     "code":"6200",
+     "hebrew_name":"בת ים                    "
+  },
+  {
+     "code":"6300",
+     "hebrew_name":"גבעתיים                  "
+  },
+  {
+     "code":"6400",
+     "hebrew_name":"הרצליה                   "
+  },
+  {
+     "code":"6500",
+     "hebrew_name":"חדרה                     "
+  },
+  {
+     "code":"6600",
+     "hebrew_name":"חולון                    "
+  },
+  {
+     "code":"6700",
+     "hebrew_name":"טבריה                    "
+  },
+  {
+     "code":"6800",
+     "hebrew_name":"קרית אתא                 "
+  },
+  {
+     "code":"6900",
+     "hebrew_name":"כפר סבא                  "
+  },
+  {
+     "code":"7000",
+     "hebrew_name":"לוד                      "
+  },
+  {
+     "code":"7100",
+     "hebrew_name":"אשקלון                   "
+  },
+  {
+     "code":"7200",
+     "hebrew_name":"נס ציונה                 "
+  },
+  {
+     "code":"7300",
+     "hebrew_name":"נצרת                     "
+  },
+  {
+     "code":"7400",
+     "hebrew_name":"נתניה                    "
+  },
+  {
+     "code":"7500",
+     "hebrew_name":"סח'נין                   "
+  },
+  {
+     "code":"7600",
+     "hebrew_name":"עכו                      "
+  },
+  {
+     "code":"7700",
+     "hebrew_name":"עפולה                    "
+  },
+  {
+     "code":"7800",
+     "hebrew_name":"פרדס חנה-כרכור           "
+  },
+  {
+     "code":"7900",
+     "hebrew_name":"פתח תקווה                "
+  },
+  {
+     "code":"8000",
+     "hebrew_name":"צפת                      "
+  },
+  {
+     "code":"8200",
+     "hebrew_name":"קרית מוצקין              "
+  },
+  {
+     "code":"8300",
+     "hebrew_name":"ראשון לציון              "
+  },
+  {
+     "code":"8400",
+     "hebrew_name":"רחובות                   "
+  },
+  {
+     "code":"8500",
+     "hebrew_name":"רמלה                     "
+  },
+  {
+     "code":"8600",
+     "hebrew_name":"רמת גן                   "
+  },
+  {
+     "code":"8700",
+     "hebrew_name":"רעננה                    "
+  },
+  {
+     "code":"8800",
+     "hebrew_name":"שפרעם                    "
+  },
+  {
+     "code":"8900",
+     "hebrew_name":"טמרה                     "
+  },
+  {
+     "code":"9000",
+     "hebrew_name":"באר שבע                  "
+  },
+  {
+     "code":"9100",
+     "hebrew_name":"נהריה                    "
+  },
+  {
+     "code":"9200",
+     "hebrew_name":"בית שאן                  "
+  },
+  {
+     "code":"9300",
+     "hebrew_name":"זכרון יעקב               "
+  },
+  {
+     "code":"9400",
+     "hebrew_name":"יהוד-מונוסון             "
+  },
+  {
+     "code":"9500",
+     "hebrew_name":"קרית ביאליק              "
+  },
+  {
+     "code":"9600",
+     "hebrew_name":"קרית ים                  "
+  },
+  {
+     "code":"9700",
+     "hebrew_name":"הוד השרון                "
+  },
+  {
+     "code":"9800",
+     "hebrew_name":"בנימינה-גבעת עדה         "
+  }
+]
