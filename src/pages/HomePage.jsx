@@ -1,9 +1,9 @@
 // src/pages/HomePage.jsx
 import { Link } from 'react-router-dom';
+import { Grid, Box } from '@mui/material'; // نستخدم MUI هنا
 import './HomePage.css';
 
 import headerImage from '../assets/headerPic.jpg';
-
 import { iconMap, sectionColors } from '../constants/sectionMeta';
 import { FaStar } from 'react-icons/fa';
 
@@ -13,41 +13,85 @@ function HomePage({ sections }) {
   }
 
   return (
-    <div className="main-page">
-
+    <Box
+      className="main-page"
+      sx={{
+        width: '100vw',
+        minHeight: '100vh',
+        overflowX: 'hidden',
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box',
+      }}
+    >
       {/* Hero section */}
-      <div
+      <Box
         className="hero-section"
-        style={{ backgroundImage: `url(${headerImage})` }}
-      >
-        {/* <div className="hero-overlay">
-          <h1>مرحباً بكم في المركز الجماهيري بيت حنينا</h1>
-          <p>نُقدم خدماتنا المجتمعية لجميع الفئات والأجيال</p>
-        </div> */}
-      </div>
+        sx={{
+          backgroundImage: `url(${headerImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          width: '100%',
+          height: '250px',
+        }}
+      />
 
       {/* Sections */}
       <h2 className="sections-title">الأقسام</h2>
-      <div className="sections-grid">
+
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          padding: '20px',
+          width: '100%',
+          boxSizing: 'border-box',
+          justifyContent: 'center',
+        }}
+      >
         {sections.map((section) => (
-          <Link
-            to={`/sections/${section.id}`}
+          <Grid
+            item
+            xs={4} // 12 ÷ 4 = 3 أعمدة
+            sm={4}
+            md={4}
             key={section.id}
-            style={{ textDecoration: 'none' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
           >
-            <div
-              className="section-circle"
-              style={{ backgroundColor: sectionColors[section.id] || '#ccc' }}
+            <Link
+              to={`/sections/${section.id}`}
+              style={{ textDecoration: 'none' }}
             >
-              <div className="icon">
-                {iconMap[section.id] || <FaStar />}
-              </div>
-              <div className="label">{section.title}</div>
-            </div>
-          </Link>
+              <Box
+                className="section-circle"
+                sx={{
+                  backgroundColor: sectionColors[section.id] || '#ccc',
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                  transition: 'transform 0.3s ease',
+                }}
+              >
+                <Box className="icon" sx={{ fontSize: '24px', marginBottom: '5px' }}>
+                  {iconMap[section.id] || <FaStar />}
+                </Box>
+                <Box className="label" sx={{ fontSize: '0.9rem', color: 'black', textAlign: 'center' }}>
+                  {section.title}
+                </Box>
+              </Box>
+            </Link>
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Box>
   );
 }
 
