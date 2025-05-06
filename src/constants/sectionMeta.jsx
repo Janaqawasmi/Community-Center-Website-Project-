@@ -30,17 +30,17 @@ import {
   };
   
   export const sectionColors = {
-    section_women: "#fbc21f",
-    section_youth: "#fbc21f",
-    section_engineering: "#fbc21f",
-    section_kindergarten: "#68a144",
+    section_women: "#f26d2c",
+    section_youth: "#cf2929",
+    section_engineering: "#2baadc",
+    section_kindergarten: "#2baadc",
     section_community_work: "#68a144",
-    section_attaa: "#68a144",
-    section_nursery: "#2baadc",
-    section_culture: "#2baadc",
-    section_special: "#f26d2c",
+    section_attaa: "#fbc21f",
+    section_nursery: "#cf2929",
+    section_culture: "#fbc21f",
+    section_special: "#68a144",
     section_curricular: "#f26d2c",
     section_sports: "#cf2929",
-    section_elderly: "#cf2929"
+    section_elderly: "#fbc21f"
   };
   

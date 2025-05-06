@@ -1,19 +1,28 @@
-import { Routes, Route } from 'react-router-dom';
-import Layout from '../Layout'; // Import the layout
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Layout from '../Layout';
 import HomePage from '../pages/HomePage';
 import SectionPage from '../pages/SectionPage';
 import Contact from '../pages/Contact';
-
+import ScrollToTop from '../components/ScrollToTop'; 
+import About from '../pages/About';
 
 function AppRoutes({ sections }) {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<HomePage sections={sections} />} />
-        <Route path="/sections/:id" element={<SectionPage />} />
-        <Route path="/contact" element={<Contact />} />
-      </Route>
-    </Routes>
+    <>
+      <ScrollToTop /> {/* ✅ Global scroll-to-top on route change */}
+      <Routes location={location}>
+      <Route element={<Layout sections={sections} />}>
+  <Route path="/" element={<HomePage />} />
+  <Route path="/sections/:id" element={<SectionPage />} />
+  <Route path="/contact" element={<Contact />} />
+  <Route path="/about" element={<About />} />
+
+</Route>
+
+      </Routes>
+    </>
   );
 }
 
