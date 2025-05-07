@@ -266,8 +266,7 @@ function Layout({ sections }) {
 
 
 
-{/* Developer Login Bar at Bottom */}
-<Box
+      <Box
   sx={{
     position: 'fixed',
     bottom: 0,
@@ -279,9 +278,24 @@ function Layout({ sections }) {
     zIndex: 1200,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: '8px 16px',
   }}
 >
+  {/* Registration Button */}
+  <Button
+    variant="contained"
+    color="primary"
+    sx={{
+      fontFamily: 'Cairo, sans-serif',
+      fontSize: '14px',
+    }}
+    onClick={() => navigate('/RegistrationForm')}
+  >
+    טופס הרשמה
+  </Button>
+
+  {/* Admin Login Button */}
   <Button
     variant="outlined"
     startIcon={<LoginIcon />}
