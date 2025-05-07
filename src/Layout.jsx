@@ -7,6 +7,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import NavButton from './components/NavButton';
+import LoginIcon from '@mui/icons-material/Login';
 
 function Layout({ sections }) {
   const location = useLocation();
@@ -259,6 +260,57 @@ function Layout({ sections }) {
       <div className="page-content" style={{ marginTop: '90px' }}>
         <Outlet />
       </div>
+
+
+
+
+
+
+{/* Developer Login Bar at Bottom */}
+<Box
+  sx={{
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '2.5rem', 
+    backgroundColor: '#f1f1f1',
+    borderTop: '1px solid #ccc',
+    zIndex: 1200,
+    display: 'flex',
+    alignItems: 'center',
+    padding: '8px 16px',
+  }}
+>
+  <Button
+    variant="outlined"
+    startIcon={<LoginIcon />}
+    sx={{
+      fontFamily: 'Cairo, sans-serif',
+      fontSize: '14px',
+    }}
+    onClick={async () => {
+      const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        alert(`welcome ${result.user.displayName}`);
+        console.log("Logged in UID:", result.user.uid);
+      } catch (error) {
+        console.error("Login failed:", error);
+        alert("Login failed: " + error.message);
+      }
+    }}
+  >
+    تسجيل دخول للإدارة فقط
+  </Button>
+</Box>
+
+
+
+
+
     </>
   );
 }
