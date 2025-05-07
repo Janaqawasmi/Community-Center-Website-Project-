@@ -5,6 +5,7 @@ import SectionPage from '../pages/SectionPage';
 import Contact from '../pages/Contact';
 import ScrollToTop from '../components/ScrollToTop'; 
 import About from '../pages/About';
+import RegistrationForm from '../pages/registration';
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -18,7 +19,7 @@ function AppRoutes({ sections }) {
   <Route path="/sections/:id" element={<SectionPage />} />
   <Route path="/contact" element={<Contact />} />
   <Route path="/about" element={<About />} />
-
+  <Route path="/RegistrationForm" element={<RegistrationForm />} />
 </Route>
 
       </Routes>
