@@ -8,10 +8,12 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import NavButton from './components/NavButton';
 import LoginIcon from '@mui/icons-material/Login';
+import { useSectionContext } from './components/SectionContext';
 
 function Layout({ sections }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { activeSection } = useSectionContext();
 
   const [logoUrl, setLogoUrl] = useState('');
   const [socialLinks, setSocialLinks] = useState({
@@ -73,7 +75,7 @@ function Layout({ sections }) {
             zIndex: 1300,
             backgroundColor: '#f5f5f5',
             padding: '8px',
-            borderRadius: '4px',
+            borderRadius: '15px',
           }}
         >
           <NavButton to="/" sx={{ p: 0, minWidth: 0 }}>
@@ -134,6 +136,7 @@ function Layout({ sections }) {
           </Box>
 
           {/* Navigation Buttons */}
+          <Box sx={{ fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}></Box>
           <Box
             sx={{
               display: 'flex',
@@ -146,7 +149,11 @@ function Layout({ sections }) {
               to="/"
               color="inherit"
               sx={{
-                fontWeight: location.pathname === '/' ? 'bold' : 'normal',
+                fontWeight: location.pathname === '/' &&
+                activeSection !== 'courses' &&
+                activeSection !== 'events'
+                  ? 'bold'
+                  : 'normal',
                 fontFamily: 'Cairo, sans-serif',
                 fontSize: '18px',
               }}
@@ -155,28 +162,43 @@ function Layout({ sections }) {
             </NavButton>
 
             <NavButton
-              to="/programs"
-              color="inherit"
-              sx={{
-                fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
-                fontFamily: 'Cairo, sans-serif',
-                fontSize: '18px',
-              }}
-            >
-              الدورات
-            </NavButton>
+  to="/"
+  state={{ scrollTo: 'courses' }}
+  color="inherit"
+  sx={{
+    fontWeight:
+      location.pathname === '/' && activeSection === 'courses'
+        ? 'bold'
+        : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  الدورات
+</NavButton>
 
-            <NavButton
-              to="/events"
-              color="inherit"
-              sx={{
-                fontWeight: location.pathname === '/events' ? 'bold' : 'normal',
-                fontFamily: 'Cairo, sans-serif',
-                fontSize: '18px',
-              }}
-            >
-              الفعاليات
-            </NavButton>
+
+
+
+
+<NavButton
+  to="/"
+  state={{ scrollTo: 'events' }}
+  color="inherit"
+  sx={{
+    fontWeight:
+      location.pathname === '/' && activeSection === 'events'
+        ? 'bold'
+        : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  الفعاليات
+</NavButton>
+
+
+
 
             {/* الأقسام Dropdown */}
             <Button
@@ -257,9 +279,15 @@ function Layout({ sections }) {
       </AppBar>
 
       {/* Content Area */}
-      <div className="page-content" style={{ marginTop: '90px' }}>
-        <Outlet />
-      </div>
+      <Box sx={(theme) => theme.mixins.toolbar} />
+<Box
+  className="page-content"
+  sx={{ pt: 1 }} // pt = padding-top = theme.spacing(4) ~ 32px
+>
+  <Outlet />
+</Box>
+
+
 
 
 
@@ -282,18 +310,6 @@ function Layout({ sections }) {
     padding: '8px 16px',
   }}
 >
-  {/* Registration Button */}
-  <Button
-    variant="contained"
-    color="primary"
-    sx={{
-      fontFamily: 'Cairo, sans-serif',
-      fontSize: '14px',
-    }}
-    onClick={() => navigate('/RegistrationForm')}
-  >
-    טופס הרשמה
-  </Button>
 
   {/* Admin Login Button */}
   <Button
