@@ -405,7 +405,7 @@ export default function ProgramPage() {
       {/* Search Bar */}
       <Box
         sx={{
-          background: "linear-gradient(to left, #004e92, #56ccf2)",
+        background: "linear-gradient(to left, #004e92,rgb(69, 170, 203))",
           borderRadius: "999px",
           padding: "6px 10px",
           display: "flex",
@@ -458,49 +458,70 @@ export default function ProgramPage() {
       </Box>
 
       {/* Toggle Buttons */}
-      {searchQuery.trim() === "" && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 2,
-            mb: 4,
-          }}
-        >
-          <Box
-            onClick={() => setFilterType("category")}
-            sx={{
-              backgroundColor: filterType === "category" ? "#cce4ff" : "#f0f0f0",
-              color: "#000",
-              px: 3,
-              py: 1,
-              borderRadius: "30px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              fontFamily: "Cairo, sans-serif",
-              transition: "0.2s",
-            }}
-          >
-            اختر حسب القسم
-          </Box>
-          <Box
-            onClick={() => setFilterType("age")}
-            sx={{
-              backgroundColor: filterType === "age" ? "#cce4ff" : "#f0f0f0",
-              color: "#000",
-              px: 3,
-              py: 1,
-              borderRadius: "30px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              fontFamily: "Cairo, sans-serif",
-              transition: "0.2s",
-            }}
-          >
-            حسب العمر
-          </Box>
-        </Box>
-      )}
+{searchQuery.trim() === "" && (
+  <Box
+    sx={{
+      width: "fit-content",
+      mx: "auto",
+      backgroundColor: " #e0e0e0",
+      borderRadius: "999px",
+      p: "4px",
+      display: "flex",
+      gap: 1,
+      position: "relative",
+      mb: 4,
+    }}
+  >
+    {/* Animated background */}
+    <motion.div
+      layout
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      style={{
+        position: "absolute",
+        top: 4,
+        bottom: 4,
+        right: filterType === "category" ? 4 : "calc(50% + 2px)",
+        left: filterType === "category" ? "calc(50% + 2px)" : 4,
+        background: "linear-gradient(to left, #004e92,rgb(69, 170, 203))",
+        borderRadius: "999px",
+        zIndex: 0,
+      }}
+    />
+
+    {/* Category toggle */}
+    <Box
+      onClick={() => setFilterType("category")}
+      sx={{
+        zIndex: 1,
+        cursor: "pointer",
+        px: 3,
+        py: 1,
+        fontWeight: "bold",
+        fontFamily: "Cairo, sans-serif",
+        color: filterType === "category" ? "white" : " black",
+      }}
+    >
+      اختر حسب القسم
+    </Box>
+
+    {/* Age toggle */}
+    <Box
+      onClick={() => setFilterType("age")}
+      sx={{
+        zIndex: 1,
+        cursor: "pointer",
+        px: 3,
+        py: 1,
+        fontWeight: "bold",
+        fontFamily: "Cairo, sans-serif",
+        color: filterType === "age" ? "white" : " black",
+      }}
+    >
+      حسب العمر
+    </Box>
+  </Box>
+)}
+
 
       {/* Categories */}
       {searchQuery.trim() === "" && filterType === "category" && (
