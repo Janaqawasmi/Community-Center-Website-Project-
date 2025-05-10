@@ -165,7 +165,7 @@ function Layout({ sections }) {
   to="/programs"
   color="inherit"
   sx={{
-    fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
+    fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
     fontFamily: 'Cairo, sans-serif',
     fontSize: '18px',
   }}

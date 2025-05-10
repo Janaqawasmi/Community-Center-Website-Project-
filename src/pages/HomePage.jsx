@@ -15,15 +15,12 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 export default function HomePage() {
   const [heroPrograms, setHeroPrograms] = useState([]);
   const eventsRef = useRef(null);
-  const coursesRef = useRef(null);
   const location = useLocation();
   const { setActiveSection } = useSectionContext();
 
   useEffect(() => {
     const scrollTo = location.state?.scrollTo;
-    if (scrollTo === "courses") {
-      coursesRef.current?.scrollIntoView({ behavior: "smooth" });
-    } else if (scrollTo === "events") {
+    if (scrollTo === "events") {
       eventsRef.current?.scrollIntoView({ behavior: "smooth" });
     }
 
@@ -59,8 +56,7 @@ export default function HomePage() {
         let visibleSection = "";
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            if (entry.target === coursesRef.current) visibleSection = "courses";
-            else if (entry.target === eventsRef.current) visibleSection = "events";
+             if (entry.target === eventsRef.current) visibleSection = "events";
           }
         });
         if (visibleSection) {
@@ -70,11 +66,9 @@ export default function HomePage() {
       { threshold: 0.7 }
     );
 
-    if (coursesRef.current) observer.observe(coursesRef.current);
     if (eventsRef.current) observer.observe(eventsRef.current);
 
     return () => {
-      if (coursesRef.current) observer.unobserve(coursesRef.current);
       if (eventsRef.current) observer.unobserve(eventsRef.current);
     };
   }, []);

@@ -6,8 +6,12 @@ import {
   TextField,
   IconButton,
   Paper,
-  useMediaQuery,
-  useTheme,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Grid,
+  InputAdornment,
 } from "@mui/material";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/firebase";
@@ -51,23 +55,15 @@ function CategoryCard({ label, icon, color, onClick, index }) {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Box
-            sx={{
-              fontSize: "36px",
-              color: color,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <Box fontSize="36px" color={color}>
             {icon}
           </Box>
           <Typography
             variant="h6"
             sx={{
               fontWeight: "bold",
-              fontSize: "1.1rem",
-              color: "#222",
+              fontSize: "1.2rem",
+              color: "black",
               fontFamily: "Cairo, sans-serif",
             }}
           >
@@ -80,88 +76,139 @@ function CategoryCard({ label, icon, color, onClick, index }) {
 }
 
 export default function ProgramPage() {
+  const [allPrograms, setAllPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    setCategories(programCategories.map((c) => c.label));
+    const fetchPrograms = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "programs"));
+        const programs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setAllPrograms(programs);
+
+        const unique = Array.from(
+          new Set(programs.map((p) => p.category).filter(Boolean))
+        );
+        setCategories(unique);
+      } catch (error) {
+        console.error("Error fetching programs:", error);
+      }
+    };
+
+    fetchPrograms();
   }, []);
 
-  return (
-    <Box sx={{ backgroundColor: "#fff9f0", minHeight: "100vh", py: 4 }} dir="rtl">
-      <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 3 }}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            sx={{ color: "#333", mb: 1, fontFamily: "Cairo, sans-serif" }}
-          >
-            الدورات
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: "#666", maxWidth: "600px", mx: "auto", fontFamily: "Cairo, sans-serif" }}
-          >
-            استكشف الأقسام واختر البرنامج المناسب لك من بين باقة متنوعة من الدورات المتخصصة.
-          </Typography>
-        </Box>
+  const filteredPrograms = allPrograms.filter(
+    (p) =>
+      p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-        {/* Search Field */}
-        <Box
+  return (
+    <Container sx={{ py: 6 }} dir="rtl">
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        gutterBottom
+        sx={{ textAlign: "center", fontFamily: "Cairo, sans-serif" }}
+      >
+        الدورات
+      </Typography>
+
+      {/* Search Bar */}
+      <Box
+        sx={{
+          background: "linear-gradient(to left, #004e92, #56ccf2)",
+          borderRadius: "999px",
+          padding: "6px 10px",
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          maxWidth: 700,
+          mx: "auto",
+          my: 4,
+        }}
+      >
+        <Typography
           sx={{
-            backgroundColor: "#fff",
-            border: "1px solid #eee",
-            borderRadius: "12px",
-            px: 2,
-            py: 1.2,
-            maxWidth: "500px",
-            mx: "auto",
-            mb: 3,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "16px",
+            fontFamily: "Cairo, sans-serif",
+            whiteSpace: "nowrap",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <SearchIcon sx={{ color: "#9CA3AF", mr: 2 }} />
-            <TextField
-              fullWidth
-              placeholder="ابحث عن دورة..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              variant="standard"
-              dir="rtl"
-              InputProps={{
-                disableUnderline: true,
-                sx: {
-                  fontFamily: "Cairo, sans-serif",
-                  fontSize: "1rem",
-                },
-              }}
-            />
-            {searchQuery && (
-              <IconButton size="small" onClick={() => setSearchQuery("")}>
-                ×
-              </IconButton>
-            )}
-          </Box>
-        </Box>
+          بحث سريع
+        </Typography>
 
-        {/* Category Cards — responsive horizontal scroll on mobile */}
+        <TextField
+          fullWidth
+          placeholder="ابحث عن دورة..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          variant="outlined"
+          dir="rtl"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: "rgba(0, 0, 0, 0.8)" }} />
+              </InputAdornment>
+            ),
+            sx: {
+              backgroundColor: "#fff",
+              borderRadius: "999px",
+              fontFamily: "Cairo, sans-serif",
+              color: "rgb(0, 0, 0)",
+              fontSize: "1.2rem",
+              height: "42px",
+              px: 2,
+              "& fieldset": {
+                border: "none",
+              },
+            },
+          }}
+        />
+      </Box>
+
+      {/* Extra title under search bar */}
+      {searchQuery.trim() === "" && (
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "center",
+            color: "#444",
+            fontWeight: "bold",
+            fontSize: "20px",
+            mb: 3,
+            fontFamily: "Cairo, sans-serif",
+            color:"black",
+          }}
+        >
+          ابحث حسب القسم
+        </Typography>
+      )}
+
+      {/* Category Pills */}
+      {searchQuery.trim() === "" && (
         <Box
           sx={{
             display: "flex",
-            flexWrap: isMobile ? "nowrap" : "wrap",
+            flexWrap: "wrap",
             gap: 3,
-            overflowX: isMobile ? "auto" : "unset",
-            justifyContent: isMobile ? "flex-start" : "center",
-            px: isMobile ? 1 : 0,
+            justifyContent: "center",
+            px: 1,
           }}
         >
           {categories.map((label, index) => {
-            const iconKey = Object.keys(iconMap).find((key) => key.includes(label));
+            const iconKey = Object.keys(iconMap).find((key) =>
+              key.includes(label)
+            );
             const Icon = iconMap[iconKey];
             const color = getCategoryColor(label);
             return (
@@ -178,7 +225,48 @@ export default function ProgramPage() {
             );
           })}
         </Box>
-      </Container>
-    </Box>
+      )}
+
+      {/* Filtered Programs */}
+      {searchQuery.trim() !== "" && (
+        <Grid container spacing={3} mt={2}>
+          {filteredPrograms.map((program) => (
+            <Grid item xs={12} md={4} key={program.id}>
+              <Card sx={{ height: "100%" }}>
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    gutterBottom
+                    fontFamily="Cairo, sans-serif"
+                  >
+                    {program.name}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    fontFamily="Cairo, sans-serif"
+                  >
+                    {program.description}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      navigate(
+                        `/programs/${encodeURIComponent(program.category)}`
+                      )
+                    }
+                  >
+                    عرض التفاصيل
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Container>
   );
 }
