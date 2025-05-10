@@ -4,14 +4,13 @@ import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { useLocation } from "react-router-dom";
 import { useSectionContext } from "../components/SectionContext";
-import Slider from "react-slick";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import ProgramPage from "./ProgramsSection";
 import EventsSection from "./EventsSection";
 import CalendarSection from "./CalendarSection";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function HomePage() {
   const [heroPrograms, setHeroPrograms] = useState([]);
@@ -20,54 +19,73 @@ export default function HomePage() {
   const location = useLocation();
   const { setActiveSection } = useSectionContext();
 
-  // Scroll-to logic
   useEffect(() => {
     const scrollTo = location.state?.scrollTo;
-    if (scrollTo === "courses") coursesRef.current?.scrollIntoView({ behavior: "smooth" });
-    else if (scrollTo === "events") eventsRef.current?.scrollIntoView({ behavior: "smooth" });
-    if (scrollTo) window.history.replaceState({}, document.title);
+    if (scrollTo === "courses") {
+      coursesRef.current?.scrollIntoView({ behavior: "smooth" });
+    } else if (scrollTo === "events") {
+      eventsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+
+    if (scrollTo) {
+      window.history.replaceState({}, document.title);
+    }
   }, [location]);
 
-  // Fetch programs
   useEffect(() => {
-    (async () => {
-      const q = query(
-        collection(db, "heroPrograms"),
-        where("isActive", "==", true),
-        orderBy("order", "asc")
-      );
-      const snapshot = await getDocs(q);
-      setHeroPrograms(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    })();
+    const fetchHeroPrograms = async () => {
+      try {
+        const q = query(
+          collection(db, "heroPrograms"),
+          where("isActive", "==", true),
+          orderBy("order", "asc")
+        );
+        const snapshot = await getDocs(q);
+        const programs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setHeroPrograms(programs);
+      } catch (error) {
+        console.error("Error fetching hero programs:", error);
+      }
+    };
+    fetchHeroPrograms();
   }, []);
 
-  // Section observer
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
+      (entries) => {
+        let visibleSection = "";
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target === coursesRef.current ? "courses" : "events");
+            if (entry.target === coursesRef.current) visibleSection = "courses";
+            else if (entry.target === eventsRef.current) visibleSection = "events";
           }
         });
+        if (visibleSection) {
+          setActiveSection(visibleSection);
+        }
       },
-      { threshold: 0.8 }
+      { threshold: 0.7 }
     );
+
     if (coursesRef.current) observer.observe(coursesRef.current);
     if (eventsRef.current) observer.observe(eventsRef.current);
+
     return () => {
       if (coursesRef.current) observer.unobserve(coursesRef.current);
       if (eventsRef.current) observer.unobserve(eventsRef.current);
     };
-  }, []);  
+  }, []);
 
-  // Arrow styles
   const arrowStyles = {
     position: "absolute",
     top: "50%",
     transform: "translateY(-50%)",
     zIndex: 10,
-    bgcolor: "rgba(255,255,255,0.8)",
+    cursor: "pointer",
+    bgcolor: "rgba(255, 255, 255, 0.8)",
     borderRadius: "50%",
     width: 32,
     height: 32,
@@ -75,20 +93,27 @@ export default function HomePage() {
     alignItems: "center",
     justifyContent: "center",
     boxShadow: 1,
-    cursor: "pointer",
-    "&:hover": { bgcolor: "rgba(255,255,255,1)" },
+    transition: "background-color 0.3s",
+    "&:hover": { bgcolor: "rgba(255, 255, 255, 1)" },
   };
 
-  const CustomNextArrow = ({ onClick }) => (
-    <Box onClick={onClick} sx={{ ...arrowStyles, right: { xs: 8, md: 2 } }}>
-      <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
-    </Box>
-  );
-  const CustomPrevArrow = ({ onClick }) => (
-    <Box onClick={onClick} sx={{ ...arrowStyles, left: { xs: 8, md: 2} }}>
-      <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
-    </Box>
-  );
+  const CustomNextArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <Box onClick={onClick} sx={{ ...arrowStyles, right: { xs: 8, md: 16 } }}>
+        <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+      </Box>
+    );
+  };
+
+  const CustomPrevArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <Box onClick={onClick} sx={{ ...arrowStyles, left: { xs: 8, md: 16 } }}>
+        <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+      </Box>
+    );
+  };
 
   const sliderSettings = {
     dots: true,
@@ -106,81 +131,93 @@ export default function HomePage() {
 
   return (
     <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      {/* Hero Slider */}
-      <Box sx={{ py:0,  backgroundColor: "#f8f9fb" }}>
+      {/* Hero Section */}
+      <Box sx={{ py: 0, px: 0, backgroundColor: "#f4f6f8", mt: -5 }}>
         <Slider {...sliderSettings}>
-          {heroPrograms.map((program) => (
-            <Box key={program.id}>
-              <Grid
-                container
-                spacing={0}
-                alignItems="center"
-                justifyContent="center"
+          {heroPrograms.map((program, index) => (
+            <Box key={program.id || index}>
+              <Box
                 sx={{
-                  flexDirection: { xs: "column", md: "row" },
-                  backgroundColor: "#fff",
-                  borderRadius: "20px",
-                  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+                  position: "relative",
+                  height: { xs: 300, md: 500 },
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   overflow: "hidden",
-                  px: { xs: 2, md: 0 },
-                  py: { xs: 3, md: 0 },
-                  mx: { xs: 2, md: 0 },
-                  my: 0,
-                  minHeight: { xs: 300, md: 450 }, // set slider height
+                  borderRadius: "0px", // Remove border radius for full width
+                  boxShadow: "none", // Remove shadow for full width
+                  mx: 0, // Remove horizontal margin
+                  my: 0, // Remove vertical margin
+                  backgroundColor: "#fff",
                 }}
               >
-                {/* Text Side */}
-                <Grid item xs={12} md={3}>
-                  <Box sx={{ textAlign: "right", marginRight: { xs: 0, md: 2.5} }}>
-                    <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ color: "#004b87" }}>
-                      {program.title}
-                    </Typography>
-                    <Typography variant="body1" sx={{ mb: 3, fontSize: "1.1rem", color: "#333" }}>
-                      {program.description}
-                    </Typography>
-                    {program.link && (
-                      <Button
-                        variant="contained"
-                        onClick={() => window.location.href = program.link}
-                        sx={{
-                          backgroundColor: "#63aa1f",
-                          color: "#fff",
-                          px: 5,
-                          py: 1.5,
-                          fontWeight: "bold",
-                          fontSize: "1rem",
-                          borderRadius: "30px",
-                          "&:hover": { backgroundColor: "#4f8c19" },
-                        }}
-                      >
-                        سجلوا الآن
-                      </Button>
-                    )}
-                  </Box>
-                </Grid>
-
-                {/* Image Side */}
-                <Grid item xs={12} md={9}>
-                  <Box
-                    component="img"
-                    src={program.imageUrl}
-                    alt={program.title}
-                    sx={{
-                      width: "100%",
-                      maxHeight: 450,
-                      objectFit: "cover",
-                      borderRadius: "12px",
-                    }}
-                  />
-                </Grid>
-              </Grid>
+                <Box
+                  component="img"
+                  src={program.imageUrl}
+                  alt={program.title}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    filter: "brightness(0.8)",
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "rgba(226, 226, 226, 0.6)",
+                    padding: { xs: 3, md: 4 },
+                    borderRadius: "12px",
+                    textAlign: "center",
+                    color: "#fff",
+                    maxWidth: { xs: "90%", md: "60%" },
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    fontWeight="bold"
+                    gutterBottom
+                    sx={{ color: "#fff", mb: 2 }}
+                  >
+                    {program.title}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ mb: 3, fontSize: "1.2rem", lineHeight: 1.6 }}
+                  >
+                    {program.description}
+                  </Typography>
+                  {program.link && (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#63aa1f",
+                        color: "#fff",
+                        px: 4,
+                        py: 1.5,
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        borderRadius: "30px",
+                        "&:hover": { backgroundColor: " #4f8c19" },
+                      }}
+                      onClick={() => window.location.href = program.link}
+                    >
+                      سجلوا الآن
+                    </Button>
+                  )}
+                </Box>
+              </Box>
             </Box>
           ))}
         </Slider>
       </Box>
 
-      {/* Rest of page */}
-      <ProgramPage coursesRef={coursesRef} />
+      {/* Page Sections */}
+      {/* <ProgramPage coursesRef={coursesRef} /> */}
       <EventsSection eventsRef={eventsRef} />
       <CalendarSection />
     </Box>

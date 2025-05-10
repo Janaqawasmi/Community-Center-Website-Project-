@@ -162,14 +162,10 @@ function Layout({ sections }) {
             </NavButton>
 
             <NavButton
-  to="/"
-  state={{ scrollTo: 'courses' }}
+  to="/programs"
   color="inherit"
   sx={{
-    fontWeight:
-      location.pathname === '/' && activeSection === 'courses'
-        ? 'bold'
-        : 'normal',
+    fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
     fontFamily: 'Cairo, sans-serif',
     fontSize: '18px',
   }}

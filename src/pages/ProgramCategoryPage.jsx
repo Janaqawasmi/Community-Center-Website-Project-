@@ -119,3 +119,15 @@ export default function ProgramCategoryPage() {
 
 
 
+  {/* Registration Button */}
+  <Button
+    variant="contained"
+    color="primary"
+    sx={{
+      fontFamily: 'Cairo, sans-serif',
+      fontSize: '14px',
+    }}
+    onClick={() => navigate('/RegistrationForm')}
+  >
+    טופס הרשמה
+  </Button>

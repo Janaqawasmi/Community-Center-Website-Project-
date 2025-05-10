@@ -48,27 +48,25 @@ export const sectionColors = {
 export const programCategories = [
   {
     label: "رياضة",
-    color: "linear-gradient(to left, #c31432, #ff4e50)",
+    color: "#e53935", // red
   },
   {
     label: "طوارئ",
-    color: "linear-gradient(to left, #c31432, #ff4e50)",
+    color: "#e53935", // darker red
   },
-  {
-    label: "تطوير",
-    color: "linear-gradient(to left, #f7971e, #ffd200)",
-  },
+  
   {
     label: "الثقافة والفن",
-    color: "linear-gradient(to left, #f7971e, #ffd200)",
+    color: "#f57c00", // orange
   },
   {
     label: "الدورات المنهجية واللامنهجية",
-    color: "linear-gradient(to left, #3e833e, #b0d59d)",
+    color: "#388e3c", // green
   },
   {
     label: "نساء",
-    color: "linear-gradient(to left, #3e833e, #b0d59d)",
+    color: "#f57c00", // 
   },
 ];
+
 
