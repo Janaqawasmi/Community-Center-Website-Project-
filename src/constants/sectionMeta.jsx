@@ -44,13 +44,29 @@ export const sectionColors = {
   section_elderly: "#fbc21f"
 };
 
-// ✅ Program categories used on HomePage
+
 export const programCategories = [
-  { label: 'رياضة', color:  "#cf2929" },
-  { label: 'نساء', color: "#f26d2c" },
-  { label: 'فن', color: "#fbc21f" },
-  { label: 'للأطفال', color: '#93b58c' },
-  // Add more future categories here
-  { label: 'دورات', color:  "#f26d2c" },
-  { label: 'تكنولوجيا', color: '#7fb3d5' }
+  {
+    label: "رياضة",
+    color: "#e53935", // red
+  },
+  {
+    label: "طوارئ",
+    color: "#e53935", // darker red
+  },
+  
+  {
+    label: "الثقافة والفن",
+    color: "#f57c00", // orange
+  },
+  {
+    label: "الدورات المنهجية واللامنهجية",
+    color: "#388e3c", // green
+  },
+  {
+    label: "نساء",
+    color: "#f57c00", // 
+  },
 ];
+
+

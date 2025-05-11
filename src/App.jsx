@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 
 import { fetchSections } from './utils/fetchSections';
 import AppRoutes from './routes/AppRoutes';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   const [sections, setSections] = useState([]);

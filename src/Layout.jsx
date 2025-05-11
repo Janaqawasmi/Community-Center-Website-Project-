@@ -162,14 +162,10 @@ function Layout({ sections }) {
             </NavButton>
 
             <NavButton
-  to="/"
-  state={{ scrollTo: 'courses' }}
+  to="/programs"
   color="inherit"
   sx={{
-    fontWeight:
-      location.pathname === '/' && activeSection === 'courses'
-        ? 'bold'
-        : 'normal',
+    fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
     fontFamily: 'Cairo, sans-serif',
     fontSize: '18px',
   }}
@@ -278,14 +274,18 @@ function Layout({ sections }) {
         </Toolbar>
       </AppBar>
 
-      {/* Content Area */}
-      <Box sx={(theme) => theme.mixins.toolbar} />
+     {/* Content Area */}
+<Box sx={(theme) => theme.mixins.toolbar} />
 <Box
   className="page-content"
-  sx={{ pt: 1 }} // pt = padding-top = theme.spacing(4) ~ 32px
+  sx={{
+    pt: 1,
+    px: { xs: 0, md: 0 }, // Add horizontal padding: 16px on mobile, 48px on larger screens
+  }}
 >
   <Outlet />
 </Box>
+
 
 
 
