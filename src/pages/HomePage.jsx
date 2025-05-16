@@ -1,139 +1,219 @@
-import React, { useRef, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  Container,
-  Box,
-} from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState, useRef } from "react";
+import { Box, Button, Typography, Grid } from "@mui/material";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../components/firebase";
+import { useLocation } from "react-router-dom";
+import { useSectionContext } from "../components/SectionContext";
+import EventsSection from "./EventsSection";
+import CalendarSection from "./CalendarSection";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function HomePage() {
+  const [heroPrograms, setHeroPrograms] = useState([]);
+  const eventsRef = useRef(null);
   const location = useLocation();
-  // const scrollTarget = location.state?.scrollTo;
-  // const aboutUsRef = useRef(null);
-  const [heroSection, setHeroSection] = useState('');
-  // const [aboutUsText, setAboutUsText] = useState('');
-
-
-  // useEffect(() => {
-  //   if (scrollTarget === 'about') {
-  //     const scroll = () => {
-  //       if (aboutUsRef.current) {
-  //         aboutUsRef.current.scrollIntoView({ behavior: 'smooth' });
-  //       }
-  //     };
-  
-  //     // Wait for layout
-  //     setTimeout(scroll, 300);
-  //   }
-  // }, [scrollTarget]);
-  
-  // useEffect(() => {
-  //   const scrollHandler = () => {
-  //     if (aboutUsRef.current) {
-  //       aboutUsRef.current.scrollIntoView({ behavior: 'smooth' });
-  //     }
-  //   };
-  
-  //   window.addEventListener('scroll-to-about', scrollHandler);
-  //   return () => window.removeEventListener('scroll-to-about', scrollHandler);
-  // }, []);
-  
-  
+  const { setActiveSection } = useSectionContext();
 
   useEffect(() => {
-    const fetchSiteInfo = async () => {
-      try {
-        const siteInfoRef = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
-        const siteInfoSnap = await getDoc(siteInfoRef);
+    const scrollTo = location.state?.scrollTo;
+    if (scrollTo === "events") {
+      eventsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
 
-        if (siteInfoSnap.exists()) {
-          const data = siteInfoSnap.data();
-    
-          setHeroSection(data.heroSection || '');
-          setAboutUsText(data.about_us_text || '');
-        } else {
-          console.log('No such document!');
-        }
+    if (scrollTo) {
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
+  useEffect(() => {
+    const fetchHeroPrograms = async () => {
+      try {
+        const q = query(
+          collection(db, "heroPrograms"),
+          where("isActive", "==", true),
+          orderBy("order", "asc")
+        );
+        const snapshot = await getDocs(q);
+        const programs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setHeroPrograms(programs);
       } catch (error) {
-        console.error('Error fetching site info:', error);
+        console.error("Error fetching hero programs:", error);
       }
     };
-
-    fetchSiteInfo();
+    fetchHeroPrograms();
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let visibleSection = "";
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+             if (entry.target === eventsRef.current) visibleSection = "events";
+          }
+        });
+        if (visibleSection) {
+          setActiveSection(visibleSection);
+        }
+      },
+      { threshold: 0.7 }
+    );
+
+    if (eventsRef.current) observer.observe(eventsRef.current);
+
+    return () => {
+      if (eventsRef.current) observer.unobserve(eventsRef.current);
+    };
+  }, []);
+
+  const arrowStyles = {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 10,
+    cursor: "pointer",
+    bgcolor: "rgba(255, 255, 255, 0.8)",
+    borderRadius: "50%",
+    width: 32,
+    height: 32,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: 1,
+    transition: "background-color 0.3s",
+    "&:hover": { bgcolor: "rgba(255, 255, 255, 1)" },
+  };
+
+  const CustomNextArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <Box onClick={onClick} sx={{ ...arrowStyles, right: { xs: 8, md: 16 } }}>
+        <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+      </Box>
+    );
+  };
+
+  const CustomPrevArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <Box onClick={onClick} sx={{ ...arrowStyles, left: { xs: 8, md: 16 } }}>
+        <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+      </Box>
+    );
+  };
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    rtl: true,
+    arrows: true,
+    autoplay: true,
+    autoplaySpeed: 8000,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
+  };
+
   return (
-    <>
+    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
       {/* Hero Section */}
-      <Box
-        sx={{
-          height: { xs: "300px", md: "450px" },
-          backgroundImage: heroSection ? `url('${heroSection}')` : "none",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          color: "white",
-          textAlign: "center",
-          backgroundColor: heroSection ? "transparent" : "#acc",
-        }}
-      />
-
-
-      {/* Our Programs Section */}
-      <Container sx={{ py: 8 }}>
-        <Typography variant="h4" gutterBottom>Our Programs</Typography>
-        <Grid container spacing={4}>
-          {["Education", "Recreation", "Workshops"].map((program, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <CardMedia
+      <Box sx={{ py: 0, px: 0, backgroundColor: "#f4f6f8", mt: -5 }}>
+        <Slider {...sliderSettings}>
+          {heroPrograms.map((program, index) => (
+            <Box key={program.id || index}>
+              <Box
+                sx={{
+                  position: "relative",
+                  height: { xs: 300, md: 500 },
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  borderRadius: "0px", // Remove border radius for full width
+                  boxShadow: "none", // Remove shadow for full width
+                  mx: 0, // Remove horizontal margin
+                  my: 0, // Remove vertical margin
+                  backgroundColor: "#fff",
+                }}
+              >
+                <Box
                   component="img"
-                  image={`/program${index + 1}.jpg`}
-                  alt={program}
-                  height="200"
+                  src={program.imageUrl}
+                  alt={program.title}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    filter: "brightness(0.8)",
+                  }}
                 />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {program}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "rgba(226, 226, 226, 0.6)",
+                    padding: { xs: 3, md: 4 },
+                    borderRadius: "12px",
+                    textAlign: "center",
+                    color: "#fff",
+                    maxWidth: { xs: "90%", md: "60%" },
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    fontWeight="bold"
+                    gutterBottom
+                    sx={{ color: "#fff", mb: 2 }}
+                  >
+                    {program.title}
                   </Typography>
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  <Typography
+                    variant="body1"
+                    sx={{ mb: 3, fontSize: "1.2rem", lineHeight: 1.6 }}
+                  >
+                    {program.description}
                   </Typography>
-                  <Button variant="contained" color="primary" sx={{ mt: 2 }}>Learn More</Button>
-                </CardContent>
-              </Card>
-            </Grid>
+                  {program.link && (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#63aa1f",
+                        color: "#fff",
+                        px: 4,
+                        py: 1.5,
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        borderRadius: "30px",
+                        "&:hover": { backgroundColor: " #4f8c19" },
+                      }}
+                      onClick={() => window.location.href = program.link}
+                    >
+                      سجلوا الآن
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </Box>
           ))}
-        </Grid>
-      </Container>
+        </Slider>
+      </Box>
 
-      {/* Upcoming Events Section */}
-      <Container sx={{ py: 8 }}>
-        <Typography variant="h4" gutterBottom>Upcoming Events</Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h6">Community Event</Typography>
-            <Typography variant="subtitle1">June 10th</Typography>
-            <Typography variant="body2">2:00 PM - 4:00 PM</Typography>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h6">Art Class</Typography>
-            <Typography variant="subtitle1">July 5th at 11 AM</Typography>
-            <Typography variant="body2">Art Class Join...</Typography>
-            <Button variant="contained" color="primary" sx={{ mt: 1 }}>Register</Button>
-          </Grid>
-        </Grid>
-      </Container>
-    </>
+      {/* Page Sections */}
+      {/* <ProgramPage coursesRef={coursesRef} /> */}
+      <EventsSection eventsRef={eventsRef} />
+      <CalendarSection />
+    </Box>
   );
 }
