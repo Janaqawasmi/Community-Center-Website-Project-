@@ -18,7 +18,7 @@ import {
 } from "react-icons/fa";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-
+import HeroSection from "../components/HeroSection";
 export default function About() {
   const [aboutData, setAboutData] = useState(null);
 
@@ -102,57 +102,23 @@ export default function About() {
   );
 
   return (
-    <Box
-      sx={{
-        backgroundImage: `url('https://firebasestorage.googleapis.com/v0/b/public-center-website.firebasestorage.app/o/images.jpeg?alt=media&token=5f2ef9db-fd5a-4cbb-858d-151a8fb131c7')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        p: { xs: 2, md: 4 },
-      }}
-    >
+    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+        <Box mb={4}> {/* Adjust the margin as needed */}
+        <HeroSection pageId="aboutUs" />
+      </Box>
+
       <Container
         sx={{
           backgroundColor: "rgba(255, 255, 255, 0.7)",
           borderRadius: 4,
           boxShadow: "0 0 20px rgba(0,0,0,0.1)",
-          py: 6,
+          py: 2,
           px: { xs: 2, md: 6 },
           direction: "rtl",
           fontFamily: "'Noto Kufi Arabic', sans-serif",
         }}
       >
-        {/* صورة المركز */}
-        {aboutData.image_url && (
-          <Box
-            component="img"
-            src={aboutData.image_url}
-            alt="عن المركز"
-            sx={{
-              width: "100%",
-              maxHeight: 450,
-              objectFit: "cover",
-              borderRadius: 2,
-              mb: 4,
-              boxShadow: 3,
-            }}
-            data-aos="zoom-in"
-          />
-        )}
-
-        {/* العنوان الرئيسي */}
-        <Typography
-          variant="h4"
-          textAlign="center"
-          fontWeight="bold"
-          sx={{ mb: 3 }}
-          data-aos="fade-up"
-        >
-          {aboutData.title}
-        </Typography>
-
+      
         {/* الفقرة التعريفية */}
         <Box
           sx={{
@@ -178,19 +144,19 @@ export default function About() {
             <Grid item xs={4} sm={3} md={2}>
               <Box sx={{ textAlign: "center" }}>
                 <FaUsers size={60} style={{ color: "#4682B4" }} />
-                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.3rem" }}>جمهور</Typography>
+                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>جمهور</Typography>
               </Box>
             </Grid>
             <Grid item xs={4} sm={3} md={2}>
               <Box sx={{ textAlign: "center" }}>
                 <FaUserAlt size={60} style={{ color: "#4682B4" }} />
-                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.3rem" }}>انسان</Typography>
+                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>انسان</Typography>
               </Box>
             </Grid>
             <Grid item xs={4} sm={3} md={2}>
               <Box sx={{ textAlign: "center" }}>
                 <FaGlobe size={60} style={{ color: "#4682B4" }} />
-                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.3rem" }}>أرض</Typography>
+                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>أرض</Typography>
               </Box>
             </Grid>
           </Grid>
@@ -244,5 +210,6 @@ export default function About() {
         </Box>
       </Container>
     </Box>
+
   );
 }

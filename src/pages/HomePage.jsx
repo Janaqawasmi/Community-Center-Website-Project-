@@ -4,8 +4,7 @@ import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { useLocation } from "react-router-dom";
 import { useSectionContext } from "../components/SectionContext";
-import EventsSection from "./EventsSection";
-import CalendarSection from "./CalendarSection";
+
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,20 +13,9 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function HomePage() {
   const [heroPrograms, setHeroPrograms] = useState([]);
-  const eventsRef = useRef(null);
   const location = useLocation();
   const { setActiveSection } = useSectionContext();
 
-  useEffect(() => {
-    const scrollTo = location.state?.scrollTo;
-    if (scrollTo === "events") {
-      eventsRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-
-    if (scrollTo) {
-      window.history.replaceState({}, document.title);
-    }
-  }, [location]);
 
   useEffect(() => {
     const fetchHeroPrograms = async () => {
@@ -50,28 +38,7 @@ export default function HomePage() {
     fetchHeroPrograms();
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let visibleSection = "";
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-             if (entry.target === eventsRef.current) visibleSection = "events";
-          }
-        });
-        if (visibleSection) {
-          setActiveSection(visibleSection);
-        }
-      },
-      { threshold: 0.7 }
-    );
-
-    if (eventsRef.current) observer.observe(eventsRef.current);
-
-    return () => {
-      if (eventsRef.current) observer.unobserve(eventsRef.current);
-    };
-  }, []);
+  
 
   const arrowStyles = {
     position: "absolute",
@@ -125,95 +92,97 @@ export default function HomePage() {
 
   return (
     <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+
       {/* Hero Section */}
-      <Box sx={{ py: 0, px: 0, backgroundColor: "#f4f6f8", mt: -5 }}>
+<Box sx={{ py: 0, px: 0, backgroundColor: "rgb(255, 255, 255)", mt: 0 }}>
+  
         <Slider {...sliderSettings}>
           {heroPrograms.map((program, index) => (
             <Box key={program.id || index}>
-              <Box
-                sx={{
-                  position: "relative",
-                  height: { xs: 300, md: 500 },
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  borderRadius: "0px", // Remove border radius for full width
-                  boxShadow: "none", // Remove shadow for full width
-                  mx: 0, // Remove horizontal margin
-                  my: 0, // Remove vertical margin
-                  backgroundColor: "#fff",
-                }}
-              >
-                <Box
-                  component="img"
-                  src={program.imageUrl}
-                  alt={program.title}
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    filter: "brightness(0.8)",
-                  }}
-                />
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    backgroundColor: "rgba(226, 226, 226, 0.6)",
-                    padding: { xs: 3, md: 4 },
-                    borderRadius: "12px",
-                    textAlign: "center",
-                    color: "#fff",
-                    maxWidth: { xs: "90%", md: "60%" },
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    fontWeight="bold"
-                    gutterBottom
-                    sx={{ color: "#fff", mb: 2 }}
-                  >
-                    {program.title}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ mb: 3, fontSize: "1.2rem", lineHeight: 1.6 }}
-                  >
-                    {program.description}
-                  </Typography>
-                  {program.link && (
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#63aa1f",
-                        color: "#fff",
-                        px: 4,
-                        py: 1.5,
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        borderRadius: "30px",
-                        "&:hover": { backgroundColor: " #4f8c19" },
-                      }}
-                      onClick={() => window.location.href = program.link}
-                    >
-                      سجلوا الآن
-                    </Button>
-                  )}
-                </Box>
-              </Box>
+      <Box
+  sx={{
+    position: "relative",
+    height: { xs: 300, md: 500 },
+    display: "flex",
+    flexDirection: "row",
+    overflow: "hidden",
+  }}
+>
+  {/* Background Image Full Width */}
+<Box
+  component="img"
+  src={program.imageUrl}
+  alt="Program Image"
+  sx={{
+    position: "absolute",
+    top: "50px",
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "right",
+    paddingLeft: { xs: "35%", md: "35%" }, // push image right to avoid clipping
+    zIndex: 0,
+  }}
+/>
+
+  {/* Text + Shape Overlay */}
+  <Box
+    sx={{
+      width: { xs: "35%", md: "35%" },
+      height: "100%",
+background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
+clipPath: "polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "flex-start",
+      px: { xs: 2, md: 7 },
+      zIndex: 1,
+    }}
+  >
+    <Typography
+      variant="h3"
+      fontWeight="bold"
+      sx={{ color: " #fff", mb: 2 }}
+    >
+      {program.title}
+    </Typography>
+    <Typography
+      variant="body1"
+      sx={{ color: " #fff", fontSize: "1.1rem", mb: 3 }}
+    >
+      {program.description}
+    </Typography>
+    {program.link && (
+      <Button
+        variant="contained"
+        sx={{
+          backgroundColor: "rgb(197, 94, 24)",
+          color: " #fff",
+          px: 4,
+          py: 1,
+          borderRadius: "20px",
+          textTransform: "none",
+          fontWeight: "bold",
+          boxShadow: "none",
+          "&:hover": { backgroundColor: "rgb(255, 255, 255)", color: "black"  }, 
+        }}
+        onClick={() => window.location.href = program.link}
+      >
+        سجلوا الآن
+      </Button>
+    )}
+  </Box>
+</Box>
+
+
             </Box>
           ))}
         </Slider>
       </Box>
 
-      {/* Page Sections */}
-      {/* <ProgramPage coursesRef={coursesRef} /> */}
-      <EventsSection eventsRef={eventsRef} />
-      <CalendarSection />
+
     </Box>
   );
 }
