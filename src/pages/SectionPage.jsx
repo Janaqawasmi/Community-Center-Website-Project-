@@ -5,6 +5,7 @@ import { db } from '../components/firebase';
 import { Box, Typography, Container, Grid, Paper } from '@mui/material';
 import { iconMap, sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
+import HeroSection from "../components/HeroSection";
 
 function SectionPage() {
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
@@ -31,42 +32,39 @@ function SectionPage() {
 
   const PrettyCard = ({ title, icon, color, children }) => (
     <Paper
-      elevation={6}
-
+      elevation={4}
       sx={{
         position: 'relative',
-        p: 4,
+        p: { xs: 3, sm: 4 },
         pt: 7,
         bgcolor: '#fff',
-        borderRadius: '20px',
+        borderRadius: '90px',
         borderRight: `6px solid ${color}`,
-        boxShadow: '0px 4px 16px rgba(0,0,0,0.08)',
+        boxShadow: '0px 4px 18px rgba(0,0,0,0.08)',
         mt: 4,
-        transition: 'transform 0.3s ease',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
-          transform: 'scale(1.01)',
-          boxShadow: '0px 6px 20px rgba(0,0,0,0.12)',
+  boxShadow: '0px 4px 18px rgba(0,0,0,0.08)',
+  transform: 'none',
+  cursor: 'default',
         },
-
-        zIndex: 3,
       }}
     >
       <Box
         sx={{
           position: 'absolute',
-          top: -18,
+          top: -22,
           right: 24,
           background: color,
           color: '#fff',
-          px: 2.5,
+          px: 3,
           py: 0.5,
-          borderRadius: '30px',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          borderRadius: '32px',
+          fontSize: '1.1rem',
+          fontWeight: 600,
+          boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
           zIndex: 4,
           whiteSpace: 'nowrap'
-
         }}
       >
         {icon} {title}
@@ -88,37 +86,19 @@ function SectionPage() {
 
   return (
     <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', fontFamily: 'Cairo, Arial, sans-serif', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ background: `linear-gradient(to left, ${sectionColor}, ${sectionColor}99)`, color: '#fff', py: 6, px: 3, borderBottomRightRadius: '80px', boxShadow: '0 8px 20px rgba(0,0,0,0.2)', zIndex: 2, position: 'relative' }}>
-        <Container>
-          <Grid container alignItems="center" spacing={4}>
-            <Grid item xs={12}>
-              <Typography variant="h3" sx={{ fontWeight: 'bold', fontSize: '3.5rem' }}>
-                {sectionIcon} {section.title}
-              </Typography>
-              {section.subtitle && (
-                <Typography variant="h5" mt={2} sx={{ opacity: 0.9, fontWeight: 'bold', fontSize: '1.6rem' }}>
-                  {section.subtitle}
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+      <HeroSection pageId={id} />
 
-      <Container sx={{ py: 5, position: 'relative', zIndex: 3, flex: 1 }}>
+      <Container maxWidth="lg" sx={{ py: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
         <Grid container spacing={4}>
-          {/* الرؤية */}
           {section.description && (
             <Grid item xs={12} md={6}>
               <PrettyCard title={section.description_title || "الرؤية"} icon="📝" color={sectionColor}>
-                <Typography sx={{ fontSize: '1.3rem', lineHeight: 2 }}>{section.description}</Typography>
+                <Typography sx={{ fontSize: '1.2em', lineHeight: 2 }}>{section.description}</Typography>
               </PrettyCard>
-
             </Grid>
-          </Grid>
-        </Container>
-      </Box>
+          )}
 
+       
           {/* صور */}
           {section.imageGallery?.length > 0 && (
             <Grid item xs={12} md={6}>
@@ -129,19 +109,16 @@ function SectionPage() {
                   </Box>
                 ))}
               </Slider>
-
             </Grid>
           )}
         </Grid>
 
-        {/* نادي الحلقات */}
         {section.hallDescription && (
           <PrettyCard title={section.hallDescription_title || "نادي الحلقات والحلقات التشغيلية"} icon="🏢" color={sectionColor}>
             <Typography sx={{ fontSize: '1.3rem', lineHeight: 2 }}>{section.hallDescription}</Typography>
           </PrettyCard>
         )}
 
-        {/* الأهداف */}
         {section.goals?.length > 0 && (
           <PrettyCard title={section.goals_title || "الأهداف (نادي الحلقات)"} icon="🎯" color={sectionColor}>
             <ul style={{ fontSize: '1.2rem', paddingRight: 20, lineHeight: 2 }}>
@@ -176,28 +153,44 @@ function SectionPage() {
             <Grid container spacing={4} sx={{ px: 3, pb: 5 }}>
               {section.programCards.map((program, i) => (
                 <Grid item xs={12} sm={6} md={4} key={i}>
-                  <Paper elevation={4} sx={{ height: '100%', overflow: 'hidden', borderRadius: 3, display: 'flex', flexDirection: 'column', backgroundColor: '#fff', position: 'relative' }}>
+                  <Paper
+                    elevation={3}
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      borderRadius: 3,
+                      overflow: 'hidden',
+                      backgroundColor: '#fff',
+                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',
+  transform: 'none',
+  cursor: 'default',
+                      },
+                    }}
+                  >
                     {program.image && (
-                      <Box sx={{ height: 180, backgroundImage: `url(${program.image})`, backgroundSize: 'contain', backgroundColor: '#f2f2f2', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
+                      <Box sx={{ height: 180, backgroundImage: `url(${program.image})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
                     )}
-                    <Box sx={{ p: 2, textAlign: 'right' }}>
+                    <Box sx={{ p: 2 }}>
                       <Typography variant="h6" sx={{ fontWeight: 'bold', color: sectionColor }}>{program.name}</Typography>
-                      <Typography sx={{ mt: 1, color: '#444' }}>{program.description}</Typography>
-                      <Typography sx={{ mt: 1 }}>📝 <strong>الشروط:</strong> {program.conditions}</Typography>
-                      <Typography sx={{ mt: 1 }}>🎓 <strong>المؤهلات:</strong> {program.qualifications}</Typography>
-                      <Typography sx={{ mt: 1 }}>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{program.phone}</span></Typography>
+                      <Typography sx={{ mt: 1, color: '#555', fontSize: '0.95rem' }}>{program.description}</Typography>
+                      <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📝 <strong>الشروط:</strong> {program.conditions}</Typography>
+                      <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>🎓 <strong>المؤهلات:</strong> {program.qualifications}</Typography>
+                      <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{program.phone}</span></Typography>
                     </Box>
                   </Paper>
                 </Grid>
               ))}
-
             </Grid>
           </>
         )}
 
         {sectionsWithCourses.includes(section.id) && (
           <Box sx={{ textAlign: 'center', mt: 6 }}>
-            <Box component="a" href={`/programs?section=${section.id}`} sx={{ backgroundColor: sectionColor, color: '#fff', textDecoration: 'none', px: 4, py: 1.5, borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', display: 'inline-block', transition: '0.3s', '&:hover': { backgroundColor: '#333' } }}>
+            <Box component="a" href={`/programs?section=${section.id}`} sx={{ backgroundColor: sectionColor, color: '#fff', textDecoration: 'none', px: 4, py: 1.5, borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', display: 'inline-block', transition: '0.3s',
+               '&:hover': { backgroundColor: '#333' } }}>
               🎓 عرض جميع الدورات الخاصة بالقسم
             </Box>
           </Box>
@@ -236,25 +229,7 @@ function SectionPage() {
             </Grid>
           </PrettyCard>
         )}
-
       </Container>
-
-      {/* Footer Note - at bottom and subtle */}
-      <Box
-        sx={{
-          mt: 'auto',
-          py: 2,
-          textAlign: 'center',
-          fontStyle: 'italic',
-          fontSize: '0.95rem',
-          color: '#888',
-          borderTop: '1px solid #eee',
-          zIndex: 3,
-          position: 'relative',
-        }}
-      >
-        [رسم توضيحي أو صورة للقسم ستضاف لاحقاً]
-      </Box>
     </Box>
   );
 }

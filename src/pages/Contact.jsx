@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import { sendMessage } from '../utils/contact_firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
+import HeroSection from "../components/HeroSection";
 
 export default function Contact() {
   const theme = useTheme();
@@ -77,23 +78,46 @@ export default function Contact() {
   };
 
   return (
-    <Box sx={{ p: 4, direction: 'rtl', bgcolor: '#f4faff' }}>
-      <Typography variant="h4" textAlign="center" mb={2} fontWeight="bold" color="primary">
-        تواصل معنا
-      </Typography>
+
+<Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+    <Box mb={4}> {/* Adjust the margin as needed */}
+    <HeroSection pageId="contactUs" />
+  </Box>
+
       {/* Info + Map */}
+     <Box mx={{ xs: 2, md:7 }} >
       <Grid container spacing={4} mb={4} direction={isMobile ? 'column-reverse' : 'row'}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} >
           <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h6" color="#007cb9" mb={2}>معلومات التواصل</Typography>
+            <Typography variant="h6" color=" black" mb={2}>معلومات التواصل</Typography>
             {siteInfo && (
               <>
-                <Typography mb={1}><FaMapMarkerAlt /> العنوان: {siteInfo.address}</Typography>
-                <Typography mb={1}><FaPhoneAlt /> الهاتف: {siteInfo.phone_number}</Typography>
-                <Typography mb={1}><FaEnvelope /> البريد الإلكتروني: {siteInfo.email}</Typography>
+<Typography mb={1}>
+  <Box component="span" sx={{ color: '#f26d2c', ml: 1 }}>
+    <FaMapMarkerAlt />
+  </Box>
+  العنوان: {siteInfo.address}
+</Typography>
+<Typography mb={1}>
+  <Box component="span" sx={{ color: '#f26d2c', ml: 1 }}>
+    <FaPhoneAlt />
+  </Box>
+  الهاتف: {siteInfo.phone_number}
+</Typography>
+<Typography mb={1}>
+  <Box component="span" sx={{ color: '#f26d2c', ml: 1 }}>
+    <FaEnvelope />
+  </Box>
+  البريد الإلكتروني: {siteInfo.email}
+</Typography>
 
-                <Box mt={3} pt={2} borderTop="1px solid #e0f0fa">
-                  <Typography variant="subtitle1" color="#007cb9" gutterBottom><FaClock /> ساعات العمل:</Typography>
+<Box mt={3} pt={2} borderTop="1px solid #e0f0fa">
+<Typography variant="h6" color=" black" gutterBottom>
+  <Box component="span" sx={{ color: '#f26d2c', ml: 1 }}>
+    <FaClock />
+  </Box>
+  ساعات العمل:
+</Typography>
                   <Typography variant="body2">{siteInfo.working_days || ""}</Typography>
                   <Typography variant="body2">{siteInfo.working_hours || ""}</Typography>
         
@@ -126,7 +150,7 @@ export default function Contact() {
         </Grid>
       </Grid>
   {/* Contact Form */}
-  <Typography variant="h5" textAlign="center" mb={2} fontWeight="bold" color="primary">
+  <Typography variant="h5" textAlign="center" mb={2} fontWeight="bold" color="black">
         أرسل لنا رسالة
       </Typography>
 
@@ -211,6 +235,7 @@ export default function Contact() {
         </Formik>
       </Paper>
 
+        </Box>
 
       {/* Snackbar */}
       <Snackbar
@@ -230,5 +255,6 @@ export default function Contact() {
         </MuiAlert>
       </Snackbar>
     </Box>
+
   );
 }
