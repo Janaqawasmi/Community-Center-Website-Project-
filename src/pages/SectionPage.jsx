@@ -32,6 +32,7 @@ function SectionPage() {
   const PrettyCard = ({ title, icon, color, children }) => (
     <Paper
       elevation={6}
+
       sx={{
         position: 'relative',
         p: 4,
@@ -46,6 +47,7 @@ function SectionPage() {
           transform: 'scale(1.01)',
           boxShadow: '0px 6px 20px rgba(0,0,0,0.12)',
         },
+
         zIndex: 3,
       }}
     >
@@ -64,6 +66,7 @@ function SectionPage() {
           boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
           zIndex: 4,
           whiteSpace: 'nowrap'
+
         }}
       >
         {icon} {title}
@@ -110,8 +113,11 @@ function SectionPage() {
               <PrettyCard title={section.description_title || "الرؤية"} icon="📝" color={sectionColor}>
                 <Typography sx={{ fontSize: '1.3rem', lineHeight: 2 }}>{section.description}</Typography>
               </PrettyCard>
+
             </Grid>
-          )}
+          </Grid>
+        </Container>
+      </Box>
 
           {/* صور */}
           {section.imageGallery?.length > 0 && (
@@ -123,6 +129,7 @@ function SectionPage() {
                   </Box>
                 ))}
               </Slider>
+
             </Grid>
           )}
         </Grid>
@@ -183,6 +190,7 @@ function SectionPage() {
                   </Paper>
                 </Grid>
               ))}
+
             </Grid>
           </>
         )}
@@ -228,7 +236,25 @@ function SectionPage() {
             </Grid>
           </PrettyCard>
         )}
+
       </Container>
+
+      {/* Footer Note - at bottom and subtle */}
+      <Box
+        sx={{
+          mt: 'auto',
+          py: 2,
+          textAlign: 'center',
+          fontStyle: 'italic',
+          fontSize: '0.95rem',
+          color: '#888',
+          borderTop: '1px solid #eee',
+          zIndex: 3,
+          position: 'relative',
+        }}
+      >
+        [رسم توضيحي أو صورة للقسم ستضاف لاحقاً]
+      </Box>
     </Box>
   );
 }
