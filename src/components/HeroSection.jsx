@@ -36,6 +36,8 @@ export default function HeroSection({ pageId }) {
           overflow: "hidden",
         }}
       >
+          {/* Add the HeroSection */}
+
         {/* Image */}
         <Box
           component="img"
