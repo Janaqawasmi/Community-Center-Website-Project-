@@ -38,7 +38,7 @@ function SectionPage() {
         p: { xs: 3, sm: 4 },
         pt: 7,
         bgcolor: '#fff',
-        borderRadius: '90px',
+        borderRadius: '24px',
         borderRight: `6px solid ${color}`,
         boxShadow: '0px 4px 18px rgba(0,0,0,0.08)',
         mt: 4,
