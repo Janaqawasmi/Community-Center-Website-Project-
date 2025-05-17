@@ -15,12 +15,58 @@ export default function ProgramCardFront({ prog, onFlip }) {
 
   return (
     <Card sx={{ width: "100%", height: "100%", borderRadius: 5, overflow: "hidden", border: "1px solid #ccc", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", fontFamily: "Arial, sans-serif", position: "relative" }}>
-      <Box sx={{ position: "relative", width: "100%", height: 150, overflow: "hidden", borderBottom: "2px solid #ccc", borderTopLeftRadius: "16px", borderTopRightRadius: "16px" }}>
-        <Box component="img" src={prog.imageUrl} alt={prog.name} sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", clipPath: "polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%)", position: "absolute", top: 0, left: 0, zIndex: 2 }} />
-        <Box sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "40%", background: "linear-gradient(to top, rgba(13, 71, 161, 0.5), transparent)" }} />
-      </Box>
+<Box sx={{ position: "relative", width: "100%", height: 150 }}>
+  {/* Thin colored shape at the back */}
+  <Box
+    sx={{
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
+background: prog.lineColor,
+      zIndex: 0,
+    }}
+  />
 
-      <Typography variant="h6" color="#0d47a1" fontWeight="bold" gutterBottom>{prog.name}</Typography>
+  {/* Image shape over the colored shape, slightly smaller height to expose "border" */}
+  <Box
+    sx={{
+      position: "absolute",
+      width: "100%",
+      height: "98%",
+      top: 0,
+      left: 0,
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
+      overflow: "hidden",
+      zIndex: 1,
+      backgroundColor: prog.lineColor || "#004e92", // use fallback if missing
+    }}
+  >
+    <Box
+      component="img"
+      src={prog.imageUrl}
+      alt={prog.name}
+      sx={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        objectPosition: "center",
+      }}
+    />
+  </Box>
+</Box>
+
+
+
+<Typography
+  variant="h6"
+  color="#0d47a1"
+  fontWeight="bold"
+  gutterBottom
+  sx={{ mt: 1 }} 
+>
+  {prog.name}
+</Typography>
       <Typography sx={{ fontSize: "14px", color: "#666", mt: 1 }}>{prog.description || "لا توجد تفاصيل إضافية"}</Typography>
 
       <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>

@@ -239,7 +239,7 @@ function Layout({ sections }) {
                   sx={{
                 fontSize: '17px',
                     color: 'black',
-                    '&:hover': { backgroundColor: 'rgba(242, 110, 44, 0.35)' },
+                    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.21)' },
                   }}
                 >
                   {section.title}
