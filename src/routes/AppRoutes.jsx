@@ -6,7 +6,7 @@ import Contact from '../pages/Contact';
 import ScrollToTop from '../components/ScrollToTop'; 
 import About from '../pages/About';
 import RegistrationForm from '../pages/registration';
-import ProgramCategoryPage from '../pages/ProgramCategoryPage';
+import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/EventsPage';
 import NewsPage from '../pages/NewsPage';
