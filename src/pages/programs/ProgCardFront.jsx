@@ -14,7 +14,9 @@ export default function ProgramCardFront({ prog, onFlip }) {
   const arabicTime = `${hours}:${minutes} ${meridiem}`;
 
   return (
-    <Card sx={{ width: "100%", height: "100%", borderRadius: 5, overflow: "hidden", border: "1px solid #ccc", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", fontFamily: "Arial, sans-serif", position: "relative" }}>
+    <Card sx={{ width: "100%", height: "100%", borderRadius: 5, overflow: "hidden", border: "1px solid #ccc", 
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", 
+    alignItems: "center", textAlign: "center", fontFamily: "Arial, sans-serif", position: "relative" }}>
 <Box sx={{ position: "relative", width: "100%", height: 150 }}>
   {/* Thin colored shape at the back */}
   <Box

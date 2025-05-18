@@ -102,7 +102,7 @@ export default function HomePage() {
       <Box
   sx={{
     position: "relative",
-    height: { xs: 300, md: 500 },
+    height: { xs: 100, md: 350 },
     display: "flex",
     flexDirection: "row",
     overflow: "hidden",
