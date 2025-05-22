@@ -44,12 +44,12 @@ function CategoryCard({ label, color, onClick, index }) {
           alignItems: "center",
           justifyContent: "space-between",
           borderRight: `6px solid ${color}`,
-          backgroundColor: "#fff",
+          backgroundColor: " #fff",
           transition: "0.3s",
           width: "100%",
           minHeight: "56px",
           "&:hover": {
-            backgroundColor: "#f5f5f5",
+            backgroundColor: " #f5f5f5",
             transform: "translateY(-2px)",
           },
         }}
