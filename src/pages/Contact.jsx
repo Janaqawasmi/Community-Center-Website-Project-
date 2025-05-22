@@ -21,6 +21,8 @@ export default function Contact() {
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [siteInfo, setSiteInfo] = useState(null);
+  const [departments, setDepartments] = useState([]);
+
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -39,15 +41,30 @@ export default function Contact() {
       }
     };
 
+    const fetchDepartments = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'heroSection'));
+        const fetched = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().title || doc.id
+        }));
+        setDepartments(fetched);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+      }
+    };
+
     fetchSiteInfo();
+    fetchDepartments();
   }, []);
 
-  const validationSchema = Yup.object({
+ const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
     email: Yup.string().email("صيغة البريد الإلكتروني غير صحيحة").required("البريد الإلكتروني مطلوب"),
     phone: Yup.string().required("رقم الهاتف مطلوب"),
-    message: Yup.string().required("محتوى الرسالة مطلوب")
+    message: Yup.string().required("محتوى الرسالة مطلوب"),
+    department: Yup.string().required("القسم مطلوب")
   });
 
   const initialValues = {
@@ -55,7 +72,8 @@ export default function Contact() {
     last_name: "",
     email: "",
     phone: "",
-    message: ""
+    message: "",
+    department: ""
   };
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -147,8 +165,44 @@ export default function Contact() {
               title="موقع المركز الجماهيري بيت حنينا"
             />
           </Box>
+
+          {siteInfo?.waze_link && (
+            <Box textAlign="center" mt={2}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1,
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  يمكنك أيضًا الوصول إلى المركز عبر تطبيق Waze:
+                </Typography>
+                <a
+                  href={siteInfo.waze_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="https://firebasestorage.googleapis.com/v0/b/public-center-website.firebasestorage.app/o/waze.jpeg?alt=media&token=7c13195c-cc0d-45dd-a0af-2c8e5c561ec3"
+                    alt="افتح في Waze"
+                    style={{
+                      width: '50px',
+                      height: 'auto',
+                      cursor: 'pointer',
+                      borderRadius: '5px'
+                    }}
+                  />
+                </a>
+              </Box>
+            </Box>
+          )}
         </Grid>
       </Grid>
+
+
   {/* Contact Form */}
   <Typography variant="h5" textAlign="center" mb={2} fontWeight="bold" color="black">
         أرسل لنا رسالة
@@ -199,7 +253,24 @@ export default function Contact() {
                     inputProps={{ style: { textAlign: 'right' } }}
                   />
                 </Grid>
-
+ <Grid item xs={12} md={6}>
+                  <TextField
+                    select
+                    fullWidth
+                    name="department"
+                    label="اختر القسم"
+                    value={values.department}
+                    onChange={handleChange}
+                    SelectProps={{ native: true }}
+                    error={touched.department && Boolean(errors.department)}
+                    helperText={touched.department && errors.department}
+                  >
+                    <option value="">-- اختر القسم --</option>
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.name}>{dept.name}</option>
+                    ))}
+                  </TextField>
+                </Grid>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth label="موضوع الرسالة" name="message"

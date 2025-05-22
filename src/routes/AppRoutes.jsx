@@ -10,6 +10,8 @@ import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/EventsPage';
 import NewsPage from '../pages/NewsPage';
+import AdminInquiries from '../pages/AdminInquiries';
+import Login from '../pages/Login';
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -28,7 +30,8 @@ function AppRoutes({ sections }) {
   <Route path="/programs" element={<ProgramePage />} />
   <Route path="/events" element={<EventsPage />} />
   <Route path="/news" element={<NewsPage />} />
-
+  <Route path="/admin" element={<AdminInquiries />} />
+  <Route path="/login" element={<Login />} />
 </Route>
 
       </Routes>
