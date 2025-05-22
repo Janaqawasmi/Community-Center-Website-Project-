@@ -77,7 +77,7 @@ function Layout({ sections }) {
       {logoUrl && (
         <Box
           sx={{
-            position: 'fixed',
+            position: 'absolute',
             top: 0,
             right: 0,
             zIndex: 1300,
@@ -175,7 +175,7 @@ function Layout({ sections }) {
                     : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: ' #f26d2c' },
+                '&:hover': { color: 'rgb(0, 0, 0)' },
               }}
             >
               الرئيسية
@@ -187,7 +187,7 @@ function Layout({ sections }) {
                 fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: ' #f26d2c'
+                '&:hover': { color: 'rgb(0, 0, 0)'
 
                  },
               }}
@@ -201,7 +201,7 @@ function Layout({ sections }) {
                 fontWeight: location.pathname === '/events' ? 'bold' : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: ' #f26d2c' },
+                '&:hover': { color: 'rgb(0, 0, 0)' },
               }}
             >
               الفعاليات
@@ -212,7 +212,13 @@ function Layout({ sections }) {
               sx={{
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: ' #f26d2c' },
+                                                  outline:'none',
+
+                '&:focus': { color: 'rgb(0, 0, 0)',
+
+                                  outline:'none',
+
+                 },
               }}
             >
               الأقسام
@@ -229,6 +235,8 @@ function Layout({ sections }) {
                   direction: 'rtl',
                   minWidth: 180,
                   backgroundColor: 'white',
+                                                    outline:'none',
+
                 },
               }}
             >
@@ -239,7 +247,8 @@ function Layout({ sections }) {
                   sx={{
                 fontSize: '17px',
                     color: 'black',
-                    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.21)' },
+                    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.21)',                                   outline:'none',
+ },
                   }}
                 >
                   {section.title}
@@ -253,7 +262,7 @@ function Layout({ sections }) {
                 fontWeight: location.pathname === '/news' ? 'bold' : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: ' #f26d2c' },
+                '&:hover': { color: 'rgb(0, 0, 0)' },
               }}
             >
               أخبارنا
@@ -265,7 +274,7 @@ function Layout({ sections }) {
                 fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: '#f26d2c' },
+                '&:hover': { color: 'rgb(0, 0, 0)' },
               }}
             >
               عن المركز
@@ -277,7 +286,7 @@ function Layout({ sections }) {
                 fontWeight: location.pathname === '/contact' ? 'bold' : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: '#f26d2c' },
+                '&:hover': { color: 'rgb(0, 0, 0)' },
               }}
             >
               تواصل معنا
