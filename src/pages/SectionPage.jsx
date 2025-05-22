@@ -6,11 +6,15 @@ import { Box, Typography, Container, Grid, Paper } from '@mui/material';
 import { iconMap, sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
 import HeroSection from "../components/HeroSection";
+import ExpandableText from '../components/ExpandableText';
+import ExpandableList from '../components/ExpandableList';
+
 
 function SectionPage() {
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
   const { id } = useParams();
   const [section, setSection] = useState(null);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   useEffect(() => {
     const fetchSection = async () => {
@@ -29,6 +33,27 @@ function SectionPage() {
 
   const sectionColor = sectionColors[section.id] || '#607d8b';
   const sectionIcon = iconMap[section.id] || '📌';
+ const getScrollButtonData = () => {
+  switch (section.id) {
+    case 'section_culture':
+    case 'section_curricular':
+    case 'section_sports':
+    case 'section_women':
+      return { label: "📚 تصفّح جميع الدورات", targetId: "courses" };
+    case 'section_elderly':
+    case 'section_special':
+    case 'section_youth':
+      return { label: "🌟 برامج القسم", targetId: "programs" };
+    case 'section_kindergarten':
+      return { label: "🏫 استكشف الروضات", targetId: "kindergartens" };
+    case 'section_nursery':
+      return { label: "🍼 تعرّف على الحضانات", targetId: "nurseries" };
+    default:
+      return null;
+  }
+};
+
+
 
   const PrettyCard = ({ title, icon, color, children }) => (
     <Paper
@@ -88,15 +113,71 @@ function SectionPage() {
     <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', fontFamily: 'Cairo, Arial, sans-serif', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <HeroSection pageId={id} />
 
-      <Container maxWidth="lg" sx={{ py: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
-        <Grid container spacing={4}>
-          {section.description && (
-            <Grid item xs={12} md={6}>
-              <PrettyCard title={section.description_title || "الرؤية"} icon="📝" color={sectionColor}>
-                <Typography sx={{ fontSize: '1.2em', lineHeight: 2 }}>{section.description}</Typography>
-              </PrettyCard>
-            </Grid>
-          )}
+   <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+
+    {(() => {
+  const buttonData = getScrollButtonData();
+  if (!buttonData) return null;
+
+  return (
+    <Box sx={{ textAlign: 'center', mb: 4 }}>
+      {buttonData.label === "📚 تصفّح جميع الدورات" ? (
+        <a
+          href="/programs"
+          style={{
+            backgroundColor: sectionColor,
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '25px',
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            textDecoration: 'none',
+            display: 'inline-block',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+            transition: 'background-color 0.3s ease',
+          }}
+        >
+          {buttonData.label}
+        </a>
+      ) : (
+        <button
+          onClick={() => {
+            const target = document.getElementById(buttonData.targetId);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          style={{
+            backgroundColor: sectionColor,
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '25px',
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+            transition: 'background-color 0.3s ease',
+          }}
+        >
+          {buttonData.label}
+        </button>
+      )}
+    </Box>
+  );
+})()}
+
+ <Grid container spacing={4}>
+  {section.description && (
+    <Grid item xs={12} md={6} sx={{ mt: { xs: -3, md: -4 } }}>
+      <PrettyCard title={section.description_title || "الرؤية"} icon="📝" color={sectionColor}>
+<ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
+
+      </PrettyCard>
+    </Grid>
+  )}
+
+
 
        
           {/* صور */}
@@ -115,36 +196,35 @@ function SectionPage() {
 
         {section.hallDescription && (
           <PrettyCard title={section.hallDescription_title || "نادي الحلقات والحلقات التشغيلية"} icon="🏢" color={sectionColor}>
-            <Typography sx={{ fontSize: '1.3rem', lineHeight: 2 }}>{section.hallDescription}</Typography>
+           <ExpandableText text={section.hallDescription} sx={{ fontSize: '1.3rem', lineHeight: 2 }} limit={400} />
+
           </PrettyCard>
         )}
 
-        {section.goals?.length > 0 && (
-          <PrettyCard title={section.goals_title || "الأهداف (نادي الحلقات)"} icon="🎯" color={sectionColor}>
-            <ul style={{ fontSize: '1.2rem', paddingRight: 20, lineHeight: 2 }}>
-              {section.goals.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </PrettyCard>
-        )}
+  {section.goals?.length > 0 && (
+  <PrettyCard title={section.goals_title || "الأهداف (نادي الحلقات)"} icon="🎯" color={sectionColor}>
+    <ExpandableList items={section.goals} limit={3} />
+  </PrettyCard>
+)}
 
-        {section.extra_goals?.length > 0 && (
-          <PrettyCard title={section.extra_goals_title || "الأهداف (الحلقات التشغيلية)"} icon="🎯" color={sectionColor}>
-            <ul style={{ fontSize: '1.2rem', paddingRight: 20, lineHeight: 2 }}>
-              {section.extra_goals.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </PrettyCard>
-        )}
 
-        {section.programs?.length > 0 && (
-          <PrettyCard title={section.programs_title || "البرامج والأنشطة"} icon="📋" color={sectionColor}>
-            <ul style={{ fontSize: '1.2rem', paddingRight: 20, lineHeight: 2 }}>
-              {section.programs.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </PrettyCard>
-        )}
+{section.extra_goals?.length > 0 && (
+  <PrettyCard title={section.extra_goals_title || "الأهداف (الحلقات التشغيلية)"} icon="🎯" color={sectionColor}>
+    <ExpandableList items={section.extra_goals} limit={3} />
+  </PrettyCard>
+)}
+
+
+      {section.programs?.length > 0 && (
+  <PrettyCard title={section.programs_title || "البرامج والأنشطة"} icon="📋" color={sectionColor}>
+    <ExpandableList items={section.programs} limit={3} />
+  </PrettyCard>
+)}
+
 
         {section.programCards?.length > 0 && (
           <>
+              <Box id="programs" sx={{ textAlign: 'center', mt: 6, mb: 3 }}></Box>
             <Box sx={{ textAlign: 'center', mt: 6, mb: 3 }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: sectionColor, fontFamily: 'Cairo, Arial, sans-serif', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
                 🧩 برامجنا الخاصة بالقسم
@@ -175,7 +255,12 @@ function SectionPage() {
                     )}
                     <Box sx={{ p: 2 }}>
                       <Typography variant="h6" sx={{ fontWeight: 'bold', color: sectionColor }}>{program.name}</Typography>
-                      <Typography sx={{ mt: 1, color: '#555', fontSize: '0.95rem' }}>{program.description}</Typography>
+                      <ExpandableText
+  text={program.description}
+  sx={{ mt: 1, color: '#555', fontSize: '0.95rem' }}
+  limit={250}
+/>
+
                       <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📝 <strong>الشروط:</strong> {program.conditions}</Typography>
                       <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>🎓 <strong>المؤهلات:</strong> {program.qualifications}</Typography>
                       <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{program.phone}</span></Typography>
@@ -188,16 +273,19 @@ function SectionPage() {
         )}
 
         {sectionsWithCourses.includes(section.id) && (
-          <Box sx={{ textAlign: 'center', mt: 6 }}>
-            <Box component="a" href={`/programs?section=${section.id}`} sx={{ backgroundColor: sectionColor, color: '#fff', textDecoration: 'none', px: 4, py: 1.5, borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', display: 'inline-block', transition: '0.3s',
-               '&:hover': { backgroundColor: '#333' } }}>
+          <><Box id="courses" sx={{ textAlign: 'center', mt: 6 }} /><Box sx={{ textAlign: 'center', mt: 6 }}>
+            <Box component="a" href={`/programs?section=${section.id}`} sx={{
+              backgroundColor: sectionColor, color: '#fff', textDecoration: 'none', px: 4, py: 1.5, borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', display: 'inline-block', transition: '0.3s',
+              '&:hover': { backgroundColor: '#333' }
+            }}>
               🎓 عرض جميع الدورات الخاصة بالقسم
             </Box>
-          </Box>
+          </Box></>
         )}
 
         {section.nurseries?.length > 0 && (
           <PrettyCard title="حضاناتنا" icon="🏫" color={sectionColor}>
+           <Box id="nurseries"></Box>
             <Grid container spacing={2}>
               {section.nurseries.map((nursery, i) => (
                 <Grid item xs={12} sm={6} md={4} key={i}>
@@ -215,18 +303,20 @@ function SectionPage() {
 
         {section.kindergartens?.length > 0 && (
           <PrettyCard title="روضاتنا" icon="🏫" color={sectionColor}>
-            <Grid container spacing={2}>
-              {section.kindergartens.map((kg, i) => (
-                <Grid item xs={12} sm={6} md={4} key={i}>
-                  <Paper elevation={3} sx={{ p: 2, borderRadius: 3, height: '100%' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: sectionColor }}>{kg.name}</Typography>
-                    <Typography sx={{ mt: 1 }}>📍 <strong>الموقع:</strong> {kg.location}</Typography>
-                    <Typography>🕒 <strong>الدوام:</strong> {kg.hours}</Typography>
-                    <Typography>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{kg.phone}</span></Typography>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
+            <Box id="kindergartens">
+              <Grid container spacing={2}>
+                {section.kindergartens.map((kg, i) => (
+                  <Grid item xs={12} sm={6} md={4} key={i}>
+                    <Paper elevation={3} sx={{ p: 2, borderRadius: 3, height: '100%' }}>
+                      <Typography variant="h6" sx={{ fontWeight: 'bold', color: sectionColor }}>{kg.name}</Typography>
+                      <Typography sx={{ mt: 1 }}>📍 <strong>الموقع:</strong> {kg.location}</Typography>
+                      <Typography>🕒 <strong>الدوام:</strong> {kg.hours}</Typography>
+                      <Typography>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{kg.phone}</span></Typography>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
           </PrettyCard>
         )}
       </Container>

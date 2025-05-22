@@ -315,26 +315,29 @@ function Layout({ sections }) {
           padding: '8px 16px',
         }}
       >
-        <Button
-          variant="outlined"
-          startIcon={<LoginIcon />}
-          sx={{ fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}
-          onClick={async () => {
-            const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
-            const auth = getAuth();
-            const provider = new GoogleAuthProvider();
-            try {
-              const result = await signInWithPopup(auth, provider);
-              alert(`welcome ${result.user.displayName}`);
-              console.log('Logged in UID:', result.user.uid);
-            } catch (error) {
-              console.error('Login failed:', error);
-              alert('Login failed: ' + error.message);
-            }
-          }}
-        >
-          تسجيل دخول للإدارة فقط
-        </Button>
+       <Button
+  variant="outlined"
+  startIcon={<LoginIcon />}
+  sx={{ fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}
+  onClick={async () => {
+    const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      if (result.user) {
+        alert(`welcome ${result.user.displayName}`);
+        navigate('/admin'); // 🔁 redirect after login
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Login failed: ' + error.message);
+    }
+  }}
+>
+  تسجيل دخول للإدارة فقط
+</Button>
+
       </Box>
     </>
   );
