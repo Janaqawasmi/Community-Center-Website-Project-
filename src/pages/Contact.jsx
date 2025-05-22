@@ -9,9 +9,10 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { sendMessage } from '../utils/contact_firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
+import { SiWaze } from 'react-icons/si'; // Simple Icons: Waze logo
 
 export default function Contact() {
   const theme = useTheme();
@@ -43,7 +44,7 @@ export default function Contact() {
 
     const fetchDepartments = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'heroSection'));
+        const querySnapshot = await getDocs(collection(db, 'sections'));
         const fetched = querySnapshot.docs.map(doc => ({
           id: doc.id,
           name: doc.data().title || doc.id
@@ -146,60 +147,81 @@ export default function Contact() {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Box
-            sx={{
-              borderRadius: 2,
-              overflow: 'hidden',
-              boxShadow: 3,
-              height: '100%',
-              minHeight: 280
-            }}
-          >
-            <iframe
-              src="https://www.google.com/maps?q=طريق بيت حنينا 10, القدس, إسرائيل&z=15&output=embed"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              allowFullScreen
-              title="موقع المركز الجماهيري بيت حنينا"
-            />
-          </Box>
+  <Paper
+    elevation={3}
+    sx={{
+      borderRadius: 1,
+      overflow: 'hidden',
+      height: '100%',
+      minHeight: 200,
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <Box sx={{ flexGrow: 1 }}>
+      <iframe
+        src="https://www.google.com/maps?q=طريق بيت حنينا 10, القدس, إسرائيل&z=15&output=embed"
+        width="100%"
+        height="100%"
+        style={{ border: 0, minHeight: 200 }}
+        loading="lazy"
+        allowFullScreen
+        title="موقع المركز الجماهيري بيت حنينا"
+      />
+    </Box>
+{siteInfo?.waze_link && (
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 1,
+      py: 2,
+      px: 2,
+      borderTop: '1px solid #eee',
+      backgroundColor: '#fafafa',
+      flexWrap: 'wrap',
 
-          {siteInfo?.waze_link && (
-            <Box textAlign="center" mt={2}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 1,
-                  flexWrap: 'wrap',
-                }}
-              >
-                <Typography variant="body2" color="text.secondary">
-                  يمكنك أيضًا الوصول إلى المركز عبر تطبيق Waze:
-                </Typography>
-                <a
-                  href={siteInfo.waze_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/public-center-website.firebasestorage.app/o/waze.jpeg?alt=media&token=7c13195c-cc0d-45dd-a0af-2c8e5c561ec3"
-                    alt="افتح في Waze"
-                    style={{
-                      width: '50px',
-                      height: 'auto',
-                      cursor: 'pointer',
-                      borderRadius: '5px'
-                    }}
-                  />
-                </a>
-              </Box>
-            </Box>
-          )}
-        </Grid>
+    }}
+  >
+    <Typography variant="body2" color="text.secondary">
+      يمكنك أيضًا الوصول إلى المركز عبر تطبيق Waze:
+    </Typography>
+    
+    <a
+      href={siteInfo.waze_link}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ textDecoration: 'none' }}
+    >
+      <Box
+  sx={{
+    width: 44,
+    height: 44,
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: '0.3s',
+    cursor: 'pointer',
+    '&:hover': {
+      transform: 'scale(1.05)',
+      backgroundColor: '#f0f0f0',
+    },
+  }}
+>
+  <SiWaze size={26} color="#2D9CDB" />
+</Box>
+
+    </a>
+  </Box>
+)}
+
+  </Paper>
+</Grid>
+
       </Grid>
 
 

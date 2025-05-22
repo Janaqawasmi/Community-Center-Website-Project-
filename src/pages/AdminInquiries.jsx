@@ -23,7 +23,7 @@ export default function AdminInquiries() {
   const [departments, setDepartments] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  const ADMIN_EMAIL = 'ddwayat95@gmail.com';
+  const ADMIN_EMAIL = 'jana.qawasmi03@gmail.com';
 
   const fetchMessages = async () => {
     const snapshot = await getDocs(collection(db, 'contactMessages'));

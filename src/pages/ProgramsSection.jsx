@@ -77,7 +77,6 @@ export default function ProgramPage() {
   const [allPrograms, setAllPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState("category");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -168,68 +167,25 @@ export default function ProgramPage() {
           />
         </Box>
 
-        {/* Toggle Buttons */}
-        {searchQuery.trim() === "" && (
-          <Box
-            sx={{
-              width: "fit-content",
-              mx: "auto",
-              backgroundColor: "#e0e0e0",
-              borderRadius: "90px",
-              p: "4px",
-              display: "flex",
-              gap: 1,
-              position: "relative",
-              mb: 4,
-            }}
-          >
-            <motion.div
-              layout
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              style={{
-                position: "absolute",
-                top: 4,
-                bottom: 4,
-                right: filterType === "category" ? 4 : "calc(50% + 2px)",
-                left: filterType === "category" ? "calc(50% + 2px)" : 4,
-                background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-                borderRadius: "90px",
-                zIndex: 0,
-              }}
-            />
-            <Box
-              onClick={() => setFilterType("category")}
-              sx={{
-                zIndex: 1,
-                cursor: "pointer",
-                px: 3,
-                py: 1,
-                fontWeight: "bold",
-                fontFamily: "Cairo, sans-serif",
-                color: filterType === "category" ? "white" : "black",
-              }}
-            >
-              اختر حسب القسم
-            </Box>
-            <Box
-              onClick={() => setFilterType("age")}
-              sx={{
-                zIndex: 1,
-                cursor: "pointer",
-                px: 3,
-                py: 1,
-                fontWeight: "bold",
-                fontFamily: "Cairo, sans-serif",
-                color: filterType === "age" ? "white" : "black",
-              }}
-            >
-              حسب العمر
-            </Box>
-          </Box>
-        )}
+   {/* Filter Title - Static Text */}
+{searchQuery.trim() === "" && (
+  <Typography
+    sx={{
+      textAlign: "center",
+      mb: 2,
+      fontWeight: "bold",
+      fontSize: "1.4rem",
+      fontFamily: "Cairo, sans-serif",
+      color: "black",
+    }}
+  >
+    اختر حسب القسم
+  </Typography>
+)}
+
 
         {/* Category View */}
-        {searchQuery.trim() === "" && filterType === "category" && (
+{searchQuery.trim() === "" && (
           <Box sx={{ maxWidth: 700, mx: "auto" }}>
             <Grid container spacing={2}>
               {categories.map((label, index) => {
@@ -256,20 +212,7 @@ export default function ProgramPage() {
           </Box>
         )}
 
-        {/* Age View */}
-        {searchQuery.trim() === "" && filterType === "age" && (
-          <Typography
-            sx={{
-              textAlign: "center",
-              fontSize: "18px",
-              color: "#777",
-              mt: 3,
-              fontFamily: "Cairo, sans-serif",
-            }}
-          >
-            (هنا سيظهر تصنيف حسب العمر - سيتم تنفيذه لاحقًا)
-          </Typography>
-        )}
+       
 
         {/* Search Results */}
         {searchQuery.trim() !== "" && (
