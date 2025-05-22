@@ -5,12 +5,31 @@ import { db } from '../components/firebase';
 import { Box, Typography, Container, Grid, Paper } from '@mui/material';
 import { iconMap, sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import Collapse from '@mui/material/Collapse';
+
 import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
+// 🔧 Put this at the top of the file, after imports but before SectionPage()
+function darkenColor(hex, amount) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  let r = (num >> 16) - amount * 255;
+  let g = ((num >> 8) & 0x00FF) - amount * 255;
+  let b = (num & 0x0000FF) - amount * 255;
+
+  r = Math.max(0, Math.min(255, r));
+  g = Math.max(0, Math.min(255, g));
+  b = Math.max(0, Math.min(255, b));
+
+  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+}
+
 
 
 function SectionPage() {
+  const [expanded, setExpanded] = useState(false);
+
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
   const { id } = useParams();
   const [section, setSection] = useState(null);
@@ -39,64 +58,76 @@ function SectionPage() {
     case 'section_curricular':
     case 'section_sports':
     case 'section_women':
-      return { label: "📚 تصفّح جميع الدورات", targetId: "courses" };
+      return { label: " تصفّح جميع الدورات", targetId: "courses" };
     case 'section_elderly':
     case 'section_special':
     case 'section_youth':
-      return { label: "🌟 برامج القسم", targetId: "programs" };
+      return { label: " برامج القسم", targetId: "programs" };
     case 'section_kindergarten':
-      return { label: "🏫 استكشف الروضات", targetId: "kindergartens" };
+      return { label: " استكشف الروضات", targetId: "kindergartens" };
     case 'section_nursery':
-      return { label: "🍼 تعرّف على الحضانات", targetId: "nurseries" };
+      return { label: " تعرّف على الحضانات", targetId: "nurseries" };
     default:
       return null;
   }
 };
 
 
-
-  const PrettyCard = ({ title, icon, color, children }) => (
-    <Paper
-      elevation={4}
+const PrettyCard = ({ title, color, children }) => {
+  return (
+    <Box
       sx={{
         position: 'relative',
+        borderRadius: '28px',
         p: { xs: 3, sm: 4 },
-        pt: 7,
-        bgcolor: '#fff',
-        borderRadius: '24px',
-        borderRight: `6px solid ${color}`,
-        boxShadow: '0px 4px 18px rgba(0,0,0,0.08)',
-        mt: 4,
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        '&:hover': {
-  boxShadow: '0px 4px 18px rgba(0,0,0,0.08)',
-  transform: 'none',
-  cursor: 'default',
-        },
+        mt: 5,
+        //background: `linear-gradient(to bottom right, ${color}10, #ffffff)`,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+        overflow: 'hidden',
+        direction: 'rtl',
+        fontFamily: 'Cairo, sans-serif',
+        minHeight: '200px',
       }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: -22,
-          right: 24,
-          background: color,
-          color: '#fff',
-          px: 3,
-          py: 0.5,
-          borderRadius: '32px',
-          fontSize: '1.1rem',
-          fontWeight: 600,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-          zIndex: 4,
-          whiteSpace: 'nowrap'
-        }}
-      >
-        {icon} {title}
+      {/* Top-Right Title Badge */}
+   <Box
+  sx={{
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    height: { xs: '40px', sm: '40px' },  // shorter height
+    minWidth: 'fit-content',
+    padding: '0 20px', // horizontal padding
+    background: `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`,
+    borderBottomLeftRadius: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: { xs: '1rem', sm: '1.1rem' },
+    zIndex: 2,
+    textAlign: 'center',
+    whiteSpace: 'nowrap', // keep title on one line
+    boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
+  }}
+>
+  {title}
+</Box>
+
+
+
+      {/* Card Body without title */}
+<Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
+        {children}
       </Box>
-      <Box sx={{ mt: 2 }}>{children}</Box>
-    </Paper>
+    </Box>
   );
+};
+
+
 
   const singleImageSliderSettings = {
     dots: true,
@@ -119,64 +150,157 @@ function SectionPage() {
   const buttonData = getScrollButtonData();
   if (!buttonData) return null;
 
-  return (
-    <Box sx={{ textAlign: 'center', mb: 4 }}>
-      {buttonData.label === "📚 تصفّح جميع الدورات" ? (
-        <a
-          href="/programs"
-          style={{
-            backgroundColor: sectionColor,
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: '25px',
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
-            textDecoration: 'none',
-            display: 'inline-block',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            transition: 'background-color 0.3s ease',
-          }}
-        >
-          {buttonData.label}
-        </a>
-      ) : (
-        <button
-          onClick={() => {
-            const target = document.getElementById(buttonData.targetId);
-            if (target) {
-              target.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-          style={{
-            backgroundColor: sectionColor,
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: '25px',
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
-            border: 'none',
-            cursor: 'pointer',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            transition: 'background-color 0.3s ease',
-          }}
-        >
-          {buttonData.label}
-        </button>
-      )}
-    </Box>
+  return ( <Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'right',
+    mt: 0,
+    mb: 6,
+    px: 2,
+    direction: 'rtl',
+
+  }}
+>
+  <Box
+    sx={{
+      position: 'relative',
+      padding: '10px 26px',
+      fontSize: '1.1rem',
+      fontWeight: 'bold',
+      fontFamily: 'Cairo, sans-serif',
+      cursor: 'pointer',
+      color: sectionColor,
+      borderRadius: '30px',
+      overflow: 'hidden',
+      transition: 'all 0.4s ease-in-out',
+    boxShadow: `15px 15px 15px ${sectionColor}`,
+
+      // these make sure nothing is clipped when the border expands
+'&::before': {
+  content: '""',
+  position: 'absolute',
+  top: 0,
+  right: 0, // changed from left to right
+  width: '30px',
+  height: '30px',
+  border: `0px solid transparent`,
+  borderTopColor: sectionColor,
+  borderRightColor: sectionColor, // top-right instead of top-left
+  borderTopRightRadius: '22px',   // top-right corner
+  transition: 'all 0.3s ease-in-out',
+  boxSizing: 'border-box',
+  
+},
+'&::after': {
+  content: '""',
+  position: 'absolute',
+  bottom: 0,
+  left: 0, // changed from right to left
+  width: '30px',
+  height: '30px',
+  border: `0px solid transparent`,
+  borderBottomColor: sectionColor,
+  borderLeftColor: sectionColor,  // bottom-left instead of bottom-right
+  borderBottomLeftRadius: '22px', // bottom-left corner
+  transition: 'all 0.3s ease-in-out',
+  boxSizing: 'border-box',
+},
+'&:hover::before': {
+  width: '100%',
+  height: '100%',
+  border: `2px solid ${sectionColor}`,
+  borderRadius: '30px',
+  borderLeft: 'none',
+  borderBottom: 'none', // hiding opposite sides
+  
+},
+'&:hover::after': {
+  width: '100%',
+  height: '100%',
+  border: `2px solid ${sectionColor}`,
+  borderRadius: '30px',
+  borderRight: 'none',
+  borderTop: 'none', // hiding opposite sides
+  textShadow: '0 0 5px rgba(0,0,0,0.1)',
+
+},
+
+      '&:hover': {
+        boxShadow: '0 3px 12px rgba(0,0,0,0.1)',
+      },
+    }}
+    onClick={() => {
+      const target = document.getElementById(buttonData.targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }}
+  >
+    {buttonData.label}
+  </Box>
+</Box>
+
   );
-})()}
+})()
+}
+
 
  <Grid container spacing={4}>
-  {section.description && (
-    <Grid item xs={12} md={6} sx={{ mt: { xs: -3, md: -4 } }}>
-      <PrettyCard title={section.description_title || "الرؤية"} icon="📝" color={sectionColor}>
-<ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
-
-      </PrettyCard>
-    </Grid>
+ {section.description && (
+  <Grid item xs={12} md={6} sx={{ mt: { xs: -3, md: -4 } }}>
+    <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
+      <ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
+      <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          style={{
+            color: 'red',
+            fontWeight: 'bold',
+            border: 'none',
+            background: 'none',
+            cursor: 'pointer',
+            fontSize: '1rem',
+          }}
+        >
+          {expanded ? 'إخفاء' : 'المزيد'}
+        </button>
+      </Box>
+    </PrettyCard>
+{/* 👇 Start Collapse block */}
+<Collapse in={expanded}>
+  {section.hallDescription && (
+    <PrettyCard title={section.hallDescription_title || "نادي الحلقات"} color={sectionColor}>
+      <ExpandableText
+        text={section.hallDescription}
+        sx={{ fontSize: '5rem', lineHeight: 4 }}
+        expandable={false}
+      />
+    </PrettyCard>
   )}
 
+  {section.goals?.length > 0 && (
+    <PrettyCard title={section.goals_title || "الأهداف"} color={sectionColor}>
+      <ExpandableList items={section.goals} expandable={false} />
+    </PrettyCard>
+  )}
+
+  {section.extra_goals?.length > 0 && (
+    <PrettyCard title={section.extra_goals_title || "أهداف إضافية"} color={sectionColor}>
+      <ExpandableList items={section.extra_goals} expandable={false} />
+    </PrettyCard>
+  )}
+
+  {section.programs?.length > 0 && (
+    <PrettyCard title={section.programs_title || "البرامج والأنشطة"} color={sectionColor}>
+      <ExpandableList items={section.programs} expandable={false} />
+    </PrettyCard>
+  )}
+</Collapse>
+{/* 👆 End Collapse block */}
+
+    
+  </Grid>
+)}
 
 
        
@@ -193,34 +317,6 @@ function SectionPage() {
             </Grid>
           )}
         </Grid>
-
-        {section.hallDescription && (
-          <PrettyCard title={section.hallDescription_title || "نادي الحلقات والحلقات التشغيلية"} icon="🏢" color={sectionColor}>
-           <ExpandableText text={section.hallDescription} sx={{ fontSize: '1.3rem', lineHeight: 2 }} limit={400} />
-
-          </PrettyCard>
-        )}
-
-  {section.goals?.length > 0 && (
-  <PrettyCard title={section.goals_title || "الأهداف (نادي الحلقات)"} icon="🎯" color={sectionColor}>
-    <ExpandableList items={section.goals} limit={3} />
-  </PrettyCard>
-)}
-
-
-{section.extra_goals?.length > 0 && (
-  <PrettyCard title={section.extra_goals_title || "الأهداف (الحلقات التشغيلية)"} icon="🎯" color={sectionColor}>
-    <ExpandableList items={section.extra_goals} limit={3} />
-  </PrettyCard>
-)}
-
-
-      {section.programs?.length > 0 && (
-  <PrettyCard title={section.programs_title || "البرامج والأنشطة"} icon="📋" color={sectionColor}>
-    <ExpandableList items={section.programs} limit={3} />
-  </PrettyCard>
-)}
-
 
         {section.programCards?.length > 0 && (
           <>

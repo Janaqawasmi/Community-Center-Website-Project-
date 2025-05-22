@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Typography } from '@mui/material';
 
-const ExpandableList = ({ items, limit = 3, sx = {} }) => {
+const ExpandableList = ({ items, limit = 3, sx = {}, expandable = true }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const visibleItems = expanded ? items : items.slice(0, limit);
+  // If not expandable, always show full list
+  const visibleItems = expandable && !expanded ? items.slice(0, limit) : items;
 
   return (
     <>
@@ -13,7 +14,9 @@ const ExpandableList = ({ items, limit = 3, sx = {} }) => {
           <li key={i}>{item}</li>
         ))}
       </ul>
-      {items.length > limit && (
+
+      {/* Show 'المزيد' toggle only if expandable and too many items */}
+      {expandable && items.length > limit && (
         <Typography
           onClick={() => setExpanded(!expanded)}
           sx={{ color: 'red', fontWeight: 'bold', cursor: 'pointer', pr: 2 }}
