@@ -8,14 +8,19 @@ export default function NavButton({ to, state, children, ...props }) {
   const handleClick = () => {
     const isSamePage = location.pathname === to;
     const scrollTarget = state?.scrollTo;
-
+  
     if (isSamePage) {
+      if (scrollTarget) {
+        // Trigger navigation with state to activate scroll in HomePage
+        navigate(to, { state: { scrollTo: scrollTarget } });
+      } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+      }
     } else {
       navigate(to, { state });
     }
   };
+  
 
   return (
     <Button
