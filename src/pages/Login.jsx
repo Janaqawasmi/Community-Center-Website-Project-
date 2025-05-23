@@ -27,8 +27,15 @@ export default function Login() {
 
     try {
       const auth = getAuth();
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/admin');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idTokenResult = await userCredential.user.getIdTokenResult();
+
+      if (idTokenResult.claims.admin) {
+        navigate('/admin');
+      } else {
+        setError('أنت لست مسؤولًا. ليس لديك صلاحيات الوصول.');
+        await auth.signOut();
+      }
     } catch (err) {
       setError('فشل في تسجيل الدخول: تحقق من البيانات');
     } finally {
@@ -51,99 +58,104 @@ export default function Login() {
     }
   };
 
-
   const handleGoogleLogin = async () => {
-  setError('');
-  setResetSent(false);
-  setLoading(true);
+    setError('');
+    setResetSent(false);
+    setLoading(true);
 
-  try {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    navigate('/admin');
-  } catch (err) {
-    setError('فشل في تسجيل الدخول بواسطة Google');
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const idTokenResult = await result.user.getIdTokenResult();
 
-return (
-  <Box sx={{ p: 4, maxWidth: 400, mx: 'auto', mt: 10 }}>
-    <Paper sx={{ p: 4 }}>
-      <Typography variant="h5" mb={2} textAlign="center">
-        تسجيل دخول المسؤول
-      </Typography>
+      if (idTokenResult.claims.admin) {
+        navigate('/admin');
+      } else {
+        setError('أنت لست مسؤولًا. ليس لديك صلاحيات الوصول.');
+        await auth.signOut();
+      }
+    } catch (err) {
+      setError('فشل في تسجيل الدخول بواسطة Google');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      <form onSubmit={handleLogin}>
-        <TextField
-          fullWidth
-          label="البريد الإلكتروني"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          margin="normal"
-          required
-        />
+  return (
+    <Box sx={{ p: 4, maxWidth: 400, mx: 'auto', mt: 10 }}>
+      <Paper sx={{ p: 4 }}>
+        <Typography variant="h5" mb={2} textAlign="center">
+          تسجيل دخول المسؤول
+        </Typography>
 
-        <TextField
-          fullWidth
-          label="كلمة المرور"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          margin="normal"
-          required
-        />
-
-        {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        {resetSent && (
-          <Alert severity="success" sx={{ mt: 2 }}>
-            تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.
-          </Alert>
-        )}
-
-        <Box textAlign="center" mt={3}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
+        <form onSubmit={handleLogin}>
+          <TextField
             fullWidth
-            disabled={loading}
-            sx={{ mb: 1 }}
-          >
-            {loading ? <CircularProgress size={24} /> : 'تسجيل الدخول'}
-          </Button>
+            label="البريد الإلكتروني"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            margin="normal"
+            required
+          />
 
-          <Button
-            onClick={handleGoogleLogin}
-            variant="outlined"
-            color="primary"
+          <TextField
             fullWidth
-          >
-            تسجيل الدخول باستخدام Google
-          </Button>
-        </Box>
+            label="كلمة المرور"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            margin="normal"
+            required
+          />
 
-        <Box textAlign="center" mt={2}>
-          <Button
-            variant="text"
-            size="small"
-            onClick={handleResetPassword}
-            sx={{ textTransform: 'none', color: '#1976d2' }}
-          >
-            نسيت كلمة السر؟
-          </Button>
-        </Box>
-      </form>
-    </Paper>
-  </Box>
-);
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
 
+          {resetSent && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.
+            </Alert>
+          )}
+
+          <Box textAlign="center" mt={3}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={loading}
+              sx={{ mb: 1 }}
+            >
+              {loading ? <CircularProgress size={24} /> : 'تسجيل الدخول'}
+            </Button>
+
+            <Button
+              onClick={handleGoogleLogin}
+              variant="outlined"
+              color="primary"
+              fullWidth
+            >
+              تسجيل الدخول باستخدام Google
+            </Button>
+          </Box>
+
+          <Box textAlign="center" mt={2}>
+            <Button
+              variant="text"
+              size="small"
+              onClick={handleResetPassword}
+              sx={{ textTransform: 'none', color: '#1976d2' }}
+            >
+              نسيت كلمة السر؟
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </Box>
+  );
 }
