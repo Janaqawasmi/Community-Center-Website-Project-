@@ -7,6 +7,8 @@ import { iconMap, sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Collapse from '@mui/material/Collapse';
+import { onSnapshot } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
@@ -29,6 +31,7 @@ function darkenColor(hex, amount) {
 
 function SectionPage() {
   const [expanded, setExpanded] = useState(false);
+const navigate = useNavigate();
 
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
   const { id } = useParams();
@@ -230,11 +233,16 @@ const PrettyCard = ({ title, color, children }) => {
       },
     }}
     onClick={() => {
-      const target = document.getElementById(buttonData.targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    }}
+  if (buttonData.label.trim() === "تصفّح جميع الدورات") {
+    navigate(`/programs?section=${section.id}`);
+  } else {
+    const target = document.getElementById(buttonData.targetId);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+}}
+
   >
     {buttonData.label}
   </Box>
@@ -368,7 +376,7 @@ const PrettyCard = ({ title, color, children }) => {
           </>
         )}
 
-        {sectionsWithCourses.includes(section.id) && (
+        {/* {sectionsWithCourses.includes(section.id) && (
           <><Box id="courses" sx={{ textAlign: 'center', mt: 6 }} /><Box sx={{ textAlign: 'center', mt: 6 }}>
             <Box component="a" href={`/programs?section=${section.id}`} sx={{
               backgroundColor: sectionColor, color: '#fff', textDecoration: 'none', px: 4, py: 1.5, borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', display: 'inline-block', transition: '0.3s',
@@ -377,7 +385,7 @@ const PrettyCard = ({ title, color, children }) => {
               🎓 عرض جميع الدورات الخاصة بالقسم
             </Box>
           </Box></>
-        )}
+        )} */}
 
         {section.nurseries?.length > 0 && (
           <PrettyCard title="حضاناتنا" icon="🏫" color={sectionColor}>
