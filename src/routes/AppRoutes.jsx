@@ -10,6 +10,7 @@ import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/EventsPage';
 import NewsPage from '../pages/NewsPage';
+
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import Login from '../pages/Login';
 import ProtectedAdminRoute from './ProtectedAdminRoute'; // ✅ NEW
@@ -18,6 +19,7 @@ import AdminWelcome from '../pages/admin/AdminWelcome'; // ✅ FIXED
 import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
 import AdminEvents from '../pages/admin/AdminEvents';
+ 
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -26,6 +28,7 @@ function AppRoutes({ sections }) {
     <>
       <ScrollToTop />
       <Routes location={location}>
+
         <Route element={<Layout sections={sections} />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/sections/:id" element={<SectionPage />} />
