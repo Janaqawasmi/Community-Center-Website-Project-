@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import "@fullcalendar/core/locales/ar";
 import RequireAdmin from '../../components/auth/RequireAdmin';
+import AdminDashboardLayout from '../../components/AdminDashboardLayout';
 
 export default function AdminCalendar() {
   const [events, setEvents] = useState([]);
@@ -113,6 +114,7 @@ export default function AdminCalendar() {
 
   return (
     <RequireAdmin>
+    <AdminDashboardLayout>
       <Container maxWidth="xl" sx={{ mt: 3, fontFamily: "Cairo, sans-serif" }}>
         <Typography variant="h5" fontWeight="bold" color="primary" align="center" mb={2}>
           التقويم
@@ -242,6 +244,7 @@ export default function AdminCalendar() {
           </Alert>
         </Snackbar>
       </Container>
+    </AdminDashboardLayout>
     </RequireAdmin>
   );
 }
