@@ -308,6 +308,7 @@ function Layout({ sections }) {
       </Box>
 
       {/* Bottom Admin Login */}
+
    <Box
   sx={{
     position: 'fixed',
@@ -341,6 +342,7 @@ function Layout({ sections }) {
 </NavButton>
 
 </Box>
+
     </>
   );
 }
