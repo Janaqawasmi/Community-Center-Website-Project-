@@ -19,7 +19,7 @@ import AdminWelcome from '../pages/admin/AdminWelcome'; // ✅ FIXED
 import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
 import AdminEvents from '../pages/admin/AdminEvents';
- 
+import AdminCalendar from '../pages/admin/AdminCalendar';
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -39,8 +39,10 @@ function AppRoutes({ sections }) {
           <Route path="/programs" element={<ProgramePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/news" element={<NewsPage />} />
-  <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
         </Route>
+     
+     
           {/* ✅ PROTECTED ADMIN ROUTE */}
           {/* Admin routes */}
 <Route
@@ -98,7 +100,14 @@ function AppRoutes({ sections }) {
   }
 />
 
-
+<Route
+  path="/admin/calendar"
+  element={
+    <ProtectedAdminRoute>
+      <AdminCalendar />
+    </ProtectedAdminRoute>
+  }
+/>
         
       </Routes>
     </>
