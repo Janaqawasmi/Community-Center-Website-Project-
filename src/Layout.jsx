@@ -308,46 +308,41 @@ function Layout({ sections }) {
       </Box>
 
       {/* Bottom Admin Login */}
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '2.5rem',
-          backgroundColor: '#f1f1f1',
-          borderTop: '1px solid #ccc',
-          zIndex: 1200,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-        }}
-      >
-       <Button
-  variant="outlined"
-  startIcon={<LoginIcon />}
-  sx={{ fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}
-  onClick={async () => {
-    const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      if (result.user) {
-        alert(`welcome ${result.user.displayName}`);
-        navigate('/admin'); // 🔁 redirect after login
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      alert('Login failed: ' + error.message);
-    }
+
+   <Box
+  sx={{
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '2.5rem', 
+    backgroundColor: '#f1f1f1',
+    borderTop: '1px solid #ccc',
+    zIndex: 1200,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '8px 16px',
+  }}
+>
+
+  {/* Admin Login Button */}
+  <NavButton
+  to="/login"
+  sx={{
+    position: 'absolute',
+    bottom: 8,
+    left: 16,
+    fontSize: '12px',
+    color: '#666',
+    textTransform: 'uppercase'
   }}
 >
   تسجيل دخول للإدارة فقط
-</Button>
+</NavButton>
 
-      </Box>
+</Box>
+
     </>
   );
 }

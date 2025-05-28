@@ -9,9 +9,10 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { sendMessage } from '../utils/contact_firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
+import { SiWaze } from 'react-icons/si'; // Simple Icons: Waze logo
 
 export default function Contact() {
   const theme = useTheme();
@@ -21,6 +22,8 @@ export default function Contact() {
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [siteInfo, setSiteInfo] = useState(null);
+  const [departments, setDepartments] = useState([]);
+
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -39,15 +42,30 @@ export default function Contact() {
       }
     };
 
+    const fetchDepartments = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'sections'));
+        const fetched = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().title || doc.id
+        }));
+        setDepartments(fetched);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+      }
+    };
+
     fetchSiteInfo();
+    fetchDepartments();
   }, []);
 
-  const validationSchema = Yup.object({
+ const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
     email: Yup.string().email("صيغة البريد الإلكتروني غير صحيحة").required("البريد الإلكتروني مطلوب"),
     phone: Yup.string().required("رقم الهاتف مطلوب"),
-    message: Yup.string().required("محتوى الرسالة مطلوب")
+    message: Yup.string().required("محتوى الرسالة مطلوب"),
+    department: Yup.string().required("القسم مطلوب")
   });
 
   const initialValues = {
@@ -55,7 +73,8 @@ export default function Contact() {
     last_name: "",
     email: "",
     phone: "",
-    message: ""
+    message: "",
+    department: ""
   };
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -128,27 +147,84 @@ export default function Contact() {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Box
-            sx={{
-              borderRadius: 2,
-              overflow: 'hidden',
-              boxShadow: 3,
-              height: '100%',
-              minHeight: 280
-            }}
-          >
-            <iframe
-              src="https://www.google.com/maps?q=طريق بيت حنينا 10, القدس, إسرائيل&z=15&output=embed"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              allowFullScreen
-              title="موقع المركز الجماهيري بيت حنينا"
-            />
-          </Box>
-        </Grid>
+  <Paper
+    elevation={3}
+    sx={{
+      borderRadius: 1,
+      overflow: 'hidden',
+      height: '100%',
+      minHeight: 200,
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <Box sx={{ flexGrow: 1 }}>
+      <iframe
+        src="https://www.google.com/maps?q=طريق بيت حنينا 10, القدس, إسرائيل&z=15&output=embed"
+        width="100%"
+        height="100%"
+        style={{ border: 0, minHeight: 200 }}
+        loading="lazy"
+        allowFullScreen
+        title="موقع المركز الجماهيري بيت حنينا"
+      />
+    </Box>
+{siteInfo?.waze_link && (
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 1,
+      py: 2,
+      px: 2,
+      borderTop: '1px solid #eee',
+      backgroundColor: '#fafafa',
+      flexWrap: 'wrap',
+
+    }}
+  >
+    <Typography variant="body2" color="text.secondary">
+      يمكنك أيضًا الوصول إلى المركز عبر تطبيق Waze:
+    </Typography>
+    
+    <a
+      href={siteInfo.waze_link}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ textDecoration: 'none' }}
+    >
+      <Box
+  sx={{
+    width: 44,
+    height: 44,
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: '0.3s',
+    cursor: 'pointer',
+    '&:hover': {
+      transform: 'scale(1.05)',
+      backgroundColor: '#f0f0f0',
+    },
+  }}
+>
+  <SiWaze size={26} color="#2D9CDB" />
+</Box>
+
+    </a>
+  </Box>
+)}
+
+  </Paper>
+</Grid>
+
       </Grid>
+
+
   {/* Contact Form */}
   <Typography variant="h5" textAlign="center" mb={2} fontWeight="bold" color="black">
         أرسل لنا رسالة
@@ -199,7 +275,24 @@ export default function Contact() {
                     inputProps={{ style: { textAlign: 'right' } }}
                   />
                 </Grid>
-
+ <Grid item xs={12} md={6}>
+                  <TextField
+                    select
+                    fullWidth
+                    name="department"
+                    label="اختر القسم"
+                    value={values.department}
+                    onChange={handleChange}
+                    SelectProps={{ native: true }}
+                    error={touched.department && Boolean(errors.department)}
+                    helperText={touched.department && errors.department}
+                  >
+                    <option value="">-- اختر القسم --</option>
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.name}>{dept.name}</option>
+                    ))}
+                  </TextField>
+                </Grid>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth label="موضوع الرسالة" name="message"
