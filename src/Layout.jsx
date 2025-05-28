@@ -257,7 +257,17 @@ function Layout({ sections }) {
 >
   عن المركز
 </NavButton>
-
+<NavButton
+  to="/News"
+  color="inherit"
+  sx={{
+    fontWeight: location.pathname === '/News' ? 'bold' : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  اخر الاخبار
+</NavButton>
 
             <NavButton
               to="/contact"

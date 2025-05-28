@@ -8,6 +8,8 @@ import About from '../pages/About';
 import RegistrationForm from '../pages/registration';
 import ProgramCategoryPage from '../pages/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
+import News from '../pages/News';
+import NewsDetail from '../pages/NewsDetail'; // ✅ import added here
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -24,6 +26,8 @@ function AppRoutes({ sections }) {
   <Route path="/RegistrationForm" element={<RegistrationForm />} />
   <Route path="/programs/:categoryName" element={<ProgramCategoryPage />} />
   <Route path="/programs" element={<ProgramePage />} />
+  <Route path="/news" element={<News />} />
+  <Route path="/news/:id" element={<NewsDetail />} />
 </Route>
 
       </Routes>
