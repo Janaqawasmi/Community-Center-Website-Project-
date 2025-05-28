@@ -8,6 +8,8 @@ const sections = [
   { label: 'الأقسام', path: '/admin/sections' },
   { label: 'الفعاليات', path: '/admin/events' },
   { label: 'الاستفسارات', path: '/admin/inquiries' },
+    { label: 'التقويم', path: '/admin/calendar' },
+
 ];
 
 export default function AdminDashboardLayout({ children }) {
