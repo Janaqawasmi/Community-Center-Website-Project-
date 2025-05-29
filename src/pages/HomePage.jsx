@@ -4,7 +4,7 @@ import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { useLocation } from "react-router-dom";
 import { useSectionContext } from "../components/SectionContext";
-
+import CalendarSection from "./CalendarSection";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -182,7 +182,14 @@ clipPath: "polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
         </Slider>
       </Box>
 
-
+ {/* Calendar Section at the bottom */}
+    <Box sx={{ mt: 30, px: { xs: 2, md: 30 } }}>
+      <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
+        التقويم والفعاليات
+      </Typography>
+      <CalendarSection />
     </Box>
+  </Box>
+
   );
 }
