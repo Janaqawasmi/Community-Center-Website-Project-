@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 
 // ✅ Send message with message number (id)
-export const sendMessage = async ({ first_name, phone, message, last_name, email }) => {
+export const sendMessage = async ({ first_name, phone, message, last_name, email, department }) => {
   try {
     const snapshot = await getDocs(collection(db, "contactMessages"));
     const count = snapshot.size;
@@ -19,7 +19,10 @@ export const sendMessage = async ({ first_name, phone, message, last_name, email
       phone,
       message,
       email,
-      id: nextId,
+      department,
+      reply: "",
+      
+      
       timestamp: serverTimestamp()
     });
 

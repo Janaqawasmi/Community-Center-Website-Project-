@@ -187,9 +187,7 @@ function Layout({ sections }) {
                 fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
                 fontSize: '19px',
                 color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)'
-
-                 },
+                '&:hover': { color: 'rgb(0, 0, 0)' },
               }}
             >
               الدورات
@@ -212,13 +210,11 @@ function Layout({ sections }) {
               sx={{
                 fontSize: '19px',
                 color: 'black',
-                                                  outline:'none',
-
-                '&:focus': { color: 'rgb(0, 0, 0)',
-
-                                  outline:'none',
-
-                 },
+                outline: 'none',
+                '&:focus': {
+                  color: 'rgb(0, 0, 0)',
+                  outline: 'none',
+                },
               }}
             >
               الأقسام
@@ -235,8 +231,7 @@ function Layout({ sections }) {
                   direction: 'rtl',
                   minWidth: 180,
                   backgroundColor: 'white',
-                                                    outline:'none',
-
+                  outline: 'none',
                 },
               }}
             >
@@ -245,10 +240,12 @@ function Layout({ sections }) {
                   key={section.id}
                   onClick={() => handleSectionClick(section.id)}
                   sx={{
-                fontSize: '17px',
+                    fontSize: '17px',
                     color: 'black',
-                    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.21)',                                   outline:'none',
- },
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.21)',
+                      outline: 'none',
+                    },
                   }}
                 >
                   {section.title}
@@ -256,7 +253,7 @@ function Layout({ sections }) {
               ))}
             </Menu>
 
- <NavButton
+            <NavButton
               to="/news"
               sx={{
                 fontWeight: location.pathname === '/news' ? 'bold' : 'normal',
@@ -279,27 +276,6 @@ function Layout({ sections }) {
             >
               عن المركز
             </NavButton>
-  to="/about"
-  color="inherit"
-  sx={{
-    fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
-  }}
->
-  عن المركز
-</NavButton>
-<NavButton
-  to="/News"
-  color="inherit"
-  sx={{
-    fontWeight: location.pathname === '/News' ? 'bold' : 'normal',
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
-  }}
->
-  اخر الاخبار
-</NavButton>
 
             <NavButton
               to="/contact"
@@ -316,7 +292,6 @@ function Layout({ sections }) {
         </Toolbar>
       </AppBar>
 
- 
       {/* Page Content */}
       <Box
         className="page-content"
@@ -329,41 +304,37 @@ function Layout({ sections }) {
       </Box>
 
       {/* Bottom Admin Login */}
-
-   <Box
-  sx={{
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    height: '2.5rem', 
-    backgroundColor: '#f1f1f1',
-    borderTop: '1px solid #ccc',
-    zIndex: 1200,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '8px 16px',
-  }}
->
-
-  {/* Admin Login Button */}
-  <NavButton
-  to="/login"
-  sx={{
-    position: 'absolute',
-    bottom: 8,
-    left: 16,
-    fontSize: '12px',
-    color: '#666',
-    textTransform: 'uppercase'
-  }}
->
-  تسجيل دخول للإدارة فقط
-</NavButton>
-
-</Box>
-
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          height: '2.5rem',
+          backgroundColor: '#f1f1f1',
+          borderTop: '1px solid #ccc',
+          zIndex: 1200,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 16px',
+        }}
+      >
+        {/* Admin Login Button */}
+        <NavButton
+          to="/login"
+          sx={{
+            position: 'absolute',
+            bottom: 8,
+            left: 16,
+            fontSize: '12px',
+            color: '#666',
+            textTransform: 'uppercase',
+          }}
+        >
+          تسجيل دخول للإدارة فقط
+        </NavButton>
+      </Box>
     </>
   );
 }

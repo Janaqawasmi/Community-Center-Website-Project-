@@ -9,7 +9,7 @@ import RegistrationForm from '../pages/registration';
 import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import News from '../pages/News';
-import NewsDetail from '../pages/NewsDetail'; // ✅ import added here
+import NewsDetail from '../pages/NewsDetail';// ✅ import added here
 import EventsPage from '../pages/EventsPage';
 import NewsPage from '../pages/NewsPage';
 

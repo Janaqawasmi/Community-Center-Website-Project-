@@ -1,6 +1,6 @@
 import { Box, Typography, Card, CardContent, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import HeroSection from "../components/HeroSection";
+
 function NewsCard({ data }) {
   const navigate = useNavigate();
 
