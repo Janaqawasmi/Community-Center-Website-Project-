@@ -8,7 +8,7 @@ import About from '../pages/About';
 import RegistrationForm from '../pages/registration';
 import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
-import EventsPage from '../pages/EventsPage';
+import EventsPage from '../pages/programs/EventsPage';
 import NewsPage from '../pages/NewsPage';
 
 import AdminInquiries from '../pages/admin/AdminInquiries';
