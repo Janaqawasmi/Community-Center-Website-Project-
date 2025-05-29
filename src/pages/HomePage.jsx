@@ -1,195 +1,134 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Box, Button, Typography, Grid } from "@mui/material";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
-import { db } from "../components/firebase";
-import { useLocation } from "react-router-dom";
-import { useSectionContext } from "../components/SectionContext";
-import CalendarSection from "./CalendarSection";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, Button } from "@mui/material";
 import Slider from "react-slick";
+import { useFeaturedPrograms } from "./programs/hooks/useFeaturedPrograms"; // ✅ renamed hook
+import CalendarSection from "./CalendarSection";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function HomePage() {
-  const [heroPrograms, setHeroPrograms] = useState([]);
-  const location = useLocation();
-  const { setActiveSection } = useSectionContext();
-
-
-  useEffect(() => {
-    const fetchHeroPrograms = async () => {
-      try {
-        const q = query(
-          collection(db, "heroPrograms"),
-          where("isActive", "==", true),
-          orderBy("order", "asc")
-        );
-        const snapshot = await getDocs(q);
-        const programs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setHeroPrograms(programs);
-      } catch (error) {
-        console.error("Error fetching hero programs:", error);
-      }
-    };
-    fetchHeroPrograms();
-  }, []);
-
-  
-
-  const arrowStyles = {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    zIndex: 10,
-    cursor: "pointer",
-    bgcolor: "rgba(255, 255, 255, 0.8)",
-    borderRadius: "50%",
-    width: 32,
-    height: 32,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: 1,
-    transition: "background-color 0.3s",
-    "&:hover": { bgcolor: "rgba(255, 255, 255, 1)" },
-  };
-
-  const CustomNextArrow = (props) => {
-    const { onClick } = props;
-    return (
-      <Box onClick={onClick} sx={{ ...arrowStyles, right: { xs: 8, md: 16 } }}>
-        <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
-      </Box>
-    );
-  };
-
-  const CustomPrevArrow = (props) => {
-    const { onClick } = props;
-    return (
-      <Box onClick={onClick} sx={{ ...arrowStyles, left: { xs: 8, md: 16 } }}>
-        <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
-      </Box>
-    );
-  };
+  const featuredPrograms = useFeaturedPrograms(); // ✅ fetch array, not single program
+  const navigate = useNavigate();
 
   const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 1, // show one program at a time
     slidesToScroll: 1,
-    rtl: true,
-    arrows: true,
     autoplay: true,
-    autoplaySpeed: 8000,
-    nextArrow: <CustomNextArrow />,
-    prevArrow: <CustomPrevArrow />,
+    autoplaySpeed: 5000,
+    rtl: true, // ensure RTL sliding
   };
 
   return (
     <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-
-      {/* Hero Section */}
-<Box sx={{ py: 0, px: 0, backgroundColor: "rgb(255, 255, 255)", mt: 0 }}>
-  
+      {/* Featured Slider Header */}
+      {featuredPrograms.length > 0 && (
         <Slider {...sliderSettings}>
-          {heroPrograms.map((program, index) => (
-            <Box key={program.id || index}>
-      <Box
+          {featuredPrograms.map((program) => (
+            <Box
+              key={program.id}
+              sx={{
+                position: "relative",
+                height: { xs: 250, md: 350 },
+                display: "flex",
+                overflow: "hidden",
+              }}
+            >
+              {/* Background Image */}
+              <Box
+                component="img"
+                src={program.imageUrl}
+                alt={program.name}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "right",
+                  paddingLeft: { xs: "35%", md: "35%" },
+                  zIndex: 0,
+                }}
+              />
+
+              {/* Overlay */}
+             <Box
   sx={{
-    position: "relative",
-    height: { xs: 100, md: 350 },
+    width: { xs: "100%", md: "45%" },
+   height:"100%",
+    background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
+    clipPath: "polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
     display: "flex",
-    flexDirection: "row",
-    overflow: "hidden",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start",  // <<< changed here
+    pl: { xs: 2, md: 4 },  // padding-left
+
+    zIndex: 1,
   }}
 >
-  {/* Background Image Full Width */}
-<Box
-  component="img"
-  src={program.imageUrl}
-  alt="Program Image"
+
+                <Typography
+  variant="h3"
+  fontWeight="bold"
   sx={{
-    position: "absolute",
-    top: "50px",
-    left: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    objectPosition: "right",
-    paddingLeft: { xs: "35%", md: "35%" }, // push image right to avoid clipping
-    zIndex: 0,
+    color: "#fff",
+    mb: 2,
+    textAlign: "right",                 // align the title right
+    width: "100%",                      // make sure it spans full width for alignment
+    maxWidth: { xs: "100%", md: "80%" }, // optional: control width on larger screens
   }}
-/>
+>
+  {program.name}
+</Typography>
 
-  {/* Text + Shape Overlay */}
-  <Box
-    sx={{
-      width: { xs: "35%", md: "35%" },
-      height: "100%",
-background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-clipPath: "polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "flex-start",
-      px: { xs: 2, md: 7 },
-      zIndex: 1,
-    }}
-  >
-    <Typography
-      variant="h3"
-      fontWeight="bold"
-      sx={{ color: " #fff", mb: 2 }}
-    >
-      {program.title}
-    </Typography>
-    <Typography
-      variant="body1"
-      sx={{ color: " #fff", fontSize: "1.1rem", mb: 3 }}
-    >
-      {program.description}
-    </Typography>
-    {program.link && (
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: "rgb(197, 94, 24)",
-          color: " #fff",
-          px: 4,
-          py: 1,
-          borderRadius: "20px",
-          textTransform: "none",
-          fontWeight: "bold",
-          boxShadow: "none",
-          "&:hover": { backgroundColor: "rgb(255, 255, 255)", color: "black"  }, 
-        }}
-        onClick={() => window.location.href = program.link}
-      >
-        سجلوا الآن
-      </Button>
-    )}
-  </Box>
-</Box>
+<Typography
+  variant="body1"
+  sx={{
+    color: "#fff",
+    mb: 3,
+    textAlign: "right",                  // align the description right
+    width: "100%",                       // ensure full-width block
+    maxWidth: { xs: "100%", md: "80%" }, // limit width on larger screens
+    lineHeight: 1.8,                     // optional: improve readability
+  }}
+>
+  {program.description}
+</Typography>
 
-
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "rgb(197, 94, 24)",
+                    borderRadius: "20px",
+                    fontWeight: "bold",
+                    px: 4,
+                    textTransform: "none",
+                    "&:hover": { backgroundColor: "#fff", color: "black" },
+                  }}
+                  onClick={() =>
+                    navigate(`/programs/${encodeURIComponent(program.category[0])}?highlight=${program.id}`)
+                  }
+                >
+                  سجلوا الآن
+                </Button>
+              </Box>
             </Box>
           ))}
         </Slider>
+      )}
+
+      {/* Calendar Section at bottom */}
+      <Box sx={{ mt: 10, px: { xs: 2, md: 30 } }}>
+        <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
+          التقويم والفعاليات
+        </Typography>
+        <CalendarSection />
       </Box>
-
- {/* Calendar Section at the bottom */}
-    <Box sx={{ mt: 30, px: { xs: 2, md: 30 } }}>
-      <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
-        التقويم والفعاليات
-      </Typography>
-      <CalendarSection />
     </Box>
-  </Box>
-
   );
 }
