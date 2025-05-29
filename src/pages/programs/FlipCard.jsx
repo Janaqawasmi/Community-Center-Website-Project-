@@ -4,6 +4,8 @@ export const FlipCard = styled('div')({
   width: 300,
   height: 400,
   perspective: 1000,
+  borderRadius: "20px", 
+  overflow: "hidden",    
   margin: "0.5rem",
   cursor: "pointer",
   transition: "transform 0.3s ease, box-shadow 0.3s ease",

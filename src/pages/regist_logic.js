@@ -1,3 +1,75 @@
+
+
+ export function calculateAge(birthdate) {
+  if (!birthdate) return 0;
+  const today = new Date();
+  const birth = new Date(birthdate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+
+
+export function validateStep(step, form, requiredFieldsByStep, setErrors) {
+  const requiredFields = requiredFieldsByStep[step];
+  let valid = true;
+  let newErrors = {};
+
+  requiredFields.forEach(field => {
+    if (!form[field] || form[field].toString().trim() === "") {
+      valid = false;
+      newErrors[field] = "هذا الحقل مطلوب";
+    }
+  });
+ if (step === 0 ) {
+    if (!validatePhoneNumber(form.personalPhone)) {
+      valid = false;
+      newErrors.personalPhone = "رقم الهاتف يجب أن يبدأ بـ 05 ويكون مكونًا من 10 أرقام.";
+    }
+
+   
+    if (!isValidIsraeliID(form.id)) {
+      valid = false;
+      newErrors.id = "رقم الهوية الشخصي غير صحيح.";
+    }
+
+  
+
+    if (!validateEmail(form.email)) {
+      valid = false;
+      newErrors.email = "البريد الإلكتروني غير صحيح";
+    }
+
+    if (form.landLine && !validateLandLineNumber(form.landLine)) {
+      valid = false;
+      newErrors.landLine = "رقم الهاتف الأرضي يجب أن يتكون من 7 أرقام";
+    }
+ }
+else if(step === 1) {
+   if (!validatePhoneNumber(form.fatherPhone)) {
+     valid = false;
+     newErrors.fatherPhone = "رقم الهاتف يجب أن يبدأ بـ 05 ويكون مكونًا من 10 أرقام.";
+   }
+
+   if (!isValidIsraeliID(form.fatherId)) {
+     valid = false;
+     newErrors.fatherId = "رقم هوية الأب غير صحيح.";
+   }
+
+  
+}
+
+  setErrors(prev => ({ ...prev, ...newErrors }));
+  return valid;
+
+};
+
+
+
 export function validatePhoneNumber(phone) {
   // Check if the phone number starts with '05' and has exactly 10 digits
   const phoneRegex = /^05\d{8}$/;
@@ -64,7 +136,7 @@ export function validateField(name, value) {
     }
   }
 
-  if (["FirstName", "lastName", "fatherName"].includes(name)) {
+  if (["FirstName", "lastName", "fatherName", "parentLastName"].includes(name)) {
     if (!hebrewRegex.test(value)) {
       return 'يرجى الإدخال باللغة العبرية فقط';
     }
@@ -83,3 +155,6 @@ export function validateField(name, value) {
 
   return '';
 }
+
+
+
