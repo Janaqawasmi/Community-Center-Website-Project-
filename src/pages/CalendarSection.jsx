@@ -48,15 +48,7 @@ export default function CalendarSection() {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 3, fontFamily: "Cairo, sans-serif" }}>
-      <Typography
-        variant="h5"
-        fontWeight="bold"
-        color="primary"
-        align="center"
-        mb={2}
-      >
-        التقويم
-      </Typography>
+      
 
       <Box
         sx={{

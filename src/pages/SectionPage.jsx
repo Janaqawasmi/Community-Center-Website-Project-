@@ -5,14 +5,14 @@ import { db } from '../components/firebase';
 import { Box, Typography, Container, Grid, Paper } from '@mui/material';
 import { iconMap, sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Collapse from '@mui/material/Collapse';
-import { onSnapshot } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
 import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
+import SectionScrollButton from '../components/sections/SectionScrollButton';
+
 // 🔧 Put this at the top of the file, after imports but before SectionPage()
 function darkenColor(hex, amount) {
   const num = parseInt(hex.replace('#', ''), 16);
@@ -149,108 +149,31 @@ const PrettyCard = ({ title, color, children }) => {
 
    <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
 
-    {(() => {
+   {(() => {
   const buttonData = getScrollButtonData();
   if (!buttonData) return null;
 
-  return ( <Box
-  sx={{
-    display: 'flex',
-    justifyContent: 'right',
-    mt: 0,
-    mb: 6,
-    px: 2,
-    direction: 'rtl',
-
-  }}
->
-  <Box
-    sx={{
-      position: 'relative',
-      padding: '10px 26px',
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-      fontFamily: 'Cairo, sans-serif',
-      cursor: 'pointer',
-      color: sectionColor,
-      borderRadius: '30px',
-      overflow: 'hidden',
-      transition: 'all 0.4s ease-in-out',
-    boxShadow: `15px 15px 15px ${sectionColor}`,
-
-      // these make sure nothing is clipped when the border expands
-'&::before': {
-  content: '""',
-  position: 'absolute',
-  top: 0,
-  right: 0, // changed from left to right
-  width: '30px',
-  height: '30px',
-  border: `0px solid transparent`,
-  borderTopColor: sectionColor,
-  borderRightColor: sectionColor, // top-right instead of top-left
-  borderTopRightRadius: '22px',   // top-right corner
-  transition: 'all 0.3s ease-in-out',
-  boxSizing: 'border-box',
-  
-},
-'&::after': {
-  content: '""',
-  position: 'absolute',
-  bottom: 0,
-  left: 0, // changed from right to left
-  width: '30px',
-  height: '30px',
-  border: `0px solid transparent`,
-  borderBottomColor: sectionColor,
-  borderLeftColor: sectionColor,  // bottom-left instead of bottom-right
-  borderBottomLeftRadius: '22px', // bottom-left corner
-  transition: 'all 0.3s ease-in-out',
-  boxSizing: 'border-box',
-},
-'&:hover::before': {
-  width: '100%',
-  height: '100%',
-  border: `2px solid ${sectionColor}`,
-  borderRadius: '30px',
-  borderLeft: 'none',
-  borderBottom: 'none', // hiding opposite sides
-  
-},
-'&:hover::after': {
-  width: '100%',
-  height: '100%',
-  border: `2px solid ${sectionColor}`,
-  borderRadius: '30px',
-  borderRight: 'none',
-  borderTop: 'none', // hiding opposite sides
-  textShadow: '0 0 5px rgba(0,0,0,0.1)',
-
-},
-
-      '&:hover': {
-        boxShadow: '0 3px 12px rgba(0,0,0,0.1)',
-      },
-    }}
-    onClick={() => {
-  if (buttonData.label.trim() === "تصفّح جميع الدورات") {
-    navigate(`/programs?section=${section.id}`);
-  } else {
-    const target = document.getElementById(buttonData.targetId);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-}}
-
-  >
-    {buttonData.label}
-  </Box>
-</Box>
-
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'right',
+        mt: 0,
+        mb: 6,
+        px: 2,
+        direction: 'rtl',
+      }}
+    >
+      <SectionScrollButton
+        label={buttonData.label}
+        sectionId={section.id}
+        sectionColor={sectionColor}
+        targetId={buttonData.targetId}
+      />
+    </Box>
   );
-})()
-}
+})()}
+
 
 
  <Grid container spacing={4}>
@@ -376,16 +299,6 @@ const PrettyCard = ({ title, color, children }) => {
           </>
         )}
 
-        {/* {sectionsWithCourses.includes(section.id) && (
-          <><Box id="courses" sx={{ textAlign: 'center', mt: 6 }} /><Box sx={{ textAlign: 'center', mt: 6 }}>
-            <Box component="a" href={`/programs?section=${section.id}`} sx={{
-              backgroundColor: sectionColor, color: '#fff', textDecoration: 'none', px: 4, py: 1.5, borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', display: 'inline-block', transition: '0.3s',
-              '&:hover': { backgroundColor: '#333' }
-            }}>
-              🎓 عرض جميع الدورات الخاصة بالقسم
-            </Box>
-          </Box></>
-        )} */}
 
         {section.nurseries?.length > 0 && (
           <PrettyCard title="حضاناتنا" icon="🏫" color={sectionColor}>
