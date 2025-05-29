@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchNews } from '../utils/fetchNews';
 import NewsCard from './NewsCard';
+
+import HeroSection from "../components/HeroSection";
 import {
   Box,
   Container,

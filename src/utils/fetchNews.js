@@ -1,6 +1,6 @@
 // src/utils/fetchNews.js
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-
+import HeroSection from "../components/HeroSection";
 const fetchNews = async () => {
   const db = getFirestore();
   const newsColRef = collection(db, 'News');
