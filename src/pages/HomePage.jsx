@@ -123,7 +123,7 @@ export default function HomePage() {
       )}
 
       {/* Calendar Section at bottom */}
-      <Box sx={{ mt: 10, px: { xs: 2, md: 30 } }}>
+      <Box sx={{ mt: 20, px: { xs: 2, md: 30 } }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
           التقويم والفعاليات
         </Typography>

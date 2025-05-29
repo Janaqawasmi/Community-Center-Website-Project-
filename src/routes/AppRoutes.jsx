@@ -10,6 +10,7 @@ import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/programs/EventsPage';
 import News from '../pages/News';
+import NewsDetail from '../pages/NewsDetail';
 
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import Login from '../pages/Login';
@@ -39,6 +40,7 @@ function AppRoutes({ sections }) {
           <Route path="/programs" element={<ProgramePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/news" element={<News />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
         </Route>
      
