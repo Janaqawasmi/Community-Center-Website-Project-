@@ -10,6 +10,7 @@ import QuickLinksSection from "../components/homePage/QuickLinksSection";
 import SectionMenuBar from "../components/homePage/SectionMenuBar";
 import { fetchSections } from "../utils/fetchSections"; // ✅ use correct utils path
 import { useEffect, useState } from 'react';
+import AboutUsSection from "../components/homePage/AboutUsSection";
 
 export default function HomePage() {
   const featuredPrograms = useFeaturedPrograms(); // ✅ fetch array, not single program
@@ -138,14 +139,15 @@ export default function HomePage() {
           ))}
         </Slider>
       )}
-
+{/* ⬇ About Us Section */}
+<AboutUsSection />
     {/* ⬇ NEW: Vertical Section Menu */}
     <QuickLinksSection sections={sections} />
 
 
 
       {/* Calendar Section at bottom */}
-      <Box sx={{ mt: 20, px: { xs: 2, md: 30 } }}>
+      <Box sx={{ mt: 1, px: { xs: 2, md: 30 } }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
           التقويم والفعاليات
         </Typography>
