@@ -15,7 +15,7 @@ import {
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { useNavigate } from "react-router-dom";
-import { programCategories, iconMap } from "../constants/sectionMeta";
+import { programCategories } from "../constants/sectionMeta";
 import SearchIcon from "@mui/icons-material/Search";
 import { motion } from "framer-motion";
 import HeroSection from "../components/HeroSection";
@@ -184,33 +184,29 @@ export default function ProgramPage() {
 )}
 
 
-        {/* Category View */}
+     {/* Category View */}
 {searchQuery.trim() === "" && (
-          <Box sx={{ maxWidth: 700, mx: "auto" }}>
-            <Grid container spacing={2}>
-              {categories.map((label, index) => {
-                const iconKey = Object.keys(iconMap).find((key) =>
-                  key.includes(label)
-                );
-                const Icon = iconMap[iconKey];
-                const color = getCategoryColor(label);
-                return (
-                  <Grid item xs={12} sm={6} key={label}>
-                    <CategoryCard
-                      label={label}
-                      icon={Icon}
-                      color={color}
-                      index={index}
-                      onClick={() =>
-                        navigate(`/programs/${encodeURIComponent(label)}`)
-                      }
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Box>
-        )}
+  <Box sx={{ maxWidth: 700, mx: "auto" }}>
+    <Grid container spacing={2}>
+      {categories.map((label, index) => {
+        const color = getCategoryColor(label);
+        return (
+          <Grid item xs={12} sm={6} key={label}>
+            <CategoryCard
+              label={label}
+              color={color}
+              index={index}
+              onClick={() =>
+                navigate(`/programs/${encodeURIComponent(label)}`)
+              }
+            />
+          </Grid>
+        );
+      })}
+    </Grid>
+  </Box>
+)}
+
 
        
 

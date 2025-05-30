@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import { Box, Typography, Container, Grid, Paper } from '@mui/material';
-import { iconMap, sectionColors } from '../constants/sectionMeta';
+ import { sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
 import Collapse from '@mui/material/Collapse';
 import { useNavigate } from 'react-router-dom';
@@ -54,7 +54,6 @@ const navigate = useNavigate();
   if (!section) return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
   const sectionColor = sectionColors[section.id] || '#607d8b';
-  const sectionIcon = iconMap[section.id] || '📌';
  const getScrollButtonData = () => {
   switch (section.id) {
     case 'section_culture':

@@ -6,10 +6,27 @@ import { useFeaturedPrograms } from "./programs/hooks/useFeaturedPrograms"; // �
 import CalendarSection from "./CalendarSection";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import QuickLinksSection from "../components/homePage/QuickLinksSection";
+import SectionMenuBar from "../components/homePage/SectionMenuBar";
+import { fetchSections } from "../utils/fetchSections"; // ✅ use correct utils path
+import { useEffect, useState } from 'react';
 
 export default function HomePage() {
   const featuredPrograms = useFeaturedPrograms(); // ✅ fetch array, not single program
   const navigate = useNavigate();
+  const [sections, setSections] = useState([]);
+
+   useEffect(() => {
+    const loadSections = async () => {
+      try {
+        const data = await fetchSections();
+        setSections(data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+    loadSections();
+  }, []);
 
   const sliderSettings = {
     dots: true,
@@ -121,6 +138,11 @@ export default function HomePage() {
           ))}
         </Slider>
       )}
+
+    {/* ⬇ NEW: Vertical Section Menu */}
+    <QuickLinksSection sections={sections} />
+
+
 
       {/* Calendar Section at bottom */}
       <Box sx={{ mt: 20, px: { xs: 2, md: 30 } }}>
