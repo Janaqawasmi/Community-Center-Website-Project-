@@ -14,6 +14,7 @@ import ExpandableList from '../components/ExpandableList';
 import SectionScrollButton from '../components/sections/SectionScrollButton';
 
 // 🔧 Put this at the top of the file, after imports but before SectionPage()
+// Function to darken a hex color by a given amount (0-1)
 function darkenColor(hex, amount) {
   const num = parseInt(hex.replace('#', ''), 16);
   let r = (num >> 16) - amount * 255;
@@ -28,16 +29,17 @@ function darkenColor(hex, amount) {
 }
 
 
-
+// Main SectionPage component
 function SectionPage() {
   const [expanded, setExpanded] = useState(false);
 const navigate = useNavigate();
 
+// Define the sections that have courses
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
   const { id } = useParams();
   const [section, setSection] = useState(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
-
+// Function to handle navigation to courses or programs
   useEffect(() => {
     const fetchSection = async () => {
       const docRef = doc(db, 'sections', id);
@@ -50,7 +52,7 @@ const navigate = useNavigate();
     };
     fetchSection();
   }, [id]);
-
+// Function to handle navigation to courses or programs
   if (!section) return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
   const sectionColor = sectionColors[section.id] || '#607d8b';
@@ -75,7 +77,7 @@ const navigate = useNavigate();
   }
 };
 
-
+// Render the section page
 const PrettyCard = ({ title, color, children }) => {
   return (
     <Box
@@ -131,7 +133,7 @@ const PrettyCard = ({ title, color, children }) => {
 };
 
 
-
+// Slider settings for single image slider
   const singleImageSliderSettings = {
     dots: true,
     arrows: true,
