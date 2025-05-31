@@ -12,6 +12,8 @@ export default function RequireAdmin({ children }) {
   useEffect(() => {
     const checkAdmin = async () => {
       if (user) {
+              console.log("Current user UID:", user.uid);
+        // Check if the user is an admin
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists() && userDoc.data().isAdmin) {
           setIsAdmin(true);
