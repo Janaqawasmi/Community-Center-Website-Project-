@@ -86,7 +86,7 @@ const PrettyCard = ({ title, color, children }) => {
         //background: `linear-gradient(to bottom right, ${color}10, #ffffff)`,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+            boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
         overflow: 'hidden',
         direction: 'rtl',
         fontFamily: 'Cairo, sans-serif',

@@ -23,7 +23,7 @@ export default function SectionGrid({ sections }) {
   const sectionColor = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)"; // You can choose a fixed color or pass one in
 
   return (
-<Box sx={{ px: { xs: 2, md: 6 }, pt: 1, pb: 4 }}>
+<Box sx={{ px: { xs: 2, md: 6 }, pt: 0, pb: 1}}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ export default function SectionGrid({ sections }) {
             mt: 5,
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+            boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
             overflow: "hidden",
             direction: "rtl",
             fontFamily: "Cairo, sans-serif",

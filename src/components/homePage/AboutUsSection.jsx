@@ -51,7 +51,7 @@ export default function AboutUsSection() {
     aboutText.length > 300 ? `${aboutText.substring(0, 300)}...` : aboutText;
 
   return (
-<Box sx={{ px: { xs: 2, md: 6 }, pt: 4, pb: 1 }}>
+<Box sx={{ px: { xs: 2, md: 6 }, pt: 2, pb: 0 }}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -62,11 +62,11 @@ export default function AboutUsSection() {
           sx={{
             position: "relative",
             borderRadius: "28px",
-            p: { xs: 3, sm: 4 },
+            p: { xs: 3, sm: 3 },
             mt: 5,
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+            boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
             overflow: "hidden",
             direction: "rtl",
             fontFamily: "Cairo, sans-serif",
