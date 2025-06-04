@@ -23,7 +23,6 @@ export default function AboutUsSection() {
   const [aboutText, setAboutText] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const sectionColor = "#c55e18"; // you can adjust the badge color here
 
   useEffect(() => {
     const fetchAboutUs = async () => {
@@ -117,14 +116,14 @@ export default function AboutUsSection() {
                 variant="contained"
                 onClick={() => navigate("/about")}
                 sx={{
-                  backgroundColor: sectionColor,
+                  backgroundColor: "rgb(197, 94, 24)",   //" #c55e18" 
                   borderRadius: "20px",
                   px: 4,
                   fontWeight: "bold",
                   fontSize: "1rem",
                   "&:hover": {
-                    backgroundColor: "#fff",
-                    color: "#000",
+                    backgroundColor: " #fff",
+                    color: " #000",
                   },
                 }}
               >
