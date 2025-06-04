@@ -49,6 +49,8 @@ export default function HomePage() {
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
+                overflow: "hidden",
+                height: { xs: 250, md: 380 },
               }}
             >
               {/* Image Section */}
@@ -58,8 +60,8 @@ export default function HomePage() {
                 alt={program.name}
                 sx={{
                   width: "100%",
-                  height: { xs: 250, md: 350 },
-                  bjectFit: "cover",
+                  height: "100%",
+                  objectFit: "cover",
                   objectPosition: { xs: "center", md: "right" },
                   paddingLeft: { xs: "0%", md: "35%" },
                 }}
