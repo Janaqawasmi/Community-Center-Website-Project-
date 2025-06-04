@@ -1,33 +1,4 @@
 // src/constants/sectionMeta.js
-import {
-  FaFemale,
-  FaUsers,
-  FaChild,
-  FaBaby,
-  FaHandsHelping,
-  FaHeartbeat,
-  FaRunning,
-  FaBook,
-  FaChalkboardTeacher,
-  FaStar,
-  FaTools,
-  FaHandHoldingHeart
-} from 'react-icons/fa';
-
-export const iconMap = {
-  section_women: <FaFemale />,
-  section_youth: <FaUsers />,
-  section_kindergarten: <FaChild />,
-  section_nursery: <FaBaby />,
-  section_elderly: <FaHandsHelping />,
-  section_special: <FaHeartbeat />,
-  section_sports: <FaRunning />,
-  section_culture: <FaBook />,
-  section_curricular: <FaChalkboardTeacher />,
-  section_community_work: <FaStar />,
-  section_engineering: <FaTools />,
-  section_attaa: <FaHandHoldingHeart />
-};
 
 export const sectionColors = {
   section_women: "#f26d2c",
@@ -48,24 +19,24 @@ export const sectionColors = {
 export const programCategories = [
   {
     label: "رياضة",
-    color: "#e53935", // red
+    color: "#cf2929", // red
   },
   {
     label: "طوارئ",
-    color: "#e53935", // darker red
+    color: "#cf2929", // darker red
   },
   
   {
     label: "الثقافة والفن",
-    color: "#f57c00", // orange
+    color: "#fbc21f", // orange
   },
   {
     label: "الدورات المنهجية واللامنهجية",
-    color: "#388e3c", // green
+    color: "#f26d2c", // green
   },
   {
     label: "نساء",
-    color: "#f57c00", // 
+    color: "#f26d2c", // 
   },
 ];
 
