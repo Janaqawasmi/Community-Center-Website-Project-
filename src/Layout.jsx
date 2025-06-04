@@ -21,7 +21,6 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import NavButton from './components/NavButton';
-import { useSectionContext } from './components/SectionContext';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -31,7 +30,6 @@ function Layout({ sections }) {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const navigate = useNavigate();
-  const { activeSection } = useSectionContext();
 
   const [logoUrl, setLogoUrl] = useState('');
   const [socialLinks, setSocialLinks] = useState({
@@ -127,7 +125,7 @@ const drawerItemStyle = {
               direction: 'rtl',
             }}
           >
-            <NavButton to="/" sx={navStyle(location.pathname === '/' && !['courses', 'events'].includes(activeSection))}>الرئيسية</NavButton>
+            <NavButton to="/" sx={navStyle(location.pathname === '/')}>الرئيسية</NavButton>
             <NavButton to="/programs" sx={navStyle(location.pathname === '/programs')}>الدورات</NavButton>
             <NavButton to="/events" sx={navStyle(location.pathname === '/events')}>الفعاليات</NavButton>
            <Button
