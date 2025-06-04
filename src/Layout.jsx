@@ -25,6 +25,7 @@ import { useSectionContext } from './components/SectionContext';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 function Layout({ sections }) {
   const location = useLocation();
@@ -53,6 +54,10 @@ function Layout({ sections }) {
     handleSectionsMenuClose();
     setIsMobileDrawerOpen(false);
   };
+const theme = useTheme();
+const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+const computedPosition = isMobile ? 'static' : (isHomePage ? 'static' : 'absolute');
 
   useEffect(() => {
     const fetchSiteInfo = async () => {
@@ -98,7 +103,7 @@ const drawerItemStyle = {
   return (
     <>
       <AppBar
-        position={isHomePage ? 'static' : 'absolute'}
+ position={computedPosition}
         elevation={0}
         sx={{ backgroundColor: 'rgba(255, 255, 255, 0)', boxShadow: 'none' }}
       >
