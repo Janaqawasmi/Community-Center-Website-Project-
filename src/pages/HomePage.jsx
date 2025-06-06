@@ -50,7 +50,7 @@ export default function HomePage() {
                 display: "flex",
                 flexDirection: "column",
                 overflow: "hidden",
-                height: { xs: 250, md: 380 },
+                height: { xs: 280, md: 380 },
               }}
             >
               {/* Image Section */}

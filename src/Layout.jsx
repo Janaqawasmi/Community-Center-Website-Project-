@@ -105,7 +105,7 @@ const drawerItemStyle = {
         elevation={0}
         sx={{ backgroundColor: 'rgba(255, 255, 255, 0)', boxShadow: 'none' }}
       >
-        <Toolbar sx={{ minHeight: '90px', justifyContent: 'space-between' }}>
+        <Toolbar sx={{ minHeight: '80px', justifyContent: 'space-between' }}>
           {/* Logo */}
           {logoUrl && (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>

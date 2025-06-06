@@ -46,8 +46,10 @@ export default function AboutUsSection() {
 
   if (loading) return null;
 
+  const isMobile = window.innerWidth <= 600;
+  const previewLimit = isMobile ? 180 : 300;
   const previewText =
-    aboutText.length > 300 ? `${aboutText.substring(0, 300)}...` : aboutText;
+    aboutText.length > previewLimit ? `${aboutText.substring(0, previewLimit)}...` : aboutText;
 
   return (
 <Box sx={{ px: { xs: 2, md: 6 }, pt: 2, pb: 0 }}>
