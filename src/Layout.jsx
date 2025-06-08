@@ -15,11 +15,13 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import NavButton from './components/NavButton';
-import LoginIcon from '@mui/icons-material/Login';
 import { useSectionContext } from './components/SectionContext';
+import LoginIcon from '@mui/icons-material/Login';
+
 
 function Layout({ sections }) {
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
   const navigate = useNavigate();
   const { activeSection } = useSectionContext();
 
@@ -73,15 +75,15 @@ function Layout({ sections }) {
 
   return (
     <>
-      {/* Floating Logo */}
+      {/* Logo */}
       {logoUrl && (
         <Box
           sx={{
-            position: 'absolute',
+            position: 'fixed',
             top: 0,
             right: 0,
             zIndex: 1300,
-            backgroundColor: 'rgb(255, 255, 255)',
+            backgroundColor: '#f5f5f5',
             padding: '8px',
             borderRadius: '15px',
           }}
@@ -96,26 +98,14 @@ function Layout({ sections }) {
         </Box>
       )}
 
-      {/* Transparent Navbar */}
-      <AppBar
-        position="absolute"
-        elevation={0}
-        sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.12)',
-          boxShadow: 'none',
-        }}
-      >
+      <AppBar position="fixed" color="default" elevation={5}>
         <Toolbar sx={{ position: 'relative', minHeight: '90px' }}>
           {/* Social Icons */}
           <Box
             sx={{
-              position: 'absolute',
-              left: 16,
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              color: 'white',
-              '& a:hover': { color: 'rgb(0, 0, 0)' },
             }}
           >
             {socialLinks.FacebookLink && (
@@ -154,71 +144,83 @@ function Layout({ sections }) {
           </Box>
 
           {/* Navigation Buttons */}
+          <Box sx={{ fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}></Box>
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: 2,
               margin: '0 auto',
-              fontFamily: 'Cairo, sans-serif',
-              direction: 'rtl',
             }}
           >
             <NavButton
               to="/"
+              color="inherit"
               sx={{
-                fontWeight:
-                  location.pathname === '/' &&
-                  activeSection !== 'courses' &&
-                  activeSection !== 'events'
-                    ? 'bold'
-                    : 'normal',
-                fontSize: '19px',
-                color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)' },
+                fontWeight: location.pathname === '/' &&
+                activeSection !== 'courses' &&
+                activeSection !== 'events'
+                  ? 'bold'
+                  : 'normal',
+                fontFamily: 'Cairo, sans-serif',
+                fontSize: '18px',
               }}
             >
               الرئيسية
             </NavButton>
 
             <NavButton
-              to="/programs"
-              sx={{
-                fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
-                fontSize: '19px',
-                color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)' },
-              }}
-            >
-              الدورات
-            </NavButton>
+  to="/programs"
+  color="inherit"
+  sx={{
+    fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  الدورات
+</NavButton>
 
-            <NavButton
-              to="/events"
-              sx={{
-                fontWeight: location.pathname === '/events' ? 'bold' : 'normal',
-                fontSize: '19px',
-                color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)' },
-              }}
-            >
-              الفعاليات
-            </NavButton>
 
+
+
+
+<NavButton
+  to="/"
+  state={{ scrollTo: 'events' }}
+  color="inherit"
+  sx={{
+    fontWeight:
+      location.pathname === '/' && activeSection === 'events'
+        ? 'bold'
+        : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  الفعاليات
+</NavButton>
+
+
+
+
+            {/* الأقسام Dropdown */}
             <Button
-              onClick={handleMenuOpen}
-              sx={{
-                fontSize: '19px',
-                color: 'black',
-                outline: 'none',
-                '&:focus': {
-                  color: 'rgb(0, 0, 0)',
-                  outline: 'none',
-                },
-              }}
-            >
-              الأقسام
-            </Button>
+  onClick={handleMenuOpen}
+  color="inherit"
+  sx={{
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+    outline: 'none',
+    boxShadow: 'none',
+    '&:focus': {
+      outline: 'none',
+      boxShadow: 'none',
+    },
+  }}
+>
+  الأقسام
+</Button>
 
             <Menu
               anchorEl={anchorEl}
@@ -231,7 +233,6 @@ function Layout({ sections }) {
                   direction: 'rtl',
                   minWidth: 180,
                   backgroundColor: 'white',
-                  outline: 'none',
                 },
               }}
             >
@@ -240,11 +241,11 @@ function Layout({ sections }) {
                   key={section.id}
                   onClick={() => handleSectionClick(section.id)}
                   sx={{
-                    fontSize: '17px',
+                    fontFamily: 'Cairo, sans-serif',
+                    fontSize: '16px',
                     color: 'black',
                     '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.21)',
-                      outline: 'none',
+                      backgroundColor: '#f0f0f0',
                     },
                   }}
                 >
@@ -254,36 +255,35 @@ function Layout({ sections }) {
             </Menu>
 
             <NavButton
-              to="/news"
-              sx={{
-                fontWeight: location.pathname === '/news' ? 'bold' : 'normal',
-                fontSize: '19px',
-                color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)' },
-              }}
-            >
-              أخبارنا
-            </NavButton>
-
-            <NavButton
-              to="/about"
-              sx={{
-                fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
-                fontSize: '19px',
-                color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)' },
-              }}
-            >
-              عن المركز
-            </NavButton>
+  to="/about"
+  color="inherit"
+  sx={{
+    fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  عن المركز
+</NavButton>
+<NavButton
+  to="/news"
+  color="inherit"
+  sx={{
+    fontWeight: location.pathname === '/news' ? 'bold' : 'normal',
+    fontFamily: 'Cairo, sans-serif',
+    fontSize: '18px',
+  }}
+>
+  اخر الاخبار
+</NavButton>
 
             <NavButton
               to="/contact"
+              color="inherit"
               sx={{
                 fontWeight: location.pathname === '/contact' ? 'bold' : 'normal',
-                fontSize: '19px',
-                color: 'black',
-                '&:hover': { color: 'rgb(0, 0, 0)' },
+                fontFamily: 'Cairo, sans-serif',
+                fontSize: '18px',
               }}
             >
               تواصل معنا
@@ -292,49 +292,66 @@ function Layout({ sections }) {
         </Toolbar>
       </AppBar>
 
-      {/* Page Content */}
-      <Box
-        className="page-content"
-        sx={{
-          pt: "px",
-          px: { xs: 0, md: 0 },
-        }}
-      >
-        <Outlet />
-      </Box>
+     {/* Content Area */}
+<Box sx={(theme) => theme.mixins.toolbar} />
+<Box
+  className="page-content"
+  sx={{
+    pt: 1,
+    px: { xs: 0, md: 0 }, // Add horizontal padding: 16px on mobile, 48px on larger screens
+  }}
+>
+  <Outlet />
+</Box>
 
       {/* Bottom Admin Login */}
       <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '2.5rem',
-          backgroundColor: '#f1f1f1',
-          borderTop: '1px solid #ccc',
-          zIndex: 1200,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-        }}
-      >
-        {/* Admin Login Button */}
-        <NavButton
-          to="/login"
-          sx={{
-            position: 'absolute',
-            bottom: 8,
-            left: 16,
-            fontSize: '12px',
-            color: '#666',
-            textTransform: 'uppercase',
-          }}
-        >
-          تسجيل دخول للإدارة فقط
-        </NavButton>
-      </Box>
+  sx={{
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '2.5rem', 
+    backgroundColor: '#f1f1f1',
+    borderTop: '1px solid #ccc',
+    zIndex: 1200,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '8px 16px',
+  }}
+>
+
+  {/* Admin Login Button */}
+  <Button
+    variant="outlined"
+    startIcon={<LoginIcon />}
+    sx={{
+      fontFamily: 'Cairo, sans-serif',
+      fontSize: '14px',
+    }}
+    onClick={async () => {
+      const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        alert(`welcome ${result.user.displayName}`);
+        console.log("Logged in UID:", result.user.uid);
+      } catch (error) {
+        console.error("Login failed:", error);
+        alert("Login failed: " + error.message);
+      }
+    }}
+  >
+    تسجيل دخول للإدارة فقط
+  </Button>
+</Box>
+
+
+
+
+
     </>
   );
 }

@@ -8,10 +8,9 @@ import About from '../pages/About';
 import RegistrationForm from '../pages/registration';
 import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
+import EventsPage from '../pages/programs/EventsPage';
 import News from '../pages/News';
-import NewsDetail from '../pages/NewsDetail';// ✅ import added here
-import EventsPage from '../pages/EventsPage';
-import NewsPage from '../pages/NewsPage';
+import NewsDetail from '../pages/NewsDetail';
 
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import Login from '../pages/Login';
@@ -29,18 +28,8 @@ function AppRoutes({ sections }) {
   return (
     <>
       <ScrollToTop />
+      <ScrollToTop />
       <Routes location={location}>
-      <Route element={<Layout sections={sections} />}>
-  <Route path="/" element={<HomePage />} />
-  <Route path="/sections/:id" element={<SectionPage />} />
-  <Route path="/contact" element={<Contact />} />
-  <Route path="/about" element={<About />} />
-  <Route path="/RegistrationForm" element={<RegistrationForm />} />
-  <Route path="/programs/:categoryName" element={<ProgramCategoryPage />} />
-  <Route path="/programs" element={<ProgramePage />} />
-  <Route path="/news" element={<News />} />
-  <Route path="/news/:id" element={<NewsDetail />} />
-</Route>
 
         <Route element={<Layout sections={sections} />}>
           <Route path="/" element={<HomePage />} />
@@ -51,7 +40,8 @@ function AppRoutes({ sections }) {
           <Route path="/programs/:categoryName" element={<ProgramCategoryPage />} />
           <Route path="/programs" element={<ProgramePage />} />
           <Route path="/events" element={<EventsPage />} />
-          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
         </Route>
      
@@ -66,7 +56,6 @@ function AppRoutes({ sections }) {
     </ProtectedAdminRoute>
   }
 />
-
 
 <Route
   path="/admin/programs"
