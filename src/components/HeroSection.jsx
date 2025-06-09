@@ -30,10 +30,10 @@ export default function HeroSection({ pageId }) {
       <Box
         sx={{
           position: "relative",
-          height: { xs: 100, md: 200},
+          height: { xs: 100, md: 130},
           display: "flex",
           flexDirection: "row-reverse",
-          overflow: "hidden",
+          width: "100%",
         }}
       >
 
@@ -43,40 +43,36 @@ export default function HeroSection({ pageId }) {
           src={heroData.imageURL}
           alt="Hero"
           sx={{
-            position: "absolute",
-            top: { xs: "0px", md: "50px"},
-            left: 0,
-            width: "100%",
+            width: { xs: "50%", md: "50%" },
             height: "100%",
-            objectFit: "contain",
-            objectPosition: "center",
-            paddingLeft: { xs: "50%", md: "35%" },
             zIndex: 0,
+            objectFit: "contain", // Ensures full coverage
           }}
         />
 
         {/* Text area */}
         <Box
           sx={{
-            width: { xs: "50%", md: "35%" }, // Smaller on mobile
+            width: { xs: "50%", md: "50%" },
             height: "100%",
             background: heroData.bgGradient || "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-            clipPath: "polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
+            clipPath: "polygon(100% 0%, 20% 0%, 11% 50%, 20% 100%, 100% 100%)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "flex-start",
-            px: { xs: 4, md: 8 },
+            px: { xs: 4, md: 4 },
             zIndex: 1,
           }}
         >
           <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.5rem', md: '2.5rem' }, }}>
             {heroData.title}
           </Typography>
-          <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" ,              display: { xs: "none", md: "block" },
+                    <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" ,              display: { xs: "none", md: "block" },
  }}>
             {heroData.subtitle}
           </Typography>
+
         </Box>
       </Box>
     </Box>

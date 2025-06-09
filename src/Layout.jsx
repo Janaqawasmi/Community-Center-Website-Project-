@@ -55,7 +55,7 @@ function Layout({ sections }) {
 const theme = useTheme();
 const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-const computedPosition = isMobile ? 'static' : (isHomePage ? 'static' : 'absolute');
+// const computedPosition = isMobile ? 'static' : (isHomePage ? 'static' : 'absolute');
 
   useEffect(() => {
     const fetchSiteInfo = async () => {
@@ -101,11 +101,11 @@ const drawerItemStyle = {
   return (
     <>
       <AppBar
- position={computedPosition}
+        position="static"
         elevation={0}
-        sx={{ backgroundColor: 'rgba(255, 255, 255, 0)', boxShadow: 'none' }}
+        sx={{ backgroundColor: 'rgb(255, 255, 255)', boxShadow: 'none' }}
       >
-        <Toolbar sx={{ minHeight: '90px', justifyContent: 'space-between' }}>
+        <Toolbar sx={{ minHeight: '80px', justifyContent: 'space-between' }}>
           {/* Logo */}
           {logoUrl && (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>

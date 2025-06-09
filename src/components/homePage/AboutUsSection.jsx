@@ -46,8 +46,10 @@ export default function AboutUsSection() {
 
   if (loading) return null;
 
+  const isMobile = window.innerWidth <= 600;
+  const previewLimit = isMobile ? 180 : 300;
   const previewText =
-    aboutText.length > 300 ? `${aboutText.substring(0, 300)}...` : aboutText;
+    aboutText.length > previewLimit ? `${aboutText.substring(0, previewLimit)}...` : aboutText;
 
   return (
 <Box sx={{ px: { xs: 2, md: 6 }, pt: 2, pb: 0 }}>
@@ -65,7 +67,7 @@ export default function AboutUsSection() {
             mt: 5,
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
+            boxShadow: "0px 1px 0px 0px rgba(0, 0, 0, 0.23)",
             overflow: "hidden",
             direction: "rtl",
             fontFamily: "Cairo, sans-serif",

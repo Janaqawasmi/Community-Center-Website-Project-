@@ -43,48 +43,50 @@ export default function HomePage() {
       {featuredPrograms.length > 0 && (
         <Slider {...sliderSettings}>
           {featuredPrograms.map((program) => (
-            <Box
-              key={program.id}
-              sx={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {/* Image Section */}
-              <Box
-                component="img"
-                src={program.imageUrl}
-                alt={program.name}
-                sx={{
-                  width: "100%",
-                  height: { xs: 250, md: 350 },
-                  bjectFit: "cover",
-                  objectPosition: { xs: "center", md: "right" },
-                  paddingLeft: { xs: "0%", md: "35%" },
-                }}
-              />
+           <Box
+  key={program.id}
+  sx={{
+    position: "relative",
+    display: "flex",
+    flexDirection: "row", // <-- flipped!
+    overflow: "hidden",
+    height: { xs: 280, md: 380 },
+  }}
+>
+  {/* Image Section - now on the left */}
+  <Box
+    component="img"
+    src={program.imageUrl}
+    alt={program.name}
+    sx={{
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      objectPosition: { xs: "center", md: "left" }, // flipped
+      paddingRight: { xs: "0%", md: "35%" }, // flipped from paddingLeft
+    }}
+  />
 
-              {/* Overlay on desktop */}
-              <Box
-                sx={{
-                  display: { xs: "none", md: "flex" },
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "45%",
-                  height: "100%",
-                  background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-                  clipPath:"polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "flex-start",
-                  px: 9,
-                  zIndex: 1,
-                }}
-              >
-                <OverlayContent program={program} navigate={navigate} />
-              </Box>
+  {/* Overlay on desktop - now on the RIGHT */}
+  <Box
+    sx={{
+      display: { xs: "none", md: "flex" },
+      position: "absolute",
+      top: 0,
+      right: 0, // <-- flipped
+      width: "50%",
+      height: "100%",
+      background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
+      clipPath: "polygon(100% 0%, 20% 0%, 0% 50%, 20% 100%, 100% 100%)", // <-- flipped shape
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "flex-end",
+      px:8,
+      zIndex: 1,
+    }}
+  >
+    <OverlayContent program={program} navigate={navigate} />
+  </Box>
 
 {/* Overlay on mobile (over image, only name + button) */}
 <Box
@@ -96,7 +98,7 @@ export default function HomePage() {
     background: "linear-gradient(180deg, rgba(0, 176, 240, 0.65) 0%, rgba(0, 51, 102, 0.7) 100%)",
     clipPath: "polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%)",
     borderRadius: 2,
-pl: 2,
+pl: 1,
 pr: 3,
     py: 1.5,
     zIndex: 2,
