@@ -4,7 +4,7 @@ import {
   TableHead, TableRow, Paper, Button, Dialog, DialogTitle,
   DialogContent, DialogActions, TextField, IconButton, List, ListItem
 } from '@mui/material';
-import { db, uploadImageFromURL } from '../../components/firebase';
+import { db } from '../../components/firebase';
 import {
   collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy
 } from 'firebase/firestore';

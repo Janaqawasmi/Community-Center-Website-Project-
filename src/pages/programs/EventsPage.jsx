@@ -51,23 +51,25 @@ export default function EventsPage() {
           fontFamily: "'Noto Kufi Arabic', sans-serif",
         }}
       >
-        <Grid container spacing={0.3}>
-          {events.map((event) => (
-            <Grid item key={event.id} xs={12} sm={6} md={4}>
-              <ItemFlipCard
-                item={event}
-                fields={eventFields}
-                onRegister={handleRegister}
-                highlight={highlightId === event.id} // ✅ highlight logic
-              />
-            </Grid>
-          ))}
-          {events.length === 0 && (
-            <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
-              لا توجد فعاليات حالياً.
-            </Typography>
-          )}
-        </Grid>
+   <Grid container spacing={0.3}>
+  {events
+    .filter(event => event.isActive !== false) // هذا السطر الجديد (التعجيل/الفلترة)
+    .map((event) => (
+      <Grid item key={event.id} xs={12} sm={6} md={4}>
+        <ItemFlipCard
+          item={event}
+          fields={eventFields}
+          onRegister={handleRegister}
+        />
+      </Grid>
+    ))}
+  {events.filter(event => event.isActive !== false).length === 0 && (
+    <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
+      لا توجد فعاليات حالياً.
+    </Typography>
+  )}
+</Grid>
+
       </Container>
     </Box>
   );

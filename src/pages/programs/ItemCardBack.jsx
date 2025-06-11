@@ -53,17 +53,26 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
       ))}
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 2 }}>
-        <Button
-          variant="outlined"
-          onClick={e => { e.stopPropagation(); onRegister(item.name); }}
-          sx={{
-            width: "70%", mx: "auto", borderRadius: "40px", border: "2px solid #0d47a1",
-            color: "#0d47a1", fontWeight: "bold", px: 4, textTransform: "none",
-            ":hover": { backgroundColor: "#0d47a1", borderColor: "#0288d1", color: "white" }
-          }}
-        >
-          سجل الآن
-        </Button>
+       <Button
+  variant="outlined"
+  onClick={e => { 
+    e.stopPropagation(); 
+    // تحقق إذا كانت السعة صفر أو غير متوفرة
+    if (!item.capacity || item.capacity <= 0) {
+      alert("عذراً، لا توجد أماكن متاحة للتسجيل في هذه الدورة.");
+      return; // لا تكمل الإجراء
+    }
+    onRegister(item.name); 
+  }}
+  sx={{
+    width: "70%", mx: "auto", borderRadius: "40px", border: "2px solid #0d47a1",
+    color: "#0d47a1", fontWeight: "bold", px: 4, textTransform: "none",
+    ":hover": { backgroundColor: "#0d47a1", borderColor: "#0288d1", color: "white" }
+  }}
+>
+  سجل الآن
+</Button>
+
         <Button
           variant="text"
           onClick={e => { e.stopPropagation(); onFlipBack(); }}
