@@ -55,6 +55,7 @@ export default function HomePage() {
                 overflow: "hidden",
                 height: { xs: 280, md: 380 },
                 width: "100%",
+
               }}
             >
               {/* Left Image */}
@@ -68,6 +69,7 @@ export default function HomePage() {
                   objectFit: "cover",
                   objectPosition: { xs: "center", md: "left" },
                  paddingRight: { xs: "0%", md: "35%" },
+
 
                 }}
               />
