@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Button } from '@mui/material';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
-import { Box, Typography, Container, Grid, Paper, IconButton } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { Box, Typography, Container, Grid } from '@mui/material';
 import Slider from 'react-slick';
 import HeroSection from "../components/HeroSection";
-// Helper to darken blue for gradient
+import { sectionColors } from '../constants/sectionMeta';
+import { useParams, useNavigate } from 'react-router-dom';
+
+// Helper: Map Arabic category name to sectionColors key
+const categoryColorMap = {
+  "دورة": "courses",
+  "أمسية": "evening",
+  "فعالية": "activity",
+  "برنامج": "program",
+  "الكل": "default",
+};
+
 function darkenColor(hex, amount) {
   const num = parseInt(hex.replace('#', ''), 16);
   let r = (num >> 16) - amount * 255;
@@ -19,7 +28,6 @@ function darkenColor(hex, amount) {
   return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
 }
 
-// Styled card, same as SectionPage
 const PrettyCard = ({ title, color, children }) => (
   <Box
     sx={{
@@ -70,9 +78,10 @@ const PrettyCard = ({ title, color, children }) => (
 );
 
 function NewsDetail() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [news, setNews] = useState(null);
-  const [showMore, setShowMore] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -90,22 +99,37 @@ function NewsDetail() {
   if (!news)
     return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
-  const newsColor = '#003366';
-  const newsIcon = '📰';
+  // Get category key and color
+  const categoryKey = categoryColorMap[news.category] || "default";
+  const newsColor = sectionColors[categoryKey] || '#003366';
+
   const fullText = news.full_description || '';
+  // Show the toggle button if text is long
   const shouldShowToggle = fullText.length > 400;
 
-  // Text clamp for "اقرأ المزيد"
-  const clampSx = !showMore
+  // Clamp style: 4 lines if not expanded, full text if expanded
+  const textSx = !expanded
     ? {
         display: '-webkit-box',
-        WebkitLineClamp: 6,
+        WebkitLineClamp: 4,
         WebkitBoxOrient: 'vertical',
         overflow: 'hidden',
+        textAlign: 'right',
+        transition: 'max-height 0.3s',
+        fontSize: '1.1rem',
+        lineHeight: 2,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
       }
-    : {};
+    : {
+        textAlign: 'right',
+        transition: 'max-height 0.3s',
+        fontSize: '1.1rem',
+        lineHeight: 2,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+      };
 
-  // Slider settings
   const sliderSettings = {
     dots: true,
     appendDots: dots => (
@@ -144,27 +168,92 @@ function NewsDetail() {
         py: 0,
       }}
     >
-      {/* Blue header - like SectionPage */}
+      <HeroSection pageId="news" />
+
+      {/* تصفح المزيد من الأخبار */}
       <Box
         sx={{
-          backgroundColor: newsColor,
-          color: '#fff',
-          textAlign: 'center',
-          py: 4,
-          px: 3,
-          borderBottomRightRadius: '60px',
-          boxShadow: '0 6px 15px rgba(0,0,0,0.12)',
-          mt: 0,
+          display: 'flex',
+          justifyContent: 'right',
+          mt: 2,
+          mb: 2,
+          px: 2,
+          direction: 'rtl',
         }}
       >
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          {news.title} {newsIcon}
-        </Typography>
-        {news.subtitle && (
-          <Typography variant="h6" mt={1}>
-            {news.subtitle}
-          </Typography>
-        )}
+        <Button
+          onClick={() => navigate('/News')}
+          disableRipple
+          sx={{
+            position: 'relative',
+            padding: '10px 26px',
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            fontFamily: 'Cairo, sans-serif',
+            cursor: 'pointer',
+            color: newsColor,
+            backgroundColor: 'transparent',
+            borderRadius: '30px',
+            overflow: 'hidden',
+            transition: 'all 0.4s ease-in-out',
+            boxShadow: `15px 15px 15px ${newsColor}`,
+            textTransform: 'none',
+            minWidth: 'auto',
+            '&:focus:not(:focus-visible)': {
+              outline: 'none',
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: '30px',
+              height: '30px',
+              border: `0px solid transparent`,
+              borderTopColor: newsColor,
+              borderRightColor: newsColor,
+              borderTopRightRadius: '22px',
+              transition: 'all 0.3s ease-in-out',
+              boxSizing: 'border-box',
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '30px',
+              height: '30px',
+              border: `0px solid transparent`,
+              borderBottomColor: newsColor,
+              borderLeftColor: newsColor,
+              borderBottomLeftRadius: '22px',
+              transition: 'all 0.3s ease-in-out',
+              boxSizing: 'border-box',
+            },
+            '&:hover::before': {
+              width: '100%',
+              height: '100%',
+              border: `2px solid ${newsColor}`,
+              borderRadius: '30px',
+              borderLeft: 'none',
+              borderBottom: 'none',
+            },
+            '&:hover::after': {
+              width: '100%',
+              height: '100%',
+              border: `2px solid ${newsColor}`,
+              borderRadius: '30px',
+              borderRight: 'none',
+              borderTop: 'none',
+              textShadow: '0 0 5px rgba(0,0,0,0.1)',
+            },
+            '&:hover': {
+              boxShadow: '0 3px 12px rgba(0,0,0,0.1)',
+            },
+          }}
+        >
+          تصفح المزيد من الأخبار
+        </Button>
       </Box>
 
       <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
@@ -172,53 +261,27 @@ function NewsDetail() {
           {/* Main News Content Card */}
           <Grid item xs={12} md={8} sx={{ mt: { xs: -3, md: -4 } }}>
             <PrettyCard title="عن الخبر" color={newsColor}>
-              <Typography
-                sx={{
-                  lineHeight: 2,
-                  fontWeight: 'normal',
-                  fontStyle: 'normal',
-                  fontSize: '1.1rem',
-                  transition: 'max-height 0.3s',
-                  textAlign: 'right',
-                  ...clampSx,
-                }}
-              >
+              <Typography sx={textSx}>
                 {fullText}
               </Typography>
 
-              {/* Read More Toggle */}
+              {/* المزيد / إخفاء Button */}
               {shouldShowToggle && (
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
-                  <Typography
-                    sx={{
-                      color: newsColor,
+                <div style={{ textAlign: 'center', marginTop: '8px' }}>
+                  <button
+                    onClick={() => setExpanded(!expanded)}
+                    style={{
+                      color: 'red',
                       fontWeight: 'bold',
-                      mb: 0,
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      userSelect: 'none',
-                    }}
-                    onClick={() => setShowMore(!showMore)}
-                  >
-                    {showMore ? 'إخفاء' : 'اقرأ المزيد'}
-                  </Typography>
-                  <IconButton
-                    onClick={() => setShowMore(!showMore)}
-                    disableRipple
-                    sx={{
-                      color: newsColor,
-                      fontSize: 32,
-                      mt: '-4px',
-                      background: 'none !important',
                       border: 'none',
-                      boxShadow: 'none',
-                      outline: 'none',
-                      '&:hover': { background: 'none !important' },
+                      background: 'none',
+                      cursor: 'pointer',
+                      fontSize: '1rem',
                     }}
                   >
-                    {showMore ? <ExpandLessIcon fontSize="inherit" /> : <ExpandMoreIcon fontSize="inherit" />}
-                  </IconButton>
-                </Box>
+                    {expanded ? 'إخفاء' : 'المزيد'}
+                  </button>
+                </div>
               )}
             </PrettyCard>
           </Grid>
