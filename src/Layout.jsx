@@ -10,60 +10,76 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  useMediaQuery,
+  useTheme,
+  Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import NavButton from './components/NavButton';
-import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useMediaQuery, useTheme } from '@mui/material';
+
+const NAV_ITEMS = [
+  { label: 'الرئيسية', path: '/' },
+  { label: 'الدورات', path: '/programs' },
+  { label: 'الفعاليات', path: '/events' },
+  { label: 'أخبارنا', path: '/news' },
+  { label: 'عن المركز', path: '/about' },
+  { label: 'تواصل معنا', path: '/contact' },
+];
+
+function navStyle(active) {
+  return {
+    fontWeight: active ? 'bold' : 'normal',
+    fontSize: '19px',
+    color: 'black',
+    '&:hover': { color: 'rgb(0, 0, 0)' },
+  };
+}
 
 function Layout({ sections }) {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [logoUrl, setLogoUrl] = useState('');
-  const [socialLinks, setSocialLinks] = useState({
-    FacebookLink: '',
-    WhatsAppLink: '',
-    instagramLink: '',
-  });
-
-  // Menu states
+  const [socialLinks, setSocialLinks] = useState({});
   const [sectionsMenuAnchor, setSectionsMenuAnchor] = useState(null);
-  const isSectionsMenuOpen = Boolean(sectionsMenuAnchor);
-  const handleSectionsMenuOpen = (event) => setSectionsMenuAnchor(event.currentTarget);
-  const handleSectionsMenuClose = () => setSectionsMenuAnchor(null);
-
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
+  const isSectionsMenuOpen = Boolean(sectionsMenuAnchor);
   const toggleMobileDrawer = (open) => () => setIsMobileDrawerOpen(open);
 
   const handleSectionClick = (id) => {
     navigate(`/sections/${id}`);
-    handleSectionsMenuClose();
+    setSectionsMenuAnchor(null);
     setIsMobileDrawerOpen(false);
   };
-const theme = useTheme();
-const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-// const computedPosition = isMobile ? 'static' : (isHomePage ? 'static' : 'absolute');
+const handleNavClick = (path) => {
+  navigate(path);
+  setIsMobileDrawerOpen(false);
+};
 
   useEffect(() => {
     const fetchSiteInfo = async () => {
       try {
-        const siteInfoRef = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
-        const siteInfoSnap = await getDoc(siteInfoRef);
-        if (siteInfoSnap.exists()) {
-          const data = siteInfoSnap.data();
+        const ref = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
           setLogoUrl(data.logo_url);
           setSocialLinks({
             FacebookLink: data.FacebookLink || '',
@@ -75,252 +91,217 @@ const isMobile = useMediaQuery(theme.breakpoints.down('md'));
         console.error('Error fetching site info:', error);
       }
     };
-
     fetchSiteInfo();
   }, []);
 
-const drawerItemStyle = {
-  backgroundColor: 'white',
-  borderRadius: 2,
-  my: 0.5,
-  px: 2,
-  py: 1,
-  textAlign: 'right',
-  direction: 'rtl',
-  justifyContent: 'space-between',
-  '&:hover': { backgroundColor: ' #f1f1f1' },
-  '& .MuiListItemText-primary': {
-    fontWeight: 'bold',
-    color: 'black',
-    fontSize: '1rem',
-    fontFamily: 'Cairo, sans-serif',
-  },
-};
-
+  const renderSocialIcon = (href, Icon, color) => (
+  <IconButton
+    component="a"
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    sx={{
+      color,
+      transition: 'color 0.2s ease',
+      '&:hover': {
+        color: ' #1976d2', // ✅ MUI primary blue on hover
+      },
+    }}
+  >
+    <Icon />
+  </IconButton>
+);
 
   return (
     <>
-      <AppBar
-        position="static"
-        elevation={0}
-        sx={{ backgroundColor: 'rgb(255, 255, 255)', boxShadow: 'none' }}
-      >
-        <Toolbar sx={{ minHeight: '80px', justifyContent: 'space-between' }}>
-          {/* Logo */}
-          {logoUrl && (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <NavButton to="/" sx={{ p: 0, minWidth: 0 }}>
-                <img src={logoUrl} alt="Logo" style={{ height: 60, width: 'auto', cursor: 'pointer' }} />
-              </NavButton>
-            </Box>
+      <AppBar position="static" elevation={0} sx={{ backgroundColor: '#fff', boxShadow: 'none' }}>
+<Toolbar
+  sx={{
+    minHeight: '70px',
+    justifyContent: 'space-between',
+    px: { xs: 2, md: 4 }, // consistent padding on both sides
+    maxWidth: '1440px',
+    width: '100%',
+    mx: 'auto', // center toolbar content
+  }}
+>          {logoUrl && (
+           <NavButton to="/" sx={{ p: 0, minWidth: 0, mr: 2 }}>
+  <img src={logoUrl} alt="Logo" style={{ height: '60px', width: 'auto' }} />
+</NavButton>
+
           )}
 
-          {/* Desktop Navigation */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              gap: 2,
-              fontFamily: 'Cairo, sans-serif',
-              direction: 'rtl',
-            }}
-          >
-            <NavButton to="/" sx={navStyle(location.pathname === '/')}>الرئيسية</NavButton>
-            <NavButton to="/programs" sx={navStyle(location.pathname === '/programs')}>الدورات</NavButton>
-            <NavButton to="/events" sx={navStyle(location.pathname === '/events')}>الفعاليات</NavButton>
-           <Button
-  onClick={handleSectionsMenuOpen}
-  sx={{
-    fontSize: '19px',
-    color: 'black',
-    outline: 'none',
-    '&:focus': { color: 'rgb(0, 0, 0)', outline: 'none' },
-  }}
->
-  الأقسام
-</Button>            <NavButton to="/news" sx={navStyle(location.pathname === '/news')}>أخبارنا</NavButton>
-            <NavButton to="/about" sx={navStyle(location.pathname === '/about')}>عن المركز</NavButton>
-            <NavButton to="/contact" sx={navStyle(location.pathname === '/contact')}>تواصل معنا</NavButton>
-          </Box>
+          {/* Desktop Nav */}
+          {/* Desktop Nav Buttons with الأقسام second */}
+<Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, direction: 'rtl', alignItems: 'center' }}>
+  {NAV_ITEMS.map(({ label, path }, index) => {
+    if (index === 1) {
+      return (
+        <Box key="custom-duo" sx={{ display: 'flex', gap: 3 }}>
+          <Button onClick={(e) => setSectionsMenuAnchor(e.currentTarget)} sx={navStyle(false)}>
+            الأقسام
+          </Button>
+          <NavButton to={path} sx={navStyle(location.pathname === path)}>
+            {label}
+          </NavButton>
+        </Box>
+      );
+    }
+    return (
+      <NavButton key={path} to={path} sx={navStyle(location.pathname === path)}>
+        {label}
+      </NavButton>
+    );
+  })}
+</Box>
 
-          {/* Hamburger for Mobile */}
+
+          {/* Mobile Menu Button */}
           <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            <IconButton
-              onClick={toggleMobileDrawer(true)}
-              sx={{
-                color: 'black',
-                fontSize: 30,
-                borderRadius: 6,
-                transition: '0.2s',
-                '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' },
-                '&:focus-visible': {
-                  backgroundColor: 'rgba(0,0,0,0.08)',
-                  boxShadow: '0 0 0 2px rgba(0,0,0,0.1)',
-                },
-              }}
-            >
+            <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
               <MenuIcon sx={{ fontSize: 36 }} />
             </IconButton>
           </Box>
 
-          {/* Social Icons (desktop only) */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              gap: 1,
-              color: 'black',
-              '& a:hover': { color: 'rgb(0, 0, 0)' },
-            }}
-          >
-            {socialLinks.FacebookLink && (
-              <IconButton component="a" href={socialLinks.FacebookLink} target="_blank" rel="noopener noreferrer" color="inherit">
-                <FacebookIcon />
-              </IconButton>
-            )}
-            {socialLinks.WhatsAppLink && (
-              <IconButton component="a" href={socialLinks.WhatsAppLink} target="_blank" rel="noopener noreferrer" color="inherit">
-                <WhatsAppIcon />
-              </IconButton>
-            )}
-            {socialLinks.instagramLink && (
-              <IconButton component="a" href={socialLinks.instagramLink} target="_blank" rel="noopener noreferrer" color="inherit">
-                <InstagramIcon />
-              </IconButton>
-            )}
+          {/* Desktop Social Icons */}
+<Box
+  sx={{
+    display: { xs: 'none', md: 'flex' },
+    gap: 1.5,
+    alignItems: 'center',
+    ml: 2,
+  }}
+>            {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')} 
+            {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
+            {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* الأقسام Menu (desktop only) */}
       <Menu
         anchorEl={sectionsMenuAnchor}
         open={isSectionsMenuOpen}
-        onClose={handleSectionsMenuClose}
+        onClose={() => setSectionsMenuAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        PaperProps={{
-          sx: {
-            direction: 'rtl',
-            minWidth: 180,
-            backgroundColor: 'white',
-            outline: 'none',
-          },
-        }}
+        PaperProps={{ sx: { direction: 'rtl', minWidth: 180, backgroundColor: 'white' } }}
       >
         {sections.map((section) => (
-          <MenuItem
-            key={section.id}
-            onClick={() => handleSectionClick(section.id)}
-            sx={{
-              fontSize: '17px',
-              color: 'black',
-              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.21)', outline: 'none' },
-            }}
-          >
+          <MenuItem key={section.id} onClick={() => handleSectionClick(section.id)}>
             {section.title}
           </MenuItem>
         ))}
       </Menu>
 
-      {/* Mobile Drawer */}
       <Drawer
         anchor="left"
         open={isMobileDrawerOpen}
         onClose={toggleMobileDrawer(false)}
-        PaperProps={{
-          sx: {
-            width: '80%',
-            background:"rgb(38, 144, 186)",
-          },
-        }}
+       PaperProps={{
+  sx: {
+    width: '80%',
+    borderRadius: '0 16px 16px 0',
+    backgroundColor: '#f0f4f8', // ✅ custom background
+    direction: 'rtl',           // ✅ text direction from right
+  },
+}}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'left', p: 1 }}>
-          <IconButton onClick={toggleMobileDrawer(false)} sx={{ color: 'white' }}>
-            <CloseIcon sx={{ fontSize: 32 }} />
-          </IconButton>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+          <IconButton onClick={toggleMobileDrawer(false)}><CloseIcon /></IconButton>
         </Box>
-       <List sx={{ px: 2 , py: 0 }}>
-  <ListItemButton onClick={() => { navigate('/'); setIsMobileDrawerOpen(false); }} sx={drawerItemStyle}>
-    <ListItemText primary="الرئيسية" />
-    <ChevronRightIcon />
-  </ListItemButton>
-
-  <ListItemButton onClick={() => { navigate('/programs'); setIsMobileDrawerOpen(false); }} sx={drawerItemStyle}>
-    <ListItemText primary="الدورات" />
-    <ChevronRightIcon />
-  </ListItemButton>
-
-  <ListItemButton onClick={() => { navigate('/events'); setIsMobileDrawerOpen(false); }} sx={drawerItemStyle}>
-    <ListItemText primary="الفعاليات" />
-    <ChevronRightIcon />
-  </ListItemButton>
-
-  {/* الأقسام accordion */}
-  <Accordion
-    sx={{
-      backgroundColor: 'white',
-      borderRadius: 2,
-      my: 0.5,
-      '&::before': { display: 'none' },
-    }}
-  >
-    <AccordionSummary
-      expandIcon={<ExpandMoreIcon />}
-      sx={{
-        textAlign: 'right',
-        direction: 'rtl',
-        px: 2,
-        py: 0,
-        '& .MuiAccordionSummary-content': {
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        },
-      }}
-    >
-      <ListItemText primary="الأقسام" />
-    </AccordionSummary>
-    <AccordionDetails sx={{ p: 0 }}>
-      {sections.map((section) => (
-        <ListItemButton
-          key={section.id}
-          onClick={() => { handleSectionClick(section.id); setIsMobileDrawerOpen(false); }}
+     <List sx={{ px: 2, py: 0, display: 'flex', flexDirection: 'column', gap: 0 }}>
+  {NAV_ITEMS.map(({ label, path }, index) => (
+    <Box key={path}>
+      {index === 1 && (
+        <Accordion
           sx={{
-            ...drawerItemStyle,
-            borderRadius: 0,
-            borderTop: '1px solid #eee',
-            backgroundColor: 'transparent',
+            backgroundColor: '#f9f9f9',
+            boxShadow: 'none',
+            mb:0,
+            borderRadius: 2,
+            '&::before': { display: 'none' },
           }}
         >
-          <ListItemText primary={section.title} />
-        </ListItemButton>
-      ))}
-    </AccordionDetails>
-  </Accordion>
-
-  <ListItemButton onClick={() => { navigate('/news'); setIsMobileDrawerOpen(false); }} sx={drawerItemStyle}>
-    <ListItemText primary="أخبارنا" />
-    <ChevronRightIcon />
-  </ListItemButton>
-
-  <ListItemButton onClick={() => { navigate('/about'); setIsMobileDrawerOpen(false); }} sx={drawerItemStyle}>
-    <ListItemText primary="عن المركز" />
-    <ChevronRightIcon />
-  </ListItemButton>
-
-  <ListItemButton onClick={() => { navigate('/contact'); setIsMobileDrawerOpen(false); }} sx={drawerItemStyle}>
-    <ListItemText primary="تواصل معنا" />
-     <ChevronRightIcon />
-  </ListItemButton>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography sx={{ fontWeight: 'bold' }}>الأقسام</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ px: 0 }}>
+            {sections.map((section) => (
+              <ListItemButton
+                key={section.id}
+                onClick={() => handleSectionClick(section.id)}
+                sx={{
+                  pl: 3,
+                  pr: 2,
+                  py: 1,
+                  borderRadius: 1,
+                  direction: 'rtl',
+                  justifyContent: 'flex-start',
+                  '&:hover': { backgroundColor: ' #eee' },
+                }}
+              >
+<ListItemText
+  primary={section.title}
+  primaryTypographyProps={{
+    sx: {
+      textAlign: 'right',
+      direction: 'rtl',
+      fontSize: '15px',
+      fontFamily: 'Cairo, sans-serif',
+    },
+  }}
+/>              </ListItemButton>
+            ))}
+          </AccordionDetails>
+        </Accordion>
+      )}
+      <ListItemButton
+       onClick={() => handleNavClick(path)}
+        sx={{
+          px: 2,
+          py: 1.25,
+          borderRadius: 2,
+          backgroundColor: ' #f9f9f9',
+          direction: 'rtl', // ✅ ensures right-to-left alignment
+          '&:hover': { backgroundColor: '#eee' },
+        }}
+      >
+        <ListItemText
+          primary={label}
+          primaryTypographyProps={{ fontSize: '15px',
+             fontWeight: 500, sx: { textAlign: 'right',  direction: 'rtl', }, // ✅ align text to right
+}}
+          
+        />
+        <ChevronRightIcon sx={{ color: '#888' }} />
+      </ListItemButton>
+    </Box>
+  ))}
 </List>
+
+
+<Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'center',
+    gap: 4,
+    mt: 'auto',
+    pt: 2,
+    pb: 3,
+    borderTop: '1px solid #eee',
+  }}
+>
+   {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')} 
+   {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
+    {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')} 
+</Box>
+
       </Drawer>
 
-      {/* Page Content */}
-      <Box className="page-content" sx={{ pt: 'px', px: { xs: 0, md: 0 } }}>
+      <Box sx={{ px: { xs: 0, md: 0 } }}>
         <Outlet />
       </Box>
 
-      {/* Admin Login Footer */}
       <Box
         sx={{
           position: 'fixed',
@@ -345,7 +326,6 @@ const drawerItemStyle = {
             left: 16,
             fontSize: '12px',
             color: '#666',
-            textTransform: 'uppercase',
           }}
         >
           تسجيل دخول للإدارة فقط
@@ -353,15 +333,6 @@ const drawerItemStyle = {
       </Box>
     </>
   );
-}
-
-function navStyle(active) {
-  return {
-    fontWeight: active ? 'bold' : 'normal',
-    fontSize: '19px',
-    color: 'black',
-    '&:hover': { color: 'rgb(0, 0, 0)' },
-  };
 }
 
 export default Layout;
