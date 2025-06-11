@@ -67,7 +67,7 @@ export default function AboutUsSection() {
             mt: 5,
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "0px 1px 0px 0px rgba(0, 0, 0, 0.23)",
+            boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.23)",
             overflow: "hidden",
             direction: "rtl",
             fontFamily: "Cairo, sans-serif",
