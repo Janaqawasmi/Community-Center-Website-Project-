@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Typography, Grid, Container } from "@mui/material";
 import ItemFlipCard from "./ItemFlipCard";
 import HeroSection from "../../components/HeroSection";
 import { useFetchEvents } from "./useFetchEvents";
+import { useMemo } from "react";
 
 // الأيقونات...
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -21,7 +22,14 @@ const eventFields = [
 
 export default function EventsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const events = useFetchEvents();
+
+  // ✅ Extract ?highlight=someId from the URL
+  const highlightId = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("highlight");
+  }, [location.search]);
 
   const handleRegister = (eventTitle) => {
     navigate(`/RegistrationForm?event=${encodeURIComponent(eventTitle)}`);
@@ -50,6 +58,7 @@ export default function EventsPage() {
                 item={event}
                 fields={eventFields}
                 onRegister={handleRegister}
+                highlight={highlightId === event.id} // ✅ highlight logic
               />
             </Grid>
           ))}
