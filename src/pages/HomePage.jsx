@@ -136,7 +136,7 @@ function OverlayContent({ program, navigate, isEvent = false }) {
           )
         }
       >
-        {isEvent ? "عرض التفاصيل" : "سجلوا الآن"}
+        { "عرض التفاصيل"}
       </Button>
     </>
   );
