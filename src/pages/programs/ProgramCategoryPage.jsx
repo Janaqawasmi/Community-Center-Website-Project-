@@ -67,7 +67,9 @@ useEffect(() => {
   }}
 >
  <Grid container spacing={0.3} >
-  {programs.map((prog) => (
+ {programs
+  .filter(prog => prog.isActive !== false) // يعرض فقط الدورات المفعلة أو التي لا تحتوي على هذا الحقل
+  .map((prog) => (
     <Grid
       item
       key={prog.id}
