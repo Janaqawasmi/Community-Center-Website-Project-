@@ -184,7 +184,7 @@ const PrettyCard = ({ title, color, children }) => {
           key={i}
           sx={{
             width: '100%',
-            height: 300,
+            height: 350,
             borderRadius: '28px',
             overflow: 'hidden',
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
