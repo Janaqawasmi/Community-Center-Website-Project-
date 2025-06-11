@@ -30,7 +30,7 @@ export default function HeroSection({ pageId }) {
       <Box
         sx={{
           position: "relative",
-          height: { xs: 100, md: 130},
+          height: { xs: 100, md: 120},
           display: "flex",
           flexDirection: "row-reverse",
           width: "100%",

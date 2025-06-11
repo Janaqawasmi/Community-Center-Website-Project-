@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchNews } from '../utils/fetchNews';
 import NewsCard from './NewsCard';
-import HeroSection from "../components/HeroSection";
 
+import HeroSection from "../components/HeroSection"; // ⬅️ (already imported)
 import {
   Box,
   Container,
@@ -38,8 +38,11 @@ function News() {
         pb: 8,
       }}
     >
-   <HeroSection pageId="news" />
-      
+      {/* 🟦 Hero Banner - replaced with HeroSection for consistency */}
+      {/* --------- START NEW: HERO SECTION HEADER --------- */}
+      <HeroSection pageId="news" /> {/* ⬅️ ADDED: Use HeroSection like Programs page */}
+      {/* --------- END NEW: HERO SECTION HEADER --------- */}
+
       {/* 🟢 Filter Buttons */}
       <Box
         sx={{
@@ -51,30 +54,7 @@ function News() {
           mb: 4,
         }}
       >
-        {categories.map((cat) => (
-          <Button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            variant={filter === cat ? 'contained' : 'outlined'}
-            sx={{
-              borderRadius: '30px',
-              px: 3,
-              py: 1.5,
-              fontWeight: 'bold',
-              color: filter === cat ? 'white' : '#003366',
-              backgroundColor: filter === cat ? '#003366' : 'white',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
-              '&:hover': {
-                backgroundColor: filter === cat ? '#002b5c' : '#ddd',
-              },
-            }}
-          >
-            {cat === 'دورة' ? 'الدورات' :
-             cat === 'أمسية' ? 'الأمسيات' :
-             cat === 'فعالية' ? 'الفعاليات' :
-             cat === 'برنامج' ? 'البرامج' : 'الكل'}
-          </Button>
-        ))}
+       
       </Box>
 
       {/* 🗂 News Cards Grid */}
