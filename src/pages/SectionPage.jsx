@@ -175,78 +175,96 @@ const PrettyCard = ({ title, color, children }) => {
 
 
 
- <Grid container spacing={4}>
- {section.description && (
-  <Grid item xs={12} md={6} sx={{ mt: { xs: -3, md: -4 } }}>
-    <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
-      <ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
-      <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <button
-          onClick={() => setExpanded(!expanded)}
-          style={{
-            color: 'red',
-            fontWeight: 'bold',
-            border: 'none',
-            background: 'none',
-            cursor: 'pointer',
-            fontSize: '1rem',
+{/* ✅ Always-visible image slider at the top */}
+{section.imageGallery?.length > 0 && (
+  <Box sx={{ width: '100%', mb: 4 }}>
+    <Slider {...singleImageSliderSettings}>
+      {section.imageGallery.map((url, i) => (
+        <Box
+          key={i}
+          sx={{
+            width: '100%',
+            height: 300,
+            borderRadius: '28px',
+            overflow: 'hidden',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }}
         >
-          {expanded ? 'إخفاء' : 'المزيد'}
-        </button>
-      </Box>
-    </PrettyCard>
-{/* 👇 Start Collapse block */}
-<Collapse in={expanded}>
-  {section.hallDescription && (
-    <PrettyCard title={section.hallDescription_title || "نادي الحلقات"} color={sectionColor}>
-      <ExpandableText
-        text={section.hallDescription}
-        sx={{ fontSize: '5rem', lineHeight: 4 }}
-        expandable={false}
-      />
-    </PrettyCard>
-  )}
+        <img
+  src={url}
+  alt={`desc-img-${i}`}
+  style={{
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center', // ✅ Add this
+    display: 'block',
+  }}
+/>
 
-  {section.goals?.length > 0 && (
-    <PrettyCard title={section.goals_title || "الأهداف"} color={sectionColor}>
-      <ExpandableList items={section.goals} expandable={false} />
-    </PrettyCard>
-  )}
-
-  {section.extra_goals?.length > 0 && (
-    <PrettyCard title={section.extra_goals_title || "أهداف إضافية"} color={sectionColor}>
-      <ExpandableList items={section.extra_goals} expandable={false} />
-    </PrettyCard>
-  )}
-
-  {section.programs?.length > 0 && (
-    <PrettyCard title={section.programs_title || "البرامج والأنشطة"} color={sectionColor}>
-      <ExpandableList items={section.programs} expandable={false} />
-    </PrettyCard>
-  )}
-</Collapse>
-{/* 👆 End Collapse block */}
-
-    
-  </Grid>
+        </Box>
+      ))}
+    </Slider>
+  </Box>
 )}
 
+{/* ✅ All the cards come below the image */}
+<Grid container spacing={4}>
+  <Grid item xs={12}>
+    {/* ✅ Always show description */}
+    {section.description && (
+      <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
+        <ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
+        {/* ✅ Toggle button below description */}
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            style={{
+              color: 'red',
+              fontWeight: 'bold',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              fontSize: '1rem',
+            }}
+          >
+            {expanded ? 'إخفاء' : 'المزيد'}
+          </button>
+        </Box>
+      </PrettyCard>
+    )}
 
-       
-          {/* صور */}
-          {section.imageGallery?.length > 0 && (
-            <Grid item xs={12} md={6}>
-              <Slider {...singleImageSliderSettings}>
-                {section.imageGallery.map((url, i) => (
-                  <Box key={i} sx={{ width: '100%', height: 300, borderRadius: 3, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                    <img src={url} alt={`desc-img-${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                  </Box>
-                ))}
-              </Slider>
-            </Grid>
-          )}
-        </Grid>
+    {/* ✅ Everything else hidden initially */}
+    <Collapse in={expanded}>
+      {section.hallDescription && (
+        <PrettyCard title={section.hallDescription_title || "نادي الحلقات"} color={sectionColor}>
+          <ExpandableText text={section.hallDescription} sx={{ fontSize: '1.1em', lineHeight: 2 }} />
+        </PrettyCard>
+      )}
+
+      {section.goals?.length > 0 && (
+        <PrettyCard title={section.goals_title || "الأهداف"} color={sectionColor}>
+          <ExpandableList items={section.goals} />
+        </PrettyCard>
+      )}
+
+      {section.extra_goals?.length > 0 && (
+        <PrettyCard title={section.extra_goals_title || "أهداف إضافية"} color={sectionColor}>
+          <ExpandableList items={section.extra_goals} />
+        </PrettyCard>
+      )}
+
+      {section.programs?.length > 0 && (
+        <PrettyCard title={section.programs_title || "البرامج والأنشطة"} color={sectionColor}>
+          <ExpandableList items={section.programs} />
+        </PrettyCard>
+      )}
+    </Collapse>
+  </Grid>
+</Grid>
+
+
+
 
         {section.programCards?.length > 0 && (
           <>
