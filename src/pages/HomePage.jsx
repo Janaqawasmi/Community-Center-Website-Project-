@@ -10,25 +10,43 @@ import "slick-carousel/slick/slick-theme.css";
 import QuickLinksSection from "../components/homePage/QuickLinksSection";
 import { fetchSections } from "../utils/fetchSections";
 import AboutUsSection from "../components/homePage/AboutUsSection";
+import { fetchNews } from "../utils/fetchNews";
 
 export default function HomePage() {
   const featuredPrograms = useFeaturedPrograms();
   const featuredEvents = useFetchEvents(true); // Fetch only featured events 
-  const combinedSlides = [...featuredPrograms, ...featuredEvents.map(e => ({ ...e, isEvent: true }))];
+  const [featuredNews, setFeaturedNews] = useState([]); // ✅ Declare this BEFORE using it
+  const combinedSlides = [
+  ...featuredPrograms,
+  ...featuredEvents.map(e => ({ ...e, isEvent: true })),
+  ...featuredNews,
+];
   const navigate = useNavigate();
   const [sections, setSections] = useState([]);
 
-  useEffect(() => {
-    const loadSections = async () => {
-      try {
-        const data = await fetchSections();
-        setSections(data);
-      } catch (error) {
-        console.error("Error fetching sections:", error);
-      }
-    };
-    loadSections();
-  }, []);
+useEffect(() => {
+  const loadSections = async () => {
+    try {
+      const data = await fetchSections();
+      setSections(data);
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+    }
+  };
+
+  const loadNews = async () => {
+    try {
+      const data = await fetchNews(true); // ✅ only featured
+      setFeaturedNews(data);
+    } catch (error) {
+      console.error("Error fetching featured news:", error);
+    }
+  };
+
+  loadSections();
+  loadNews();
+}, []);
+
 
   const sliderSettings = {
     dots: true,
@@ -92,7 +110,7 @@ export default function HomePage() {
                   zIndex: 1,
                 }}
               >
-                <OverlayContent program={item} navigate={navigate} isEvent={item.isEvent} />
+<OverlayContent program={item} navigate={navigate} isEvent={item.isEvent} isNews={item.isNews} />
               </Box>
 
               {/* Overlay on mobile */}
@@ -142,13 +160,16 @@ export default function HomePage() {
                       color: "black",
                     },
                   }}
-                  onClick={() =>
-                    navigate(
-                      item.isEvent
-                        ? `/events?highlight=${item.id}`
-                        : `/programs/${encodeURIComponent(item.category?.[0] || '')}?highlight=${item.id}`
-                    )
-                  }
+                 onClick={() =>
+  navigate(
+    item.isNews
+      ? `/news/${item.id}`
+      : item.isEvent
+        ? `/events?highlight=${item.id}`
+        : `/programs/${encodeURIComponent(item.category?.[0] || '')}?highlight=${item.id}`
+  )
+}
+
                 >
         عرض التفاصيل
                 </Button>
@@ -171,7 +192,7 @@ export default function HomePage() {
   );
 }
 
-function OverlayContent({ program, navigate, isEvent = false }) {
+function OverlayContent({ program, navigate, isEvent = false, isNews = false }) {
   return (
     <>
       <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2 , textAlign: "right" }}>
@@ -191,11 +212,14 @@ function OverlayContent({ program, navigate, isEvent = false }) {
           textTransform: "none",
         }}
         onClick={() =>
-          navigate(
-            isEvent
-              ? `/events?highlight=${program.id}`
-              : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
-          )
+         navigate(
+  isNews
+    ? `/news/${program.id}`
+    : isEvent
+      ? `/events?highlight=${program.id}`
+      : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
+)
+
         }
       >
         عرض التفاصيل
