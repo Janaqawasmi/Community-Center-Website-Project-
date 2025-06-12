@@ -75,6 +75,7 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
         >
           سجل الآن
         </Button>
+
         <Button
           variant="text"
           onClick={e => { e.stopPropagation(); onFlipBack(); }}

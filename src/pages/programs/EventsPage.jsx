@@ -98,6 +98,7 @@ export default function EventsPage() {
             ))}
         </Grid>
       </Box>
+
     </Box>
   );
 }
