@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Grid, Container } from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import ItemFlipCard from "./ItemFlipCard";
 import HeroSection from "../../components/HeroSection";
 import { useFetchEvents } from "./useFetchEvents";
@@ -27,7 +27,6 @@ export default function EventsPage() {
   const cardRefs = useRef({});
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 960);
 
-  // Recalculate screen size on resize
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 960);
     window.addEventListener("resize", handleResize);
@@ -39,7 +38,6 @@ export default function EventsPage() {
     return params.get("highlight");
   }, [location.search]);
 
-  // Scroll to highlighted event
   useEffect(() => {
     if (highlightId && cardRefs.current[highlightId]) {
       cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
@@ -57,18 +55,9 @@ export default function EventsPage() {
       <Box mb={4}>
         <HeroSection pageId="events" />
       </Box>
-      <Container
-        sx={{
-          backgroundColor: "#fff",
-          borderRadius: 4,
-          boxShadow: "0 0 20px rgba(0,0,0,0.1)",
-          py: 4,
-          px: { xs: 2, md: 6 },
-          direction: "rtl",
-          fontFamily: "'Noto Kufi Arabic', sans-serif",
-        }}
-      >
-        {/* Highlighted Card in Large Format (Desktop Only) */}
+
+      <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
+        {/* Highlighted Event (Large Card on Desktop) */}
         {highlightId && highlightedEvent && isDesktop && (
           <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
             <Grid container justifyContent="center">
@@ -84,10 +73,10 @@ export default function EventsPage() {
           </Box>
         )}
 
-        {/* All Cards Grid */}
-<Grid container spacing={8} justifyContent="center">
+        {/* All Other Cards */}
+        <Grid container spacing={8} justifyContent="center">
           {events
-            .filter((event) => !(highlightId === event.id && isDesktop)) // Exclude if already shown large
+            .filter((event) => !(highlightId === event.id && isDesktop))
             .map((event) => (
               <Grid
                 item
@@ -108,7 +97,7 @@ export default function EventsPage() {
               </Grid>
             ))}
         </Grid>
-      </Container>
+      </Box>
     </Box>
   );
 }

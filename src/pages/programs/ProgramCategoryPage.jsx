@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Grid, Container } from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import { useFetchPrograms } from "./useFetchPrograms";
 import ItemFlipCard from "./ItemFlipCard";
 import HeroSection from "../../components/HeroSection";
@@ -40,7 +40,6 @@ export default function ProgramCategoryPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Scroll to highlighted program when available
   useEffect(() => {
     if (highlightId && cardRefs.current[highlightId]) {
       cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
@@ -59,18 +58,7 @@ export default function ProgramCategoryPage() {
         <HeroSection pageId={categoryName} />
       </Box>
 
-      <Container
-        sx={{
-          backgroundColor: "#fff",
-          borderRadius: 4,
-          boxShadow: "0 0 20px rgba(0,0,0,0.1)",
-          py: 4,
-          px: { xs: 2, md: 6 },
-          direction: "rtl",
-          fontFamily: "'Noto Kufi Arabic', sans-serif",
-        }}
-      >
-        {/* Highlighted Program - Large on Desktop */}
+      <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
         {highlightId && highlightedProgram && isDesktop && (
           <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
             <Grid container justifyContent="center">
@@ -86,8 +74,7 @@ export default function ProgramCategoryPage() {
           </Box>
         )}
 
-        {/* Grid of Programs */}
-<Grid container spacing={8} justifyContent="center">
+        <Grid container spacing={8} justifyContent="center">
           {programs
             .filter((prog) => !(highlightId === prog.id && isDesktop))
             .map((prog) => (
@@ -116,7 +103,7 @@ export default function ProgramCategoryPage() {
             لا توجد برامج حالياً تحت هذا التصنيف.
           </Typography>
         )}
-      </Container>
+      </Box>
     </Box>
   );
 }
