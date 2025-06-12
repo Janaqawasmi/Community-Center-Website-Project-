@@ -1,12 +1,12 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { Box, Typography, Grid, Container, Paper } from "@mui/material";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { Box, Typography, Grid, Container } from "@mui/material";
 import { useFetchPrograms } from "./useFetchPrograms";
-import ItemFlipCard from "./ItemFlipCard"; // import ProgramCard from "./ProgramCard";
-import HeroSection from "../../components/HeroSection"; 
-import { useSearchParams,useLocation } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import ItemFlipCard from "./ItemFlipCard";
+import HeroSection from "../../components/HeroSection";
+import { useSearchParams } from "react-router-dom";
+import { useRef, useEffect, useState } from "react";
 
-// Import the icons you want for the fields
+// Icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import RepeatIcon from '@mui/icons-material/Repeat';
@@ -14,9 +14,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 const programFields = [
   { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
   { key: "time", label: "الوقت", icon: <AccessTimeIcon /> },
@@ -25,76 +22,101 @@ const programFields = [
   { key: "price", label: "السعر", icon: <AttachMoneyIcon /> },
   { key: "capacity", label: "المقاعد المتبقية", icon: <EventSeatIcon /> },
 ];
+
 export default function ProgramCategoryPage() {
-  const { categoryName } = useParams();// save the category name from the URL
+  const { categoryName } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const programs = useFetchPrograms(categoryName);
-const [searchParams] = useSearchParams();
-const highlightId = searchParams.get("highlight");
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get("highlight");
 
-// store refs
-const cardRefs = useRef({});
+  const cardRefs = useRef({});
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 960);
 
-// after programs are loaded, scroll to highlighted one
-useEffect(() => {
-  if (highlightId && cardRefs.current[highlightId]) {
-    cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-}, [programs, highlightId]);
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 960);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
+  // Scroll to highlighted program when available
+  useEffect(() => {
+    if (highlightId && cardRefs.current[highlightId]) {
+      cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [programs, highlightId]);
 
   const handleRegister = (programName) => {
     navigate(`/RegistrationForm?program=${encodeURIComponent(programName)}`);
   };
 
+  const highlightedProgram = programs.find((p) => p.id === highlightId);
+
   return (
-  <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-    {/* Header Section */}
-    <Box mb={4}>
-      <HeroSection pageId={categoryName} />
+    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+      <Box mb={4}>
+        <HeroSection pageId={categoryName} />
+      </Box>
+
+      <Container
+        sx={{
+          backgroundColor: "#fff",
+          borderRadius: 4,
+          boxShadow: "0 0 20px rgba(0,0,0,0.1)",
+          py: 4,
+          px: { xs: 2, md: 6 },
+          direction: "rtl",
+          fontFamily: "'Noto Kufi Arabic', sans-serif",
+        }}
+      >
+        {/* Highlighted Program - Large on Desktop */}
+        {highlightId && highlightedProgram && isDesktop && (
+          <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
+            <Grid container justifyContent="center">
+              <Grid item md={4}>
+                <ItemFlipCard
+                  item={highlightedProgram}
+                  fields={programFields}
+                  onRegister={handleRegister}
+                  highlight={true}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        {/* Grid of Programs */}
+<Grid container spacing={8} justifyContent="center">
+          {programs
+            .filter((prog) => !(highlightId === prog.id && isDesktop))
+            .map((prog) => (
+              <Grid
+                item
+                key={prog.id}
+                xs={12}
+                sm={6}
+                md={4}
+                display="flex"
+                justifyContent="center"
+                ref={(el) => (cardRefs.current[prog.id] = el)}
+              >
+                <ItemFlipCard
+                  item={prog}
+                  fields={programFields}
+                  onRegister={handleRegister}
+                  highlight={highlightId === prog.id}
+                />
+              </Grid>
+            ))}
+        </Grid>
+
+        {programs.length === 0 && (
+          <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
+            لا توجد برامج حالياً تحت هذا التصنيف.
+          </Typography>
+        )}
+      </Container>
     </Box>
-
-    {/* White Box Container - Matches About Page */}
-   <Container
-  sx={{
-    backgroundColor: "#fff", // or rgba(255,255,255,0.95) for semi-transparent
-    borderRadius: 4,
-    boxShadow: "0 0 20px rgba(0,0,0,0.1)",
-    py: 4,
-    px: { xs: 2, md: 6 },
-    direction: "rtl",
-    fontFamily: "'Noto Kufi Arabic', sans-serif",
-  }}
->
- <Grid container spacing={0.3} >
-  {programs.map((prog) => (
-    <Grid
-      item
-      key={prog.id}
-      xs={12}
-      sm={6}
-      md={4}
-      ref={(el) => (cardRefs.current[prog.id] = el)}
-    >
-      <ItemFlipCard
-        item={prog}
-        fields={programFields}
-        onRegister={handleRegister}
-        highlight={prog.id === highlightId}
-      />
-    </Grid>
-  ))}
-
-   {programs.length === 0 && (
-            <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
-              لا توجد برامج حالياً تحت هذا التصنيف.
-            </Typography>
-          )}
-</Grid>
-
-</Container>
-
-  </Box>
-);
-
+  );
 }

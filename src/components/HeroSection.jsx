@@ -30,7 +30,7 @@ export default function HeroSection({ pageId }) {
       <Box
         sx={{
           position: "relative",
-          height: { xs: 100, md: 120},
+          height: { xs:80, md: 100},
           display: "flex",
           flexDirection: "row-reverse",
           width: "100%",
@@ -53,7 +53,7 @@ export default function HeroSection({ pageId }) {
         {/* Text area */}
         <Box
           sx={{
-            width: { xs: "50%", md: "50%" },
+            width: { xs: "60%", md: "50%" },
             height: "100%",
             background: heroData.bgGradient || "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
             clipPath: "polygon(100% 0%, 20% 0%, 11% 50%, 20% 100%, 100% 100%)",
@@ -61,14 +61,14 @@ export default function HeroSection({ pageId }) {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "flex-start",
-            px: { xs: 4, md: 4 },
+            px: { xs: 2, md: 4 },
             zIndex: 1,
           }}
         >
-          <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.5rem', md: '2.5rem' }, }}>
+          <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.3rem', md: '2rem' }, }}>
             {heroData.title}
           </Typography>
-                    <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" ,              display: { xs: "none", md: "block" },
+                    <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" , display: { xs: "none", md: "block" },
  }}>
             {heroData.subtitle}
           </Typography>
