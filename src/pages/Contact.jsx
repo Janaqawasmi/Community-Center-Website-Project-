@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Grid, TextField, Typography, Button, Paper, Box, Snackbar, useMediaQuery
+import { 
+  Grid, TextField, Typography, Button, Paper, Box, Snackbar, useMediaQuery 
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
+import { SiWaze } from 'react-icons/si'; // Waze logo
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -12,7 +13,8 @@ import { sendMessage } from '../utils/contact_firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
-import { SiWaze } from 'react-icons/si'; // Simple Icons: Waze logo
+
+
 
 
 export default function Contact() {

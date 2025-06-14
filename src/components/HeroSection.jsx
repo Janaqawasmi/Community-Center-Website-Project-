@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 
-
 export default function HeroSection({ pageId }) {
   const [heroData, setHeroData] = useState(null);
 

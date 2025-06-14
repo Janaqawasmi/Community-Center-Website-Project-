@@ -6,11 +6,6 @@ export const FlipCard = styled('div')({
   perspective: 1000,
   margin: "0.5rem",
   cursor: "pointer",
-  transition: "transform 0.3s ease, box-shadow 0.3s ease",
-  "&:hover": {
-    transform: "scale(1.03)",
-    boxShadow: "0 12px 24px rgba(0, 0, 0, 0.2)",
-  },
 });
 
 export const FlipCardInner = styled('div')({
