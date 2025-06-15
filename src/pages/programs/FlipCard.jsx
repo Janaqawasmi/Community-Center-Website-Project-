@@ -1,4 +1,4 @@
-import { styled } from '@mui/system';
+import { styled } from '@mui/material/styles';
 
 export const FlipCard = styled('div')({
   width: "100%",            // allow responsive sizing from Grid
