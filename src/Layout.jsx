@@ -30,6 +30,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
 import NavButton from './components/NavButton';
 
+
 const NAV_ITEMS = [
   { label: 'الرئيسية', path: '/' },
   { label: 'الدورات', path: '/programs' },
@@ -93,6 +94,45 @@ const handleNavClick = (path) => {
     };
     fetchSiteInfo();
   }, []);
+ 
+
+useEffect(() => {
+  window.interdeal = {
+    sitekey: "947480020c6a6fee1201647fae5ab297",
+    Position: "right",
+    domains: {
+      js: "https://cdn.equalweb.com/",
+      acc: "https://access.equalweb.com/"
+    },
+    Menulang: "AR", // Arabic language
+    btnStyle: {
+      vPosition: ["80%", "80%"],
+      scale: ["0.8", "0.5"],
+      color: {
+        main: "#1c4bb6",
+        second: "#f3f1f1"
+      },
+      icon: {
+        outline: false,
+        type: 10,
+        shape: "semicircle"
+      }
+    }
+  };
+
+  const script = document.createElement("script");
+  script.src = "https://cdn.equalweb.com/core/5.1.2/accessibility.js";
+  script.defer = true;
+  script.integrity = "sha512-PUyQFF3HFjRiVfjOiFFu+RTc0nGmLV5FN3CVw8zWFK6pVbWPAEKy9X2bTUn10GNu1EbxN56MuWu0P8ZHC6xv3Q==";
+  script.crossOrigin = "anonymous";
+  script.setAttribute("data-cfasync", true);
+
+  document.body.appendChild(script);
+
+  return () => {
+    document.body.removeChild(script);
+  };
+}, []);
 
   const renderSocialIcon = (href, Icon, color) => (
   <IconButton
