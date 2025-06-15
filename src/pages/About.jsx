@@ -4,6 +4,7 @@ import {
   Typography,
   Box,
   Grid,
+  Button,
 } from "@mui/material";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../components/firebase";
@@ -19,8 +20,117 @@ import {
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import HeroSection from "../components/HeroSection";
+
 export default function About() {
   const [aboutData, setAboutData] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({
+    about: false,
+    vision: false,
+    message: false,
+    justifications: false,
+    goals: false
+  });
+
+  // ألوان للبطاقات مع التدرجات
+  const cardColors = {
+    about: '#4a90e2',
+    vision: '#f7971e',
+    message: '#004e92',
+    justifications: '#c31432',
+    goals: '#3e833e'
+  };
+
+  // تدرجات الألوان للهيدرز
+  const cardGradients = {
+    about: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)", // درجات الأزرق
+    vision: "linear-gradient(180deg, #4CAF50 0%, #1B5E20 100%)", // درجات البرتقالي
+    message: "linear-gradient(180deg, #FF9800 0%, #E65100 100%)", // درجات الكحلي
+    justifications: "linear-gradient(180deg, #F44336 0%, #B71C1C 100%)", // درجات الأحمر
+    goals: "linear-gradient(180deg, #8BC34A 0%, #33691E 100%)" // درجات الأخضر
+  };
+
+  const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const truncateText = (text, maxLength = 200) => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
+  // دالة مساعدة لتغميق اللون
+  const darkenColor = (hex, amount) => {
+    const num = parseInt(hex.replace('#', ''), 16);
+    let r = (num >> 16) - amount * 255;
+    let g = ((num >> 8) & 0x00FF) - amount * 255;
+    let b = (num & 0x0000FF) - amount * 255;
+
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+
+    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+  };
+
+  // PrettyCard component
+  const PrettyCard = ({ title, color, children, section }) => {
+    const gradient = cardGradients[section] || `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`;
+    
+    return (
+      <Box
+        sx={{
+          position: 'relative',
+          borderRadius: '28px',
+          p: { xs: 3, sm: 4 },
+          mt: 5,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
+          overflow: 'hidden',
+          direction: 'rtl',
+          fontFamily: 'Cairo, sans-serif',
+          minHeight: '200px',
+        }}
+      >
+        {/* Top-Right Title Badge */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            height: { xs: '40px', sm: '40px' },
+            minWidth: 'fit-content',
+            padding: '0 20px',
+            background: gradient,
+            borderBottomLeftRadius: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: { xs: '1rem', sm: '1.1rem' },
+            zIndex: 2,
+            textAlign: 'center',
+            whiteSpace: 'nowrap',
+            boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
+          }}
+        >
+          {title}
+        </Box>
+
+        {/* Card Body */}
+        <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
+          {children}
+        </Box>
+      </Box>
+    );
+  };
 
   useEffect(() => {
     AOS.init({
@@ -53,163 +163,248 @@ export default function About() {
     );
   }
 
-  // ✅ SectionHeader معدل ليكون أقصر عرضًا
-  const SectionHeader = ({ title, icon, gradient }) => (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        direction: "rtl",
-        color: "white",
-        background: gradient,
-        px: 3,
-        py: 2,
-        borderRadius: "0 12px 12px 0",
-        clipPath: "polygon(6% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        mb: 2,
-        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        gap: 1.5,
-        maxWidth: "70%",  // ✅ الإطار أقصر
-        ml: "auto",       // ✅ محاذاة لليمين داخل RTL
-       
-      }}
-    >
-      <Box sx={{ fontSize: 26 }}>{icon}</Box>
-      <Typography variant="h5" fontWeight="bold" >
-        {title}
-      </Typography>
-    </Box>
-  );
-
-  const InfoSection = ({ title, icon, text, gradient, animation }) => (
-    <Box sx={{ mb: 6 }} data-aos={animation}>
-      <Box sx={{ maxWidth: "85%", ml: "auto" }}>
-        <SectionHeader title={title} icon={icon} gradient={gradient} />
-        <Typography
-          variant="body1"
-          sx={{
-            mt: 2,
-            lineHeight: 2,
-            textAlign: "justify",
-            fontSize: "1.2rem",
-          }}
-        >
-          {text}
-        </Typography>
-      </Box>
-    </Box>
-  );
-
   return (
     <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-        <Box mb={4}> {/* Adjust the margin as needed */}
+      <Box mb={4}>
         <HeroSection pageId="aboutUs" />
       </Box>
 
-      <Container
-        sx={{
-          backgroundColor: "rgba(255, 255, 255, 0.7)",
-          borderRadius: 4,
-          boxShadow: "0 0 20px rgba(0,0,0,0.1)",
-          py: 2,
-          px: { xs: 2, md: 6 },
-          direction: "rtl",
-          fontFamily: "'Noto Kufi Arabic', sans-serif",
-        }}
-      >
-      
+      <Container maxWidth="lg" sx={{ pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+        
         {/* الفقرة التعريفية */}
-        <Box
-          sx={{
-            background: "linear-gradient(to right, #a8e063, #56ab2f)",
-            borderRadius: 3,
-            p: 4,
-            mb: 6,
-            color: "white",
-                    }}
-          data-aos="fade-up"
+        <PrettyCard 
+          title="نبذة عن المركز" 
+          color={cardColors.about}
+          section="about"
         >
-          <Typography variant="body1" sx={{  fontSize: "1.2rem" ,lineHeight: 2, textAlign: "justify" }}>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              fontSize: "1.2rem", 
+              lineHeight: 2, 
+              textAlign: "justify"
+            }}
+          >
             {aboutData.about_us_text}
           </Typography>
-        </Box>
 
-        {/* شعار المركز الجماهيري */}
-        <Box sx={{ textAlign: "center", mb: 6 }} data-aos="fade-up">
-          <Typography variant="h5" fontWeight="bold" sx={{ mb: 4, color: "#4682B4", fontSize: "1.7rem" }}>
-            شعار المركز الجماهيري
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={4} sm={3} md={2}>
-              <Box sx={{ textAlign: "center" }}>
-                <FaUsers size={60} style={{ color: "#4682B4" }} />
-                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>جمهور</Typography>
-              </Box>
+          {/* شعار المركز الجماهيري - يظهر دائماً */}
+          <Box sx={{ mt: 1, fontSize: "1.2rem", color: '#1976D2' }}>
+            <Grid container spacing={4} justifyContent="center">
+              <Grid item xs={4} sm={3} md={2}>
+                <Box sx={{ textAlign: "center" }}>
+                  <FaUsers size={60} style={{ color: '#1976D2' }} />
+                  <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>جمهور</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={4} sm={3} md={2}>
+                <Box sx={{ textAlign: "center" }}>
+                  <FaUserAlt size={60} style={{ color: '#1976D2' }} />
+                  <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>انسان</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={4} sm={3} md={2}>
+                <Box sx={{ textAlign: "center" }}>
+                  <FaGlobe size={60} style={{ color: '#1976D2' }} />
+                  <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>أرض</Typography>
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item xs={4} sm={3} md={2}>
-              <Box sx={{ textAlign: "center" }}>
-                <FaUserAlt size={60} style={{ color: "#4682B4" }} />
-                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>انسان</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={4} sm={3} md={2}>
-              <Box sx={{ textAlign: "center" }}>
-                <FaGlobe size={60} style={{ color: "#4682B4" }} />
-                <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>أرض</Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
+          </Box>
+
+          <Box sx={{ textAlign: 'center', mt: 3 }}>
+            <Typography
+              onClick={() => toggleSection('about')}
+              sx={{
+                color: cardColors.about,
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                fontFamily: 'Cairo, sans-serif',
+                '&:hover': {
+                  color: '#1565c0',
+                  textDecoration: 'underline',
+                }
+              }}
+            >
+              {expandedSections.about ? 'عرض أقل' : 'اقرأ المزيد'}
+            </Typography>
+          </Box>
+        </PrettyCard>
 
         {/* رؤية */}
-        <InfoSection
-          title={aboutData.vision_title}
-          icon={<FaEye />}
-          text={aboutData.vision}
-          gradient="linear-gradient(to left, #f7971e, #ffd200)"
-          animation="fade-left"
-        />
+        {expandedSections.about && (
+          <PrettyCard 
+            title={aboutData.vision_title} 
+            color={cardColors.vision}
+            section="vision"
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                lineHeight: 2,
+                textAlign: "justify",
+                fontSize: "1.2rem",
+              }}
+            >
+              {expandedSections.vision 
+                ? aboutData.vision 
+                : truncateText(aboutData.vision, 200)
+              }
+            </Typography>
+            {aboutData.vision && aboutData.vision.length > 200 && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Button
+                  onClick={() => toggleSection('vision')}
+                  sx={{
+                    color: cardColors.vision,
+                    fontWeight: 'bold',
+                    textDecoration: 'underline',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      textDecoration: 'underline',
+                    }
+                  }}
+                >
+                  {expandedSections.vision ? 'عرض أقل' : 'اقرأ المزيد'}
+                </Button>
+              </Box>
+            )}
+          </PrettyCard>
+        )}
 
         {/* رسالة */}
-        <InfoSection
-          title={aboutData.message_title}
-          icon={<FaEnvelope />}
-          text={aboutData.message}
-          gradient="linear-gradient(to left, #004e92, #56ccf2)"
-          animation="fade-right"
-        />
+        {expandedSections.about && (
+          <PrettyCard 
+            title={aboutData.message_title} 
+            color={cardColors.message}
+            section="message"
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                lineHeight: 2,
+                textAlign: "justify",
+                fontSize: "1.2rem",
+              }}
+            >
+              {expandedSections.message 
+                ? aboutData.message 
+                : truncateText(aboutData.message, 200)
+              }
+            </Typography>
+            {aboutData.message && aboutData.message.length > 200 && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Button
+                  onClick={() => toggleSection('message')}
+                  sx={{
+                    color: cardColors.message,
+                    fontWeight: 'bold',
+                    textDecoration: 'underline',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      textDecoration: 'underline',
+                    }
+                  }}
+                >
+                  {expandedSections.message ? 'عرض أقل' : 'اقرأ المزيد'}
+                </Button>
+              </Box>
+            )}
+          </PrettyCard>
+        )}
 
         {/* مبررات */}
-        <InfoSection
-          title={aboutData.justifications_title}
-          icon={<FaLightbulb />}
-          text={aboutData.justifications}
-          gradient="linear-gradient(to left, #c31432, #ff4e50)"
-          animation="fade-left"
-        />
+        {expandedSections.about && (
+          <PrettyCard 
+            title={aboutData.justifications_title} 
+            color={cardColors.justifications}
+            section="justifications"
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                lineHeight: 2,
+                textAlign: "justify",
+                fontSize: "1.2rem",
+              }}
+            >
+              {expandedSections.justifications 
+                ? aboutData.justifications 
+                : truncateText(aboutData.justifications, 200)
+              }
+            </Typography>
+            {aboutData.justifications && aboutData.justifications.length > 200 && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Button
+                  onClick={() => toggleSection('justifications')}
+                  sx={{
+                    color: cardColors.justifications,
+                    fontWeight: 'bold',
+                    textDecoration: 'underline',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      textDecoration: 'underline',
+                    }
+                  }}
+                >
+                  {expandedSections.justifications ? 'عرض أقل' : 'اقرأ المزيد'}
+                </Button>
+              </Box>
+            )}
+          </PrettyCard>
+        )}
 
         {/* أهداف */}
-        <Box sx={{ mb: 6 }} data-aos="fade-up">
-          <SectionHeader
-            title={aboutData.goals_title}
-            icon={<FaBullseye />}
-            gradient="linear-gradient(to left, #3e833e, #b0d59d)"
-          />
-          <Box component="ol" sx={{ mt: 2, px: 3 }}>
-            {aboutData.goals?.map((goal, index) => (
-              <Typography
-                component="li"
-                key={index}
-                sx={{ fontSize: "1.2rem", mb: 1.5, color: "black", textAlign: "right" }}
-              >
-                {goal}
-              </Typography>
-            ))}
-          </Box>
-        </Box>
+        {expandedSections.about && (
+          <PrettyCard 
+            title={aboutData.goals_title} 
+            color={cardColors.goals}
+            section="goals"
+          >
+            <Box component="ol" sx={{ px: 2 }}>
+              {(expandedSections.goals 
+                ? aboutData.goals 
+                : aboutData.goals?.slice(0, 3)
+              )?.map((goal, index) => (
+                <Typography
+                  component="li"
+                  key={index}
+                  sx={{ 
+                    fontSize: "1.2rem", 
+                    mb: 1.5, 
+                    color: "#444", 
+                    textAlign: "right",
+                    lineHeight: 1.8
+                  }}
+                >
+                  {goal}
+                </Typography>
+              ))}
+            </Box>
+            {aboutData.goals && aboutData.goals.length > 3 && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Button
+                  onClick={() => toggleSection('goals')}
+                  sx={{
+                    color: cardColors.goals,
+                    fontWeight: 'bold',
+                    textDecoration: 'underline',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      textDecoration: 'underline',
+                    }
+                  }}
+                >
+                  {expandedSections.goals ? 'عرض أقل' : `عرض جميع الأهداف (${aboutData.goals.length})`}
+                </Button>
+              </Box>
+            )}
+          </PrettyCard>
+        )}
+
       </Container>
     </Box>
-
   );
 }
