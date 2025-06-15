@@ -10,7 +10,6 @@ import { useLocation } from 'react-router-dom';
 import { validateStep } from './regist_logic';
 import { useAnonymousAuth } from "../components/auth/useAnonymousAuth"; 
 import  {calculateAge} from './regist_logic';
-import { decrementCapacity } from "./programs/decrementCapacity"; // عدلي المسار حسب مكان الملف
 
 
 const steps = ['المعلومات الشخصية', 'معلومات ولي الأمر', 'الدفع'];
@@ -187,8 +186,7 @@ clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
               autoComplete="off"
               onSubmit={async  e => {
                 if (step === 2) {
-                  submitRegistration(e, form, setForm);
-                 await decrementCapacity({ programName, eventName }); // إنقاص السعة بعد التسجيل
+submitRegistration(e, form, setForm, programName, eventName);
 
                 } else {
                   e.preventDefault();

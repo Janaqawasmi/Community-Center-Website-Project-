@@ -1,7 +1,8 @@
 import { db } from '../components/firebase';
-import { collection, addDoc } from 'firebase/firestore';
 import { calculateAge } from './regist_logic';
-//import { decrementCapacity } from '../utils/updateCapacity';  
+import { decrementCapacity } from "./programs/decrementCapacity"; 
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+
 
 // دالة حذف آخر منزلة
 function removeLastDigit(num) {
@@ -9,7 +10,7 @@ function removeLastDigit(num) {
   return num.toString().slice(0, -1);
 }
 
-export async function submitRegistration(e, form, setForm) {
+export async function submitRegistration(e, form, setForm, programName, eventName) {
   e.preventDefault();
 
   const age = calculateAge(form.birthdate);
@@ -36,10 +37,30 @@ export async function submitRegistration(e, form, setForm) {
       fatherCheackDigit: form.cheackDigit,
     };
   }
+  if (programName) {
+    // ابحث عن الدورة المطلوبة
+    const q = query(collection(db, "programs"), where("name", "==", programName));
+    const snapshot = await getDocs(q);
+
+    if (!snapshot.empty) {
+      const programData = snapshot.docs[0].data();
+      formattedForm.groupNumber = programData.groupNumber || "";
+      formattedForm.classNumber = programData.classNumber || "";
+      formattedForm.programName = programData.name || programName;
+    }
+  }
 
   try {
-    await addDoc(collection(db, "registrations"), formattedForm);
+    let collectionName = "registrations"; // الافتراضي
+    if (programName) {
+      collectionName = "programRegistrations";
+    } else if (eventName) {
+      collectionName = "eventRegistrations";
+    }
+await addDoc(collection(db, collectionName), formattedForm);
     alert('تم التسجيل وحفظ البيانات بنجاح!');
+   await decrementCapacity({ programName, eventName }); // إنقاص السعة بعد التسجيل
+
     console.log('تم حفظ البيانات:', formattedForm);
     setForm({
       FirstName: '',

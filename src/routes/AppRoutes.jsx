@@ -21,6 +21,7 @@ import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
 import AdminEvents from '../pages/admin/AdminEvents';
 import AdminCalendar from '../pages/admin/AdminCalendar';
+import AdminRegistrations from '../pages/admin/AdminRegistrations'; 
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -107,6 +108,15 @@ function AppRoutes({ sections }) {
   element={
     <ProtectedAdminRoute>
       <AdminCalendar />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/registrations"
+  element={
+    <ProtectedAdminRoute>
+      <AdminRegistrations />
     </ProtectedAdminRoute>
   }
 />
