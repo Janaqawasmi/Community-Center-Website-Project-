@@ -1,19 +1,19 @@
 import { Box, Container, Typography, Grid, Link, IconButton, Button } from '@mui/material';
 import { Facebook, Instagram, WhatsApp, Email, LocationOn, Phone } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from "../firebase";
 import defaultLogo from '../../assets/logo.png';
+
 
 export default function Footer() {
   const sectionColor = '#D05F14'; // Brand orange
   const [siteInfo, setSiteInfo] = useState(null);
-
+const [sections, setSections] = useState([]);
 useEffect(() => {
   const fetchSiteInfo = async () => {
     try {
-     const docRef = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
-
+      const docRef = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         console.log("✅ siteInfo data:", docSnap.data());
@@ -26,8 +26,23 @@ useEffect(() => {
     }
   };
 
+  const fetchSections = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "sections"));
+      const sectionList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setSections(sectionList);
+    } catch (err) {
+      console.error("❌ Error fetching sections:", err);
+    }
+  };
+
   fetchSiteInfo();
+  fetchSections();
 }, []);
+
 
   if (!siteInfo) {
     return (
@@ -52,22 +67,39 @@ useEffect(() => {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* Logo & Slogan */}
-          <Grid item xs={12} md={3}>
-            <Box display="flex" alignItems="center" mb={1}>
-              <img
-                src={siteInfo.logo_url || defaultLogo}
-                alt="شعار المركز"
-                style={{ width: 60, marginLeft: 10 }}
-              />
-              <Typography variant="h6" fontWeight="bold" color="primary">
-                المركز الجماهيري بيت حنينا
-              </Typography>
-            </Box>
-            <Typography variant="body2">
-              معًا نبني مجتمعًا متماسكًا وداعمًا للجميع 🧡
-            </Typography>
-          </Grid>
+<Grid item xs={12} md={3}>
+  <Box textAlign="center" mb={2}>
+    <img
+      src={siteInfo.logo_url || defaultLogo}
+      alt="شعار المركز"
+      style={{ width: 120, maxWidth: '100%', marginBottom: 8 }}
+    />
+    <Typography
+      variant="h5"
+      fontWeight="bold"
+      color="primary"
+      sx={{ mt: 1 }}
+    >
+      المركز الجماهيري بيت حنينا
+    </Typography>
+    <Typography variant="body1" fontWeight="500" mt={1}>
+      {siteInfo.slogan || 'معًا نبني مجتمعًا متماسكًا وداعمًا للجميع 🧡'}
+    </Typography>
+  </Box>
+</Grid>
 
+
+            {/* Dynamic Sections */}
+          <Grid item xs={12} md={3}>
+            <Typography variant="subtitle1" fontWeight="bold" mb={1}>الأقسام</Typography>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              {sections.map(sec => (
+                <li key={sec.id}>
+                  <Link href={`/sections/${sec.id}`} underline="hover">{sec.title}</Link>
+                </li>
+              ))}
+            </ul>
+          </Grid>
           {/* Navigation Links */}
           <Grid item xs={12} md={3}>
             <Typography variant="subtitle1" fontWeight="bold" mb={1}>
@@ -75,141 +107,120 @@ useEffect(() => {
             </Typography>
             <ul style={{ listStyle: 'none', padding: 0 }}>
               <li><Link href="/" underline="hover">الرئيسية</Link></li>
-              <li><Link href="/sections" underline="hover">الأقسام</Link></li>
               <li><Link href="/programs" underline="hover">الدورات</Link></li>
               <li><Link href="/news" underline="hover">أخبارنا</Link></li>
               <li><Link href="/contact" underline="hover">تواصل معنا</Link></li>
             </ul>
           </Grid>
 
-          {/* Contact + Waze */}
           <Grid item xs={12} md={3}>
-            <Typography variant="subtitle1" fontWeight="bold" mb={1}>
-              تواصل معنا
-            </Typography>
-            <Typography variant="body2">
-              <LocationOn fontSize="small" /> {siteInfo.address}
-            </Typography>
-            <Typography variant="body2">
-              <Phone fontSize="small" /> {siteInfo.phone_number}
-            </Typography>
-            <Typography variant="body2">
-              <Email fontSize="small" /> {siteInfo.email}
-            </Typography>
+  {/* تواصل معنا */}
+  <Typography variant="subtitle1" fontWeight="bold" mb={1}>
+    تواصل معنا
+  </Typography>
 
-            {siteInfo.waze_link && (
-              <Button
-                variant="outlined"
-                href={siteInfo.waze_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  borderColor: sectionColor,
-                  color: sectionColor,
-                  mt: 2,
-                  borderRadius: '20px',
-                  px: 3,
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    backgroundColor: sectionColor,
-                    color: '#fff'
-                  }
-                }}
-              >
-                🚗 الوصول عبر Waze
-              </Button>
-            )}
-          </Grid>
+  <Box display="flex" alignItems="center" gap={1} mb={1}>
+    <LocationOn fontSize="small" />
+    <Typography variant="body2">{siteInfo.address}</Typography>
+  </Box>
 
-          {/* Newsletter + Social + Volunteer */}
-          <Grid item xs={12} md={3}>
-            <Typography variant="subtitle1" fontWeight="bold" mb={1}>
-              النشرة البريدية
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              اشترك لتصلك أخبار المركز والبرامج الجديدة.
-            </Typography>
+  <Box display="flex" alignItems="center" gap={1} mb={1}>
+    <Phone fontSize="small" />
+    <Typography variant="body2">{siteInfo.phone_number}</Typography>
+  </Box>
 
-            <Box
-              component="form"
-              onSubmit={(e) => e.preventDefault()}
-              display="flex"
-              gap={1}
-              flexDirection="row"
-              alignItems="center"
-            >
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: sectionColor,
-                  color: '#fff',
-                  borderRadius: '8px',
-                  fontWeight: 'bold',
-                  px: 3,
-                  py: 1.2,
-                  '&:hover': {
-                    backgroundColor: '#b3470f',
-                  },
-                }}
-              >
-                إرسال
-              </Button>
-              <input
-                type="email"
-                placeholder="بريدك الإلكتروني"
-                style={{
-                  flex: 1,
-                  padding: '10px 14px',
-                  borderRadius: '6px',
-                  border: '1px solid #ccc',
-                  fontSize: '1rem',
-                  direction: 'rtl',
-                }}
-              />
-            </Box>
+  <Box display="flex" alignItems="center" gap={1} mb={1}>
+    <Email fontSize="small" />
+    <Typography variant="body2">{siteInfo.email}</Typography>
+  </Box>
 
-            {/* Social Icons */}
-            <Box mt={3}>
-              <Typography variant="subtitle1" fontWeight="bold" mb={1}>
-                تابعونا
-              </Typography>
-              {siteInfo.FacebookLink && (
-                <IconButton href={siteInfo.FacebookLink} target="_blank" rel="noopener noreferrer">
-                  <Facebook />
-                </IconButton>
-              )}
-              {siteInfo.instagramLink && (
-                <IconButton href={siteInfo.instagramLink} target="_blank" rel="noopener noreferrer">
-                  <Instagram />
-                </IconButton>
-              )}
-              {siteInfo.WhatsAppLink && (
-                <IconButton href={siteInfo.WhatsAppLink} target="_blank" rel="noopener noreferrer">
-                  <WhatsApp />
-                </IconButton>
-              )}
-            </Box>
+  {siteInfo.waze_link && (
+    <Button
+      variant="outlined"
+      href={siteInfo.waze_link}
+      target="_blank"
+      rel="noopener noreferrer"
+      sx={{
+        borderColor: sectionColor,
+        color: sectionColor,
+        mt: 2,
+        borderRadius: '20px',
+        px: 3,
+        fontWeight: 'bold',
+        '&:hover': {
+          backgroundColor: sectionColor,
+          color: '#fff'
+        }
+      }}
+    >
+      🚗 الوصول عبر Waze
+    </Button>
+  )}
 
-            {/* Volunteer Button */}
-            <Button
-              variant="outlined"
-              href="/volunteer"
-              sx={{
-                mt: 2,
-                borderColor: sectionColor,
-                color: sectionColor,
-                fontWeight: 'bold',
-                borderRadius: '20px',
-                px: 3,
-                '&:hover': {
-                  backgroundColor: sectionColor,
-                  color: '#fff',
-                }
-              }}
-            >
-              🌟 انضم كمتطوع
-            </Button>
-          </Grid>
+
+
+  {/* تابعونا (Social Icons) */}
+{/* تابعونا (Social Icons) */}
+<Box mt={4}>
+  <Typography variant="subtitle1" fontWeight="bold" mb={1}>
+    تابعونا
+  </Typography>
+  <Box display="flex" gap={1}>
+    {siteInfo.FacebookLink && (
+      <IconButton
+        href={siteInfo.FacebookLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{ color: '#1877F2' }} // Facebook Blue
+      >
+        <Facebook />
+      </IconButton>
+    )}
+    {siteInfo.instagramLink && (
+      <IconButton
+        href={siteInfo.instagramLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{ color: '#E1306C' }} // Instagram Pink
+      >
+        <Instagram />
+      </IconButton>
+    )}
+    {siteInfo.WhatsAppLink && (
+      <IconButton
+        href={siteInfo.WhatsAppLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{ color: '#25D366' }} // WhatsApp Green
+      >
+        <WhatsApp />
+      </IconButton>
+    )}
+  </Box>
+</Box>
+
+
+  {/* Volunteer Button */}
+  <Button
+    variant="outlined"
+    href="/volunteer"
+    sx={{
+      mt: 3,
+      borderColor: sectionColor,
+      color: sectionColor,
+      fontWeight: 'bold',
+      borderRadius: '20px',
+      px: 3,
+      '&:hover': {
+        backgroundColor: sectionColor,
+        color: '#fff',
+      }
+    }}
+  >
+    🌟 انضم كمتطوع
+  </Button>
+</Grid>
+
         </Grid>
 
         {/* Footer Bottom Bar */}
