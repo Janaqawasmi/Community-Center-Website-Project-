@@ -62,33 +62,29 @@ export default function AdminInquiries() {
     }
   };
 
-  // دالة إرسال البريد الإلكتروني المؤقتة (mailto)
+  // دالة إرسال البريد عبر Gmail
   const sendEmailReply = async (customerEmail, customerName, replyText, originalMessage) => {
     try {
-      const subject = 'رد على استفسارك - المركز المجتمعي';
+      const subject = 'رد على استفسارك - المركز الجماهيري بيت حنينا';
       const body = `السلام عليكم ورحمة الله وبركاته ${customerName}،
 
-شكراً جزيلاً لتواصلك مع المركز المجتمعي.
+شكراً جزيلاً لتواصلك مع المركز الجماهيري بيت حنينا.
 
-استفسارك الأصلي:
-"${originalMessage}"
-
-ردنا عليك:
 ${replyText}
 
 نتطلع دائماً لخدمتك.
 
 مع أطيب التحيات،
-فريق المركز المجتمعي`;
+فريق المركز الجماهيري بيت حنينا`;
 
-      // فتح تطبيق البريد للإرسال (في نفس النافذة)
+      // فتح Gmail مع البيانات المعبأة
       window.location.href = `mailto:${customerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       
-      console.log('✅ تم فتح تطبيق البريد');
+      console.log('✅ تم فتح Gmail للإرسال');
       return { success: true };
 
     } catch (error) {
-      console.error('❌ خطأ في فتح البريد:', error);
+      console.error('❌ خطأ في فتح Gmail:', error);
       return { 
         success: false, 
         error: error.message || 'خطأ غير معروف' 
@@ -132,7 +128,7 @@ ${replyText}
       
       const message = messages.find(m => m.id === msgId);
       
-      // إرسال البريد الإلكتروني
+      // فتح Gmail للإرسال
       const emailResult = await sendEmailReply(
         customerEmail, 
         customerName, 
@@ -141,7 +137,7 @@ ${replyText}
       );
 
       if (emailResult.success) {
-        // تحديث قاعدة البيانات بتسجيل أن الرد تم إرساله
+        // تحديث قاعدة البيانات بتسجيل أن الرد تم تحضيره
         const docRef = doc(db, 'contactMessages', msgId);
         await updateDoc(docRef, {
           reply: replyText,
@@ -161,25 +157,18 @@ ${replyText}
         );
         setMessages(updatedMessages);
 
-        showSnackbar('✅ تم إرسال الرد بنجاح عبر البريد الإلكتروني');
+        showSnackbar('✅ تم فتح Gmail - أكمل الإرسال من هناك');
       } else {
-        showSnackbar('❌ فشل في إرسال البريد الإلكتروني', 'error');
-        console.error('EmailJS Error:', emailResult.error);
+        showSnackbar('❌ فشل في فتح Gmail', 'error');
       }
     } catch (err) {
-      console.error('🔥 خطأ في إرسال الرد:', err);
-      showSnackbar('❌ فشل في إرسال الرد', 'error');
+      console.error('🔥 خطأ في إعداد الرد:', err);
+      showSnackbar('❌ فشل في إعداد الرد', 'error');
     } finally {
       setSendingEmail(false);
       setConfirmDialog({ open: false, msgId: '', replyText: '', customerEmail: '', customerName: '' });
     }
   };
-
-  // دالة اختبار (معطلة مؤقتاً)
-  // const testEmailService = async () => {
-  //   console.log('اختبار البريد معطل مؤقتاً');
-  //   return true;
-  // };
 
   const handleFilterChange = () => {
     let updated = [...messages];
@@ -335,7 +324,7 @@ ${replyText}
                         }}>
                           <EmailIcon fontSize="small" />
                           <Typography variant="caption" sx={{ fontFamily: 'Cairo, sans-serif' }}>
-                            تم الإرسال
+                            تم التحضير
                           </Typography>
                         </Box>
                       ) : (
@@ -402,11 +391,11 @@ ${replyText}
               color: '#1e40af',
               fontFamily: 'Cairo, sans-serif'
             }}>
-              تأكيد إرسال الرد
+              تأكيد إرسال الرد عبر Gmail
             </DialogTitle>
             <DialogContent sx={{ direction: 'rtl', fontFamily: 'Cairo, sans-serif' }}>
               <Typography variant="body1" mb={2}>
-                هل أنت متأكد من إرسال هذا الرد إلى:
+                سيتم فتح Gmail لإرسال هذا الرد إلى:
               </Typography>
               <Typography variant="body2" color="primary" mb={1}>
                 <strong>الاسم:</strong> {confirmDialog.customerName}
@@ -427,6 +416,9 @@ ${replyText}
                   {confirmDialog.replyText}
                 </Typography>
               </Box>
+              <Typography variant="caption" color="text.secondary" mt={2} display="block">
+                ملاحظة: سيتم فتح Gmail في نافذة جديدة مع البيانات معبأة مسبقاً
+              </Typography>
             </DialogContent>
             <DialogActions sx={{ padding: '16px 24px' }}>
               <Button 
@@ -440,13 +432,13 @@ ${replyText}
                 onClick={confirmSendReply}
                 variant="contained"
                 disabled={sendingEmail}
-                startIcon={sendingEmail ? <CircularProgress size={16} /> : <SendIcon />}
+                startIcon={sendingEmail ? <CircularProgress size={16} /> : <EmailIcon />}
                 sx={{ 
                   background: '#2563eb',
                   fontFamily: 'Cairo, sans-serif'
                 }}
               >
-                {sendingEmail ? 'جاري الإرسال...' : 'إرسال الرد'}
+                {sendingEmail ? 'جاري التحضير...' : 'فتح Gmail'}
               </Button>
             </DialogActions>
           </Dialog>
