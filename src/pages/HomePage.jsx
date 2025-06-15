@@ -179,15 +179,14 @@ useEffect(() => {
         </Slider>
       )}
 
-      <AboutUsSection />
       <QuickLinksSection sections={sections} />
-
-      <Box sx={{ mt: 1, px: { xs: 2, md: 30 } }}>
-        <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
-          التقويم والفعاليات
-        </Typography>
-        <CalendarSection />
-      </Box>
+   
+       <Box sx={{ mt: 5, px: { xs: 2, md: 30 } }}>
+          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#0369a1' }}>
+             التقويم والفعاليات
+           </Typography>
+           <CalendarSection />
+         </Box>
     </Box>
   );
 }
