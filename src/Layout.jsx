@@ -3,355 +3,334 @@ import {
   Toolbar,
   Box,
   IconButton,
+  Button,
   Menu,
   MenuItem,
-  Button,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  useMediaQuery,
+  useTheme,
+  Typography,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import NavButton from './components/NavButton';
-import { useSectionContext } from './components/SectionContext';
-import LoginIcon from '@mui/icons-material/Login';
 
+const NAV_ITEMS = [
+  { label: 'الرئيسية', path: '/' },
+  { label: 'الدورات', path: '/programs' },
+  { label: 'الفعاليات', path: '/events' },
+  { label: 'أخبارنا', path: '/news' },
+  { label: 'عن المركز', path: '/about' },
+  { label: 'تواصل معنا', path: '/contact' },
+];
+
+function navStyle(active) {
+  return {
+    fontWeight: active ? 'bold' : 'normal',
+    fontSize: '19px',
+    color: 'black',
+    '&:hover': { color: 'rgb(0, 0, 0)' },
+  };
+}
 
 function Layout({ sections }) {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const navigate = useNavigate();
-  const { activeSection } = useSectionContext();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [logoUrl, setLogoUrl] = useState('');
-  const [socialLinks, setSocialLinks] = useState({
-    FacebookLink: '',
-    WhatsAppLink: '',
-    instagramLink: '',
-  });
+  const [socialLinks, setSocialLinks] = useState({});
+  const [sectionsMenuAnchor, setSectionsMenuAnchor] = useState(null);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const isSectionsMenuOpen = Boolean(sectionsMenuAnchor);
+  const toggleMobileDrawer = (open) => () => setIsMobileDrawerOpen(open);
 
   const handleSectionClick = (id) => {
     navigate(`/sections/${id}`);
-    handleMenuClose();
+    setSectionsMenuAnchor(null);
+    setIsMobileDrawerOpen(false);
   };
+const handleNavClick = (path) => {
+  navigate(path);
+  setIsMobileDrawerOpen(false);
+};
 
   useEffect(() => {
     const fetchSiteInfo = async () => {
       try {
-        const siteInfoRef = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
-        const siteInfoSnap = await getDoc(siteInfoRef);
-
-        if (siteInfoSnap.exists()) {
-          const data = siteInfoSnap.data();
+        const ref = doc(db, 'siteInfo', '9ib8qFqM732MnTlg6YGz');
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
           setLogoUrl(data.logo_url);
           setSocialLinks({
             FacebookLink: data.FacebookLink || '',
             WhatsAppLink: data.WhatsAppLink || '',
             instagramLink: data.instagramLink || '',
           });
-        } else {
-          console.log('No such document!');
         }
       } catch (error) {
         console.error('Error fetching site info:', error);
       }
     };
-
     fetchSiteInfo();
   }, []);
 
+  const renderSocialIcon = (href, Icon, color) => (
+  <IconButton
+    component="a"
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    sx={{
+      color,
+      transition: 'color 0.2s ease',
+      '&:hover': {
+        color: ' #1976d2', // ✅ MUI primary blue on hover
+      },
+    }}
+  >
+    <Icon />
+  </IconButton>
+);
+
   return (
     <>
-      {/* Logo */}
-      {logoUrl && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            zIndex: 1300,
-            backgroundColor: '#f5f5f5',
-            padding: '8px',
-            borderRadius: '15px',
-          }}
-        >
-          <NavButton to="/" sx={{ p: 0, minWidth: 0 }}>
-            <img
-              src={logoUrl}
-              alt="Logo"
-              style={{ height: 90, width: 'auto', cursor: 'pointer' }}
-            />
+      <AppBar position="static" elevation={0} sx={{ backgroundColor: '#fff', boxShadow: 'none' }}>
+<Toolbar
+  sx={{
+    minHeight: '70px',
+    justifyContent: 'space-between',
+    px: { xs: 2, md: 4 }, // consistent padding on both sides
+    maxWidth: '1440px',
+    width: '100%',
+    mx: 'auto', // center toolbar content
+  }}
+>          {logoUrl && (
+           <NavButton to="/" sx={{ p: 0, minWidth: 0, mr: 2 }}>
+  <img src={logoUrl} alt="Logo" style={{ height: '60px', width: 'auto' }} />
+</NavButton>
+
+          )}
+
+          {/* Desktop Nav */}
+          {/* Desktop Nav Buttons with الأقسام second */}
+<Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, direction: 'rtl', alignItems: 'center' }}>
+  {NAV_ITEMS.map(({ label, path }, index) => {
+    if (index === 1) {
+      return (
+        <Box key="custom-duo" sx={{ display: 'flex', gap: 3 }}>
+          <Button onClick={(e) => setSectionsMenuAnchor(e.currentTarget)} sx={navStyle(false)}>
+            الأقسام
+          </Button>
+          <NavButton to={path} sx={navStyle(location.pathname === path)}>
+            {label}
           </NavButton>
         </Box>
-      )}
+      );
+    }
+    return (
+      <NavButton key={path} to={path} sx={navStyle(location.pathname === path)}>
+        {label}
+      </NavButton>
+    );
+  })}
+</Box>
 
-      <AppBar position="fixed" color="default" elevation={5}>
-        <Toolbar sx={{ position: 'relative', minHeight: '90px' }}>
-          {/* Social Icons */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-            }}
-          >
-            {socialLinks.FacebookLink && (
-              <IconButton
-                component="a"
-                href={socialLinks.FacebookLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                color="inherit"
-              >
-                <FacebookIcon />
-              </IconButton>
-            )}
-            {socialLinks.WhatsAppLink && (
-              <IconButton
-                component="a"
-                href={socialLinks.WhatsAppLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                color="inherit"
-              >
-                <WhatsAppIcon />
-              </IconButton>
-            )}
-            {socialLinks.instagramLink && (
-              <IconButton
-                component="a"
-                href={socialLinks.instagramLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                color="inherit"
-              >
-                <InstagramIcon />
-              </IconButton>
-            )}
+
+          {/* Mobile Menu Button */}
+          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+            <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
+              <MenuIcon sx={{ fontSize: 36 }} />
+            </IconButton>
           </Box>
 
-          {/* Navigation Buttons */}
-          <Box sx={{ fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}></Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              margin: '0 auto',
-            }}
-          >
-            <NavButton
-              to="/"
-              color="inherit"
-              sx={{
-                fontWeight: location.pathname === '/' &&
-                activeSection !== 'courses' &&
-                activeSection !== 'events'
-                  ? 'bold'
-                  : 'normal',
-                fontFamily: 'Cairo, sans-serif',
-                fontSize: '18px',
-              }}
-            >
-              الرئيسية
-            </NavButton>
-
-            <NavButton
-  to="/programs"
-  color="inherit"
+          {/* Desktop Social Icons */}
+<Box
   sx={{
-    fontWeight: location.pathname === '/programs' ? 'bold' : 'normal',
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
+    display: { xs: 'none', md: 'flex' },
+    gap: 1.5,
+    alignItems: 'center',
+    ml: 2,
   }}
->
-  الدورات
-</NavButton>
-
-
-
-
-
-<NavButton
-  to="/"
-  state={{ scrollTo: 'events' }}
-  color="inherit"
-  sx={{
-    fontWeight:
-      location.pathname === '/' && activeSection === 'events'
-        ? 'bold'
-        : 'normal',
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
-  }}
->
-  الفعاليات
-</NavButton>
-
-
-
-
-            {/* الأقسام Dropdown */}
-            <Button
-  onClick={handleMenuOpen}
-  color="inherit"
-  sx={{
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
-    outline: 'none',
-    boxShadow: 'none',
-    '&:focus': {
-      outline: 'none',
-      boxShadow: 'none',
-    },
-  }}
->
-  الأقسام
-</Button>
-
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleMenuClose}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-              PaperProps={{
-                sx: {
-                  direction: 'rtl',
-                  minWidth: 180,
-                  backgroundColor: 'white',
-                },
-              }}
-            >
-              {sections.map((section) => (
-                <MenuItem
-                  key={section.id}
-                  onClick={() => handleSectionClick(section.id)}
-                  sx={{
-                    fontFamily: 'Cairo, sans-serif',
-                    fontSize: '16px',
-                    color: 'black',
-                    '&:hover': {
-                      backgroundColor: '#f0f0f0',
-                    },
-                  }}
-                >
-                  {section.title}
-                </MenuItem>
-              ))}
-            </Menu>
-
-            <NavButton
-  to="/about"
-  color="inherit"
-  sx={{
-    fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
-  }}
->
-  عن المركز
-</NavButton>
-<NavButton
-  to="/news"
-  color="inherit"
-  sx={{
-    fontWeight: location.pathname === '/news' ? 'bold' : 'normal',
-    fontFamily: 'Cairo, sans-serif',
-    fontSize: '18px',
-  }}
->
-  اخر الاخبار
-</NavButton>
-
-            <NavButton
-              to="/contact"
-              color="inherit"
-              sx={{
-                fontWeight: location.pathname === '/contact' ? 'bold' : 'normal',
-                fontFamily: 'Cairo, sans-serif',
-                fontSize: '18px',
-              }}
-            >
-              تواصل معنا
-            </NavButton>
+>            {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')} 
+            {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
+            {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
           </Box>
         </Toolbar>
       </AppBar>
 
-     {/* Content Area */}
-<Box sx={(theme) => theme.mixins.toolbar} />
-<Box
-  className="page-content"
-  sx={{
-    pt: 1,
-    px: { xs: 0, md: 0 }, // Add horizontal padding: 16px on mobile, 48px on larger screens
-  }}
->
-  <Outlet />
-</Box>
+      <Menu
+        anchorEl={sectionsMenuAnchor}
+        open={isSectionsMenuOpen}
+        onClose={() => setSectionsMenuAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        PaperProps={{ sx: { direction: 'rtl', minWidth: 180, backgroundColor: 'white' } }}
+      >
+        {sections.map((section) => (
+          <MenuItem key={section.id} onClick={() => handleSectionClick(section.id)}>
+            {section.title}
+          </MenuItem>
+        ))}
+      </Menu>
 
-      {/* Bottom Admin Login */}
-      <Box
-  sx={{
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    height: '2.5rem', 
-    backgroundColor: '#f1f1f1',
-    borderTop: '1px solid #ccc',
-    zIndex: 1200,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '8px 16px',
-  }}
->
-
-  {/* Admin Login Button */}
-  <Button
-    variant="outlined"
-    startIcon={<LoginIcon />}
-    sx={{
+      <Drawer
+        anchor="left"
+        open={isMobileDrawerOpen}
+        onClose={toggleMobileDrawer(false)}
+       PaperProps={{
+  sx: {
+    width: '80%',
+    borderRadius: '0 16px 16px 0',
+    backgroundColor: '#f0f4f8', // ✅ custom background
+    direction: 'rtl',           // ✅ text direction from right
+  },
+}}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+          <IconButton onClick={toggleMobileDrawer(false)}><CloseIcon /></IconButton>
+        </Box>
+     <List sx={{ px: 2, py: 0, display: 'flex', flexDirection: 'column', gap: 0 }}>
+  {NAV_ITEMS.map(({ label, path }, index) => (
+    <Box key={path}>
+      {index === 1 && (
+        <Accordion
+          sx={{
+            backgroundColor: '#f9f9f9',
+            boxShadow: 'none',
+            mb:0,
+            borderRadius: 2,
+            '&::before': { display: 'none' },
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography sx={{ fontWeight: 'bold' }}>الأقسام</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ px: 0 }}>
+            {sections.map((section) => (
+              <ListItemButton
+                key={section.id}
+                onClick={() => handleSectionClick(section.id)}
+                sx={{
+                  pl: 3,
+                  pr: 2,
+                  py: 1,
+                  borderRadius: 1,
+                  direction: 'rtl',
+                  justifyContent: 'flex-start',
+                  '&:hover': { backgroundColor: ' #eee' },
+                }}
+              >
+<ListItemText
+  primary={section.title}
+  primaryTypographyProps={{
+    sx: {
+      textAlign: 'right',
+      direction: 'rtl',
+      fontSize: '15px',
       fontFamily: 'Cairo, sans-serif',
-      fontSize: '14px',
-    }}
-    onClick={async () => {
-      const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      try {
-        const result = await signInWithPopup(auth, provider);
-        alert(`welcome ${result.user.displayName}`);
-        console.log("Logged in UID:", result.user.uid);
-      } catch (error) {
-        console.error("Login failed:", error);
-        alert("Login failed: " + error.message);
-      }
-    }}
-  >
-    تسجيل دخول للإدارة فقط
-  </Button>
+    },
+  }}
+/>              </ListItemButton>
+            ))}
+          </AccordionDetails>
+        </Accordion>
+      )}
+      <ListItemButton
+       onClick={() => handleNavClick(path)}
+        sx={{
+          px: 2,
+          py: 1.25,
+          borderRadius: 2,
+          backgroundColor: ' #f9f9f9',
+          direction: 'rtl', // ✅ ensures right-to-left alignment
+          '&:hover': { backgroundColor: '#eee' },
+        }}
+      >
+        <ListItemText
+          primary={label}
+          primaryTypographyProps={{ fontSize: '15px',
+             fontWeight: 500, sx: { textAlign: 'right',  direction: 'rtl', }, // ✅ align text to right
+}}
+          
+        />
+        <ChevronRightIcon sx={{ color: '#888' }} />
+      </ListItemButton>
+    </Box>
+  ))}
+</List>
+
+
+<Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'center',
+    gap: 4,
+    mt: 'auto',
+    pt: 2,
+    pb: 3,
+    borderTop: '1px solid #eee',
+  }}
+>
+   {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')} 
+   {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
+    {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')} 
 </Box>
 
+      </Drawer>
 
+      <Box sx={{ px: { xs: 0, md: 0 } }}>
+        <Outlet />
+      </Box>
 
-
-
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          height: '2.5rem',
+          backgroundColor: '#f1f1f1',
+          borderTop: '1px solid #ccc',
+          zIndex: 1200,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 16px',
+        }}
+      >
+        <NavButton
+          to="/login"
+          sx={{
+            position: 'absolute',
+            bottom: 8,
+            left: 16,
+            fontSize: '12px',
+            color: '#666',
+          }}
+        >
+          تسجيل دخول للإدارة فقط
+        </NavButton>
+      </Box>
     </>
   );
 }
