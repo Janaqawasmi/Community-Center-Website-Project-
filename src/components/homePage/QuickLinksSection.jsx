@@ -34,11 +34,9 @@ export default function SectionGrid({ sections }) {
           sx={{
             position: "relative",
             borderRadius: "28px",
-            p: { xs: 3, sm: 4 },
-            mt: 5,
+            p: { xs: 2, sm: 2 },
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.23)",
             overflow: "hidden",
             direction: "rtl",
             fontFamily: "Cairo, sans-serif",
@@ -52,9 +50,9 @@ export default function SectionGrid({ sections }) {
               right: 0,
               height: { xs: "40px", sm: "40px" },
               minWidth: "fit-content",
-            padding: "0 20px",
-    background: sectionColor, // ✅ use gradient directly
-    borderBottomLeftRadius: "24px",
+              padding: "0 20px",
+              background: sectionColor, // ✅ use gradient directly
+              borderBottomLeftRadius: "24px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -64,7 +62,7 @@ export default function SectionGrid({ sections }) {
               zIndex: 2,
               textAlign: "center",
               whiteSpace: "nowrap",
-              boxShadow: "0 3px 12px rgba(0,0,0,0.15)",
+              boxShadow: "0 3px 12px rgba(0, 0, 0, 0.15)",
             }}
           >
             أقسام المركز
@@ -103,7 +101,8 @@ export default function SectionGrid({ sections }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        borderRight: `6px solid ${color}`,
+                        borderRight: " #003366 solid 6px",
+                       // borderRight: `6px solid ${color}`,
                         backgroundColor: "#fff",
                         transition: "0.3s",
                         width: "100%",
@@ -130,15 +129,7 @@ export default function SectionGrid({ sections }) {
                       >
                         {section.title}
                       </Typography>
-                      <Box sx={{ mr: 2 }}>
-                        <Typography
-                          fontSize="1.2rem"
-                          fontWeight="bold"
-                          color={color}
-                        >
-                          &lt;
-                        </Typography>
-                      </Box>
+                    
                     </Button>
                   </motion.div>
                 );

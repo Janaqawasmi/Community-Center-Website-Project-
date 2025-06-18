@@ -71,7 +71,7 @@ useEffect(() => {
                 display: "flex",
                 flexDirection: "row",
                 overflow: "hidden",
-                height: { xs: 280, md: 380 },
+                height: { xs: 320, sm: 400, md: 460 },
                 width: "100%",
 
               }}
@@ -169,8 +169,7 @@ useEffect(() => {
         : `/programs/${encodeURIComponent(item.category?.[0] || '')}?highlight=${item.id}`
   )
 }
-
-                >
+            >
         عرض التفاصيل
                 </Button>
               </Box>
@@ -179,10 +178,13 @@ useEffect(() => {
         </Slider>
       )}
 
-      <QuickLinksSection sections={sections} />
-   
-       <Box sx={{ mt: 5, px: { xs: 2, md: 30 } }}>
-          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#0369a1' }}>
+{/* Quick Links */}
+<Box sx={{ mt: { xs: 4, md: 8 } }}>
+  <QuickLinksSection sections={sections} />
+</Box>   
+
+<Box sx={{ mt: { xs: 4, md: 8 }, px: { xs: 2, md: 30 } }}>
+          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#003366' }}>
              التقويم والفعاليات
            </Typography>
            <CalendarSection />
