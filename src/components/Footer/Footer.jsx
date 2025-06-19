@@ -5,7 +5,7 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from "../firebase";
 import defaultLogo from '../../assets/logo.png';
 import wazeIcon from '../../assets/waze2.png';
-import NavButton from '../NavButton';
+import NavButton from '../Buttons/NavButton';
 
 export default function Footer() {
   const sectionColor = '#D05F14';
