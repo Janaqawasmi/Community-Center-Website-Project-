@@ -164,7 +164,13 @@ const handleNavClick = (path) => {
     if (index === 1) {
       return (
         <Box key="custom-duo" sx={{ display: 'flex', gap: 4 }}>
-          <Button onClick={(e) => setSectionsMenuAnchor(e.currentTarget)} sx={navStyle(false)}>
+          <Button onClick={(e) => setSectionsMenuAnchor(e.currentTarget)} sx={{
+            ...navStyle(false),
+            boxShadow: 'none',
+            outline: 'none',
+            border: 'none',
+            '&:focus': { outline: 'none', boxShadow: 'none', border: 'none' },
+          }}>
             الأقسام
           </Button>
           <NavButton to={path} sx={navStyle(location.pathname === path)}>
@@ -172,7 +178,7 @@ const handleNavClick = (path) => {
           </NavButton>
         </Box>
       );
-    }
+    }  
     return (
       <NavButton key={path} to={path} sx={navStyle(location.pathname === path)}>
         {label}
