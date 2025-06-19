@@ -44,6 +44,7 @@ export default function Footer() {
     fetchSections();
   }, []);
 
+
   if (!siteInfo) {
     return (
       <Box sx={{ backgroundColor: '#eeeeee', p: 4, textAlign: 'center' }}>
@@ -520,3 +521,4 @@ export default function Footer() {
     </Box>
   );
 }
+

@@ -1,6 +1,7 @@
 import { Box, Typography, Card, CardContent, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import HeroSection from "../components/HeroSection";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 function NewsCard({ data }) {
   const navigate = useNavigate();
 
@@ -8,8 +9,8 @@ function NewsCard({ data }) {
     <Card
       sx={{
         fontFamily: 'Cairo, sans-serif',
-        minHeight: 410,
-        width: 340,  
+        minHeight: 20,
+        width: 320,  
         borderRadius: 3,
         overflow: 'hidden',
         boxShadow: '0 6px 15px rgba(0,0,0,0.1)',
@@ -17,6 +18,7 @@ function NewsCard({ data }) {
         flexDirection: 'column',
         justifyContent: 'space-between',
         transition: '0.3s',
+        height: 440,
         '&:hover': {
           transform: 'scale(1.02)',
           boxShadow: '0 10px 20px rgba(0,0,0,0.2)',
@@ -80,12 +82,25 @@ function NewsCard({ data }) {
         <Typography variant="h4" fontWeight="bold" gutterBottom >
           {data.title}
         </Typography>
-        <Typography fontSize="14px" color="text.secondary" sx={{ minHeight: '60px' }}>
-          {data.description}
-        </Typography>
+        <Typography
+  fontSize="14px"
+  color="text.secondary"
+  sx={{
+    minHeight: '60px',
+    display: '-webkit-box',
+    WebkitLineClamp: 3, // Show 3 lines only!
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textAlign: 'right',
+    mb: 2
+  }}
+>
+  {data.full_description}
+</Typography>
+
       </CardContent>
 
-      <Box sx={{ px: 2, pb: 2 }}>
+      <Box sx={{ px: 10, pb: 10 }}>
       <Button
   onClick={() => navigate(`/news/${data.id}`)}
   fullWidth

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, IconButton, TextField, MenuItem,
-  CircularProgress, Snackbar
+  CircularProgress, Snackbar, Dialog, DialogTitle, DialogContent, 
+  DialogActions, Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
+import SendIcon from '@mui/icons-material/Send';
+import EmailIcon from '@mui/icons-material/Email';
 import MuiAlert from '@mui/material/Alert';
 import { db } from '../../components/firebase';
 import {
@@ -21,6 +23,8 @@ export default function AdminInquiries() {
   const [replyFilter, setReplyFilter] = useState('');
   const [departments, setDepartments] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, msgId: '', replyText: '', customerEmail: '', customerName: '' });
 
   const fetchMessages = async () => {
     const snapshot = await getDocs(collection(db, 'contactMessages'));
@@ -58,37 +62,111 @@ export default function AdminInquiries() {
     }
   };
 
-  const handleReplySave = async (msgId, replyValue) => {
+  // دالة إرسال البريد عبر Gmail
+  const sendEmailReply = async (customerEmail, customerName, replyText, originalMessage) => {
+    try {
+      const subject = 'رد على استفسارك - المركز الجماهيري بيت حنينا';
+      const body = `السلام عليكم ورحمة الله وبركاته ${customerName}،
+
+شكراً جزيلاً لتواصلك مع المركز الجماهيري بيت حنينا.
+
+${replyText}
+
+نتطلع دائماً لخدمتك.
+
+مع أطيب التحيات،
+فريق المركز الجماهيري بيت حنينا`;
+
+      // فتح Gmail مع البيانات المعبأة
+      window.location.href = `mailto:${customerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      console.log('✅ تم فتح Gmail للإرسال');
+      return { success: true };
+
+    } catch (error) {
+      console.error('❌ خطأ في فتح Gmail:', error);
+      return { 
+        success: false, 
+        error: error.message || 'خطأ غير معروف' 
+      };
+    }
+  };
+
+  const handleSendReply = async (msgId, replyValue) => {
     try {
       if (!msgId || typeof msgId !== 'string') return;
       if (!replyValue.trim()) {
-        showSnackbar('⚠️ لا يمكن حفظ رد فارغ', 'warning');
+        showSnackbar('⚠️ لا يمكن إرسال رد فارغ', 'warning');
         return;
       }
 
-      const docRef = doc(db, 'contactMessages', msgId);
-      const docSnap = await getDoc(docRef);
-
-      if (!docSnap.exists()) {
-        showSnackbar('❌ المستند غير موجود', 'error');
+      const message = messages.find(m => m.id === msgId);
+      if (!message) {
+        showSnackbar('❌ الرسالة غير موجودة', 'error');
         return;
       }
 
-      await updateDoc(docRef, {
-        reply: replyValue,
-        repliedAt: serverTimestamp(),
-        repliedBy: 'admin'
+      // فتح نافذة التأكيد
+      setConfirmDialog({
+        open: true,
+        msgId,
+        replyText: replyValue,
+        customerEmail: message.email,
+        customerName: `${message.first_name} ${message.last_name}`
       });
-
-      const updatedMessages = messages.map((msg) =>
-        msg.id === msgId ? { ...msg, reply: replyValue } : msg
-      );
-      setMessages(updatedMessages);
-
-      showSnackbar('✅ تم حفظ الرد بنجاح');
     } catch (err) {
-      console.error('🔥 خطأ في حفظ الرد:', err);
-      showSnackbar('❌ فشل في حفظ الرد', 'error');
+      console.error('🔥 خطأ في معالجة الرد:', err);
+      showSnackbar('❌ حدث خطأ', 'error');
+    }
+  };
+
+  const confirmSendReply = async () => {
+    const { msgId, replyText, customerEmail, customerName } = confirmDialog;
+    
+    try {
+      setSendingEmail(true);
+      
+      const message = messages.find(m => m.id === msgId);
+      
+      // فتح Gmail للإرسال
+      const emailResult = await sendEmailReply(
+        customerEmail, 
+        customerName, 
+        replyText, 
+        message.message
+      );
+
+      if (emailResult.success) {
+        // تحديث قاعدة البيانات بتسجيل أن الرد تم تحضيره
+        const docRef = doc(db, 'contactMessages', msgId);
+        await updateDoc(docRef, {
+          reply: replyText,
+          repliedAt: serverTimestamp(),
+          repliedBy: 'admin',
+          emailSent: true,
+          emailSentAt: serverTimestamp()
+        });
+
+        // تحديث الحالة المحلية
+        const updatedMessages = messages.map((msg) =>
+          msg.id === msgId ? { 
+            ...msg, 
+            reply: replyText, 
+            emailSent: true 
+          } : msg
+        );
+        setMessages(updatedMessages);
+
+        showSnackbar('✅ تم فتح Gmail - أكمل الإرسال من هناك');
+      } else {
+        showSnackbar('❌ فشل في فتح Gmail', 'error');
+      }
+    } catch (err) {
+      console.error('🔥 خطأ في إعداد الرد:', err);
+      showSnackbar('❌ فشل في إعداد الرد', 'error');
+    } finally {
+      setSendingEmail(false);
+      setConfirmDialog({ open: false, msgId: '', replyText: '', customerEmail: '', customerName: '' });
     }
   };
 
@@ -115,7 +193,7 @@ export default function AdminInquiries() {
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
-        <Box p={4} sx={{ direction: 'rtl' }}>
+        <Box p={4} sx={{ direction: 'rtl', fontFamily: 'Cairo, sans-serif' }}>
           <Typography variant="h4" mb={3} color="primary" fontWeight="bold" textAlign="center">
             لوحة إدارة الاستفسارات
           </Typography>
@@ -126,7 +204,13 @@ export default function AdminInquiries() {
               label="فلتر حسب القسم"
               value={departmentFilter}
               onChange={(e) => setDepartmentFilter(e.target.value)}
-              sx={{ minWidth: 220 }}
+              sx={{ 
+                minWidth: 220,
+                '& .MuiInputBase-input': {
+                  textAlign: 'right',
+                  direction: 'rtl'
+                }
+              }}
             >
               <MenuItem value="">كل الأقسام</MenuItem>
               {departments.map((dept, index) => (
@@ -139,7 +223,13 @@ export default function AdminInquiries() {
               label="فلتر حسب حالة الرد"
               value={replyFilter}
               onChange={(e) => setReplyFilter(e.target.value)}
-              sx={{ minWidth: 220 }}
+              sx={{ 
+                minWidth: 220,
+                '& .MuiInputBase-input': {
+                  textAlign: 'right',
+                  direction: 'rtl'
+                }
+              }}
             >
               <MenuItem value="">الكل</MenuItem>
               <MenuItem value="replied">تم الرد</MenuItem>
@@ -147,9 +237,16 @@ export default function AdminInquiries() {
             </TextField>
           </Box>
 
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
             <Table>
-              <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+              <TableHead sx={{ 
+                bgcolor: '#f8fafc',
+                '& .MuiTableCell-head': {
+                  fontWeight: 'bold',
+                  color: '#1e40af',
+                  fontFamily: 'Cairo, sans-serif'
+                }
+              }}>
                 <TableRow>
                   <TableCell>الاسم</TableCell>
                   <TableCell>العائلة</TableCell>
@@ -159,27 +256,45 @@ export default function AdminInquiries() {
                   <TableCell>الرسالة</TableCell>
                   <TableCell>التاريخ</TableCell>
                   <TableCell>الرد</TableCell>
-                  <TableCell align="center">حفظ</TableCell>
+                  <TableCell align="center">الحالة</TableCell>
+                  <TableCell align="center">إرسال</TableCell>
                   <TableCell align="center">حذف</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredMessages.map((msg) => (
-                  <TableRow key={msg.id}>
-                    <TableCell>{msg.first_name}</TableCell>
-                    <TableCell>{msg.last_name}</TableCell>
-                    <TableCell>{msg.email}</TableCell>
-                    <TableCell>{msg.phone}</TableCell>
-                    <TableCell>{msg.department}</TableCell>
-                    <TableCell>{msg.message}</TableCell>
-                    <TableCell>
-                      {msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleString() : '—'}
+                  <TableRow 
+                    key={msg.id}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#f8fafc'
+                      },
+                      backgroundColor: msg.emailSent ? '#f0f9ff' : 'inherit'
+                    }}
+                  >
+                    <TableCell sx={{ fontFamily: 'Cairo, sans-serif' }}>{msg.first_name}</TableCell>
+                    <TableCell sx={{ fontFamily: 'Cairo, sans-serif' }}>{msg.last_name}</TableCell>
+                    <TableCell sx={{ fontFamily: 'Cairo, sans-serif' }}>{msg.email}</TableCell>
+                    <TableCell sx={{ fontFamily: 'Cairo, sans-serif' }}>{msg.phone}</TableCell>
+                    <TableCell sx={{ fontFamily: 'Cairo, sans-serif' }}>{msg.department}</TableCell>
+                    <TableCell sx={{ 
+                      maxWidth: '200px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontFamily: 'Cairo, sans-serif'
+                    }}>
+                      {msg.message}
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ fontFamily: 'Cairo, sans-serif' }}>
+                      {msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleString('ar-EG') : '—'}
+                    </TableCell>
+                    <TableCell sx={{ minWidth: '200px' }}>
                       <TextField
                         variant="outlined"
                         size="small"
                         fullWidth
+                        multiline
+                        rows={2}
                         value={msg.reply || ""}
                         onChange={(e) => {
                           const updated = messages.map((m) =>
@@ -187,23 +302,49 @@ export default function AdminInquiries() {
                           );
                           setMessages(updated);
                         }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && e.ctrlKey) {
-                            e.preventDefault();
-                            handleReplySave(msg.id, msg.reply || "");
-                          } else if (e.key === 'Enter') {
-                            e.preventDefault();
-                            e.stopPropagation();
+                        placeholder="اكتب ردك هنا..."
+                        disabled={msg.emailSent}
+                        sx={{
+                          '& .MuiInputBase-input': {
+                            textAlign: 'right',
+                            direction: 'rtl',
+                            fontFamily: 'Cairo, sans-serif'
                           }
                         }}
                       />
                     </TableCell>
                     <TableCell align="center">
+                      {msg.emailSent ? (
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          gap: 1,
+                          color: '#16a34a'
+                        }}>
+                          <EmailIcon fontSize="small" />
+                          <Typography variant="caption" sx={{ fontFamily: 'Cairo, sans-serif' }}>
+                            تم التحضير
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'Cairo, sans-serif' }}>
+                          في الانتظار
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
                       <IconButton
                         color="primary"
-                        onClick={() => handleReplySave(msg.id, msg.reply || "")}
+                        onClick={() => handleSendReply(msg.id, msg.reply || "")}
+                        disabled={!msg.reply?.trim() || msg.emailSent || sendingEmail}
+                        sx={{
+                          '&:disabled': {
+                            color: '#94a3b8'
+                          }
+                        }}
                       >
-                        <SaveIcon />
+                        {sendingEmail ? <CircularProgress size={20} /> : <SendIcon />}
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
@@ -218,12 +359,89 @@ export default function AdminInquiries() {
                 ))}
                 {filteredMessages.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={10} align="center">لا توجد استفسارات</TableCell>
+                    <TableCell colSpan={11} align="center" sx={{ 
+                      py: 4,
+                      fontFamily: 'Cairo, sans-serif',
+                      color: '#64748b'
+                    }}>
+                      لا توجد استفسارات
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* نافذة تأكيد الإرسال */}
+          <Dialog 
+            open={confirmDialog.open} 
+            onClose={() => !sendingEmail && setConfirmDialog({ ...confirmDialog, open: false })}
+            maxWidth="sm"
+            fullWidth
+            sx={{
+              '& .MuiDialog-paper': {
+                borderRadius: '16px',
+                fontFamily: 'Cairo, sans-serif'
+              }
+            }}
+          >
+            <DialogTitle sx={{ 
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: '#1e40af',
+              fontFamily: 'Cairo, sans-serif'
+            }}>
+              تأكيد إرسال الرد عبر Gmail
+            </DialogTitle>
+            <DialogContent sx={{ direction: 'rtl', fontFamily: 'Cairo, sans-serif' }}>
+              <Typography variant="body1" mb={2}>
+                سيتم فتح Gmail لإرسال هذا الرد إلى:
+              </Typography>
+              <Typography variant="body2" color="primary" mb={1}>
+                <strong>الاسم:</strong> {confirmDialog.customerName}
+              </Typography>
+              <Typography variant="body2" color="primary" mb={2}>
+                <strong>البريد:</strong> {confirmDialog.customerEmail}
+              </Typography>
+              <Typography variant="body2" mb={1}>
+                <strong>الرد:</strong>
+              </Typography>
+              <Box sx={{ 
+                p: 2, 
+                bgcolor: '#f8fafc', 
+                borderRadius: 2,
+                border: '1px solid #e2e8f0'
+              }}>
+                <Typography variant="body2">
+                  {confirmDialog.replyText}
+                </Typography>
+              </Box>
+              <Typography variant="caption" color="text.secondary" mt={2} display="block">
+                ملاحظة: سيتم فتح Gmail في نافذة جديدة مع البيانات معبأة مسبقاً
+              </Typography>
+            </DialogContent>
+            <DialogActions sx={{ padding: '16px 24px' }}>
+              <Button 
+                onClick={() => setConfirmDialog({ ...confirmDialog, open: false })}
+                disabled={sendingEmail}
+                sx={{ fontFamily: 'Cairo, sans-serif' }}
+              >
+                إلغاء
+              </Button>
+              <Button 
+                onClick={confirmSendReply}
+                variant="contained"
+                disabled={sendingEmail}
+                startIcon={sendingEmail ? <CircularProgress size={16} /> : <EmailIcon />}
+                sx={{ 
+                  background: '#2563eb',
+                  fontFamily: 'Cairo, sans-serif'
+                }}
+              >
+                {sendingEmail ? 'جاري التحضير...' : 'فتح Gmail'}
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           <Snackbar
             open={snackbar.open}
@@ -234,7 +452,7 @@ export default function AdminInquiries() {
             <MuiAlert
               onClose={() => setSnackbar({ ...snackbar, open: false })}
               severity={snackbar.severity}
-              sx={{ width: '100%' }}
+              sx={{ width: '100%', fontFamily: 'Cairo, sans-serif' }}
               elevation={6}
               variant="filled"
             >

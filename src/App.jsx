@@ -24,13 +24,14 @@ function App() {
   }, []);
 
   return (
+
     <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <div style={{ flex: 1 }}>
         <AppRoutes sections={sections} />
       </div>
       <Footer sectionId="section_general" />
     </div>
-  );
+    );
 }
 
 export default App;
