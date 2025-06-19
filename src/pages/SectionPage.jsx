@@ -12,22 +12,7 @@ import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
 import SectionScrollButton from '../components/sections/SectionScrollButton';
-
-// 🔧 Put this at the top of the file, after imports but before SectionPage()
-function darkenColor(hex, amount) {
-  const num = parseInt(hex.replace('#', ''), 16);
-  let r = (num >> 16) - amount * 255;
-  let g = ((num >> 8) & 0x00FF) - amount * 255;
-  let b = (num & 0x0000FF) - amount * 255;
-
-  r = Math.max(0, Math.min(255, r));
-  g = Math.max(0, Math.min(255, g));
-  b = Math.max(0, Math.min(255, b));
-
-  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-}
-
-
+import PrettyCard from '../components/layout/PrettyCard';
 
 function SectionPage() {
   const [expanded, setExpanded] = useState(false);
@@ -73,60 +58,6 @@ const navigate = useNavigate();
       return null;
   }
 };
-
-
-const PrettyCard = ({ title, color, children }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        borderRadius: '28px',
-        p: { xs: 3, sm: 4 },
-        mt: 0,
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0px 0px 0px 0px rgba(0, 0, 0, 0.3)',
-        overflow: 'hidden',
-        direction: 'rtl',
-        minHeight: '200px',
-      }}
-    >
-      {/* Title Badge */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          height: { xs: '40px', sm: '40px' },
-          minWidth: 'fit-content',
-          padding: '0 20px',
-          background: `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`,
-          borderBottomLeftRadius: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#fff',
-          fontWeight: 'bold',
-          fontSize: { xs: '1rem', sm: '1.1rem' },
-          zIndex: 2,
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-          boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-        }}
-      >
-        {title}
-      </Box>
-
-      {/* Card Content */}
-      <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', mt: 5 }}>
-        {children}
-      </Box>
-    </Box>
-  );
-};
-
-
-
 
   const singleImageSliderSettings = {
     dots: true,

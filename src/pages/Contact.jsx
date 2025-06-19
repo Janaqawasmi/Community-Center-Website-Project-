@@ -14,6 +14,7 @@ import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
 import RoundedButton from '../components/Buttons/RoundedButton'; 
+import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
 
 export default function Contact() {
   const theme = useTheme();
@@ -29,57 +30,7 @@ export default function Contact() {
   const buttonColor = ' #005588';
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
-  // PrettyCard component
-  const PrettyCard = ({ title, color, children }) => {
-    return (
-      <Box
-        sx={{
-          position: 'relative',
-          borderRadius: '28px',
-          p: { xs: 3, sm: 4 },
-          mt: 4,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          //boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
-          overflow: 'hidden',
-          direction: 'rtl',
-minHeight: 'auto',
-maxHeight: '100%',  // optional: ensures it doesn't overflow
-        }}
-      >
-        {/* Top-Right Title Badge */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            height: { xs: '40px', sm: '40px' },
-            minWidth: 'fit-content',
-            padding: '0 20px',
-            background: headerGradient,
-            borderBottomLeftRadius: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: { xs: '1rem', sm: '1.1rem' },
-            zIndex: 2,
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-          }}
-        >
-          {title}
-        </Box>
-
-        {/* Card Body */}
-        <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-          {children}
-        </Box>
-      </Box>
-    );
-  };
+  
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -165,7 +116,7 @@ maxHeight: '100%',  // optional: ensures it doesn't overflow
             display: 'flex',
             justifyContent: 'right',
             mt: 0,
-            mb: 0.1,
+            mb: 4,
             px: 0,
             direction: 'rtl',
           }}
@@ -182,7 +133,7 @@ maxHeight: '100%',  // optional: ensures it doesn't overflow
         {/* معلومات التواصل في PrettyCard */}
         <Grid container spacing={4} mb={3}>
           <Grid item xs={12}>
-            <PrettyCard title="معلومات التواصل" color={buttonColor}>
+            <PrettyCard title="معلومات التواصل" >
               {siteInfo && (
                 <Grid container spacing={3}>
                   {/* العنوان والهاتف في نفس السطر */}
@@ -282,7 +233,7 @@ maxHeight: '100%',  // optional: ensures it doesn't overflow
 
         {/* Contact Form */}
         <Box id="contact-form" sx={{ mb: 0 }}>
-          <PrettyCard title="أرسل لنا رسالة" color={buttonColor}>
+          <PrettyCard title="أرسل لنا رسالة">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
