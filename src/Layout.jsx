@@ -334,6 +334,8 @@ const handleNavClick = (path) => {
       <Box sx={{ px: { xs: 0, md: 0 } }}>
         <Outlet />
       </Box>
+
+    
     </>
   );
   
