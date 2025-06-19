@@ -338,6 +338,7 @@ const handleNavClick = (path) => {
     
     </>
   );
+  
 }
 
 export default Layout;
