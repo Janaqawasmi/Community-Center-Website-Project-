@@ -7,6 +7,8 @@ import CalendarSection from "./CalendarSection";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+
+
 export default function HomePage() {
   const featuredPrograms = useFeaturedPrograms(); // ✅ fetch array, not single program
   const navigate = useNavigate();
@@ -122,13 +124,15 @@ export default function HomePage() {
         </Slider>
       )}
 
-      {/* Calendar Section at bottom */}
-      <Box sx={{ mt: 20, px: { xs: 2, md: 30 } }}>
-        <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4}>
-          التقويم والفعاليات
-        </Typography>
-        <CalendarSection />
-      </Box>
+    
+
+   
+       <Box sx={{ mt: 5, px: { xs: 2, md: 30 } }}>
+          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#0369a1' }}>
+             التقويم والفعاليات
+           </Typography>
+           <CalendarSection />
+         </Box>
     </Box>
   );
 }

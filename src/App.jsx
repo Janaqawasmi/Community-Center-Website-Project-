@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 //import './App.css'; 
 import './index.css';
-
+import Footer from './components/Footer/Footer';
 function App() {
   const [sections, setSections] = useState([]);
 
@@ -25,9 +25,12 @@ function App() {
   }, []);
 
   return (
-      <div className="App">
+       <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div style={{ flex: 1 }}>
         <AppRoutes sections={sections} />
       </div>
+      <Footer sectionId="section_general" />
+    </div>
     );
 }
 
