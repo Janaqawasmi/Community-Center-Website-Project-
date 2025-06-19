@@ -320,39 +320,9 @@ const drawerItemStyle = {
         <Outlet />
       </Box>
 
-      {/* Admin Login Footer */}
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '2.5rem',
-          backgroundColor: '#f1f1f1',
-          borderTop: '1px solid #ccc',
-          zIndex: 1200,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-        }}
-      >
-        <NavButton
-          to="/login"
-          sx={{
-            position: 'absolute',
-            bottom: 8,
-            left: 16,
-            fontSize: '12px',
-            color: '#666',
-            textTransform: 'uppercase',
-          }}
-        >
-          تسجيل دخول للإدارة فقط
-        </NavButton>
-      </Box>
     </>
   );
+  
 }
 
 function navStyle(active) {
