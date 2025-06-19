@@ -30,7 +30,6 @@ export default function PrettyCard({ title, color, children, icon }) {
         mt: 0,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         direction: 'rtl',
         backgroundColor: '#fff',
