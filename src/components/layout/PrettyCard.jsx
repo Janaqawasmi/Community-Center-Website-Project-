@@ -17,9 +17,16 @@ function darkenColor(hex, amount) {
 const defaultGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
 export default function PrettyCard({ title, color, children, icon }) {
-  const badgeBackground = color
-    ? `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`
-    : defaultGradient;
+let badgeBackground = defaultGradient;
+
+if (color) {
+  if (color.startsWith("linear-gradient")) {
+    badgeBackground = color; // Already a gradient, use as-is
+  } else {
+    badgeBackground = `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`;
+  }
+}
+
 
   return (
     <Box
@@ -30,7 +37,6 @@ export default function PrettyCard({ title, color, children, icon }) {
         mt: 0,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         direction: 'rtl',
         backgroundColor: '#fff',
