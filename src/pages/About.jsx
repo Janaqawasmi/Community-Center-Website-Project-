@@ -64,19 +64,7 @@ export default function About() {
     return text.substring(0, maxLength) + '...';
   };
 
-  // دالة مساعدة لتغميق اللون
-  const darkenColor = (hex, amount) => {
-    const num = parseInt(hex.replace('#', ''), 16);
-    let r = (num >> 16) - amount * 255;
-    let g = ((num >> 8) & 0x00FF) - amount * 255;
-    let b = (num & 0x0000FF) - amount * 255;
 
-    r = Math.max(0, Math.min(255, r));
-    g = Math.max(0, Math.min(255, g));
-    b = Math.max(0, Math.min(255, b));
-
-    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-  };
 
   // PrettyCard component
   const PrettyCard = ({ title, color, children, section }) => {
@@ -88,13 +76,11 @@ export default function About() {
           position: 'relative',
           borderRadius: '28px',
           p: { xs: 3, sm: 4 },
-          mt: 5,
+          mt: 0,
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
           overflow: 'hidden',
           direction: 'rtl',
-          fontFamily: 'Cairo, sans-serif',
           minHeight: '200px',
         }}
       >
@@ -157,15 +143,15 @@ export default function About() {
 
   if (!aboutData) {
     return (
-      <Container sx={{ py: 10 }}>
+      <Container sx={{ py: 10}}>
         <Typography align="center">جاري تحميل معلومات عن المركز...</Typography>
       </Container>
     );
   }
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box mb={0} sx={{ direction: "rtl" }}>
+      <Box  mb={8} >
         <HeroSection pageId="aboutUs" />
       </Box>
 
@@ -212,7 +198,7 @@ export default function About() {
             </Grid>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 3 }}>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Typography
               onClick={() => toggleSection('about')}
               sx={{
@@ -221,7 +207,6 @@ export default function About() {
                 fontSize: '1rem',
                 cursor: 'pointer',
                 textDecoration: 'underline',
-                fontFamily: 'Cairo, sans-serif',
                 '&:hover': {
                   color: '#1565c0',
                   textDecoration: 'underline',

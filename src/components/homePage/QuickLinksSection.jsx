@@ -3,20 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button } from "@mui/material";
 import { motion } from "framer-motion";
 import { sectionColors } from "../../constants/sectionMeta";
-
-// Helper to darken color (copied from SectionPage)
-function darkenColor(hex, amount) {
-  const num = parseInt(hex.replace("#", ""), 16);
-  let r = (num >> 16) - amount * 255;
-  let g = ((num >> 8) & 0x00ff) - amount * 255;
-  let b = (num & 0x0000ff) - amount * 255;
-
-  r = Math.max(0, Math.min(255, r));
-  g = Math.max(0, Math.min(255, g));
-  b = Math.max(0, Math.min(255, b));
-
-  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-}
+import RoundedButton from "../Buttons/RoundedButton";
 
 export default function SectionGrid({ sections }) {
   const navigate = useNavigate();
@@ -34,14 +21,11 @@ export default function SectionGrid({ sections }) {
           sx={{
             position: "relative",
             borderRadius: "28px",
-            p: { xs: 3, sm: 4 },
-            mt: 5,
+            p: { xs: 2, sm: 2 },
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.23)",
             overflow: "hidden",
             direction: "rtl",
-            fontFamily: "Cairo, sans-serif",
           }}
         >
           {/* Top-Right Title Badge */}
@@ -52,9 +36,9 @@ export default function SectionGrid({ sections }) {
               right: 0,
               height: { xs: "40px", sm: "40px" },
               minWidth: "fit-content",
-            padding: "0 20px",
-    background: sectionColor, // ✅ use gradient directly
-    borderBottomLeftRadius: "24px",
+              padding: "0 20px",
+              background: sectionColor, // ✅ use gradient directly
+              borderBottomLeftRadius: "24px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -64,7 +48,7 @@ export default function SectionGrid({ sections }) {
               zIndex: 2,
               textAlign: "center",
               whiteSpace: "nowrap",
-              boxShadow: "0 3px 12px rgba(0,0,0,0.15)",
+              boxShadow: "0 3px 12px rgba(0, 0, 0, 0.15)",
             }}
           >
             أقسام المركز
@@ -84,64 +68,15 @@ export default function SectionGrid({ sections }) {
               }}
             >
               {sections.map((section, index) => {
-                const color = sectionColors[section.id] || "#00b0f0";
-
-                return (
-                  <motion.div
-                    key={section.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Button
-                      onClick={() => navigate(`/sections/${section.id}`)}
-                      sx={{
-                        borderRadius: "90px",
-                        px: 3,
-                        py: 1.5,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        borderRight: `6px solid ${color}`,
-                        backgroundColor: "#fff",
-                        transition: "0.3s",
-                        width: "100%",
-                        minHeight: "55px",
-                        height: "55px",
-                        boxShadow: 1,
-                        "&:hover": {
-                          backgroundColor: "#f5f5f5",
-                          transform: "translateY(-2px)",
-                          borderRight: `6px solid ${color}`,
-                        },
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontWeight: "bold",
-                          fontSize: "1.1rem",
-                          color: "black",
-                          fontFamily: "Cairo, sans-serif",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {section.title}
-                      </Typography>
-                      <Box sx={{ mr: 2 }}>
-                        <Typography
-                          fontSize="1.2rem"
-                          fontWeight="bold"
-                          color={color}
-                        >
-                          &lt;
-                        </Typography>
-                      </Box>
-                    </Button>
-                  </motion.div>
-                );
+                const color = sectionColors[section.id] || " #00b0f0";
+ return (
+    <RoundedButton
+      label={section.title}
+      color={color}
+      onClick={() => navigate(`/sections/${section.id}`)}
+      index={index}
+    />
+  );
               })}
             </Box>
           </Box>

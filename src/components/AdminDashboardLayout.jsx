@@ -23,7 +23,7 @@ export default function AdminDashboardLayout({ children }) {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc', fontFamily: 'Cairo, sans-serif' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc'}}>
       {/* Header */}
       <AppBar 
         position="sticky" 
@@ -57,7 +57,6 @@ export default function AdminDashboardLayout({ children }) {
                 sx={{ 
                   fontWeight: 'bold',
                   color: 'white',
-                  fontFamily: 'Cairo, sans-serif',
                   fontSize: { xs: '1rem', md: '1.2rem' }
                 }}
               >
@@ -81,7 +80,6 @@ export default function AdminDashboardLayout({ children }) {
                 variant="body2" 
                 sx={{ 
                   color: 'white',
-                  fontFamily: 'Cairo, sans-serif',
                   fontWeight: 500,
                   display: { xs: 'none', sm: 'block' }
                 }}
@@ -159,7 +157,6 @@ export default function AdminDashboardLayout({ children }) {
                     px: 3,
                     py: 1.5,
                     borderRadius: '12px',
-                    fontFamily: 'Cairo, sans-serif',
                     fontWeight: 600,
                     fontSize: '0.95rem',
                     textTransform: 'none',
@@ -239,7 +236,6 @@ export default function AdminDashboardLayout({ children }) {
             variant="body2" 
             sx={{ 
               color: '#64748b',
-              fontFamily: 'Cairo, sans-serif'
             }}
           >
             © 2025 لوحة إدارة المركز المجتمعي - جميع الحقوق محفوظة

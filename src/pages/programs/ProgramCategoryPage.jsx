@@ -53,8 +53,8 @@ export default function ProgramCategoryPage() {
   const highlightedProgram = programs.find((p) => p.id === highlightId);
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box sx={{ direction: "rtl" }}>
+      <Box mb={8}>
         <HeroSection pageId={categoryName} />
       </Box>
 
