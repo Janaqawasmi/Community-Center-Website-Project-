@@ -60,7 +60,7 @@ useEffect(() => {
   };
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+    <Box sx={{  direction: "rtl" }}>
       {combinedSlides.length > 0 && (
         <Slider {...sliderSettings}>
           {combinedSlides.map((item) => (
@@ -149,7 +149,7 @@ useEffect(() => {
                   variant="contained"
                   sx={{
                     backgroundColor: "rgb(197, 94, 24)",
-                    borderRadius: "20px",
+                    borderRadius: "28px",
                     fontWeight: "bold",
                     px: 2,
                     py: 0.8,
@@ -206,7 +206,7 @@ function OverlayContent({ program, navigate, isEvent = false, isNews = false }) 
         variant="contained"
         sx={{
           backgroundColor: "rgb(197, 94, 24)",
-          borderRadius: "20px",
+          borderRadius: "28px",
           fontWeight: "bold",
           px: 4,
           py: 1,

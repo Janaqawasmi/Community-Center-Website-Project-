@@ -60,7 +60,7 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
           sx={{
             width: "70%",
             mx: "auto",
-            borderRadius: "40px",
+            borderRadius: "28px",
             border: "2px solid #0d47a1",
             color: "#0d47a1",
             fontWeight: "bold",

@@ -193,7 +193,7 @@ ${replyText}
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
-        <Box p={4} sx={{ direction: 'rtl', fontFamily: 'Cairo, sans-serif' }}>
+        <Box p={4} sx={{ direction: 'rtl' }}>
           <Typography variant="h4" mb={3} color="primary" fontWeight="bold" textAlign="center">
             لوحة إدارة الاستفسارات
           </Typography>
@@ -244,7 +244,6 @@ ${replyText}
                 '& .MuiTableCell-head': {
                   fontWeight: 'bold',
                   color: '#1e40af',
-                  fontFamily: 'Cairo, sans-serif'
                 }
               }}>
                 <TableRow>

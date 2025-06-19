@@ -28,7 +28,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import NavButton from './components/NavButton';
+import NavButton from './components/Buttons/NavButton';
 
 const NAV_ITEMS = [
   { label: 'الرئيسية', path: '/' },
@@ -281,7 +281,6 @@ const handleNavClick = (path) => {
       textAlign: 'right',
       direction: 'rtl',
       fontSize: '15px',
-      fontFamily: 'Cairo, sans-serif',
     },
   }}
 />              </ListItemButton>

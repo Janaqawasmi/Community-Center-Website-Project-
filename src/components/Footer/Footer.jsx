@@ -45,7 +45,6 @@ useEffect(() => {
         mt: 8,
         pt: 4,
         pb: 2,
-        fontFamily: 'Cairo, sans-serif',
         direction: 'rtl',
       }}
     >
