@@ -1,15 +1,26 @@
 import React from 'react';
-import { AppBar, Box, Toolbar, Button, Typography, Avatar, IconButton, Divider } from '@mui/material';
+import { AppBar, Box, Toolbar, Button, Typography, Avatar, IconButton } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AdminPanelSettings, Dashboard, EventNote, Article, Category, QuestionAnswer, CalendarMonth, ExitToApp } from '@mui/icons-material';
+import { 
+  AdminPanelSettings, 
+  Dashboard, 
+  EventNote, 
+  Article, 
+  Category, 
+  QuestionAnswer, 
+  CalendarMonth, 
+  ExitToApp,
+  Info
+} from '@mui/icons-material';
 
 const sections = [
   { label: 'لوحة التحكم', path: '/admin/dashboard', icon: <Dashboard /> },
+  { label: 'عن المركز', path: '/admin/about', icon: <Info /> },
   { label: 'البرامج', path: '/admin/programs', icon: <Category /> },
   { label: 'الأخبار', path: '/admin/news', icon: <Article /> },
   { label: 'الأقسام', path: '/admin/sections', icon: <Category /> },
   { label: 'الفعاليات', path: '/admin/events', icon: <EventNote /> },
-  { label: 'الاستفسارات', path: '/admin/inquiries', icon: <QuestionAnswer /> },
+  { label: 'تواصل معنا', path: '/admin/inquiries', icon: <QuestionAnswer /> },
   { label: 'التقويم', path: '/admin/calendar', icon: <CalendarMonth /> },
 ];
 
@@ -36,29 +47,34 @@ export default function AdminDashboardLayout({ children }) {
       >
         <Toolbar sx={{ 
           justifyContent: 'space-between', 
-          px: { xs: 2, md: 4 },
-          py: 1,
-          direction: 'rtl'
+          px: { xs: 1, md: 4 },
+          py: { xs: 0.5, md: 1 },
+          direction: 'rtl',
+          minHeight: { xs: '56px', md: '64px' }
         }}>
           {/* Logo and Title */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: 1,
+              gap: { xs: 0.5, md: 1 },
               background: 'rgba(255,255,255,0.1)',
-              borderRadius: '12px',
-              padding: '8px 16px',
+              borderRadius: { xs: '8px', md: '12px' },
+              padding: { xs: '6px 12px', md: '8px 16px' },
               backdropFilter: 'blur(10px)'
             }}>
-              <AdminPanelSettings sx={{ color: '#2563eb', fontSize: 28 }} />
+              <AdminPanelSettings sx={{ 
+                color: '#2563eb', 
+                fontSize: { xs: 20, md: 28 } 
+              }} />
               <Typography 
                 variant="h6" 
                 sx={{ 
                   fontWeight: 'bold',
                   color: 'white',
                   fontFamily: 'Cairo, sans-serif',
-                  fontSize: { xs: '1rem', md: '1.2rem' }
+                  fontSize: { xs: '0.9rem', md: '1.2rem' },
+                  display: { xs: 'none', sm: 'block' }
                 }}
               >
                 لوحة الإدارة
@@ -67,14 +83,14 @@ export default function AdminDashboardLayout({ children }) {
           </Box>
 
           {/* Admin Profile */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: 2,
+              gap: { xs: 1, md: 2 },
               background: 'rgba(255,255,255,0.1)',
               borderRadius: '50px',
-              padding: '6px 16px 6px 6px',
+              padding: { xs: '4px 12px 4px 4px', md: '6px 16px 6px 6px' },
               backdropFilter: 'blur(10px)'
             }}>
               <Typography 
@@ -83,18 +99,19 @@ export default function AdminDashboardLayout({ children }) {
                   color: 'white',
                   fontFamily: 'Cairo, sans-serif',
                   fontWeight: 500,
-                  display: { xs: 'none', sm: 'block' }
+                  display: { xs: 'none', sm: 'block' },
+                  fontSize: { xs: '0.8rem', md: '0.9rem' }
                 }}
               >
                 مرحباً، مدير النظام
               </Typography>
               <Avatar 
                 sx={{ 
-                  width: 36, 
-                  height: 36,
+                  width: { xs: 28, md: 36 }, 
+                  height: { xs: 28, md: 36 },
                   background: '#2563eb',
                   fontWeight: 'bold',
-                  fontSize: '0.9rem'
+                  fontSize: { xs: '0.8rem', md: '0.9rem' }
                 }}
               >
                 م
@@ -106,14 +123,16 @@ export default function AdminDashboardLayout({ children }) {
               sx={{ 
                 color: 'white',
                 background: 'rgba(37, 99, 235, 0.2)',
+                width: { xs: 36, md: 40 },
+                height: { xs: 36, md: 40 },
                 '&:hover': {
                   background: 'rgba(37, 99, 235, 0.3)',
-                  transform: 'scale(1.05)'
+                  transform: { xs: 'none', md: 'scale(1.05)' }
                 },
                 transition: 'all 0.3s ease'
               }}
             >
-              <ExitToApp />
+              <ExitToApp sx={{ fontSize: { xs: 18, md: 20 } }} />
             </IconButton>
           </Box>
         </Toolbar>
@@ -128,13 +147,13 @@ export default function AdminDashboardLayout({ children }) {
         <Box sx={{ 
           maxWidth: '1400px',
           margin: '0 auto',
-          px: { xs: 2, md: 4 }
+          px: { xs: 1, md: 4 }
         }}>
           <Box sx={{ 
             display: 'flex',
-            justifyContent: 'center',
-            gap: 1,
-            py: 2,
+            justifyContent: { xs: 'flex-start', md: 'center' },
+            gap: { xs: 0.5, md: 1 },
+            py: { xs: 1.5, md: 2 },
             overflowX: 'auto',
             '&::-webkit-scrollbar': {
               height: '4px'
@@ -155,22 +174,32 @@ export default function AdminDashboardLayout({ children }) {
                   onClick={() => navigate(item.path)}
                   startIcon={item.icon}
                   sx={{
-                    minWidth: 'auto',
-                    px: 3,
-                    py: 1.5,
-                    borderRadius: '12px',
+                    minWidth: { xs: 'auto', md: 'auto' },
+                    px: { xs: 1.5, md: 3 },
+                    py: { xs: 1, md: 1.5 },
+                    borderRadius: { xs: '8px', md: '12px' },
                     fontFamily: 'Cairo, sans-serif',
                     fontWeight: 600,
-                    fontSize: '0.95rem',
+                    fontSize: { xs: '0.8rem', md: '0.95rem' },
                     textTransform: 'none',
                     flexShrink: 0,
                     transition: 'all 0.3s ease',
-                    gap: 1.5,
+                    gap: { xs: 0.5, md: 1.5 },
+                    '& .MuiButton-startIcon': {
+                      marginLeft: { xs: 0.5, md: 1 },
+                      marginRight: 0,
+                      '& > *:nth-of-type(1)': {
+                        fontSize: { xs: '16px', md: '20px' }
+                      }
+                    },
                     ...(isActive ? {
                       background: '#2563eb',
                       color: 'white',
-                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)',
-                      transform: 'translateY(-2px)',
+                      boxShadow: { 
+                        xs: '0 2px 8px rgba(37, 99, 235, 0.2)', 
+                        md: '0 4px 15px rgba(37, 99, 235, 0.3)' 
+                      },
+                      transform: { xs: 'none', md: 'translateY(-2px)' },
                       '& .MuiSvgIcon-root': {
                         color: 'white'
                       }
@@ -180,8 +209,8 @@ export default function AdminDashboardLayout({ children }) {
                       '&:hover': {
                         background: '#f1f5f9',
                         color: '#2563eb',
-                        transform: 'translateY(-1px)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        transform: { xs: 'none', md: 'translateY(-1px)' },
+                        boxShadow: { xs: 'none', md: '0 2px 8px rgba(0,0,0,0.1)' },
                         '& .MuiSvgIcon-root': {
                           color: '#2563eb'
                         }
@@ -192,7 +221,11 @@ export default function AdminDashboardLayout({ children }) {
                     })
                   }}
                 >
-                  {item.label}
+                  <Box sx={{ 
+                    display: { xs: 'none', sm: 'block' } 
+                  }}>
+                    {item.label}
+                  </Box>
                 </Button>
               );
             })}
@@ -206,17 +239,21 @@ export default function AdminDashboardLayout({ children }) {
         sx={{ 
           maxWidth: '1400px',
           margin: '0 auto',
-          p: { xs: 2, md: 4 },
+          p: { xs: 0.5, sm: 1, md: 4 },
           minHeight: 'calc(100vh - 140px)'
         }}
       >
         <Box sx={{
           background: 'white',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+          borderRadius: { xs: '8px', md: '16px' },
+          boxShadow: { 
+            xs: '0 2px 10px rgba(0,0,0,0.05)', 
+            md: '0 4px 20px rgba(0,0,0,0.05)' 
+          },
           border: '1px solid #e2e8f0',
           overflow: 'hidden',
-          minHeight: '600px'
+          minHeight: { xs: 'calc(100vh - 160px)', md: '600px' },
+          mx: { xs: 0.5, sm: 1, md: 0 }
         }}>
           {children}
         </Box>

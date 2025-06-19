@@ -17,6 +17,15 @@ import {
   FaUserAlt,
   FaUsers,
 } from "react-icons/fa";
+import {
+  Info,
+  Visibility,
+  Edit,
+  Add,
+  Title,
+  Subject,
+  ColorLens,
+} from "@mui/icons-material";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import HeroSection from "../components/HeroSection";
@@ -31,7 +40,7 @@ export default function About() {
     goals: false
   });
 
-  // ألوان للبطاقات مع التدرجات
+  // ألوان للبطاقات مع التدرجات (نفس الألوان الأصلية)
   const cardColors = {
     about: '#4a90e2',
     vision: '#f7971e',
@@ -40,13 +49,13 @@ export default function About() {
     goals: '#3e833e'
   };
 
-  // تدرجات الألوان للهيدرز
+  // تدرجات الألوان للهيدرز (نفس التدرجات الأصلية)
   const cardGradients = {
-    about: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)", // درجات الأزرق
-    vision: "linear-gradient(180deg, #4CAF50 0%, #1B5E20 100%)", // درجات البرتقالي
-    message: "linear-gradient(180deg, #FF9800 0%, #E65100 100%)", // درجات الكحلي
-    justifications: "linear-gradient(180deg, #F44336 0%, #B71C1C 100%)", // درجات الأحمر
-    goals: "linear-gradient(180deg, #8BC34A 0%, #33691E 100%)" // درجات الأخضر
+    about: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
+    vision: "linear-gradient(180deg, #4CAF50 0%, #1B5E20 100%)",
+    message: "linear-gradient(180deg, #FF9800 0%, #E65100 100%)",
+    justifications: "linear-gradient(180deg, #F44336 0%, #B71C1C 100%)",
+    goals: "linear-gradient(180deg, #8BC34A 0%, #33691E 100%)"
   };
 
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
@@ -78,9 +87,23 @@ export default function About() {
     return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
   };
 
+  // دالة للحصول على الأيقونة المناسبة
+  const getIcon = (iconName) => {
+    const iconMap = {
+      'Info': <FaLightbulb />,
+      'Visibility': <FaEye />,
+      'Edit': <FaEnvelope />,
+      'Add': <FaBullseye />,
+      'Title': <FaUserAlt />,
+      'Subject': <FaUsers />,
+      'ColorLens': <FaGlobe />
+    };
+    return iconMap[iconName] || <FaLightbulb />;
+  };
+
   // PrettyCard component
-  const PrettyCard = ({ title, color, children, section }) => {
-    const gradient = cardGradients[section] || `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`;
+  const PrettyCard = ({ title, color, children, section, customGradient }) => {
+    const gradient = customGradient || cardGradients[section] || `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`;
     
     return (
       <Box
@@ -403,6 +426,52 @@ export default function About() {
             )}
           </PrettyCard>
         )}
+
+        {/* الأقسام المخصصة - هذا الجزء الجديد المضاف */}
+        {expandedSections.about && aboutData.custom_sections && aboutData.custom_sections.map((section, index) => {
+          const sectionKey = `custom_${index}`;
+          return (
+            <PrettyCard
+              key={section.id || index}
+              title={section.title}
+              color={section.color}
+              section={sectionKey}
+              customGradient={`linear-gradient(180deg, ${section.color} 0%, ${darkenColor(section.color, 0.3)} 100%)`}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  lineHeight: 2,
+                  textAlign: "justify",
+                  fontSize: "1.2rem",
+                }}
+              >
+                {expandedSections[sectionKey]
+                  ? section.content
+                  : truncateText(section.content, 200)
+                }
+              </Typography>
+              {section.content && section.content.length > 200 && (
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                  <Button
+                    onClick={() => toggleSection(sectionKey)}
+                    sx={{
+                      color: section.color,
+                      fontWeight: 'bold',
+                      textDecoration: 'underline',
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                        textDecoration: 'underline',
+                      }
+                    }}
+                  >
+                    {expandedSections[sectionKey] ? 'عرض أقل' : 'اقرأ المزيد'}
+                  </Button>
+                </Box>
+              )}
+            </PrettyCard>
+          );
+        })}
 
       </Container>
     </Box>
