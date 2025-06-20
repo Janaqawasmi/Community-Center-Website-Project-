@@ -20,6 +20,7 @@ import {
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import HeroSection from "../components/HeroSection";
+import PrettyCard from '../components/layout/PrettyCard';
 
 export default function About() {
   const [aboutData, setAboutData] = useState(null);
@@ -64,60 +65,6 @@ export default function About() {
     return text.substring(0, maxLength) + '...';
   };
 
-
-
-  // PrettyCard component
-  const PrettyCard = ({ title, color, children, section }) => {
-    const gradient = cardGradients[section] || `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`;
-    
-    return (
-      <Box
-        sx={{
-          position: 'relative',
-          borderRadius: '28px',
-          p: { xs: 3, sm: 4 },
-          mt: 0,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          overflow: 'hidden',
-          direction: 'rtl',
-          minHeight: '200px',
-        }}
-      >
-        {/* Top-Right Title Badge */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            height: { xs: '40px', sm: '40px' },
-            minWidth: 'fit-content',
-            padding: '0 20px',
-            background: gradient,
-            borderBottomLeftRadius: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: { xs: '1rem', sm: '1.1rem' },
-            zIndex: 2,
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-          }}
-        >
-          {title}
-        </Box>
-
-        {/* Card Body */}
-        <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-          {children}
-        </Box>
-      </Box>
-    );
-  };
-
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -160,7 +107,7 @@ export default function About() {
         {/* الفقرة التعريفية */}
         <PrettyCard 
           title="نبذة عن المركز" 
-          color={cardColors.about}
+          color={cardGradients.about}
           section="about"
         >
           <Typography 
@@ -222,7 +169,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.vision_title} 
-            color={cardColors.vision}
+            color={cardGradients.vision}
             section="vision"
           >
             <Typography
@@ -263,7 +210,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.message_title} 
-            color={cardColors.message}
+            color={cardGradients.message}
             section="message"
           >
             <Typography
@@ -304,7 +251,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.justifications_title} 
-            color={cardColors.justifications}
+            color={cardGradients.justifications}
             section="justifications"
           >
             <Typography
@@ -345,7 +292,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.goals_title} 
-            color={cardColors.goals}
+            color={cardGradients.goals}
             section="goals"
           >
             <Box component="ol" sx={{ px: 2 }}>

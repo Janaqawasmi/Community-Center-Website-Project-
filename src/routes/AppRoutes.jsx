@@ -12,15 +12,18 @@ import EventsPage from '../pages/programs/EventsPage';
 import News from '../pages/News';
 import NewsDetail from '../pages/NewsDetail';
 
-import AdminInquiries from '../pages/admin/AdminInquiries';
 import Login from '../pages/Login';
-import ProtectedAdminRoute from './ProtectedAdminRoute'; // ✅ NEW
+import ProtectedAdminRoute from './ProtectedAdminRoute';
 import AdminPrograms from '../pages/admin/AdminPrograms';
-import AdminWelcome from '../pages/admin/AdminWelcome'; // ✅ FIXED
+import AdminWelcome from '../pages/admin/AdminWelcome';
 import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
 import AdminEvents from '../pages/admin/AdminEvents';
 import AdminCalendar from '../pages/admin/AdminCalendar';
+import AdminAbout from '../pages/admin/AdminAbout'; // ✅ NEW: Added AdminAbout import
+import AdminDashboard from '../pages/admin/AdminDashboard'; 
+import AdminInquiries from '../pages/admin/AdminInquiries';
+
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -45,73 +48,106 @@ function AppRoutes({ sections }) {
 
         </Route>
      
-     
-          {/* ✅ PROTECTED ADMIN ROUTE */}
-          {/* Admin routes */}
-<Route
-  path="/admin"
-  element={
-    <ProtectedAdminRoute>
-      <AdminWelcome />
-    </ProtectedAdminRoute>
-  }
-/>
-
-
-<Route
-  path="/admin/programs"
-  element={
-    <ProtectedAdminRoute>
-      <AdminPrograms />
-    </ProtectedAdminRoute>
-  }
-/>
-
-<Route
-  path="/admin/inquiries"
-  element={
-    <ProtectedAdminRoute>
-      <AdminInquiries />
-    </ProtectedAdminRoute>
-  }
-/>
-
-<Route
-  path="/admin/news"
-  element={
-    <ProtectedAdminRoute>
-      <AdminNews />
-    </ProtectedAdminRoute>
-  }
-/>
-
-<Route
-  path="/admin/sections"
-  element={
-    <ProtectedAdminRoute>
-      <AdminSections />
-    </ProtectedAdminRoute>
-  }
-/>
-
-<Route
-  path="/admin/events"
-  element={
-    <ProtectedAdminRoute>
-      <AdminEvents />
-    </ProtectedAdminRoute>
-  }
-/>
-
-<Route
-  path="/admin/calendar"
-  element={
-    <ProtectedAdminRoute>
-      <AdminCalendar />
-    </ProtectedAdminRoute>
-  }
-/>
+        {/* ✅ PROTECTED ADMIN ROUTES */}
         
+        {/* Admin Dashboard - Main admin page */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminWelcome />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin Dashboard - Control panel */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedAdminRoute>
+              <AdminWelcome />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin About - Edit center information */}
+        <Route
+          path="/admin/about"
+          element={
+            <ProtectedAdminRoute>
+              <AdminAbout />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin Programs - Manage programs */}
+        <Route
+          path="/admin/programs"
+          element={
+            <ProtectedAdminRoute>
+              <AdminPrograms />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin News - Manage news */}
+        <Route
+          path="/admin/news"
+          element={
+            <ProtectedAdminRoute>
+              <AdminNews />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin Sections - Manage sections */}
+        <Route
+          path="/admin/sections"
+          element={
+            <ProtectedAdminRoute>
+              <AdminSections />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin Events - Manage events */}
+        <Route
+          path="/admin/events"
+          element={
+            <ProtectedAdminRoute>
+              <AdminEvents />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin Inquiries - Manage inquiries */}
+        <Route
+          path="/admin/inquiries"
+          element={
+            <ProtectedAdminRoute>
+              <AdminInquiries />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Admin Calendar - Manage calendar */}
+        <Route
+          path="/admin/calendar"
+          element={
+            <ProtectedAdminRoute>
+              <AdminCalendar />
+            </ProtectedAdminRoute>
+          }
+        />
+<Route
+  path="/admin/dashboard"
+  element={
+    <ProtectedAdminRoute>
+      <AdminDashboard />
+    </ProtectedAdminRoute>
+  }
+/>
+
       </Routes>
     </>
   );

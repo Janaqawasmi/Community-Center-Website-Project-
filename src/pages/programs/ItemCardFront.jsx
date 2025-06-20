@@ -15,7 +15,6 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
   <Card
   sx={{
     width: "100%",
-    maxWidth: highlight ? { md: "650px" } : "100%",
     height: "100%", // 🔁 FIXED: fills FlipCard height
     borderRadius: 5,
     border: "1px solid #ccc",
