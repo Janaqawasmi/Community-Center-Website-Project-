@@ -30,7 +30,7 @@ export default function PrettyCard({ title, color, children, icon }) {
         mt: 0,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+      //  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         direction: 'rtl',
         backgroundColor: '#fff',
@@ -56,7 +56,7 @@ export default function PrettyCard({ title, color, children, icon }) {
           zIndex: 2,
           textAlign: 'center',
           whiteSpace: 'nowrap',
-          boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
+         // boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
         }}
       >
         {icon && <span style={{ marginLeft: 6 }}>{icon}</span>}
