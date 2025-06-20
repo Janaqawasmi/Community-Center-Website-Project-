@@ -12,9 +12,7 @@ export default function ItemFlipCard({ item, fields, onRegister, config, prog, h
       sx={{
         perspective: 1000,
         width: "100%",
-        maxWidth: highlight ? { md: "700px" } : "100%", // wider when highlighted
         mx: "auto", // center horizontally
-        transform: highlight ? "scale(1.05)" : "none",
         transition: "transform 0.3s ease",
         zIndex: highlight ? 10 : 1,
       }}

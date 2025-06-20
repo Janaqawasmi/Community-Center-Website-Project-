@@ -377,6 +377,7 @@ export default function AdminInquiries() {
                 fontFamily: "Cairo, sans-serif",
                 fontSize: { xs: "1.8rem", sm: "2.3rem" },
                 textAlign: "right",
+
               }}
             >
               إدارة التواصل والاستفسارات
@@ -434,6 +435,7 @@ export default function AdminInquiries() {
                     label="فلتر حسب القسم"
                     value={departmentFilter}
                     onChange={(e) => setDepartmentFilter(e.target.value)}
+
                     sx={{
                       minWidth: 220,
                       "& .MuiInputBase-input": {

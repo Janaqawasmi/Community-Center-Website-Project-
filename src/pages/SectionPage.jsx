@@ -12,22 +12,7 @@ import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
 import SectionScrollButton from '../components/sections/SectionScrollButton';
-
-// 🔧 Put this at the top of the file, after imports but before SectionPage()
-function darkenColor(hex, amount) {
-  const num = parseInt(hex.replace('#', ''), 16);
-  let r = (num >> 16) - amount * 255;
-  let g = ((num >> 8) & 0x00FF) - amount * 255;
-  let b = (num & 0x0000FF) - amount * 255;
-
-  r = Math.max(0, Math.min(255, r));
-  g = Math.max(0, Math.min(255, g));
-  b = Math.max(0, Math.min(255, b));
-
-  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-}
-
-
+import PrettyCard from '../components/layout/PrettyCard';
 
 function SectionPage() {
   const [expanded, setExpanded] = useState(false);
@@ -74,63 +59,6 @@ const navigate = useNavigate();
   }
 };
 
-
-const PrettyCard = ({ title, color, children }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        borderRadius: '28px',
-        p: { xs: 3, sm: 4 },
-        mt: 5,
-        //background: `linear-gradient(to bottom right, ${color}10, #ffffff)`,
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-            boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
-        overflow: 'hidden',
-        direction: 'rtl',
-        fontFamily: 'Cairo, sans-serif',
-        minHeight: '200px',
-      }}
-    >
-      {/* Top-Right Title Badge */}
-   <Box
-  sx={{
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    height: { xs: '40px', sm: '40px' },  // shorter height
-    minWidth: 'fit-content',
-    padding: '0 20px', // horizontal padding
-    background: `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`,
-    borderBottomLeftRadius: '24px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: { xs: '1rem', sm: '1.1rem' },
-    zIndex: 2,
-    textAlign: 'center',
-    whiteSpace: 'nowrap', // keep title on one line
-    boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-  }}
->
-  {title}
-</Box>
-
-
-
-      {/* Card Body without title */}
-<Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-        {children}
-      </Box>
-    </Box>
-  );
-};
-
-
-
   const singleImageSliderSettings = {
     dots: true,
     arrows: true,
@@ -143,10 +71,10 @@ const PrettyCard = ({ title, color, children }) => {
   };
 
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', fontFamily: 'Cairo, Arial, sans-serif', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <HeroSection pageId={id} />
 
-   <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+   <Container maxWidth="lg" sx={{ pt: 8, pb: 8, px: 0, position: 'relative', zIndex: 3, flex: 1 }}>
 
    {(() => {
   const buttonData = getScrollButtonData();
@@ -157,9 +85,7 @@ const PrettyCard = ({ title, color, children }) => {
       sx={{
         display: 'flex',
         justifyContent: 'right',
-        mt: 0,
-        mb: 6,
-        px: 2,
+        mb: 4,
         direction: 'rtl',
       }}
     >
@@ -175,66 +101,95 @@ const PrettyCard = ({ title, color, children }) => {
 
 
 
-{/* ✅ Always-visible image slider at the top */}
+{/* ✅ Image and description side by side */}
 {section.imageGallery?.length > 0 && (
-  <Box sx={{ width: '100%', mb: 4 }}>
-    <Slider {...singleImageSliderSettings}>
-      {section.imageGallery.map((url, i) => (
-        <Box
-          key={i}
-          sx={{
-            width: '100%',
-            height: 350,
-            borderRadius: '28px',
-            overflow: 'hidden',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          }}
-        >
-        <img
-  src={url}
-  alt={`desc-img-${i}`}
-  style={{
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    objectPosition: 'center', // ✅ Add this
-    display: 'block',
-  }}
-/>
-
-        </Box>
-      ))}
-    </Slider>
-  </Box>
-)}
-
-{/* ✅ All the cards come below the image */}
-<Grid container spacing={4}>
-  <Grid item xs={12}>
-    {/* ✅ Always show description */}
-    {section.description && (
-      <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
-        <ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
-        {/* ✅ Toggle button below description */}
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
-          <button
-            onClick={() => setExpanded(!expanded)}
-            style={{
-              color: 'red',
-              fontWeight: 'bold',
-              border: 'none',
-              background: 'none',
-              cursor: 'pointer',
-              fontSize: '1rem',
+<Grid
+  container
+  spacing={4}
+  sx={{ mb: 4, alignItems: 'flex-start' }} // align top
+>
+  <Grid
+    item
+    xs={12}
+    md={6}
+    sx={{ 
+      order: { xs: 1, md: 2 }, // text on right
+      display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}
+  >
+    <Box sx={{ width: '100%' }}>
+      <Slider {...singleImageSliderSettings}>
+        {section.imageGallery.map((url, i) => (
+          <Box
+            key={i}
+            sx={{
+              width: '100%',
+              height: 350,
+              borderRadius: '28px',
+              overflow: 'hidden',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
             }}
           >
-            {expanded ? 'إخفاء' : 'المزيد'}
-          </button>
-        </Box>
-      </PrettyCard>
-    )}
+            <img
+              src={url}
+              alt={`desc-img-${i}`}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block',
+              }}
+            />
+          </Box>
+        ))}
+      </Slider>
+    </Box>
+  </Grid>
 
-    {/* ✅ Everything else hidden initially */}
+  <Grid
+    item
+    xs={12}
+    md={6}
+    sx={{
+      order: { xs: 2, md: 1 }, // image on left  
+      display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}
+  >
+    <Box sx={{ width: '100%' }}>
+      {section.description && (
+        <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
+          <Box sx={{ mt: 5, textAlign: 'right', fontSize: '1rem', color: '#444' }}>
+            <ExpandableText
+              text={section.description}
+              sx={{ fontSize: '1.2em', lineHeight: 2 }}
+            />
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <button
+                onClick={() => setExpanded(!expanded)}
+                style={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                }}
+              >
+                {expanded ? 'إخفاء' : 'المزيد'}
+              </button>
+            </Box>
+          </Box>
+        </PrettyCard>
+      )}
+    </Box>
+  </Grid>
+</Grid>
+
+
+)}
+
+{/* ✅ Everything else hidden initially */}
+<Grid container spacing={4}>
+  <Grid item xs={12}>
     <Collapse in={expanded}>
       {section.hallDescription && (
         <PrettyCard title={section.hallDescription_title || "نادي الحلقات"} color={sectionColor}>
@@ -265,12 +220,11 @@ const PrettyCard = ({ title, color, children }) => {
 
 
 
-
         {section.programCards?.length > 0 && (
           <>
               <Box id="programs" sx={{ textAlign: 'center', mt: 6, mb: 3 }}></Box>
             <Box sx={{ textAlign: 'center', mt: 6, mb: 3 }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: sectionColor, fontFamily: 'Cairo, Arial, sans-serif', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: sectionColor, display: 'inline-flex', alignItems: 'center', gap: 1 }}>
                 🧩 برامجنا الخاصة بالقسم
               </Typography>
             </Box>
@@ -318,8 +272,8 @@ const PrettyCard = ({ title, color, children }) => {
 
 
         {section.nurseries?.length > 0 && (
+          <Box id="nurseries" sx={{ scrollMarginTop: '100px' }}>
           <PrettyCard title="حضاناتنا" icon="🏫" color={sectionColor}>
-           <Box id="nurseries"></Box>
             <Grid container spacing={2}>
               {section.nurseries.map((nursery, i) => (
                 <Grid item xs={12} sm={6} md={4} key={i}>
@@ -333,11 +287,12 @@ const PrettyCard = ({ title, color, children }) => {
               ))}
             </Grid>
           </PrettyCard>
+          </Box>
         )}
 
         {section.kindergartens?.length > 0 && (
+          <Box id="kindergartens" sx={{ scrollMarginTop: '100px' }}>
           <PrettyCard title="روضاتنا" icon="🏫" color={sectionColor}>
-            <Box id="kindergartens">
               <Grid container spacing={2}>
                 {section.kindergartens.map((kg, i) => (
                   <Grid item xs={12} sm={6} md={4} key={i}>
@@ -350,8 +305,8 @@ const PrettyCard = ({ title, color, children }) => {
                   </Grid>
                 ))}
               </Grid>
-            </Box>
           </PrettyCard>
+          </Box>
         )}
       </Container>
     </Box>

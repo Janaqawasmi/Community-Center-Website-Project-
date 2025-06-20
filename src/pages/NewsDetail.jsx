@@ -40,7 +40,6 @@ const PrettyCard = ({ title, color, children }) => (
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
       overflow: 'hidden',
       direction: 'rtl',
-      fontFamily: 'Cairo, sans-serif',
       minHeight: '200px',
       background: '#fff'
     }}
@@ -162,7 +161,6 @@ function NewsDetail() {
     <Box
       sx={{
         direction: 'rtl',
-        fontFamily: 'Cairo, Arial, sans-serif',
         backgroundColor: '#fcfcfc',
         minHeight: '100vh',
         py: 0,
@@ -189,11 +187,10 @@ function NewsDetail() {
             padding: '10px 26px',
             fontSize: '1.1rem',
             fontWeight: 'bold',
-            fontFamily: 'Cairo, sans-serif',
             cursor: 'pointer',
             color: newsColor,
             backgroundColor: 'transparent',
-            borderRadius: '30px',
+            borderRadius: '28px',
             overflow: 'hidden',
             transition: 'all 0.4s ease-in-out',
             boxShadow: `15px 15px 15px ${newsColor}`,
@@ -234,7 +231,7 @@ function NewsDetail() {
               width: '100%',
               height: '100%',
               border: `2px solid ${newsColor}`,
-              borderRadius: '30px',
+              borderRadius: '28px',
               borderLeft: 'none',
               borderBottom: 'none',
             },
@@ -242,7 +239,7 @@ function NewsDetail() {
               width: '100%',
               height: '100%',
               border: `2px solid ${newsColor}`,
-              borderRadius: '30px',
+              borderRadius: '28px',
               borderRight: 'none',
               borderTop: 'none',
               textShadow: '0 0 5px rgba(0,0,0,0.1)',

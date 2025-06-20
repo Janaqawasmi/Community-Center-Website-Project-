@@ -26,6 +26,7 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import PersonIcon from '@mui/icons-material/Person';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
+import RoundedButton from "../components/layout/Buttons/RoundedButton";
 
 const programFields = [
   { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
@@ -39,56 +40,20 @@ const programFields = [
 
 const getCategoryColor = (label) => {
   const found = programCategories.find((c) => c.label === label);
-  return found?.color || "#E0E0E0";
+  return found?.color || " #00b0f0";
 };
 
 function CategoryCard({ label, color, onClick, index }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-    >
-      <Paper
-        onClick={onClick}
-        elevation={1}
-        sx={{
-          borderRadius: "90px",
-          px: 3,
-          py: 1.5,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderRight: `6px solid ${color}`,
-          backgroundColor: "#fff",
-          transition: "0.3s",
-          width: "100%",
-          minHeight: "56px",
-          "&:hover": {
-            backgroundColor: "#f5f5f5",
-            transform: "translateY(-2px)",
-          },
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            fontSize: "1.2rem",
-            color: "black",
-            fontFamily: "Cairo, sans-serif",
-          }}
-        >
-          {label}
-        </Typography>
-        <Typography fontSize="1.2rem" fontWeight="bold" color={color}>
-          &lt;
-        </Typography>
-      </Paper>
-    </motion.div>
+    <RoundedButton
+      label={label}
+      color={color}
+      onClick={onClick}
+      index={index}
+    />
   );
 }
+
 
 export default function ProgramPage() {
   const [allPrograms, setAllPrograms] = useState([]);
@@ -128,15 +93,16 @@ const handleRegister = (programName) => {
   );
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+    <Box  sx={{  direction: "rtl" }} >
+      <Box mb={8}>
       <HeroSection pageId="programs" />
-
-      <Container sx={{ pt: 2, pb: 6 }} dir="rtl">
+      </Box>
+      <Container sx={{ pb: 4 }} dir="rtl">
         {/* Search Bar */}
         <Box
           sx={{
             background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-            borderRadius: "90px",
+            borderRadius: "28px",
             padding: "6px 10px",
             display: "flex",
             alignItems: "center",
@@ -151,7 +117,6 @@ const handleRegister = (programName) => {
               color: "white",
               fontWeight: "bold",
               fontSize: "16px",
-              fontFamily: "Cairo, sans-serif",
               whiteSpace: "nowrap",
             }}
           >
@@ -173,8 +138,7 @@ const handleRegister = (programName) => {
               ),
               sx: {
                 backgroundColor: "#fff",
-                borderRadius: "90px",
-                fontFamily: "Cairo, sans-serif",
+                borderRadius: "28px",
                 color: "rgb(0, 0, 0)",
                 fontSize: "1.2rem",
                 height: "42px",
@@ -195,7 +159,6 @@ const handleRegister = (programName) => {
       mb: 2,
       fontWeight: "bold",
       fontSize: "1.4rem",
-      fontFamily: "Cairo, sans-serif",
       color: "black",
     }}
   >

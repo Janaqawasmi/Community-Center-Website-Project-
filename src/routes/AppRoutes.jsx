@@ -12,7 +12,6 @@ import EventsPage from '../pages/programs/EventsPage';
 import News from '../pages/News';
 import NewsDetail from '../pages/NewsDetail';
 
-import AdminInquiries from '../pages/admin/AdminInquiries';
 import Login from '../pages/Login';
 import ProtectedAdminRoute from './ProtectedAdminRoute';
 import AdminPrograms from '../pages/admin/AdminPrograms';
@@ -22,6 +21,9 @@ import AdminSections from '../pages/admin/AdminSections';
 import AdminEvents from '../pages/admin/AdminEvents';
 import AdminCalendar from '../pages/admin/AdminCalendar';
 import AdminAbout from '../pages/admin/AdminAbout'; // ✅ NEW: Added AdminAbout import
+import AdminDashboard from '../pages/admin/AdminDashboard'; 
+import AdminInquiries from '../pages/admin/AdminInquiries';
+
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -43,6 +45,7 @@ function AppRoutes({ sections }) {
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
+
         </Route>
      
         {/* ✅ PROTECTED ADMIN ROUTES */}
@@ -136,7 +139,15 @@ function AppRoutes({ sections }) {
             </ProtectedAdminRoute>
           }
         />
-        
+<Route
+  path="/admin/dashboard"
+  element={
+    <ProtectedAdminRoute>
+      <AdminDashboard />
+    </ProtectedAdminRoute>
+  }
+/>
+
       </Routes>
     </>
   );

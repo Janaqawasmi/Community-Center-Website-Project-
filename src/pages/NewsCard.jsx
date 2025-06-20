@@ -8,7 +8,6 @@ function NewsCard({ data }) {
   return (
     <Card
       sx={{
-        fontFamily: 'Cairo, sans-serif',
         minHeight: 20,
         width: 320,  
         borderRadius: 3,
@@ -108,7 +107,7 @@ function NewsCard({ data }) {
     mt: 2,
     fontWeight: 'bold',
     fontSize: '16px',
-    borderRadius: '30px',
+    borderRadius: '28px',
     border: '2px solid #003366',   // Dark blue border
     color: '#003366',              // Blue text by default
     backgroundColor: '#fff',       // White background by default

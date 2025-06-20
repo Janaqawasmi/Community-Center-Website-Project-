@@ -28,7 +28,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import NavButton from './components/NavButton';
+import NavButton from './components/layout/Buttons/NavButton';
 
 const NAV_ITEMS = [
   { label: 'الرئيسية', path: '/' },
@@ -114,30 +114,56 @@ const handleNavClick = (path) => {
 
   return (
     <>
-      <AppBar position="static" elevation={0} sx={{ backgroundColor: '#fff', boxShadow: 'none' }}>
-<Toolbar
+<AppBar
+  position="static"
+  elevation={0}
   sx={{
-    minHeight: '70px',
-    justifyContent: 'space-between',
-    px: { xs: 2, md: 4 }, // consistent padding on both sides
-    maxWidth: '1440px',
-    width: '100%',
-    mx: 'auto', // center toolbar content
+    backgroundColor: '#fff',
+    boxShadow: 'none',
+    height: { xs: '56px', md: '64px' }, // ✅ Height by breakpoint
+    px: { xs: 2, md: 4 }, // ✅ 8px on mobile, 32px on desktop
+    justifyContent: 'center',
   }}
->          {logoUrl && (
-           <NavButton to="/" sx={{ p: 0, minWidth: 0, mr: 2 }}>
-  <img src={logoUrl} alt="Logo" style={{ height: '60px', width: 'auto' }} />
-</NavButton>
-
-          )}
+>
+  <Toolbar
+    disableGutters
+    sx={{
+      height: { xs: '56px', md: '64px' },   // ✅ Match height exactly
+      minHeight: '0 !important',           // ✅ Prevent default MUI min height
+      width: '100%',
+      maxWidth: '1440px',
+      mx: 'auto',
+      justifyContent: 'space-between',
+      px: { xs: 2, md: 4 }, // ✅ 8px on mobile, 32px on desktop
+    }}
+  >
+       {/* Centered Logo on Mobile */}
+{logoUrl && (
+  <Box
+    sx={{
+      position: { xs: 'absolute', md: 'static' },
+      left: { xs: '50%', md: 'auto' },
+      transform: { xs: 'translateX(-50%)', md: 'none' },
+      zIndex: 1, // ensure it's above the drawer button
+    }}
+  >
+    <NavButton to="/" sx={{ p: 0, minWidth: 0 }}>
+      <img
+        src={logoUrl}
+        alt="Logo"
+        style={{ height: isMobile ? '40px' : '60px', width: 'auto' }}
+      />
+    </NavButton>
+  </Box>
+)}
 
           {/* Desktop Nav */}
           {/* Desktop Nav Buttons with الأقسام second */}
-<Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, direction: 'rtl', alignItems: 'center' }}>
+<Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4, direction: 'rtl', alignItems: 'center' }}>
   {NAV_ITEMS.map(({ label, path }, index) => {
     if (index === 1) {
       return (
-        <Box key="custom-duo" sx={{ display: 'flex', gap: 3 }}>
+        <Box key="custom-duo" sx={{ display: 'flex', gap: 4 }}>
           <Button onClick={(e) => setSectionsMenuAnchor(e.currentTarget)} sx={navStyle(false)}>
             الأقسام
           </Button>
@@ -156,25 +182,33 @@ const handleNavClick = (path) => {
 </Box>
 
 
-          {/* Mobile Menu Button */}
-          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
-              <MenuIcon sx={{ fontSize: 36 }} />
-            </IconButton>
-          </Box>
+          {/* Mobile Menu Button on the right */}
+<Box
+  sx={{
+    display: { xs: 'block', md: 'none' },
+    position: 'absolute',
+    right: 0,
+    zIndex: 2,
+  }}
+>
+  <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
+    <MenuIcon sx={{ fontSize: 36 }} />
+  </IconButton>
+</Box>
+
 
           {/* Desktop Social Icons */}
 <Box
   sx={{
     display: { xs: 'none', md: 'flex' },
-    gap: 1.5,
+    gap: 4,
     alignItems: 'center',
-    ml: 2,
   }}
->            {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')} 
-            {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
-            {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
-          </Box>
+>
+  {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')}
+  {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
+  {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
+</Box>
         </Toolbar>
       </AppBar>
 
@@ -194,19 +228,19 @@ const handleNavClick = (path) => {
       </Menu>
 
       <Drawer
-        anchor="left"
+        anchor="right"
         open={isMobileDrawerOpen}
         onClose={toggleMobileDrawer(false)}
        PaperProps={{
   sx: {
     width: '80%',
-    borderRadius: '0 16px 16px 0',
+      borderRadius: '16px 0 0 16px', // ✅ rounded left edge
     backgroundColor: '#f0f4f8', // ✅ custom background
     direction: 'rtl',           // ✅ text direction from right
   },
 }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', p: 2 }}>
           <IconButton onClick={toggleMobileDrawer(false)}><CloseIcon /></IconButton>
         </Box>
      <List sx={{ px: 2, py: 0, display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -247,7 +281,6 @@ const handleNavClick = (path) => {
       textAlign: 'right',
       direction: 'rtl',
       fontSize: '15px',
-      fontFamily: 'Cairo, sans-serif',
     },
   }}
 />              </ListItemButton>
@@ -302,37 +335,10 @@ const handleNavClick = (path) => {
         <Outlet />
       </Box>
 
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '2.5rem',
-          backgroundColor: '#f1f1f1',
-          borderTop: '1px solid #ccc',
-          zIndex: 1200,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-        }}
-      >
-        <NavButton
-          to="/login"
-          sx={{
-            position: 'absolute',
-            bottom: 8,
-            left: 16,
-            fontSize: '12px',
-            color: '#666',
-          }}
-        >
-          تسجيل دخول للإدارة فقط
-        </NavButton>
-      </Box>
+    
     </>
   );
+  
 }
 
 export default Layout;

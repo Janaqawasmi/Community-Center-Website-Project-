@@ -193,7 +193,6 @@ export default function CalendarSection() {
           .loading-container {
             padding: 2rem;
             text-align: center;
-            font-family: 'Cairo', sans-serif;
           }
         `}</style>
         <h3>جاري التحميل...</h3>
@@ -208,7 +207,6 @@ export default function CalendarSection() {
           max-width: 1200px;
           margin: 0 auto;
           padding: 1.5rem;
-          font-family: 'Cairo', sans-serif;
         }
         
         .calendar-header {
@@ -245,7 +243,6 @@ export default function CalendarSection() {
           -webkit-text-fill-color: transparent;
           text-align: center;
           flex: 1;
-          font-family: 'Cairo', sans-serif;
         }
         
         .nav-button {
@@ -256,7 +253,6 @@ export default function CalendarSection() {
           font-weight: bold;
           padding: 0.5rem 1rem;
           font-size: 0.85rem;
-          font-family: 'Cairo', sans-serif;
           cursor: pointer;
           transition: all 0.3s ease;
         }
@@ -286,7 +282,6 @@ export default function CalendarSection() {
           color: #374151;
           font-weight: bold;
           font-size: 1rem;
-          font-family: 'Cairo', sans-serif;
           border-left: 1px solid rgba(0,0,0,0.1);
           background: rgba(255, 255, 255, 0.98);
         }
@@ -436,7 +431,6 @@ export default function CalendarSection() {
           overflow-y: auto;
           box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
           position: relative;
-          font-family: 'Cairo', sans-serif;
           border: 1px solid rgba(0, 0, 0, 0.1);
         }
         

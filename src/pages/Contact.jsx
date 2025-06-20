@@ -13,6 +13,8 @@ import { sendMessage } from '../utils/contact_firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
+import RoundedButton from '../components/layout/Buttons/RoundedButton'; 
+import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
 
 export default function Contact() {
   const theme = useTheme();
@@ -25,74 +27,10 @@ export default function Contact() {
   const [departments, setDepartments] = useState([]);
 
   // لون للزر - التدرج الأزرق الجديد
-  const buttonColor = '#005588';
+  const buttonColor = ' #005588';
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
-  // دالة مساعدة لتغميق اللون
-  const darkenColor = (hex, amount) => {
-    const num = parseInt(hex.replace('#', ''), 16);
-    let r = (num >> 16) - amount * 255;
-    let g = ((num >> 8) & 0x00FF) - amount * 255;
-    let b = (num & 0x0000FF) - amount * 255;
-
-    r = Math.max(0, Math.min(255, r));
-    g = Math.max(0, Math.min(255, g));
-    b = Math.max(0, Math.min(255, b));
-
-    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-  };
-
-  // PrettyCard component
-  const PrettyCard = ({ title, color, children }) => {
-    return (
-      <Box
-        sx={{
-          position: 'relative',
-          borderRadius: '28px',
-          p: { xs: 3, sm: 4 },
-          mt: 5,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
-          overflow: 'hidden',
-          direction: 'rtl',
-          fontFamily: 'Cairo, sans-serif',
-          minHeight: '200px',
-        }}
-      >
-        {/* Top-Right Title Badge */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            height: { xs: '40px', sm: '40px' },
-            minWidth: 'fit-content',
-            padding: '0 20px',
-            background: headerGradient,
-            borderBottomLeftRadius: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: { xs: '1rem', sm: '1.1rem' },
-            zIndex: 2,
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-          }}
-        >
-          {title}
-        </Box>
-
-        {/* Card Body */}
-        <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-          {children}
-        </Box>
-      </Box>
-    );
-  };
+  
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -166,8 +104,8 @@ export default function Contact() {
   };
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box  mb={8} sx={{  direction: "rtl" }}>
+      <Box mb={8}>
         <HeroSection pageId="contactUs" />
       </Box>
 
@@ -178,96 +116,24 @@ export default function Contact() {
             display: 'flex',
             justifyContent: 'right',
             mt: 0,
-            mb: 0.1,
-            px: 2,
+            mb: 4,
+            px: 0,
             direction: 'rtl',
           }}
         >
-          <Button
-            disableRipple
-            onClick={() => {
-              document.getElementById('contact-form').scrollIntoView({ 
-                behavior: 'smooth' 
-              });
-            }}
-            sx={{
-              position: 'relative',
-              padding: '10px 26px',
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              fontFamily: 'Cairo, sans-serif',
-              cursor: 'pointer',
-              color: buttonColor,
-              backgroundColor: 'transparent',
-              borderRadius: '30px',
-              overflow: 'hidden',
-              transition: 'all 0.4s ease-in-out',
-              boxShadow: `15px 15px 15px ${buttonColor}`,
-              textTransform: 'none',
-              minWidth: 'auto',
-
-              '&:focus:not(:focus-visible)': {
-                outline: 'none',
-              },
-
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '30px',
-                height: '30px',
-                border: `0px solid transparent`,
-                borderTopColor: buttonColor,
-                borderRightColor: buttonColor,
-                borderTopRightRadius: '22px',
-                transition: 'all 0.3s ease-in-out',
-                boxSizing: 'border-box',
-              },
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                width: '30px',
-                height: '30px',
-                border: `0px solid transparent`,
-                borderBottomColor: buttonColor,
-                borderLeftColor: buttonColor,
-                borderBottomLeftRadius: '22px',
-                transition: 'all 0.3s ease-in-out',
-                boxSizing: 'border-box',
-              },
-              '&:hover::before': {
-                width: '100%',
-                height: '100%',
-                border: `2px solid ${buttonColor}`,
-                borderRadius: '30px',
-                borderLeft: 'none',
-                borderBottom: 'none',
-              },
-              '&:hover::after': {
-                width: '100%',
-                height: '100%',
-                border: `2px solid ${buttonColor}`,
-                borderRadius: '30px',
-                borderRight: 'none',
-                borderTop: 'none',
-                textShadow: '0 0 5px rgba(0,0,0,0.1)',
-              },
-              '&:hover': {
-                boxShadow: '0 3px 12px rgba(0,0,0,0.1)',
-              },
-            }}
-          >
-            أرسل رسالة
-          </Button>
+         <RoundedButton
+  label="أرسل رسالة"
+  onClick={() => {
+    document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' });
+  }}
+  color={buttonColor}
+/>
         </Box>
 
         {/* معلومات التواصل في PrettyCard */}
         <Grid container spacing={4} mb={3}>
           <Grid item xs={12}>
-            <PrettyCard title="معلومات التواصل" color={buttonColor}>
+            <PrettyCard title="معلومات التواصل" >
               {siteInfo && (
                 <Grid container spacing={3}>
                   {/* العنوان والهاتف في نفس السطر */}
@@ -294,7 +160,7 @@ export default function Contact() {
                                   width: 40,
                                   height: 40,
                                   borderRadius: '50%',
-                                  backgroundColor: '#2D9CDB',
+                                  backgroundColor: ' #2D9CDB',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -366,8 +232,8 @@ export default function Contact() {
         </Grid>
 
         {/* Contact Form */}
-        <Box id="contact-form" sx={{ mb: 4 }}>
-          <PrettyCard title="أرسل لنا رسالة" color={buttonColor}>
+        <Box id="contact-form" sx={{ mb: 0 }}>
+          <PrettyCard title="أرسل لنا رسالة">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
@@ -375,7 +241,7 @@ export default function Contact() {
             >
               {({ values, errors, touched, handleChange }) => (
                 <Form noValidate>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={1.5}>
                     <Grid item xs={12} md={6}>
                       <TextField
                         fullWidth label="الاسم" name="first_name"
@@ -468,7 +334,7 @@ export default function Contact() {
                     <Grid item xs={12}>
                       <TextField
                         fullWidth label="موضوع الرسالة" name="message"
-                        multiline rows={4} value={values.message}
+                        multiline rows={3} value={values.message}
                         onChange={handleChange}
                         error={touched.message && Boolean(errors.message)}
                         helperText={touched.message && errors.message}
@@ -498,13 +364,12 @@ export default function Contact() {
                           padding: '12px 32px',
                           fontSize: '1.2rem',
                           fontWeight: 'bold',
-                          fontFamily: 'Cairo, sans-serif',
                           cursor: isLoading ? 'not-allowed' : 'pointer',
                           color: '#FFFFFF',
                           background: isLoading 
                             ? 'linear-gradient(180deg, #999 0%, #666 100%)' 
                             : headerGradient,
-                          borderRadius: '30px',
+                          borderRadius: '28px',
                           border: 'none',
                           minWidth: '150px',
                           minHeight: '50px',

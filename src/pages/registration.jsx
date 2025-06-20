@@ -11,6 +11,7 @@ import { validateStep } from './regist_logic';
 import { useAnonymousAuth } from "../components/auth/useAnonymousAuth"; 
 import  {calculateAge} from './regist_logic';
 import { decrementCapacity } from "./programs/decrementCapacity"; // عدلي المسار حسب مكان الملف
+import PrettyCard from '../components/layout/PrettyCard';
 
 
 const steps = ['المعلومات الشخصية', 'معلومات ولي الأمر', 'الدفع'];
@@ -149,13 +150,14 @@ const nextStep = () => {
     <Box
   sx={{
     width: '100%',
-    height: 350,
-background: "linear-gradient(180deg, #fff 0%,rgb(7, 130, 175) 40%, #003366 100%)",
-clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
-     ml: 0, // margin-left صفر
-     mr: 'auto', // margin-right أوتوماتيكي يدفع البوكس إلى اليسار
-    zIndex :0,
-          position: "relative", // أضف هذا السطر
+    height: "250px",
+    mb: 8, // margin-bottom سالب لدفع البوكس للأعلى
+    background: "linear-gradient(180deg, #fff 0%,rgb(7, 130, 175) 40%, #003366 100%)",
+    clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
+    ml: 0, // margin-left صفر
+    mr: 'auto', // margin-right أوتوماتيكي يدفع البوكس إلى اليسار
+    zIndex: 0,
+    position: "relative", // أضف هذا السطر
 
   }}
 ></Box>
@@ -177,12 +179,9 @@ clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
     }
 }}>
       <Grid container justifyContent="center">
-        <Grid item xs={12} sm={10} md={7} lg={6}>
-          <Paper elevation={6} sx={{ borderRadius: 4, p: { xs: 2, md: 5 }, textAlign: 'right' }}>
-            <Typography variant="h4" fontWeight="bold" color="#1976d2" textAlign="center" mb={3}>
-  {title ? `التسجيل لـ${title}` : "تسجيل"}
-            </Typography>
-            
+        <Grid item xs={12} sm={10} md={6} lg={6}>
+<PrettyCard title={title ? `التسجيل لـ${title}` : "التسجيل"}>
+
             <form
               autoComplete="off"
               onSubmit={async  e => {
@@ -500,7 +499,7 @@ marginInlineStart: 8, color: "#666" }}>02</span>
                 </Grid>
               )}
             </form>
-          </Paper>
+</PrettyCard>
         </Grid>
       </Grid>
     </Box>

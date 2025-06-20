@@ -290,7 +290,6 @@ export default function AdminCalendar() {
             max-width: 1200px;
             margin: 0 auto;
             padding: 1.5rem;
-            font-family: 'Cairo', sans-serif;
           }
           
           .calendar-header {
@@ -327,7 +326,6 @@ export default function AdminCalendar() {
             -webkit-text-fill-color: transparent;
             text-align: center;
             flex: 1;
-            font-family: 'Cairo', sans-serif;
           }
           
           .nav-button {
@@ -338,7 +336,6 @@ export default function AdminCalendar() {
             font-weight: bold;
             padding: 0.5rem 1rem;
             font-size: 0.85rem;
-            font-family: 'Cairo', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
           }
@@ -368,7 +365,6 @@ export default function AdminCalendar() {
             color: #374151;
             font-weight: bold;
             font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
             border-left: 1px solid rgba(0,0,0,0.1);
             background: rgba(255, 255, 255, 0.98);
           }
@@ -762,7 +758,7 @@ export default function AdminCalendar() {
           }
         `}</style>
         
-        <Container maxWidth="xl" sx={{ mt: 3, fontFamily: "Cairo, sans-serif" }}>
+        <Container maxWidth="xl" sx={{ mt: 3, }}>
           <div className="calendar-container">
             <div className="calendar-header">
               <Typography variant="h5" fontWeight="bold" color="primary" align="center" mb={2}>
@@ -865,7 +861,6 @@ export default function AdminCalendar() {
             sx={{ 
               '& .MuiDialog-paper': { 
                 borderRadius: '16px',
-                fontFamily: 'Cairo, sans-serif',
                 direction: 'rtl'
               }
             }}
@@ -874,7 +869,6 @@ export default function AdminCalendar() {
               textAlign: 'center',
               fontWeight: 'bold',
               color: '#ea580c',
-              fontFamily: 'Cairo, sans-serif'
             }}>
               {selectedEvent ? "تعديل الفعالية" : "إضافة فعالية جديدة"}
             </DialogTitle>
@@ -883,7 +877,6 @@ export default function AdminCalendar() {
               flexDirection: "column", 
               gap: 2, 
               mt: 1,
-              fontFamily: 'Cairo, sans-serif',
               direction: 'rtl'
             }}>
               <TextField 
@@ -892,7 +885,6 @@ export default function AdminCalendar() {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })} 
                 fullWidth 
                 sx={{ 
-                  fontFamily: 'Cairo, sans-serif',
                   '& .MuiInputBase-input': {
                     textAlign: 'right',
                     direction: 'rtl'
@@ -919,7 +911,6 @@ export default function AdminCalendar() {
                 InputLabelProps={{ shrink: true }}
                 inputProps={{ step: 900 }}
                 sx={{ 
-                  fontFamily: 'Cairo, sans-serif',
                   '& .MuiInputBase-input': {
                     textAlign: 'right',
                     direction: 'rtl'
@@ -945,7 +936,6 @@ export default function AdminCalendar() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
                 fullWidth 
                 sx={{ 
-                  fontFamily: 'Cairo, sans-serif',
                   '& .MuiInputBase-input': {
                     textAlign: 'right',
                     direction: 'rtl'
@@ -969,7 +959,6 @@ export default function AdminCalendar() {
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })} 
                 fullWidth 
                 sx={{ 
-                  fontFamily: 'Cairo, sans-serif',
                   '& .MuiInputBase-input': {
                     textAlign: 'right',
                     direction: 'rtl'
@@ -994,14 +983,12 @@ export default function AdminCalendar() {
                   onClick={handleDelete} 
                   color="error"
                   variant="outlined"
-                  sx={{ fontFamily: 'Cairo, sans-serif' }}
                 >
                   حذف
                 </Button>
               )}
               <Button 
                 onClick={() => setDialogOpen(false)}
-                sx={{ fontFamily: 'Cairo, sans-serif' }}
               >
                 إلغاء
               </Button>
@@ -1010,7 +997,6 @@ export default function AdminCalendar() {
                 variant="contained" 
                 sx={{ 
                   background: 'linear-gradient(45deg, #ea580c, #f97316)',
-                  fontFamily: 'Cairo, sans-serif'
                 }}
               >
                 حفظ
@@ -1141,7 +1127,7 @@ export default function AdminCalendar() {
             <Alert
               onClose={() => setSnackbar({ ...snackbar, open: false })}
               severity={snackbar.severity}
-              sx={{ width: "100%", fontFamily: 'Cairo, sans-serif' }}
+              sx={{ width: "100%" }}
               elevation={6}
               variant="filled"
             >
