@@ -48,53 +48,57 @@ useEffect(() => {
   };
 
   return (
-  <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-    {/* Header Section */}
-    <Box mb={4}>
-      <HeroSection pageId={categoryName} />
+    <Box sx={{ direction: "rtl" }}>
+      <Box mb={8}>
+        <HeroSection pageId={categoryName} />
+      </Box>
+
+      <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
+        {highlightId && highlightedProgram && isDesktop && (
+          <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
+            <Grid container justifyContent="center">
+              <Grid item md={4}>
+                <ItemFlipCard
+                  item={highlightedProgram}
+                  fields={programFields}
+                  onRegister={handleRegister}
+                  highlight={true}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        <Grid container spacing={8} justifyContent="center">
+          {programs
+            .filter((prog) => !(highlightId === prog.id && isDesktop))
+            .map((prog) => (
+              <Grid
+                item
+                key={prog.id}
+                xs={12}
+                sm={6}
+                md={4}
+                display="flex"
+                justifyContent="center"
+                ref={(el) => (cardRefs.current[prog.id] = el)}
+              >
+                <ItemFlipCard
+                  item={prog}
+                  fields={programFields}
+                  onRegister={handleRegister}
+                  highlight={highlightId === prog.id}
+                />
+              </Grid>
+            ))}
+        </Grid>
+
+        {programs.length === 0 && (
+          <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
+            لا توجد برامج حالياً تحت هذا التصنيف.
+          </Typography>
+        )}
+      </Box>
     </Box>
-
-    {/* White Box Container - Matches About Page */}
-   <Container
-  sx={{
-    backgroundColor: "#fff", // or rgba(255,255,255,0.95) for semi-transparent
-    borderRadius: 4,
-    boxShadow: "0 0 20px rgba(0,0,0,0.1)",
-    py: 4,
-    px: { xs: 2, md: 6 },
-    direction: "rtl",
-    fontFamily: "'Noto Kufi Arabic', sans-serif",
-  }}
->
- <Grid container spacing={0.3} >
-  {programs.map((prog) => (
-    <Grid
-      item
-      key={prog.id}
-      xs={12}
-      sm={6}
-      md={4}
-      ref={(el) => (cardRefs.current[prog.id] = el)}
-    >
-      <ItemFlipCard
-        item={prog}
-        fields={programFields}
-        onRegister={handleRegister}
-        highlight={prog.id === highlightId}
-      />
-    </Grid>
-  ))}
-
-   {programs.length === 0 && (
-            <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
-              لا توجد برامج حالياً تحت هذا التصنيف.
-            </Typography>
-          )}
-</Grid>
-
-</Container>
-
-  </Box>
-);
-
+  );
 }

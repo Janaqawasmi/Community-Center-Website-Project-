@@ -12,21 +12,27 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
   const year = date.getFullYear();
 
   return (
-    <Card sx={{ width: "100%", height: "100%", borderRadius: 5,
-     border: "1px solid #ccc",
-     boxShadow: highlight
-      ? "0 0 15px #0d47a1"  // soft glowing shadow
-      : "0 4px 12px rgba(0,0,0,0.1)",       // normal subtle shadow
-   
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    ...(highlight && {
-      animation: "pulseShadow 1.5s infinite",
-    }),
-     display: "flex", flexDirection: "column", alignItems: "center",
-      textAlign: "center", fontFamily: "Arial, sans-serif", position: "relative" }}>
-   
+  <Card
+  sx={{
+    width: "100%",
+    maxWidth: highlight ? { md: "650px" } : "100%",
+    height: "100%", // 🔁 FIXED: fills FlipCard height
+    borderRadius: 5,
+    border: "1px solid #ccc",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)", // same for all
+    transform: "none", // no scale
+    transition: "none", // no animation
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    textAlign: "center",
+    position: "relative",
+    mx: "auto", // center horizontally
+    overflow: "hidden",
 
-      <Box sx={{ position: "relative", width: "100%", height: 150 }}>
+  }}
+>
+      <Box sx={{ position: "relative", width: "100%", height: 170 }}>
         <Box
           sx={{
             position: "absolute",
@@ -41,7 +47,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
           sx={{
             position: "absolute",
             width: "100%",
-            height: "98%",
+            height: "99%",
             top: 0,
             left: 0,
             clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",

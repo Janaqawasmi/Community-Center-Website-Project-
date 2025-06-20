@@ -32,7 +32,6 @@ function News() {
     <Box
       sx={{
         direction: 'rtl',
-        fontFamily: 'Cairo, sans-serif',
         backgroundColor: '#f8f9fb',
         minHeight: '100vh',
         pb: 8,
@@ -64,7 +63,7 @@ function News() {
             لا توجد أخبار حالياً
           </Typography>
         ) : (
-          <Grid container spacing={4}>
+          <Grid container rowSpacing={7.1} columnSpacing={ 9.5}>
             {filteredItems.map((item) => (
               <Grid item xs={12} md={4} key={item.id}>
                 <NewsCard data={item} />

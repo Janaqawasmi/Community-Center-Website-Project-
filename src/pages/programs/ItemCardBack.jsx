@@ -57,9 +57,19 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
           variant="outlined"
           onClick={e => { e.stopPropagation(); onRegister(item.name); }}
           sx={{
-            width: "70%", mx: "auto", borderRadius: "40px", border: "2px solid #0d47a1",
-            color: "#0d47a1", fontWeight: "bold", px: 4, textTransform: "none",
-            ":hover": { backgroundColor: "#0d47a1", borderColor: "#0288d1", color: "white" }
+            width: "70%",
+            mx: "auto",
+            borderRadius: "28px",
+            border: "2px solid #0d47a1",
+            color: "#0d47a1",
+            fontWeight: "bold",
+            px: 4,
+            textTransform: "none",
+            ":hover": {
+              backgroundColor: "#0d47a1",
+              borderColor: "#0288d1",
+              color: "white"
+            }
           }}
         >
           سجل الآن

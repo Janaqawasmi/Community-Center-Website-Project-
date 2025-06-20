@@ -10,108 +10,16 @@ import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
 import SectionScrollButton from '../components/sections/SectionScrollButton';
-
-// Utility to darken a color by an amount (amount between 0 and 1)
-function darkenColor(hex, amount) {
-  const num = parseInt(hex.replace('#', ''), 16);
-  let r = (num >> 16) - amount * 255;
-  let g = ((num >> 8) & 0x00FF) - amount * 255;
-  let b = (num & 0x0000FF) - amount * 255;
-
-  r = Math.max(0, Math.min(255, r));
-  g = Math.max(0, Math.min(255, g));
-  b = Math.max(0, Math.min(255, b));
-
-  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-}
-
-// Component for pretty cards with section color and title
-const PrettyCard = ({ title, color, children }) => (
-  <Box
-    sx={{
-      position: 'relative',
-      borderRadius: '28px',
-      p: { xs: 3, sm: 4 },
-      mt: 5,
-      backdropFilter: 'blur(12px)',
-      WebkitBackdropFilter: 'blur(12px)',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-      overflow: 'hidden',
-      direction: 'rtl',
-      fontFamily: 'Cairo, sans-serif',
-      minHeight: '200px',
-    }}
-  >
-    {/* Top-Right Title Badge */}
-    <Box
-      sx={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        height: { xs: '40px', sm: '40px' },
-        minWidth: 'fit-content',
-        padding: '0 20px',
-        background: `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`,
-        borderBottomLeftRadius: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: { xs: '1rem', sm: '1.1rem' },
-        zIndex: 2,
-        textAlign: 'center',
-        whiteSpace: 'nowrap',
-        boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-      }}
-    >
-      {title}
-    </Box>
-    {/* Card Body */}
-    <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-      {children}
-    </Box>
-  </Box>
-);
-
-// Slider settings
-const singleImageSliderSettings = {
-  dots: true,
-  arrows: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 3000,
-};
-
-// Utility for getting scroll button data
-function getScrollButtonData(sectionId) {
-  switch (sectionId) {
-    case 'section_culture':
-    case 'section_curricular':
-    case 'section_sports':
-    case 'section_women':
-      return { label: " تصفّح جميع الدورات", targetId: "courses" };
-    case 'section_elderly':
-    case 'section_special':
-    case 'section_youth':
-      return { label: " برامج القسم", targetId: "programs" };
-    case 'section_kindergarten':
-      return { label: " استكشف الروضات", targetId: "kindergartens" };
-    case 'section_nursery':
-      return { label: " تعرّف على الحضانات", targetId: "nurseries" };
-    default:
-      return null;
-  }
-}
+import PrettyCard from '../components/layout/PrettyCard';
 
 function SectionPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [section, setSection] = useState(null);
   const [expanded, setExpanded] = useState(false);
+const navigate = useNavigate();
+
+  const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
+  const { id } = useParams();
+  const [section, setSection] = useState(null);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   useEffect(() => {
     const fetchSection = async () => {
@@ -129,116 +37,192 @@ function SectionPage() {
   if (!section) return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
   const sectionColor = sectionColors[section.id] || '#607d8b';
+ const getScrollButtonData = () => {
+  switch (section.id) {
+    case 'section_culture':
+    case 'section_curricular':
+    case 'section_sports':
+    case 'section_women':
+      return { label: " تصفّح جميع الدورات", targetId: "courses" };
+    case 'section_elderly':
+    case 'section_special':
+    case 'section_youth':
+      return { label: " برامج القسم", targetId: "programs" };
+    case 'section_kindergarten':
+      return { label: " استكشف الروضات", targetId: "kindergartens" };
+    case 'section_nursery':
+      return { label: " تعرّف على الحضانات", targetId: "nurseries" };
+    default:
+      return null;
+  }
+};
 
-  const buttonData = getScrollButtonData(section.id);
+  const singleImageSliderSettings = {
+    dots: true,
+    arrows: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
 
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', fontFamily: 'Cairo, Arial, sans-serif', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <HeroSection pageId={id} />
 
-      <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
-        {/* Scroll/Programs Button */}
-        {buttonData && (
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'right',
-            mt: 0,
-            mb: 6,
-            px: 2,
-            direction: 'rtl',
-          }}>
-            <SectionScrollButton
-              label={buttonData.label}
-              sectionId={section.id}
-              sectionColor={sectionColor}
-              targetId={buttonData.targetId}
-              onClick={() => {
-                if (buttonData.label.trim() === "تصفّح جميع الدورات") {
-                  navigate(`/programs?section=${section.id}`);
-                } else {
-                  const target = document.getElementById(buttonData.targetId);
-                  if (target) target.scrollIntoView({ behavior: 'smooth' });
-                }
+   <Container maxWidth="lg" sx={{ pt: 8, pb: 8, px: 0, position: 'relative', zIndex: 3, flex: 1 }}>
+
+   {(() => {
+  const buttonData = getScrollButtonData();
+  if (!buttonData) return null;
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'right',
+        mb: 4,
+        direction: 'rtl',
+      }}
+    >
+      <SectionScrollButton
+        label={buttonData.label}
+        sectionId={section.id}
+        sectionColor={sectionColor}
+        targetId={buttonData.targetId}
+      />
+    </Box>
+  );
+})()}
+
+
+
+{/* ✅ Image and description side by side */}
+{section.imageGallery?.length > 0 && (
+<Grid
+  container
+  spacing={4}
+  sx={{ mb: 4, alignItems: 'flex-start' }} // align top
+>
+  <Grid
+    item
+    xs={12}
+    md={6}
+    sx={{ 
+      order: { xs: 1, md: 2 }, // text on right
+      display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}
+  >
+    <Box sx={{ width: '100%' }}>
+      <Slider {...singleImageSliderSettings}>
+        {section.imageGallery.map((url, i) => (
+          <Box
+            key={i}
+            sx={{
+              width: '100%',
+              height: 350,
+              borderRadius: '28px',
+              overflow: 'hidden',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            }}
+          >
+            <img
+              src={url}
+              alt={`desc-img-${i}`}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block',
               }}
             />
           </Box>
-        )}
+        ))}
+      </Slider>
+    </Box>
+  </Grid>
 
-        <Grid container spacing={4}>
-          {/* Section Description */}
-          {section.description && (
-            <Grid item xs={12} md={6} sx={{ mt: { xs: -3, md: -4 } }}>
-              <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
-                <ExpandableText text={section.description} sx={{ fontSize: '1.2em', lineHeight: 2 }} />
-                <Box sx={{ textAlign: 'center', mt: 2 }}>
-                  <button
-                    onClick={() => setExpanded(!expanded)}
-                    style={{
-                      color: 'red',
-                      fontWeight: 'bold',
-                      border: 'none',
-                      background: 'none',
-                      cursor: 'pointer',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    {expanded ? 'إخفاء' : 'المزيد'}
-                  </button>
-                </Box>
-                {/* Expanded Details */}
-                <Collapse in={expanded}>
-                  {section.hallDescription && (
-                    <PrettyCard title={section.hallDescription_title || "نادي الحلقات"} color={sectionColor}>
-                      <ExpandableText
-                        text={section.hallDescription}
-                        sx={{ fontSize: '1.2rem', lineHeight: 2 }}
-                        expandable={false}
-                      />
-                    </PrettyCard>
-                  )}
+  <Grid
+    item
+    xs={12}
+    md={6}
+    sx={{
+      order: { xs: 2, md: 1 }, // image on left  
+      display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}
+  >
+    <Box sx={{ width: '100%' }}>
+      {section.description && (
+        <PrettyCard title={section.description_title || "الرؤية"} color={sectionColor}>
+          <Box sx={{ mt: 5, textAlign: 'right', fontSize: '1rem', color: '#444' }}>
+            <ExpandableText
+              text={section.description}
+              sx={{ fontSize: '1.2em', lineHeight: 2 }}
+            />
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <button
+                onClick={() => setExpanded(!expanded)}
+                style={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                }}
+              >
+                {expanded ? 'إخفاء' : 'المزيد'}
+              </button>
+            </Box>
+          </Box>
+        </PrettyCard>
+      )}
+    </Box>
+  </Grid>
+</Grid>
 
-                  {section.goals?.length > 0 && (
-                    <PrettyCard title={section.goals_title || "الأهداف"} color={sectionColor}>
-                      <ExpandableList items={section.goals} expandable={false} />
-                    </PrettyCard>
-                  )}
 
-                  {section.extra_goals?.length > 0 && (
-                    <PrettyCard title={section.extra_goals_title || "أهداف إضافية"} color={sectionColor}>
-                      <ExpandableList items={section.extra_goals} expandable={false} />
-                    </PrettyCard>
-                  )}
+)}
 
-                  {section.programs?.length > 0 && (
-                    <PrettyCard title={section.programs_title || "البرامج والأنشطة"} color={sectionColor}>
-                      <ExpandableList items={section.programs} expandable={false} />
-                    </PrettyCard>
-                  )}
-                </Collapse>
-              </PrettyCard>
-            </Grid>
-          )}
+{/* ✅ Everything else hidden initially */}
+<Grid container spacing={4}>
+  <Grid item xs={12}>
+    <Collapse in={expanded}>
+      {section.hallDescription && (
+        <PrettyCard title={section.hallDescription_title || "نادي الحلقات"} color={sectionColor}>
+          <ExpandableText text={section.hallDescription} sx={{ fontSize: '1.1em', lineHeight: 2 }} />
+        </PrettyCard>
+      )}
 
-          {/* Image Gallery */}
-          {section.imageGallery?.length > 0 && (
-            <Grid item xs={12} md={6}>
-              <Slider {...singleImageSliderSettings}>
-                {section.imageGallery.map((url, i) => (
-                  <Box key={i} sx={{ width: '100%', height: 300, borderRadius: 3, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                    <img src={url} alt={`desc-img-${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                  </Box>
-                ))}
-              </Slider>
-            </Grid>
-          )}
-        </Grid>
+      {section.goals?.length > 0 && (
+        <PrettyCard title={section.goals_title || "الأهداف"} color={sectionColor}>
+          <ExpandableList items={section.goals} />
+        </PrettyCard>
+      )}
 
-        {/* Section Program Cards */}
+      {section.extra_goals?.length > 0 && (
+        <PrettyCard title={section.extra_goals_title || "أهداف إضافية"} color={sectionColor}>
+          <ExpandableList items={section.extra_goals} />
+        </PrettyCard>
+      )}
+
+      {section.programs?.length > 0 && (
+        <PrettyCard title={section.programs_title || "البرامج والأنشطة"} color={sectionColor}>
+          <ExpandableList items={section.programs} />
+        </PrettyCard>
+      )}
+    </Collapse>
+  </Grid>
+</Grid>
+
+
+
         {section.programCards?.length > 0 && (
           <>
             <Box id="programs" sx={{ textAlign: 'center', mt: 6, mb: 3 }}></Box>
             <Box sx={{ textAlign: 'center', mt: 6, mb: 3 }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: sectionColor, fontFamily: 'Cairo, Arial, sans-serif', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: sectionColor, display: 'inline-flex', alignItems: 'center', gap: 1 }}>
                 🧩 برامجنا الخاصة بالقسم
               </Typography>
             </Box>
@@ -257,8 +241,8 @@ function SectionPage() {
                       transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                       '&:hover': {
                         boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',
-                        transform: 'none',
-                        cursor: 'default',
+  transform: 'none',
+  cursor: 'default',
                       },
                     }}
                   >
@@ -268,10 +252,11 @@ function SectionPage() {
                     <Box sx={{ p: 2 }}>
                       <Typography variant="h6" sx={{ fontWeight: 'bold', color: sectionColor }}>{program.name}</Typography>
                       <ExpandableText
-                        text={program.description}
-                        sx={{ mt: 1, color: '#555', fontSize: '0.95rem' }}
-                        limit={250}
-                      />
+  text={program.description}
+  sx={{ mt: 1, color: '#555', fontSize: '0.95rem' }}
+  limit={250}
+/>
+
                       <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📝 <strong>الشروط:</strong> {program.conditions}</Typography>
                       <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>🎓 <strong>المؤهلات:</strong> {program.qualifications}</Typography>
                       <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{program.phone}</span></Typography>
@@ -285,8 +270,8 @@ function SectionPage() {
 
         {/* Nurseries */}
         {section.nurseries?.length > 0 && (
-          <PrettyCard title="حضاناتنا" color={sectionColor}>
-            <Box id="nurseries"></Box>
+          <Box id="nurseries" sx={{ scrollMarginTop: '100px' }}>
+          <PrettyCard title="حضاناتنا" icon="🏫" color={sectionColor}>
             <Grid container spacing={2}>
               {section.nurseries.map((nursery, i) => (
                 <Grid item xs={12} sm={6} md={4} key={i}>
@@ -300,12 +285,13 @@ function SectionPage() {
               ))}
             </Grid>
           </PrettyCard>
+          </Box>
         )}
 
         {/* Kindergartens */}
         {section.kindergartens?.length > 0 && (
-          <PrettyCard title="روضاتنا" color={sectionColor}>
-            <Box id="kindergartens">
+          <Box id="kindergartens" sx={{ scrollMarginTop: '100px' }}>
+          <PrettyCard title="روضاتنا" icon="🏫" color={sectionColor}>
               <Grid container spacing={2}>
                 {section.kindergartens.map((kg, i) => (
                   <Grid item xs={12} sm={6} md={4} key={i}>
@@ -318,10 +304,9 @@ function SectionPage() {
                   </Grid>
                 ))}
               </Grid>
-            </Box>
           </PrettyCard>
+          </Box>
         )}
-
       </Container>
     </Box>
   );

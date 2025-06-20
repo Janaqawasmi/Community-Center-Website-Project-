@@ -19,59 +19,41 @@ import { programCategories, iconMap } from "../constants/sectionMeta";
 import SearchIcon from "@mui/icons-material/Search";
 import { motion } from "framer-motion";
 import HeroSection from "../components/HeroSection";
+import ItemFlipCard from "./programs/ItemFlipCard";
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import PersonIcon from '@mui/icons-material/Person';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import EventSeatIcon from '@mui/icons-material/EventSeat';
+import RoundedButton from "../components/Buttons/RoundedButton";
+
+const programFields = [
+  { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
+  { key: "time", label: "الوقت", icon: <AccessTimeIcon /> },
+  { key: "meetingNum", label: "عدد اللقاءات", icon: <RepeatIcon /> },
+  { key: "instructor_name", label: "اسم المدرب", icon: <PersonIcon /> },
+  { key: "price", label: "السعر", icon: <AttachMoneyIcon /> },
+  { key: "capacity", label: "المقاعد المتبقية", icon: <EventSeatIcon /> },
+];
+
 
 const getCategoryColor = (label) => {
   const found = programCategories.find((c) => c.label === label);
-  return found?.color || "#E0E0E0";
+  return found?.color || " #00b0f0";
 };
 
 function CategoryCard({ label, color, onClick, index }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-    >
-      <Paper
-        onClick={onClick}
-        elevation={1}
-        sx={{
-          borderRadius: "90px",
-          px: 3,
-          py: 1.5,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderRight: `6px solid ${color}`,
-          backgroundColor: "#fff",
-          transition: "0.3s",
-          width: "100%",
-          minHeight: "56px",
-          "&:hover": {
-            backgroundColor: "#f5f5f5",
-            transform: "translateY(-2px)",
-          },
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            fontSize: "1.2rem",
-            color: "black",
-            fontFamily: "Cairo, sans-serif",
-          }}
-        >
-          {label}
-        </Typography>
-        <Typography fontSize="1.2rem" fontWeight="bold" color={color}>
-          &lt;
-        </Typography>
-      </Paper>
-    </motion.div>
+    <RoundedButton
+      label={label}
+      color={color}
+      onClick={onClick}
+      index={index}
+    />
   );
 }
+
 
 export default function ProgramPage() {
   const [allPrograms, setAllPrograms] = useState([]);
@@ -108,15 +90,15 @@ export default function ProgramPage() {
   );
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
+    <Box sx={{  direction: "rtl" }}>
       <HeroSection pageId="programs" />
 
-      <Container sx={{ pt: 2, pb: 6 }} dir="rtl">
+      <Container sx={{ pt: 8, pb: 8 }} dir="rtl">
         {/* Search Bar */}
         <Box
           sx={{
             background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-            borderRadius: "90px",
+            borderRadius: "28px",
             padding: "6px 10px",
             display: "flex",
             alignItems: "center",
@@ -131,7 +113,6 @@ export default function ProgramPage() {
               color: "white",
               fontWeight: "bold",
               fontSize: "16px",
-              fontFamily: "Cairo, sans-serif",
               whiteSpace: "nowrap",
             }}
           >
@@ -153,8 +134,7 @@ export default function ProgramPage() {
               ),
               sx: {
                 backgroundColor: "#fff",
-                borderRadius: "90px",
-                fontFamily: "Cairo, sans-serif",
+                borderRadius: "28px",
                 color: "rgb(0, 0, 0)",
                 fontSize: "1.2rem",
                 height: "42px",
@@ -175,7 +155,6 @@ export default function ProgramPage() {
       mb: 2,
       fontWeight: "bold",
       fontSize: "1.4rem",
-      fontFamily: "Cairo, sans-serif",
       color: "black",
     }}
   >

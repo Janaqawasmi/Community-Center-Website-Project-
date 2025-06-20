@@ -28,7 +28,9 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import NavButton from './components/NavButton';
+import NavButton from './components/Buttons/NavButton';
+import AccessibilityIconPlaceholder from './components/AccessibilityIconPlaceholder';
+import WheelchairPickupIcon from '@mui/icons-material/WheelchairPickup';
 
 
 const NAV_ITEMS = [
@@ -95,44 +97,68 @@ const handleNavClick = (path) => {
     fetchSiteInfo();
   }, []);
  
-
 useEffect(() => {
+  const isMobile = window.innerWidth < 900;
+
   window.interdeal = {
     sitekey: "947480020c6a6fee1201647fae5ab297",
-    Position: "right",
+    Position: isMobile ? "left" : "custom",
+    dragAndDrop: isMobile,
     domains: {
       js: "https://cdn.equalweb.com/",
-      acc: "https://access.equalweb.com/"
+      acc: "https://access.equalweb.com/",
     },
-    Menulang: "AR", // Arabic language
+    Menulang: "AR",
     btnStyle: {
-      vPosition: ["80%", "80%"],
+      vPosition: ["80%", "20%"],
       scale: ["0.8", "0.5"],
       color: {
         main: "#1c4bb6",
-        second: "#f3f1f1"
+        second: "#f3f1f1",
       },
       icon: {
         outline: false,
         type: 10,
-        shape: "semicircle"
-      }
-    }
+        shape: "semicircle", // ← updated shape
+      },
+    },
+    customStyle: isMobile
+      ? undefined
+      : {
+        Position: "custom",
+          container: "#accessibility-placeholder",
+        },
   };
 
   const script = document.createElement("script");
-  script.src = "https://cdn.equalweb.com/core/5.1.2/accessibility.js";
+  script.src = "https://cdn.equalweb.com/core/5.1.13/accessibility.js";
   script.defer = true;
-  script.integrity = "sha512-PUyQFF3HFjRiVfjOiFFu+RTc0nGmLV5FN3CVw8zWFK6pVbWPAEKy9X2bTUn10GNu1EbxN56MuWu0P8ZHC6xv3Q==";
+  script.integrity =
+    "sha512-70/AbMe6C9H3r5hjsQleJEY4y5l9ykt4WYSgyZj/WjpY/ord/26LWfva163b9W+GwWkfwbP0iLT+h6KRl+LoXA==";
   script.crossOrigin = "anonymous";
   script.setAttribute("data-cfasync", true);
-
   document.body.appendChild(script);
+
+  if (!isMobile) {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      #accessibility-placeholder .ew-accessibility-menu {
+        position: static !important;
+        margin: 0 !important;
+      }
+      #accessibility-placeholder .ew-plugin-btn {
+        margin: 0 auto !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   return () => {
     document.body.removeChild(script);
   };
 }, []);
+
 
   const renderSocialIcon = (href, Icon, color) => (
   <IconButton
@@ -154,30 +180,56 @@ useEffect(() => {
 
   return (
     <>
-      <AppBar position="static" elevation={0} sx={{ backgroundColor: '#fff', boxShadow: 'none' }}>
-<Toolbar
+<AppBar
+  position="static"
+  elevation={0}
   sx={{
-    minHeight: '70px',
-    justifyContent: 'space-between',
-    px: { xs: 2, md: 4 }, // consistent padding on both sides
-    maxWidth: '1440px',
-    width: '100%',
-    mx: 'auto', // center toolbar content
+    backgroundColor: '#fff',
+    boxShadow: 'none',
+    height: { xs: '56px', md: '64px' }, // ✅ Height by breakpoint
+    px: { xs: 2, md: 4 }, // ✅ 8px on mobile, 32px on desktop
+    justifyContent: 'center',
   }}
->          {logoUrl && (
-           <NavButton to="/" sx={{ p: 0, minWidth: 0, mr: 2 }}>
-  <img src={logoUrl} alt="Logo" style={{ height: '60px', width: 'auto' }} />
-</NavButton>
-
-          )}
+>
+  <Toolbar
+    disableGutters
+    sx={{
+      height: { xs: '56px', md: '64px' },   // ✅ Match height exactly
+      minHeight: '0 !important',           // ✅ Prevent default MUI min height
+      width: '100%',
+      maxWidth: '1440px',
+      mx: 'auto',
+      justifyContent: 'space-between',
+      px: { xs: 2, md: 4 }, // ✅ 8px on mobile, 32px on desktop
+    }}
+  >
+       {/* Centered Logo on Mobile */}
+{logoUrl && (
+  <Box
+    sx={{
+      position: { xs: 'absolute', md: 'static' },
+      left: { xs: '50%', md: 'auto' },
+      transform: { xs: 'translateX(-50%)', md: 'none' },
+      zIndex: 1, // ensure it's above the drawer button
+    }}
+  >
+    <NavButton to="/" sx={{ p: 0, minWidth: 0 }}>
+      <img
+        src={logoUrl}
+        alt="Logo"
+        style={{ height: isMobile ? '40px' : '60px', width: 'auto' }}
+      />
+    </NavButton>
+  </Box>
+)}
 
           {/* Desktop Nav */}
           {/* Desktop Nav Buttons with الأقسام second */}
-<Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, direction: 'rtl', alignItems: 'center' }}>
+<Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4, direction: 'rtl', alignItems: 'center' }}>
   {NAV_ITEMS.map(({ label, path }, index) => {
     if (index === 1) {
       return (
-        <Box key="custom-duo" sx={{ display: 'flex', gap: 3 }}>
+        <Box key="custom-duo" sx={{ display: 'flex', gap: 4 }}>
           <Button onClick={(e) => setSectionsMenuAnchor(e.currentTarget)} sx={navStyle(false)}>
             الأقسام
           </Button>
@@ -196,25 +248,76 @@ useEffect(() => {
 </Box>
 
 
-          {/* Mobile Menu Button */}
-          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
-              <MenuIcon sx={{ fontSize: 36 }} />
-            </IconButton>
-          </Box>
+          {/* Mobile Menu Button on the right */}
+<Box
+  sx={{
+    display: { xs: 'block', md: 'none' },
+    position: 'absolute',
+    right: 0,
+    zIndex: 2,
+  }}
+>
+  <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
+    <MenuIcon sx={{ fontSize: 36 }} />
+  </IconButton>
+</Box>
 
-          {/* Desktop Social Icons */}
+
+{/* Desktop Social + Accessibility */}
 <Box
   sx={{
     display: { xs: 'none', md: 'flex' },
-    gap: 1.5,
+    gap: 2,
     alignItems: 'center',
-    ml: 2,
+    justifyContent: 'flex-end',
+    position: 'relative',
   }}
->            {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')} 
-            {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
-            {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
-          </Box>
+>
+  {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')}
+  {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
+  {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
+
+{/* Custom Accessibility for Desktop */}
+{!isMobile && (
+  <>
+    {/* Hidden real EqualWeb container */}
+   <Box
+  id="accessibility-placeholder"
+  sx={{
+    position: 'absolute',
+    top: '-10000px',
+    left: '-10000px',
+    width: 0,
+    height: 0,
+    overflow: 'hidden',
+    pointerEvents: 'none',
+  }}
+/>
+
+    {/* Fake icon that triggers it */}
+    <IconButton
+    onClick={() => {
+      setTimeout(() => {
+  const btn = document.querySelector('.ew-plugin-btn');
+  if (btn) btn.click();
+}, 100);
+
+    const btn = document.querySelector('#accessibility-placeholder .ew-plugin-btn, .ew-plugin-btn');
+    if (btn) btn.click();
+    else console.warn("EqualWeb button not found");
+  }}
+  sx={{
+    color: 'black',
+    '&:hover': { color: '#1976d2' },
+  }}
+>
+      <WheelchairPickupIcon />
+    </IconButton>
+  </>
+)}
+
+</Box>
+
         </Toolbar>
       </AppBar>
 
@@ -234,19 +337,19 @@ useEffect(() => {
       </Menu>
 
       <Drawer
-        anchor="left"
+        anchor="right"
         open={isMobileDrawerOpen}
         onClose={toggleMobileDrawer(false)}
        PaperProps={{
   sx: {
     width: '80%',
-    borderRadius: '0 16px 16px 0',
+      borderRadius: '16px 0 0 16px', // ✅ rounded left edge
     backgroundColor: '#f0f4f8', // ✅ custom background
     direction: 'rtl',           // ✅ text direction from right
   },
 }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', p: 2 }}>
           <IconButton onClick={toggleMobileDrawer(false)}><CloseIcon /></IconButton>
         </Box>
      <List sx={{ px: 2, py: 0, display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -287,7 +390,6 @@ useEffect(() => {
       textAlign: 'right',
       direction: 'rtl',
       fontSize: '15px',
-      fontFamily: 'Cairo, sans-serif',
     },
   }}
 />              </ListItemButton>
@@ -342,37 +444,10 @@ useEffect(() => {
         <Outlet />
       </Box>
 
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '2.5rem',
-          backgroundColor: '#f1f1f1',
-          borderTop: '1px solid #ccc',
-          zIndex: 1200,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-        }}
-      >
-        <NavButton
-          to="/login"
-          sx={{
-            position: 'absolute',
-            bottom: 8,
-            left: 16,
-            fontSize: '12px',
-            color: '#666',
-          }}
-        >
-          تسجيل دخول للإدارة فقط
-        </NavButton>
-      </Box>
+    
     </>
   );
+  
 }
 
 export default Layout;

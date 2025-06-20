@@ -7,7 +7,18 @@ export default function ItemFlipCard({ item, fields, onRegister, config ,  prog,
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <FlipCard onClick={() => setFlipped(!flipped)}>
+    <FlipCard
+      onClick={() => setFlipped(!flipped)}
+      sx={{
+        perspective: 1000,
+        width: "100%",
+        maxWidth: highlight ? { md: "px" } : "100%", // wider when highlighted
+        mx: "auto", // center horizontally
+        transform: highlight ? "scale(1.05)" : "none",
+        transition: "transform 0.3s ease",
+        zIndex: highlight ? 10 : 1,
+      }}
+    >
       <FlipCardInner style={{ transform: flipped ? "rotateY(180deg)" : "none" }}>
         <FlipCardFront>
           <ItemCardFront item={item} onFlip={() => setFlipped(true)} config={config} prog={prog}

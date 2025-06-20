@@ -28,8 +28,8 @@ export default function EventsPage() {
   };
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box sx={{  direction: "rtl" }}>
+      <Box mb={8}>
         <HeroSection pageId="events" />
       </Box>
       <Container

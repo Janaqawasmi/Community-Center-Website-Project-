@@ -43,6 +43,7 @@ function AppRoutes({ sections }) {
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
+
         </Route>
      
      

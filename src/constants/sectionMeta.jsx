@@ -48,24 +48,24 @@ export const sectionColors = {
 export const programCategories = [
   {
     label: "رياضة",
-    color: "#e53935", // red
+    color: "#cf2929",
   },
   {
     label: "طوارئ",
-    color: "#e53935", // darker red
+    color: "#cf2929", 
   },
   
   {
     label: "الثقافة والفن",
-    color: "#f57c00", // orange
+    color: "#fbc21f",
   },
   {
     label: "الدورات المنهجية واللامنهجية",
-    color: "#388e3c", // green
+    color: " #f26d2c", 
   },
   {
     label: "نساء",
-    color: "#f57c00", // 
+    color: "#f26d2c",  
   },
 ];
 

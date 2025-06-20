@@ -25,8 +25,7 @@ export default function HomePage() {
   };
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      {/* Featured Slider Header */}
+    <Box sx={{  direction: "rtl" }}>
       {featuredPrograms.length > 0 && (
         <Slider {...sliderSettings}>
           {featuredPrograms.map((program) => (
@@ -34,9 +33,12 @@ export default function HomePage() {
               key={program.id}
               sx={{
                 position: "relative",
-                height: { xs: 250, md: 350 },
+                // height: { xs: 250, md: 350 },
                 display: "flex",
                 overflow: "hidden",
+                height: { xs: 320, sm: 400, md: 460 },
+                width: "100%",
+
               }}
             >
               {/* Background Image */}
@@ -106,17 +108,24 @@ export default function HomePage() {
                   variant="contained"
                   sx={{
                     backgroundColor: "rgb(197, 94, 24)",
-                    borderRadius: "20px",
+                    borderRadius: "28px",
                     fontWeight: "bold",
                     px: 4,
                     textTransform: "none",
                     "&:hover": { backgroundColor: "#fff", color: "black" },
                   }}
-                  onClick={() =>
-                    navigate(`/programs/${encodeURIComponent(program.category[0])}?highlight=${program.id}`)
-                  }
-                >
-                  سجلوا الآن
+   onClick={() =>
+  navigate(
+    program.isNews
+      ? `/news/${program.id}`
+      : program.isEvent
+        ? `/events?highlight=${program.id}`
+        : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
+  )
+}
+
+            >
+        عرض التفاصيل
                 </Button>
               </Box>
             </Box>
@@ -124,15 +133,53 @@ export default function HomePage() {
         </Slider>
       )}
 
-    
+{/* Quick Links */}
+<Box sx={{ mt: { xs: 4, md: 8 } }}>
+  {/* <QuickLinksSection sections={sections} /> */}
+</Box>   
 
-   
-       <Box sx={{ mt: 5, px: { xs: 2, md: 30 } }}>
-          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#0369a1' }}>
+<Box sx={{ mt: { xs: 4, md: 8 }, px: { xs: 2, md: 30 } }}>
+          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#003366' }}>
              التقويم والفعاليات
            </Typography>
            <CalendarSection />
          </Box>
     </Box>
+  );
+}
+
+function OverlayContent({ program, navigate, isEvent = false, isNews = false }) {
+  return (
+    <>
+      <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2 , textAlign: "right" }}>
+        {program.name}
+      </Typography>
+      <Typography variant="body1" sx={{ color: "#fff", mb: 3,  textAlign: "right" }}>
+        {program.description}
+      </Typography>
+      <Button
+        variant="contained"
+        sx={{
+          backgroundColor: "rgb(197, 94, 24)",
+          borderRadius: "28px",
+          fontWeight: "bold",
+          px: 4,
+          py: 1,
+          textTransform: "none",
+        }}
+        onClick={() =>
+         navigate(
+  isNews
+    ? `/news/${program.id}`
+    : isEvent
+      ? `/events?highlight=${program.id}`
+      : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
+)
+
+        }
+      >
+        عرض التفاصيل
+      </Button>
+    </>
   );
 }
