@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button } from "@mui/material";
 import { motion } from "framer-motion";
 import { sectionColors } from "../../constants/sectionMeta";
-import RoundedButton from "../Buttons/RoundedButton";
+import RoundedButton from "../layout/Buttons/RoundedButton";
 import PrettyCard from "../layout/PrettyCard";
 
 export default function SectionGrid({ sections }) {

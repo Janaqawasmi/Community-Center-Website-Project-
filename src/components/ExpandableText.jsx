@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 const ExpandableText = ({ text, limit = 300 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  if (text.length <= limit) {
+  if (!text || text.length <= limit) {
     return <Typography sx={{ fontSize: '1.2em', lineHeight: 2 }}>{text}</Typography>;
   }
 
