@@ -25,7 +25,6 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
    <Card
   sx={{
     width: "100%",
-    maxWidth: highlight ? { md: "650px" } : "100%", // still limit width if needed
     height: "100%", // 🔁 FIXED: fills FlipCard height
     borderRadius: 4,
     p: 2,
