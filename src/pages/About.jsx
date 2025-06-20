@@ -145,7 +145,7 @@ export default function About() {
             </Grid>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Box sx={{ textAlign: 'center', mt: 6 }}>
             <Typography
               onClick={() => toggleSection('about')}
               sx={{
