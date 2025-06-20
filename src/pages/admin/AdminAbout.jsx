@@ -6,7 +6,6 @@ import {
   Button, 
   Card, 
   CardContent,
-  Divider,
   Alert,
   Snackbar,
   Grid,
@@ -15,20 +14,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   useTheme,
   useMediaQuery,
   Fab,
   Collapse,
   Paper,
-  Chip,
   MenuItem,
   Select,
   FormControl,
-  InputLabel
+  InputLabel,
+  Chip
 } from '@mui/material';
 import { 
   Save, 
@@ -44,7 +39,11 @@ import {
   ColorLens,
   Title,
   Subject,
-  AddBox
+  AddBox,
+  DragHandle,
+  ArrowUpward,
+  ArrowDownward,
+  List as ListIcon
 } from '@mui/icons-material';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../components/firebase';
@@ -55,43 +54,27 @@ export default function AdminAbout() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // الحالة الرئيسية - مصفوفة واحدة للأقسام
   const [aboutData, setAboutData] = useState({
-    about_us_text: '',
-    vision_title: 'الرؤية',
-    vision: '',
-    message_title: 'الرسالة',
-    message: '',
-    justifications_title: 'المبررات',
-    justifications: '',
-    goals_title: 'الأهداف',
-    goals: [],
-    custom_sections: [] // إضافة الأقسام المخصصة
+    sections: []
   });
   
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-  const [newGoal, setNewGoal] = useState('');
-  const [editingGoal, setEditingGoal] = useState(null);
-  const [goalDialog, setGoalDialog] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({});
   const [previewMode, setPreviewMode] = useState({});
-  const [expandedSections, setExpandedSections] = useState({
-    about: true,
-    vision: false,
-    message: false,
-    justifications: false,
-    goals: false
-  });
 
-  // حالات للأقسام المخصصة
-  const [customSectionDialog, setCustomSectionDialog] = useState(false);
-  const [newCustomSection, setNewCustomSection] = useState({
+  // حالات للحوار
+  const [sectionDialog, setSectionDialog] = useState(false);
+  const [editingSection, setEditingSection] = useState(null);
+  const [newSection, setNewSection] = useState({
     title: '',
     content: '',
+    type: 'text',
     color: '#2563eb',
     icon: 'Info'
   });
-  const [editingCustomSection, setEditingCustomSection] = useState(null);
 
   // ألوان متاحة للاختيار
   const availableColors = [
@@ -115,7 +98,14 @@ export default function AdminAbout() {
     { name: 'إضافة', value: 'Add', component: <Add /> },
     { name: 'عنوان', value: 'Title', component: <Title /> },
     { name: 'موضوع', value: 'Subject', component: <Subject /> },
-    { name: 'ألوان', value: 'ColorLens', component: <ColorLens /> }
+    { name: 'ألوان', value: 'ColorLens', component: <ColorLens /> },
+    { name: 'قائمة', value: 'List', component: <ListIcon /> }
+  ];
+
+  // أنواع الأقسام المتاحة
+  const sectionTypes = [
+    { value: 'text', label: 'نص' },
+    { value: 'list', label: 'قائمة' }
   ];
 
   // دالة للحصول على الأيقونة
@@ -130,19 +120,108 @@ export default function AdminAbout() {
     try {
       const docRef = doc(db, "siteInfo", "about us");
       const docSnap = await getDoc(docRef);
+      
       if (docSnap.exists()) {
         const data = docSnap.data();
+        
+        // إذا كانت البيانات بالهيكل الجديد
+        if (data.sections) {
+          setAboutData({ sections: data.sections });
+        } else {
+          // تحويل البيانات القديمة إلى الهيكل الجديد
+          const sections = [];
+          
+          if (data.about_us_text) {
+            sections.push({
+              id: 'about',
+              title: 'نبذة عن المركز',
+              content: data.about_us_text,
+              type: 'text',
+              color: '#2563eb',
+              icon: 'Info',
+              order: 0
+            });
+          }
+          
+          if (data.vision) {
+            sections.push({
+              id: 'vision',
+              title: data.vision_title || 'الرؤية',
+              content: data.vision,
+              type: 'text',
+              color: '#10b981',
+              icon: 'Visibility',
+              order: 1
+            });
+          }
+          
+          if (data.message) {
+            sections.push({
+              id: 'message',
+              title: data.message_title || 'الرسالة',
+              content: data.message,
+              type: 'text',
+              color: '#f59e0b',
+              icon: 'Edit',
+              order: 2
+            });
+          }
+          
+          if (data.justifications) {
+            sections.push({
+              id: 'justifications',
+              title: data.justifications_title || 'المبررات',
+              content: data.justifications,
+              type: 'text',
+              color: '#ef4444',
+              icon: 'Subject',
+              order: 3
+            });
+          }
+          
+          if (data.goals && data.goals.length > 0) {
+            sections.push({
+              id: 'goals',
+              title: data.goals_title || 'الأهداف',
+              content: data.goals,
+              type: 'list',
+              color: '#8b5cf6',
+              icon: 'Add',
+              order: 4
+            });
+          }
+          
+          // إضافة الأقسام المخصصة
+          if (data.custom_sections) {
+            data.custom_sections.forEach((section, index) => {
+              sections.push({
+                ...section,
+                id: section.id || `custom_${Date.now()}_${index}`,
+                type: section.type || 'text',
+                order: 5 + index
+              });
+            });
+          }
+          
+          // ترتيب الأقسام حسب الـ order
+          sections.sort((a, b) => a.order - b.order);
+          
+          setAboutData({ sections });
+        }
+      } else {
+        // إنشاء قسم افتراضي
         setAboutData({
-          about_us_text: data.about_us_text || '',
-          vision_title: data.vision_title || 'الرؤية',
-          vision: data.vision || '',
-          message_title: data.message_title || 'الرسالة',
-          message: data.message || '',
-          justifications_title: data.justifications_title || 'المبررات',
-          justifications: data.justifications || '',
-          goals_title: data.goals_title || 'الأهداف',
-          goals: data.goals || [],
-          custom_sections: data.custom_sections || []
+          sections: [
+            {
+              id: 'about',
+              title: 'نبذة عن المركز',
+              content: '',
+              type: 'text',
+              color: '#2563eb',
+              icon: 'Info',
+              order: 0
+            }
+          ]
         });
       }
     } catch (error) {
@@ -172,81 +251,10 @@ export default function AdminAbout() {
     setSnackbar({ open: true, message, severity });
   };
 
-  const handleInputChange = (field, value) => {
-    setAboutData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const toggleSection = (section) => {
+  const toggleSection = (sectionId) => {
     setExpandedSections(prev => ({
       ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
-  // إدارة الأهداف
-  const addGoal = () => {
-    if (newGoal.trim()) {
-      setAboutData(prev => ({
-        ...prev,
-        goals: [...prev.goals, newGoal.trim()]
-      }));
-      setNewGoal('');
-      setGoalDialog(false);
-    }
-  };
-
-  const editGoal = (index, newValue) => {
-    setAboutData(prev => ({
-      ...prev,
-      goals: prev.goals.map((goal, i) => i === index ? newValue : goal)
-    }));
-    setEditingGoal(null);
-  };
-
-  const deleteGoal = (index) => {
-    setAboutData(prev => ({
-      ...prev,
-      goals: prev.goals.filter((_, i) => i !== index)
-    }));
-  };
-
-  // إدارة الأقسام المخصصة
-  const addCustomSection = () => {
-    if (newCustomSection.title.trim() && newCustomSection.content.trim()) {
-      setAboutData(prev => ({
-        ...prev,
-        custom_sections: [...prev.custom_sections, { 
-          ...newCustomSection,
-          id: Date.now() // معرف فريد
-        }]
-      }));
-      setNewCustomSection({
-        title: '',
-        content: '',
-        color: '#2563eb',
-        icon: 'Info'
-      });
-      setCustomSectionDialog(false);
-    }
-  };
-
-  const editCustomSection = (index, updatedSection) => {
-    setAboutData(prev => ({
-      ...prev,
-      custom_sections: prev.custom_sections.map((section, i) => 
-        i === index ? updatedSection : section
-      )
-    }));
-    setEditingCustomSection(null);
-  };
-
-  const deleteCustomSection = (index) => {
-    setAboutData(prev => ({
-      ...prev,
-      custom_sections: prev.custom_sections.filter((_, i) => i !== index)
+      [sectionId]: !prev[sectionId]
     }));
   };
 
@@ -257,79 +265,118 @@ export default function AdminAbout() {
     }));
   };
 
-  useEffect(() => {
-    fetchAboutData();
-  }, []);
+  // دوال إدارة الأقسام
+  const addSection = () => {
+    if (newSection.title.trim() && newSection.content) {
+      const sectionToAdd = {
+        ...newSection,
+        id: `section_${Date.now()}`,
+        order: aboutData.sections.length,
+        content: newSection.type === 'list' && typeof newSection.content === 'string' 
+          ? newSection.content.split('\n').filter(item => item.trim()) 
+          : newSection.content
+      };
+      
+      setAboutData(prev => ({
+        sections: [...prev.sections, sectionToAdd]
+      }));
+      
+      resetSectionForm();
+      setSectionDialog(false);
+    }
+  };
 
-  // مكون العنوان الجميل (مثل الصور)
-  const StyledTitle = ({ title, color, children }) => (
-    <Box sx={{ position: 'relative', mb: 4 }}>
-      <Box
-        sx={{
-          background: `linear-gradient(135deg, ${color}, ${color}dd)`,
-          borderRadius: '50px 0 50px 0',
-          padding: { xs: '12px 24px', md: '16px 32px' },
-          display: 'inline-block',
-          boxShadow: `0 4px 20px ${color}40`,
-          transform: 'skew(-5deg)',
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `linear-gradient(45deg, transparent 30%, ${color}20 50%, transparent 70%)`,
-            animation: 'shine 3s infinite'
-          },
-          '@keyframes shine': {
-            '0%': { transform: 'translateX(-100%)' },
-            '100%': { transform: 'translateX(100%)' }
-          }
-        }}
-      >
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          sx={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontFamily: 'Cairo, sans-serif',
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            transform: 'skew(5deg)',
-            fontSize: { xs: '1.1rem', md: '1.4rem' }
-          }}
-        >
-          {title}
-        </Typography>
-      </Box>
-      {children}
-    </Box>
-  );
+  const editSection = (sectionId, updatedData) => {
+    setAboutData(prev => ({
+      sections: prev.sections.map(section => 
+        section.id === sectionId ? { 
+          ...section, 
+          ...updatedData,
+          content: updatedData.type === 'list' && typeof updatedData.content === 'string'
+            ? updatedData.content.split('\n').filter(item => item.trim())
+            : updatedData.content
+        } : section
+      )
+    }));
+    
+    if (editingSection !== null) {
+      setEditingSection(null);
+      setSectionDialog(false);
+      resetSectionForm();
+    }
+  };
 
-  // مكون القسم القابل للطي مع تصميم محسن
-  const CollapsibleSection = ({ title, children, icon, section, color = '#2563eb' }) => (
+  const deleteSection = (sectionId) => {
+    setAboutData(prev => ({
+      sections: prev.sections.filter(section => section.id !== sectionId)
+    }));
+  };
+
+  const reorderSection = (sectionId, direction) => {
+    const currentIndex = aboutData.sections.findIndex(s => s.id === sectionId);
+    if (
+      (direction === 'up' && currentIndex > 0) ||
+      (direction === 'down' && currentIndex < aboutData.sections.length - 1)
+    ) {
+      const newSections = [...aboutData.sections];
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      
+      // تبديل العناصر
+      [newSections[currentIndex], newSections[targetIndex]] = 
+      [newSections[targetIndex], newSections[currentIndex]];
+      
+      // إعادة تنظيم الـ order
+      newSections.forEach((section, index) => {
+        section.order = index;
+      });
+      
+      setAboutData({ sections: newSections });
+    }
+  };
+
+  const resetSectionForm = () => {
+    setNewSection({
+      title: '',
+      content: '',
+      type: 'text',
+      color: '#2563eb',
+      icon: 'Info'
+    });
+  };
+
+  const openEditDialog = (section) => {
+    setNewSection({
+      ...section,
+      content: section.type === 'list' && Array.isArray(section.content)
+        ? section.content.join('\n')
+        : section.content
+    });
+    setEditingSection(section.id);
+    setSectionDialog(true);
+  };
+
+  // مكون القسم القابل للطي
+  const CollapsibleSection = ({ section, index }) => (
     <Card sx={{ 
       mb: 3, 
       boxShadow: isMobile ? '0 2px 8px rgba(0,0,0,0.1)' : '0 4px 20px rgba(0,0,0,0.1)',
       borderRadius: isMobile ? 3 : 4,
       overflow: 'hidden',
-      border: `2px solid ${color}20`
+      border: `2px solid ${section.color}20`
     }}>
       <Box
-        onClick={() => toggleSection(section)}
+        onClick={() => toggleSection(section.id)}
         sx={{
           p: { xs: 2.5, md: 3.5 },
-          background: `linear-gradient(135deg, ${color}15, ${color}05)`,
-          borderBottom: expandedSections[section] ? `2px solid ${color}20` : 'none',
+          background: `linear-gradient(135deg, ${section.color}15, ${section.color}05)`,
+          borderBottom: expandedSections[section.id] ? `2px solid ${section.color}20` : 'none',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           transition: 'all 0.3s ease',
           '&:hover': {
-            background: `linear-gradient(135deg, ${color}25, ${color}15)`,
+            background: `linear-gradient(135deg, ${section.color}25, ${section.color}15)`,
             transform: 'translateY(-2px)'
           }
         }}
@@ -337,127 +384,262 @@ export default function AdminAbout() {
         <Box sx={{ 
           display: 'flex', 
           alignItems: 'center', 
-          gap: { xs: 2, md: 3 } // تحسين المسافات
+          gap: { xs: 2, md: 3 }
         }}>
           <Box sx={{ 
-            color: color, 
+            color: section.color, 
             display: 'flex',
-            fontSize: { xs: 24, md: 28 } // تحسين حجم الأيقونات
+            fontSize: { xs: 24, md: 28 }
           }}>
-            {icon}
+            {getIcon(section.icon)}
           </Box>
-          <Typography 
-            variant={isMobile ? "h6" : "h5"} 
-            sx={{ 
-              fontWeight: 'bold', 
-              color: color,
-              fontSize: isMobile ? '1.2rem' : '1.4rem'
-            }}
-          >
-            {title}
-          </Typography>
+          <Box>
+            <Typography 
+              variant={isMobile ? "h6" : "h5"} 
+              sx={{ 
+                fontWeight: 'bold', 
+                color: section.color,
+                fontSize: isMobile ? '1.2rem' : '1.4rem'
+              }}
+            >
+              {section.title}
+            </Typography>
+            <Chip 
+              label={section.type === 'list' ? 'قائمة' : 'نص'} 
+              size="small" 
+              sx={{ 
+                mt: 0.5,
+                backgroundColor: `${section.color}20`,
+                color: section.color,
+                fontSize: '0.75rem'
+              }} 
+            />
+          </Box>
         </Box>
         <IconButton 
           sx={{ 
-            color: color,
+            color: section.color,
             '&:hover': {
-              backgroundColor: `${color}20`,
+              backgroundColor: `${section.color}20`,
               transform: 'rotate(180deg)'
             },
             transition: 'all 0.3s ease'
           }}
         >
-          {expandedSections[section] ? <ExpandLess /> : <ExpandMore />}
+          {expandedSections[section.id] ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
       </Box>
       
-      <Collapse in={expandedSections[section]}>
+      <Collapse in={expandedSections[section.id]}>
         <CardContent sx={{ p: { xs: 2.5, md: 3.5 } }}>
-          {children}
+          {/* عرض المحتوى */}
+          <Box sx={{ mb: 3 }}>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 2,
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'flex-start' : 'center',
+              gap: isMobile ? 1.5 : 0
+            }}>
+              <Typography 
+                variant="subtitle1" 
+                sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '1rem' : '1.1rem'
+                }}
+              >
+                المحتوى
+              </Typography>
+              <Button
+                size="small"
+                onClick={() => togglePreview(section.id)}
+                startIcon={previewMode[section.id] ? <Edit /> : <Visibility />}
+                sx={{ 
+                  color: section.color,
+                  fontSize: isMobile ? '0.85rem' : '0.9rem',
+                  minWidth: 'auto',
+                  px: { xs: 1.5, md: 2 },
+                  gap: 1
+                }}
+              >
+                {previewMode[section.id] ? 'تعديل' : 'معاينة'}
+              </Button>
+            </Box>
+            
+            {previewMode[section.id] ? (
+              <Paper sx={{ 
+                p: { xs: 2, md: 2.5 }, 
+                backgroundColor: '#f9f9f9',
+                minHeight: isMobile ? '120px' : '140px',
+                whiteSpace: 'pre-wrap',
+                border: '2px solid #e0e0e0',
+                borderRadius: 3
+              }}>
+                {section.type === 'list' && Array.isArray(section.content) ? (
+                  <Box component="ol" sx={{ m: 0, p: 0, pl: 3 }}>
+                    {section.content.map((item, itemIndex) => (
+                      <Typography 
+                        component="li" 
+                        key={itemIndex}
+                        variant="body1" 
+                        sx={{ 
+                          textAlign: 'right', 
+                          direction: 'rtl',
+                          fontSize: isMobile ? '0.95rem' : '1rem',
+                          lineHeight: 1.7,
+                          mb: 1
+                        }}
+                      >
+                        {item}
+                      </Typography>
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      textAlign: 'right', 
+                      direction: 'rtl',
+                      fontSize: isMobile ? '0.95rem' : '1rem',
+                      lineHeight: 1.7
+                    }}
+                  >
+                    {section.content || 'لا يوجد محتوى'}
+                  </Typography>
+                )}
+              </Paper>
+            ) : (
+              section.type === 'list' ? (
+                <Box>
+                  <Typography variant="body2" sx={{ mb: 1, color: '#666' }}>
+                    عناصر القائمة ({Array.isArray(section.content) ? section.content.length : 0}):
+                  </Typography>
+                  {Array.isArray(section.content) && section.content.map((item, itemIndex) => (
+                    <Box key={itemIndex} sx={{ display: 'flex', gap: 1, mb: 1, alignItems: 'center' }}>
+                      <Typography variant="body2" sx={{ color: section.color, fontWeight: 'bold' }}>
+                        {itemIndex + 1}.
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={item}
+                        onChange={(e) => {
+                          const newContent = [...section.content];
+                          newContent[itemIndex] = e.target.value;
+                          editSection(section.id, { content: newContent });
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            direction: 'rtl',
+                            textAlign: 'right',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => {
+                          const newContent = section.content.filter((_, i) => i !== itemIndex);
+                          editSection(section.id, { content: newContent });
+                        }}
+                        color="error"
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                  <Button
+                    startIcon={<Add />}
+                    onClick={() => {
+                      const newContent = Array.isArray(section.content) ? [...section.content, ''] : [''];
+                      editSection(section.id, { content: newContent });
+                    }}
+                    size="small"
+                    sx={{ mt: 1 }}
+                  >
+                    إضافة عنصر جديد
+                  </Button>
+                </Box>
+              ) : (
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={isMobile ? Math.max(3, 4) : 5}
+                  value={section.content}
+                  onChange={(e) => editSection(section.id, { content: e.target.value })}
+                  variant="outlined"
+                  size={isMobile ? "small" : "medium"}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      direction: 'rtl',
+                      textAlign: 'right',
+                      fontSize: isMobile ? '0.9rem' : '1rem',
+                      borderRadius: 3
+                    }
+                  }}
+                />
+              )
+            )}
+          </Box>
+          
+          {/* أزرار التحكم */}
+          <Box sx={{ 
+            display: 'flex', 
+            gap: 1, 
+            flexWrap: 'wrap',
+            justifyContent: 'flex-end'
+          }}>
+            <Button
+              variant="outlined"
+              startIcon={<Edit />}
+              onClick={() => openEditDialog(section)}
+              size="small"
+              sx={{ fontSize: isMobile ? '0.8rem' : '0.85rem' }}
+            >
+              تعديل القسم
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<Delete />}
+              onClick={() => deleteSection(section.id)}
+              size="small"
+              sx={{ fontSize: isMobile ? '0.8rem' : '0.85rem' }}
+            >
+              حذف
+            </Button>
+            {index > 0 && (
+              <Button
+                variant="outlined"
+                startIcon={<ArrowUpward />}
+                onClick={() => reorderSection(section.id, 'up')}
+                size="small"
+                sx={{ fontSize: isMobile ? '0.8rem' : '0.85rem' }}
+              >
+                ↑
+              </Button>
+            )}
+            {index < aboutData.sections.length - 1 && (
+              <Button
+                variant="outlined"
+                startIcon={<ArrowDownward />}
+                onClick={() => reorderSection(section.id, 'down')}
+                size="small"
+                sx={{ fontSize: isMobile ? '0.8rem' : '0.85rem' }}
+              >
+                ↓
+              </Button>
+            )}
+          </Box>
         </CardContent>
       </Collapse>
     </Card>
   );
 
-  // مكون النص مع المعاينة
-  const TextFieldWithPreview = ({ label, value, onChange, multiline = false, rows = 4, field }) => (
-    <Box>
-      <Box sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between', 
-        mb: 2,
-        flexDirection: isMobile ? 'column' : 'row',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        gap: isMobile ? 1.5 : 0
-      }}>
-        <Typography 
-          variant="subtitle1" 
-          sx={{ 
-            fontWeight: 'bold',
-            fontSize: isMobile ? '1rem' : '1.1rem'
-          }}
-        >
-          {label}
-        </Typography>
-        <Button
-          size="small"
-          onClick={() => togglePreview(field)}
-          startIcon={previewMode[field] ? <Edit /> : <Visibility />}
-          sx={{ 
-            color: '#2563eb',
-            fontSize: isMobile ? '0.85rem' : '0.9rem',
-            minWidth: 'auto',
-            px: { xs: 1.5, md: 2 },
-            gap: 1
-          }}
-        >
-          {previewMode[field] ? 'تعديل' : 'معاينة'}
-        </Button>
-      </Box>
-      
-      {previewMode[field] ? (
-        <Paper sx={{ 
-          p: { xs: 2, md: 2.5 }, 
-          backgroundColor: '#f9f9f9',
-          minHeight: multiline ? (isMobile ? '120px' : '140px') : (isMobile ? '56px' : '64px'),
-          whiteSpace: 'pre-wrap',
-          border: '2px solid #e0e0e0',
-          borderRadius: 3
-        }}>
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              textAlign: 'right', 
-              direction: 'rtl',
-              fontSize: isMobile ? '0.95rem' : '1rem',
-              lineHeight: 1.7
-            }}
-          >
-            {value || 'لا يوجد محتوى'}
-          </Typography>
-        </Paper>
-      ) : (
-        <TextField
-          fullWidth
-          multiline={multiline}
-          rows={multiline ? (isMobile ? Math.max(3, rows - 1) : rows) : 1}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          variant="outlined"
-          size={isMobile ? "small" : "medium"}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              direction: 'rtl',
-              textAlign: 'right',
-              fontSize: isMobile ? '0.9rem' : '1rem',
-              borderRadius: 3
-            }
-          }}
-        />
-      )}
-    </Box>
-  );
+  useEffect(() => {
+    fetchAboutData();
+  }, []);
 
   return (
     <AdminDashboardLayout>
@@ -467,66 +649,65 @@ export default function AdminAbout() {
         fontFamily: 'Cairo, sans-serif',
         pb: isMobile ? 12 : 4
       }}>
-        {/* Header مع تصميم جميل */}
+        {/* Header */}
         <Typography
-  variant="h4"
-  fontWeight={500}
-  sx={{
-    fontFamily: "Cairo, sans-serif",
-    fontSize: { xs: "1.8rem", sm: "2.3rem" },
-    textAlign: "right",
-    mb: 4
-  }}
->
-  إدارة معلومات المركز
-</Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: isMobile ? 'flex-start' : 'center', 
-            mt: 3,
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: isMobile ? 2 : 0
-          }}>
-            <Typography 
-              variant="body1" 
-              sx={{ 
-                color: '#64748b',
-                fontSize: { xs: '0.9rem', md: '2rem' }
-              }}
-            >
-            </Typography>
-            
-            {!isMobile && (
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Button
-                  variant="outlined"
-                  startIcon={<Refresh />}
-                  onClick={fetchAboutData}
-                  disabled={loading}
-                  size="medium"
-                  sx={{ 
-                    gap: 1    // ← المسافة بين الأيقونة والنص
-                  }}
-                >
-                  تحديث
-                </Button>
-                <Button
-                  variant="contained"
-                  startIcon={<Save />}
-                  onClick={saveAboutData}
-                  disabled={saving}
-                  sx={{ background: '#2563eb',
-                     gap: 1
+          variant="h4"
+          fontWeight={500}
+          sx={{
+            fontFamily: "Cairo, sans-serif",
+            fontSize: { xs: "1.8rem", sm: "2.3rem" },
+            textAlign: "right",
+            mb: 4
+          }}
+        >
+          إدارة معلومات المركز
+        </Typography>
 
-                  }}
-                >
-                  {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
-                </Button>
-              </Box>
-            )}
-          </Box>
-
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: isMobile ? 'flex-start' : 'center', 
+          mt: 3,
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? 2 : 0
+        }}>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: '#64748b',
+              fontSize: { xs: '0.9rem', md: '1rem' }
+            }}
+          >
+            إجمالي الأقسام: {aboutData.sections.length}
+          </Typography>
+          
+          {!isMobile && (
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<Refresh />}
+                onClick={fetchAboutData}
+                disabled={loading}
+                size="medium"
+                sx={{ gap: 1 }}
+              >
+                تحديث
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Save />}
+                onClick={saveAboutData}
+                disabled={saving}
+                sx={{ 
+                  background: '#2563eb',
+                  gap: 1
+                }}
+              >
+                {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+              </Button>
+            </Box>
+          )}
+        </Box>
 
         {loading ? (
           <Box sx={{ textAlign: 'center', py: isMobile ? 8 : 12 }}>
@@ -536,335 +717,54 @@ export default function AdminAbout() {
           </Box>
         ) : (
           <Box>
-            {/* أزرار إضافة محتوى جديد */}
-            <Box sx={{ 
-              display: 'flex', 
-              gap: 2, 
-              mb: 4,
-              flexDirection: isMobile ? 'column' : 'row'
-            }}>
-           <Button
-  variant="contained"
-  startIcon={<AddBox />}
-  onClick={() => setCustomSectionDialog(true)}
-  sx={{ 
-    background: '#2563eb',
-    fontSize: isMobile ? '0.9rem' : '1rem',
-    px: 3,
-    py: 1.5,
-    gap: 1,
-    '&:hover': {
-      background: '#1d4ed8'
-    }
-  }}
->
-  إضافة قسم جديد
-</Button>
+            {/* زر إضافة قسم جديد */}
+            <Box sx={{ mb: 4 }}>
+              <Button
+                variant="contained"
+                startIcon={<AddBox />}
+                onClick={() => setSectionDialog(true)}
+                sx={{ 
+                  background: '#2563eb',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  px: 3,
+                  py: 1.5,
+                  gap: 1,
+                  '&:hover': {
+                    background: '#1d4ed8'
+                  }
+                }}
+              >
+                إضافة قسم جديد
+              </Button>
             </Box>
 
-            {/* نبذة عن المركز */}
-            <CollapsibleSection 
-              title="نبذة عن المركز" 
-              icon={<Info />}
-              section="about"
-              color="#2563eb"
-            >
-              <TextFieldWithPreview
-                label="النص التعريفي للمركز"
-                value={aboutData.about_us_text}
-                onChange={(value) => handleInputChange('about_us_text', value)}
-                multiline
-                rows={6}
-                field="about_us_text"
-              />
-            </CollapsibleSection>
-
-            {/* الرؤية */}
-            <CollapsibleSection 
-              title="الرؤية" 
-              icon={<Visibility />}
-              section="vision"
-              color="#10b981"
-            >
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  fullWidth
-                  label="عنوان الرؤية"
-                  value={aboutData.vision_title}
-                  onChange={(e) => handleInputChange('vision_title', e.target.value)}
-                  size={isMobile ? "small" : "medium"}
-                  sx={{ 
-                    mb: 3,
-                    '& .MuiOutlinedInput-root': {
-                      direction: 'rtl',
-                      textAlign: 'right',
-                      borderRadius: 3
-                    }
-                  }}
-                />
-              </Box>
-              <TextFieldWithPreview
-                label="محتوى الرؤية"
-                value={aboutData.vision}
-                onChange={(value) => handleInputChange('vision', value)}
-                multiline
-                rows={5}
-                field="vision"
-              />
-            </CollapsibleSection>
-
-            {/* الرسالة */}
-            <CollapsibleSection 
-              title="الرسالة" 
-              icon={<Edit />}
-              section="message"
-              color="#f59e0b"
-            >
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  fullWidth
-                  label="عنوان الرسالة"
-                  value={aboutData.message_title}
-                  onChange={(e) => handleInputChange('message_title', e.target.value)}
-                  size={isMobile ? "small" : "medium"}
-                  sx={{ 
-                    mb: 3,
-                    '& .MuiOutlinedInput-root': {
-                      direction: 'rtl',
-                      textAlign: 'right',
-                      borderRadius: 3
-                    }
-                  }}
-                />
-              </Box>
-              <TextFieldWithPreview
-                label="محتوى الرسالة"
-                value={aboutData.message}
-                onChange={(value) => handleInputChange('message', value)}
-                multiline
-                rows={5}
-                field="message"
-              />
-            </CollapsibleSection>
-
-            {/* المبررات */}
-            <CollapsibleSection 
-              title="المبررات" 
-              icon={<Subject />}
-              section="justifications"
-              color="#ef4444"
-            >
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  fullWidth
-                  label="عنوان المبررات"
-                  value={aboutData.justifications_title}
-                  onChange={(e) => handleInputChange('justifications_title', e.target.value)}
-                  size={isMobile ? "small" : "medium"}
-                  sx={{ 
-                    mb: 3,
-                    '& .MuiOutlinedInput-root': {
-                      direction: 'rtl',
-                      textAlign: 'right',
-                      borderRadius: 3
-                    }
-                  }}
-                />
-              </Box>
-              <TextFieldWithPreview
-                label="محتوى المبررات"
-                value={aboutData.justifications}
-                onChange={(value) => handleInputChange('justifications', value)}
-                multiline
-                rows={5}
-                field="justifications"
-              />
-            </CollapsibleSection>
-
-            {/* الأهداف */}
-            <CollapsibleSection 
-              title="الأهداف" 
-              icon={<Add />}
-              section="goals"
-              color="#8b5cf6"
-            >
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  fullWidth
-                  label="عنوان الأهداف"
-                  value={aboutData.goals_title}
-                  onChange={(e) => handleInputChange('goals_title', e.target.value)}
-                  size={isMobile ? "small" : "medium"}
-                  sx={{ 
-                    mb: 3,
-                    '& .MuiOutlinedInput-root': {
-                      direction: 'rtl',
-                      textAlign: 'right',
-                      borderRadius: 3
-                    }
-                  }}
-                />
-              </Box>
-              
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center', 
-                mb: 3,
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: isMobile ? 2 : 0
-              }}>
-                <Typography 
-                  variant="subtitle1" 
-                  sx={{ 
-                    fontWeight: 'bold',
-                    fontSize: isMobile ? '1rem' : '1.1rem'
-                  }}
-                >
-                  قائمة الأهداف ({aboutData.goals.length})
+            {/* عرض الأقسام */}
+            {aboutData.sections.length === 0 ? (
+              <Paper sx={{ p: 4, textAlign: 'center', bgcolor: '#f8f9fa' }}>
+                <Typography variant="h6" sx={{ mb: 2, color: '#6c757d' }}>
+                  لا توجد أقسام
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#6c757d', mb: 3 }}>
+                  ابدأ بإضافة قسم جديد لمعلومات المركز
                 </Typography>
                 <Button
                   variant="contained"
-                  startIcon={<Add />}
-                  onClick={() => setGoalDialog(true)}
-                  size={isMobile ? "small" : "medium"}
-                  sx={{ 
-                    backgroundColor: '#8b5cf6',
-                    fontSize: isMobile ? '0.85rem' : '0.9rem',
-                    px: 3
-                  }}
+                  startIcon={<AddBox />}
+                  onClick={() => setSectionDialog(true)}
+                  sx={{ background: '#2563eb' }}
                 >
-                  إضافة هدف
+                  إضافة أول قسم
                 </Button>
-              </Box>
-
-              <List sx={{ p: 0 }}>
-                {aboutData.goals.map((goal, index) => (
-                  <ListItem
-                    key={index}
-                    sx={{
-                      border: '2px solid #e0e0e0',
-                      borderRadius: 3,
-                      mb: 2,
-                      backgroundColor: '#f9f9f9',
-                      p: { xs: 2, md: 3 },
-                      flexDirection: isMobile ? 'column' : 'row',
-                      alignItems: isMobile ? 'flex-start' : 'center'
-                    }}
-                  >
-                    <ListItemText
-                      primary={
-                        editingGoal === index ? (
-                          <TextField
-                            fullWidth
-                            value={goal}
-                            onChange={(e) => editGoal(index, e.target.value)}
-                            onBlur={() => setEditingGoal(null)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                setEditingGoal(null);
-                              }
-                            }}
-                            autoFocus
-                            size={isMobile ? "small" : "medium"}
-                            multiline={isMobile}
-                            rows={isMobile ? 2 : 1}
-                          />
-                        ) : (
-                          <Typography sx={{ 
-                            textAlign: 'right',
-                            fontSize: isMobile ? '0.95rem' : '1rem',
-                            lineHeight: 1.6,
-                            fontWeight: 500
-                          }}>
-                            {index + 1}. {goal}
-                          </Typography>
-                        )
-                      }
-                      sx={{ mb: isMobile ? 2 : 0 }}
-                    />
-                  <Box sx={{
-  position: isMobile ? 'static' : 'absolute',
-  left: isMobile ? 'auto' : 16,
-  transform: isMobile ? 'none' : 'translateY(-50%)',
-  top: isMobile ? 'auto' : '50%',
-  display: 'flex',
-  gap: 1
-}}>
-  <IconButton
-    onClick={() => setEditingGoal(index)}
-    size={isMobile ? "small" : "medium"}
-  >
-    <Edit fontSize={isMobile ? "small" : "medium"} />
-  </IconButton>
-  <IconButton
-    onClick={() => deleteGoal(index)}
-    color="error"
-    size={isMobile ? "small" : "medium"}
-  >
-    <Delete fontSize={isMobile ? "small" : "medium"} />
-  </IconButton>
-</Box>
-                  </ListItem>
-                ))}
-              </List>
-            </CollapsibleSection>
-
-            {/* الأقسام المخصصة */}
-            {aboutData.custom_sections.map((section, index) => (
-              <CollapsibleSection
-                key={section.id || index}
-                title={section.title}
-                icon={getIcon(section.icon)}
-                section={`custom_${index}`}
-                color={section.color}
-              >
-                <Box>
-                  <TextFieldWithPreview
-                    label={`محتوى ${section.title}`}
-                    value={section.content}
-                    onChange={(value) => {
-                      const updatedSections = [...aboutData.custom_sections];
-                      updatedSections[index] = { ...section, content: value };
-                      setAboutData(prev => ({ ...prev, custom_sections: updatedSections }));
-                    }}
-                    multiline
-                    rows={5}
-                    field={`custom_${index}`}
-                  />
-                  
-                  {/* أزرار التحكم في القسم المخصص */}
-                  <Box sx={{ 
-                    display: 'flex', 
-                    gap: 2, 
-                    mt: 3,
-                    justifyContent: 'flex-end'
-                  }}>
-                    <Button
-                      variant="outlined"
-                      startIcon={<Edit />}
-                      onClick={() => {
-                        setNewCustomSection(section);
-                        setEditingCustomSection(index);
-                        setCustomSectionDialog(true);
-                      }}
-                      size="small"
-                    >
-                      تعديل القسم
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      startIcon={<Delete />}
-                      onClick={() => deleteCustomSection(index)}
-                      size="small"
-                    >
-                      حذف القسم
-                    </Button>
-                  </Box>
-                </Box>
-              </CollapsibleSection>
-            ))}
+              </Paper>
+            ) : (
+              aboutData.sections.map((section, index) => (
+                <CollapsibleSection
+                  key={section.id}
+                  section={section}
+                  index={index}
+                />
+              ))
+            )}
           </Box>
         )}
 
@@ -880,54 +780,49 @@ export default function AdminAbout() {
             gap: 2,
             justifyContent: 'center'
           }}>
-<Fab
-  variant="extended"
-  onClick={fetchAboutData}
-  disabled={loading}
-  sx={{
-    backgroundColor: 'white',
-    color: '#2563eb',
-    border: '1px solid #2563eb',
-    gap: 1,
-    '&:hover': {
-      backgroundColor: '#f1f5f9'
-    }
-  }}
->
-  <Refresh />
-  تحديث
-</Fab>
-        <Fab
-  variant="extended"
-  onClick={saveAboutData}
-  disabled={saving}
-  sx={{
-    backgroundColor: '#2563eb',
-    color: 'white',
-    gap: 1,
-    '&:hover': {
-      backgroundColor: '#1d4ed8'
-    }
-  }}
->
-  <Save />
-  {saving ? 'حفظ...' : 'حفظ'}
-</Fab>
+            <Fab
+              variant="extended"
+              onClick={fetchAboutData}
+              disabled={loading}
+              sx={{
+                backgroundColor: 'white',
+                color: '#2563eb',
+                border: '1px solid #2563eb',
+                gap: 1,
+                '&:hover': {
+                  backgroundColor: '#f1f5f9'
+                }
+              }}
+            >
+              <Refresh />
+              تحديث
+            </Fab>
+            <Fab
+              variant="extended"
+              onClick={saveAboutData}
+              disabled={saving}
+              sx={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                gap: 1,
+                '&:hover': {
+                  backgroundColor: '#1d4ed8'
+                }
+              }}
+            >
+              <Save />
+              {saving ? 'حفظ...' : 'حفظ'}
+            </Fab>
           </Box>
         )}
 
-        {/* Dialog لإضافة/تعديل قسم مخصص */}
+        {/* Dialog لإضافة/تعديل قسم */}
         <Dialog 
-          open={customSectionDialog} 
+          open={sectionDialog} 
           onClose={() => {
-            setCustomSectionDialog(false);
-            setEditingCustomSection(null);
-            setNewCustomSection({
-              title: '',
-              content: '',
-              color: '#2563eb',
-              icon: 'Info'
-            });
+            setSectionDialog(false);
+            setEditingSection(null);
+            resetSectionForm();
           }}
           maxWidth="md" 
           fullWidth
@@ -941,7 +836,7 @@ export default function AdminAbout() {
             background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
             borderBottom: '2px solid #e2e8f0'
           }}>
-            {editingCustomSection !== null ? 'تعديل القسم' : 'إضافة قسم جديد'}
+            {editingSection ? 'تعديل القسم' : 'إضافة قسم جديد'}
           </DialogTitle>
           
           <DialogContent sx={{ p: { xs: 2, md: 3 }, direction: 'rtl' }}>
@@ -951,8 +846,8 @@ export default function AdminAbout() {
                 <TextField
                   fullWidth
                   label="عنوان القسم"
-                  value={newCustomSection.title}
-                  onChange={(e) => setNewCustomSection(prev => ({ ...prev, title: e.target.value }))}
+                  value={newSection.title}
+                  onChange={(e) => setNewSection(prev => ({ ...prev, title: e.target.value }))}
                   variant="outlined"
                   size={isMobile ? "small" : "medium"}
                   sx={{
@@ -965,13 +860,32 @@ export default function AdminAbout() {
                 />
               </Grid>
 
+              {/* نوع القسم */}
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth size={isMobile ? "small" : "medium"}>
+                  <InputLabel>نوع القسم</InputLabel>
+                  <Select
+                    value={newSection.type}
+                    onChange={(e) => setNewSection(prev => ({ ...prev, type: e.target.value }))}
+                    label="نوع القسم"
+                    sx={{ direction: 'rtl' }}
+                  >
+                    {sectionTypes.map((type) => (
+                      <MenuItem key={type.value} value={type.value}>
+                        {type.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
               {/* اختيار اللون */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <FormControl fullWidth size={isMobile ? "small" : "medium"}>
                   <InputLabel>لون القسم</InputLabel>
                   <Select
-                    value={newCustomSection.color}
-                    onChange={(e) => setNewCustomSection(prev => ({ ...prev, color: e.target.value }))}
+                    value={newSection.color}
+                    onChange={(e) => setNewSection(prev => ({ ...prev, color: e.target.value }))}
                     label="لون القسم"
                     sx={{ direction: 'rtl' }}
                   >
@@ -997,12 +911,12 @@ export default function AdminAbout() {
               </Grid>
 
               {/* اختيار الأيقونة */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <FormControl fullWidth size={isMobile ? "small" : "medium"}>
                   <InputLabel>أيقونة القسم</InputLabel>
                   <Select
-                    value={newCustomSection.icon}
-                    onChange={(e) => setNewCustomSection(prev => ({ ...prev, icon: e.target.value }))}
+                    value={newSection.icon}
+                    onChange={(e) => setNewSection(prev => ({ ...prev, icon: e.target.value }))}
                     label="أيقونة القسم"
                     sx={{ direction: 'rtl' }}
                   >
@@ -1026,37 +940,52 @@ export default function AdminAbout() {
                 <Paper
                   sx={{
                     p: 2,
-                    background: `linear-gradient(135deg, ${newCustomSection.color}15, ${newCustomSection.color}05)`,
-                    border: `2px solid ${newCustomSection.color}20`,
+                    background: `linear-gradient(135deg, ${newSection.color}15, ${newSection.color}05)`,
+                    border: `2px solid ${newSection.color}20`,
                     borderRadius: 3
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ color: newCustomSection.color, fontSize: 24 }}>
-                      {getIcon(newCustomSection.icon)}
+                    <Box sx={{ color: newSection.color, fontSize: 24 }}>
+                      {getIcon(newSection.icon)}
                     </Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: newCustomSection.color,
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {newCustomSection.title || 'عنوان القسم'}
-                    </Typography>
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: newSection.color,
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {newSection.title || 'عنوان القسم'}
+                      </Typography>
+                      <Chip 
+                        label={newSection.type === 'list' ? 'قائمة' : 'نص'} 
+                        size="small" 
+                        sx={{ 
+                          mt: 0.5,
+                          backgroundColor: `${newSection.color}20`,
+                          color: newSection.color,
+                          fontSize: '0.75rem'
+                        }} 
+                      />
+                    </Box>
                   </Box>
                 </Paper>
               </Grid>
 
               {/* محتوى القسم */}
               <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+                  {newSection.type === 'list' ? 'عناصر القائمة (عنصر في كل سطر):' : 'محتوى القسم:'}
+                </Typography>
                 <TextField
                   fullWidth
                   multiline
                   rows={isMobile ? 4 : 6}
-                  label="محتوى القسم"
-                  value={newCustomSection.content}
-                  onChange={(e) => setNewCustomSection(prev => ({ ...prev, content: e.target.value }))}
+                  label={newSection.type === 'list' ? 'اكتب كل عنصر في سطر منفصل' : 'محتوى القسم'}
+                  value={newSection.content}
+                  onChange={(e) => setNewSection(prev => ({ ...prev, content: e.target.value }))}
                   variant="outlined"
                   size={isMobile ? "small" : "medium"}
                   sx={{
@@ -1067,6 +996,11 @@ export default function AdminAbout() {
                     }
                   }}
                 />
+                {newSection.type === 'list' && (
+                  <Typography variant="caption" sx={{ mt: 1, display: 'block', color: '#666' }}>
+                    مثال: اكتب كل عنصر في سطر منفصل
+                  </Typography>
+                )}
               </Grid>
             </Grid>
           </DialogContent>
@@ -1078,14 +1012,9 @@ export default function AdminAbout() {
           }}>
             <Button 
               onClick={() => {
-                setCustomSectionDialog(false);
-                setEditingCustomSection(null);
-                setNewCustomSection({
-                  title: '',
-                  content: '',
-                  color: '#2563eb',
-                  icon: 'Info'
-                });
+                setSectionDialog(false);
+                setEditingSection(null);
+                resetSectionForm();
               }}
               size={isMobile ? "small" : "medium"}
             >
@@ -1093,86 +1022,20 @@ export default function AdminAbout() {
             </Button>
             <Button 
               onClick={() => {
-                if (editingCustomSection !== null) {
-                  editCustomSection(editingCustomSection, newCustomSection);
-                  setEditingCustomSection(null);
+                if (editingSection) {
+                  editSection(editingSection, newSection);
                 } else {
-                  addCustomSection();
-                }
-                setCustomSectionDialog(false);
-                setNewCustomSection({
-                  title: '',
-                  content: '',
-                  color: '#2563eb',
-                  icon: 'Info'
-                });
-              }}
-              variant="contained" 
-              disabled={!newCustomSection.title.trim() || !newCustomSection.content.trim()}
-              size={isMobile ? "small" : "medium"}
-              sx={{
-                background: `linear-gradient(135deg, ${newCustomSection.color}, ${newCustomSection.color}dd)`
-              }}
-            >
-              {editingCustomSection !== null ? 'تعديل' : 'إضافة'}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog لإضافة هدف جديد */}
-        <Dialog 
-          open={goalDialog} 
-          onClose={() => setGoalDialog(false)} 
-          maxWidth="sm" 
-          fullWidth
-          fullScreen={isSmallMobile}
-        >
-          <DialogTitle sx={{ 
-            textAlign: 'right', 
-            direction: 'rtl',
-            fontSize: isMobile ? '1.2rem' : '1.5rem',
-            fontWeight: 'bold',
-            background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-            color: 'white'
-          }}>
-            إضافة هدف جديد
-          </DialogTitle>
-          <DialogContent sx={{ p: { xs: 2, md: 3 } }}>
-            <TextField
-              fullWidth
-              multiline
-              rows={isMobile ? 3 : 4}
-              label="نص الهدف"
-              value={newGoal}
-              onChange={(e) => setNewGoal(e.target.value)}
-              sx={{ 
-                mt: 2,
-                '& .MuiOutlinedInput-root': {
-                  direction: 'rtl',
-                  textAlign: 'right',
-                  borderRadius: 3
+                  addSection();
                 }
               }}
-              size={isMobile ? "small" : "medium"}
-            />
-          </DialogContent>
-          <DialogActions sx={{ direction: 'rtl', p: { xs: 2, md: 3 } }}>
-            <Button 
-              onClick={() => setGoalDialog(false)}
-              size={isMobile ? "small" : "medium"}
-            >
-              إلغاء
-            </Button>
-            <Button 
-              onClick={addGoal} 
               variant="contained" 
-              disabled={!newGoal.trim()}
+              disabled={!newSection.title.trim() || !newSection.content}
               size={isMobile ? "small" : "medium"}
               sx={{
-                background: 'linear-gradient(135deg, #8b5cf6, #a855f7)'
+                background: `linear-gradient(135deg, ${newSection.color}, ${newSection.color}dd)`
               }}
             >
-              إضافة
+              {editingSection ? 'تعديل' : 'إضافة'}
             </Button>
           </DialogActions>
         </Dialog>
