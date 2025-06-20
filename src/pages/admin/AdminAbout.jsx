@@ -468,7 +468,18 @@ export default function AdminAbout() {
         pb: isMobile ? 12 : 4
       }}>
         {/* Header مع تصميم جميل */}
-        <StyledTitle title="إدارة معلومات المركز" color="#1976d2">
+        <Typography
+  variant="h4"
+  fontWeight={500}
+  sx={{
+    fontFamily: "Cairo, sans-serif",
+    fontSize: { xs: "1.8rem", sm: "2.3rem" },
+    textAlign: "right",
+    mb: 4
+  }}
+>
+  إدارة معلومات المركز
+</Typography>
           <Box sx={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
@@ -481,10 +492,9 @@ export default function AdminAbout() {
               variant="body1" 
               sx={{ 
                 color: '#64748b',
-                fontSize: { xs: '0.9rem', md: '1rem' }
+                fontSize: { xs: '0.9rem', md: '2rem' }
               }}
             >
-              قم بتعديل وإدارة جميع معلومات المركز من هنا
             </Typography>
             
             {!isMobile && (
@@ -495,6 +505,9 @@ export default function AdminAbout() {
                   onClick={fetchAboutData}
                   disabled={loading}
                   size="medium"
+                  sx={{ 
+                    gap: 1    // ← المسافة بين الأيقونة والنص
+                  }}
                 >
                   تحديث
                 </Button>
@@ -503,14 +516,17 @@ export default function AdminAbout() {
                   startIcon={<Save />}
                   onClick={saveAboutData}
                   disabled={saving}
-                  sx={{ background: '#2563eb' }}
+                  sx={{ background: '#2563eb',
+                     gap: 1
+
+                  }}
                 >
                   {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
                 </Button>
               </Box>
             )}
           </Box>
-        </StyledTitle>
+
 
         {loading ? (
           <Box sx={{ textAlign: 'center', py: isMobile ? 8 : 12 }}>
@@ -527,19 +543,23 @@ export default function AdminAbout() {
               mb: 4,
               flexDirection: isMobile ? 'column' : 'row'
             }}>
-              <Button
-                variant="contained"
-                startIcon={<AddBox />}
-                onClick={() => setCustomSectionDialog(true)}
-                sx={{ 
-                  background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-                  fontSize: isMobile ? '0.9rem' : '1rem',
-                  px: 3,
-                  py: 1.5
-                }}
-              >
-                إضافة قسم جديد
-              </Button>
+           <Button
+  variant="contained"
+  startIcon={<AddBox />}
+  onClick={() => setCustomSectionDialog(true)}
+  sx={{ 
+    background: '#2563eb',
+    fontSize: isMobile ? '0.9rem' : '1rem',
+    px: 3,
+    py: 1.5,
+    gap: 1,
+    '&:hover': {
+      background: '#1d4ed8'
+    }
+  }}
+>
+  إضافة قسم جديد
+</Button>
             </Box>
 
             {/* نبذة عن المركز */}
@@ -763,29 +783,28 @@ export default function AdminAbout() {
                       }
                       sx={{ mb: isMobile ? 2 : 0 }}
                     />
-                    <ListItemSecondaryAction sx={{
-                      position: isMobile ? 'static' : 'absolute',
-                      right: isMobile ? 'auto' : 16,
-                      transform: isMobile ? 'none' : 'translateY(-50%)',
-                      top: isMobile ? 'auto' : '50%'
-                    }}>
-                      <IconButton
-                        edge="end"
-                        onClick={() => setEditingGoal(index)}
-                        sx={{ ml: isMobile ? 0 : 1, mr: 1 }}
-                        size={isMobile ? "small" : "medium"}
-                      >
-                        <Edit fontSize={isMobile ? "small" : "medium"} />
-                      </IconButton>
-                      <IconButton
-                        edge="end"
-                        onClick={() => deleteGoal(index)}
-                        color="error"
-                        size={isMobile ? "small" : "medium"}
-                      >
-                        <Delete fontSize={isMobile ? "small" : "medium"} />
-                      </IconButton>
-                    </ListItemSecondaryAction>
+                  <Box sx={{
+  position: isMobile ? 'static' : 'absolute',
+  left: isMobile ? 'auto' : 16,
+  transform: isMobile ? 'none' : 'translateY(-50%)',
+  top: isMobile ? 'auto' : '50%',
+  display: 'flex',
+  gap: 1
+}}>
+  <IconButton
+    onClick={() => setEditingGoal(index)}
+    size={isMobile ? "small" : "medium"}
+  >
+    <Edit fontSize={isMobile ? "small" : "medium"} />
+  </IconButton>
+  <IconButton
+    onClick={() => deleteGoal(index)}
+    color="error"
+    size={isMobile ? "small" : "medium"}
+  >
+    <Delete fontSize={isMobile ? "small" : "medium"} />
+  </IconButton>
+</Box>
                   </ListItem>
                 ))}
               </List>
@@ -861,37 +880,39 @@ export default function AdminAbout() {
             gap: 2,
             justifyContent: 'center'
           }}>
-            <Fab
-              variant="extended"
-              onClick={fetchAboutData}
-              disabled={loading}
-              sx={{
-                backgroundColor: 'white',
-                color: '#2563eb',
-                border: '1px solid #2563eb',
-                '&:hover': {
-                  backgroundColor: '#f1f5f9'
-                }
-              }}
-            >
-              <Refresh sx={{ mr: 1 }} />
-              تحديث
-            </Fab>
-            <Fab
-              variant="extended"
-              onClick={saveAboutData}
-              disabled={saving}
-              sx={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: '#1d4ed8'
-                }
-              }}
-            >
-              <Save sx={{ mr: 1 }} />
-              {saving ? 'حفظ...' : 'حفظ'}
-            </Fab>
+<Fab
+  variant="extended"
+  onClick={fetchAboutData}
+  disabled={loading}
+  sx={{
+    backgroundColor: 'white',
+    color: '#2563eb',
+    border: '1px solid #2563eb',
+    gap: 1,
+    '&:hover': {
+      backgroundColor: '#f1f5f9'
+    }
+  }}
+>
+  <Refresh />
+  تحديث
+</Fab>
+        <Fab
+  variant="extended"
+  onClick={saveAboutData}
+  disabled={saving}
+  sx={{
+    backgroundColor: '#2563eb',
+    color: 'white',
+    gap: 1,
+    '&:hover': {
+      backgroundColor: '#1d4ed8'
+    }
+  }}
+>
+  <Save />
+  {saving ? 'حفظ...' : 'حفظ'}
+</Fab>
           </Box>
         )}
 
