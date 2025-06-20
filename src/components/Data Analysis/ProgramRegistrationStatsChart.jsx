@@ -13,9 +13,35 @@ import { db } from '../firebase';
 import DateRangePicker from '../layout/common/DateRangePicker';
 import dayjs from 'dayjs';
 import { Box, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { PieChart, Pie, Cell, Legend } from 'recharts';
 
-function useProgramRegistrationStats(fromDate, toDate, selectedCategory) {
+const COLORS = ['#003366', '#b67bb2'];
+
+export default function ProgramStatsChart() {
+  const startOfYear = dayjs().startOf('year');
+  const endOfYear = dayjs().endOf('year');
+
+  const [fromDate, setFromDate] = useState(startOfYear);
+  const [toDate, setToDate] = useState(endOfYear);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [categories, setCategories] = useState([]);
   const [stats, setStats] = useState([]);
+  const [genderCounts, setGenderCounts] = useState({ male: 0, female: 0 });
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      const programsSnapshot = await getDocs(collection(db, 'programs'));
+      const categorySet = new Set();
+      programsSnapshot.forEach(doc => {
+        const category = doc.data().category;
+        if (Array.isArray(category)) category.forEach(cat => categorySet.add(cat));
+        else if (category) categorySet.add(category);
+      });
+      setCategories([...categorySet]);
+    };
+
+    fetchMetadata();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,88 +55,71 @@ function useProgramRegistrationStats(fromDate, toDate, selectedCategory) {
           const startDate = data.startDate?.toDate?.();
           const matchesCategory = !selectedCategory || (Array.isArray(data.category) && data.category.includes(selectedCategory));
 
-          if (
-            startDate &&
-            startDate >= fromDate.toDate() &&
-            startDate <= toDate.toDate() &&
-            matchesCategory
-          ) {
+          if (startDate && startDate >= fromDate.toDate() && startDate <= toDate.toDate() && matchesCategory) {
             filteredProgramIds.push(doc.id);
             programMap[doc.id] = {
-            name: data.name || doc.id,
-            startDate: startDate?.toLocaleDateString('en-GB') || '', // Format: DD/MM/YYYY
-           };
+              name: data.name || doc.id,
+              startDate: startDate.toLocaleDateString('en-GB') || '',
+            };
           }
         });
 
         const regSnapshot = await getDocs(collection(db, 'programRegistrations'));
         const counts = {};
+        let male = 0, female = 0;
 
-        regSnapshot.forEach(doc => {
-          const data = doc.data();
-          const programId = data.programId;
+regSnapshot.forEach(doc => {
+  const data = doc.data();
+  const programId = data.programId;
 
-          if (filteredProgramIds.includes(programId)) {
-            counts[programId] = (counts[programId] || 0) + 1;
-          }
-        });
+  if (filteredProgramIds.includes(programId)) {
+    if (!counts[programId]) {
+      counts[programId] = { registrations: 0, male: 0, female: 0 };
+    }
 
-   const formatted = Object.entries(counts).map(([id, count]) => ({
-  name: programMap[id]?.name || id,
-  startDate: programMap[id]?.startDate || '',
-  registrations: count,
-})).sort((a, b) => b.registrations - a.registrations);
+    counts[programId].registrations += 1;
+
+    if (data.gender === 'זכר') {
+      counts[programId].male += 1;
+      male += 1;
+    } else if (data.gender === 'נקבה') {
+      counts[programId].female += 1;
+      female += 1;
+    }
+  }
+});
+
+const formatted = Object.entries(counts)
+  .map(([id, data]) => ({
+    name: programMap[id]?.name || id,
+    startDate: programMap[id]?.startDate || '',
+    registrations: data.registrations,
+    male: data.male,
+    female: data.female
+  }))
+  .sort((a, b) => b.registrations - a.registrations)
+  .slice(0, 10);
+
 
         setStats(formatted);
+        setGenderCounts({ male, female });
       } catch (err) {
-        console.error('Error fetching filtered stats', err.message);
+        console.error('Error fetching stats:', err.message);
       }
     };
 
-    if (fromDate && toDate) {
-      fetchData();
-    }
+    if (fromDate && toDate) fetchData();
   }, [fromDate, toDate, selectedCategory]);
 
-  return stats;
-}
-
-export default function ProgramStatsChart() {
-  const startOfYear = dayjs().startOf('year');
-  const endOfYear = dayjs().endOf('year');
-
-  const [fromDate, setFromDate] = useState(startOfYear);
-  const [toDate, setToDate] = useState(endOfYear);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const programsSnapshot = await getDocs(collection(db, 'programs'));
-        const categorySet = new Set();
-        programsSnapshot.forEach(doc => {
-          const category = doc.data().category;
-          if (Array.isArray(category)) {
-            category.forEach(cat => categorySet.add(cat));
-          } else if (category) {
-            categorySet.add(category);
-          }
-        });
-        setCategories([...categorySet]);
-      } catch (error) {
-        console.error('Error loading filters:', error);
-      }
-    };
-
-    fetchMetadata();
-  }, []);
-
-  const stats = useProgramRegistrationStats(fromDate, toDate, selectedCategory);
+  const genderChartData = [
+    { name: 'ذكر', value: genderCounts.male },
+    { name: 'أنثى', value: genderCounts.female }
+  ];
+const totalParticipants = genderCounts.male + genderCounts.female;
 
   return (
     <Box dir="rtl">
-      <Box display="flex" flexWrap="wrap" gap={2} mb={2}  justifyContent="center">
+      <Box display="flex" flexWrap="wrap" gap={2} mb={2} justifyContent="center">
         <DateRangePicker
           fromDate={fromDate}
           toDate={toDate}
@@ -133,45 +142,79 @@ export default function ProgramStatsChart() {
         </FormControl>
       </Box>
 
-      <Box sx={{ width: '100%', minHeight: 400, display: 'flex', justifyContent: 'center' }} dir="ltr">
-        {stats.length === 0 ? (
-          <Typography color="text.secondary" align="center" sx={{ mt: 8 }}>
-            لا توجد بيانات لعرضها ضمن الفترة أو الفلاتر المحددة.
-          </Typography>
-        ) : (
-          <ResponsiveContainer width="90%" height={Math.max(400, stats.length * 50)}>
-            <BarChart
-              data={stats}
-              layout="vertical"
-              margin={{ top: 10, right: 200, left: 0, bottom: 10 }}
-              barCategoryGap={10}
-            >
-              <XAxis type="number" allowDecimals={false} />
-<YAxis
-  dataKey="name"
-  type="category"
-  width={250}
-  tickFormatter={(value, index) => {
-    const program = stats[index];
-    return `${value} (${program.startDate})`;
-  }}
-  tick={{ fontSize: 14 }}
-/>
-         <Tooltip
-  formatter={(value) => [`${value} مسجل`, 'عدد المسجلين']}
-  labelFormatter={(label, props) => {
-    const program = props?.[0]?.payload;
-    return program ? `${program.name} - ${program.startDate}` : label;
-  }}
-  wrapperStyle={{ direction: 'rtl' }}
-/>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
+        <Box sx={{ width: '100%', maxWidth: 700, minHeight: 400 }} dir="ltr">
+          {stats.length === 0 ? (
+            <Typography color="text.secondary" align="center" sx={{ mt: 8 }}>
+              لا توجد بيانات لعرضها ضمن الفترة أو الفلاتر المحددة.
+            </Typography>
+          ) : (
+            <ResponsiveContainer width="100%" height={Math.max(400, stats.length * 50)}>
+       <BarChart
+  data={stats}
+  layout="vertical"
+  margin={{ top: 10, right: 200, left: 0, bottom: 10 }}
+  barCategoryGap={10}
+>
+  <XAxis type="number" allowDecimals={false} />
+  <YAxis
+    dataKey="name"
+    type="category"
+    width={250}
+    tickFormatter={(value, index) => {
+      const program = stats[index];
+      return `${value} (${program.startDate})`;
+    }}
+    tick={{ fontSize: 14 }}
+  />
+  <Tooltip
+    formatter={(value, name) => [`${value} ${name === 'ذكور' ? 'ذكر' : 'أنثى'}`, 'عدد المشاركين']}
+    labelFormatter={(label, props) => {
+      const program = props?.[0]?.payload;
+      return program ? `${program.name} - ${program.startDate}` : label;
+    }}
+    wrapperStyle={{ direction: 'rtl' }}
+  />
+  <Bar dataKey="male" stackId="a" fill="#003366" name="ذكور" />
+  <Bar dataKey="female" stackId="a" fill="#b67bb2" name="إناث" />
+  <Bar dataKey="registrations" stackId="a" fill="transparent">
+    <LabelList dataKey="registrations" position="right" formatter={(value) => `${value} مشارك`} />
+  </Bar>
+</BarChart>
 
-              <Bar dataKey="registrations" fill="#003366" radius={[0, 8, 8, 0]}>
-                <LabelList dataKey="registrations" position="right" />
-              </Bar>
-            </BarChart>
+
+            </ResponsiveContainer>
+          )}
+        </Box>
+
+        <Box sx={{ width: 300, height: 300, mt: 5 }}>
+          <ResponsiveContainer width="100%" height="100%">
+         <PieChart>
+  <Pie
+    data={genderChartData}
+    cx="50%"
+    cy="50%"
+    innerRadius={60}
+    outerRadius={100}
+    fill="#8884d8"
+    paddingAngle={3}
+    dataKey="value"
+  >
+    {genderChartData.map((entry, index) => (
+      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+    ))}
+  </Pie>
+  <Legend />
+<Tooltip 
+  formatter={(value) => {
+    const percent = totalParticipants > 0 ? ((value / totalParticipants) * 100).toFixed(1) : 0;
+    return [`${percent}%`, 'النسبة'];
+  }} 
+/>
+</PieChart>
+
           </ResponsiveContainer>
-        )}
+        </Box>
       </Box>
     </Box>
   );
