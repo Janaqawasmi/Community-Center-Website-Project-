@@ -28,7 +28,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import NavButton from './components/Buttons/NavButton';
+import NavButton from './components/layout/Buttons/NavButton';
 
 const NAV_ITEMS = [
   { label: 'الرئيسية', path: '/' },

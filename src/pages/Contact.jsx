@@ -13,7 +13,7 @@ import { sendMessage } from '../utils/contact_firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
-import RoundedButton from '../components/Buttons/RoundedButton'; 
+import RoundedButton from '../components/layout/Buttons/RoundedButton'; 
 import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
 
 export default function Contact() {
