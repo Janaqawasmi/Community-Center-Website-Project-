@@ -183,7 +183,7 @@ useEffect(() => {
   <QuickLinksSection sections={sections} />
 </Box>   
 
-<Box sx={{ mt: { xs: 4, md: 8 }, px: { xs: 2, md: 30 } }}>
+<Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
           <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#003366' }}>
              التقويم والفعاليات
            </Typography>
