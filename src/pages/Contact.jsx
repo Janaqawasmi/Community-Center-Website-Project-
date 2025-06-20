@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid, TextField, Typography, Button, Paper, Box, Snackbar, useMediaQuery
 } from '@mui/material';
@@ -30,7 +30,10 @@ export default function Contact() {
   const buttonColor = ' #005588';
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
-  
+  // إضافة useCallback لمنع إعادة التحميل
+    const handleCaptchaChange = useCallback((value) => {
+      setCaptchaVerified(!!value);
+    }, []);
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -66,6 +69,25 @@ export default function Contact() {
     fetchDepartments();
   }, []);
 
+  // إضافة useEffect لحل مشكلة reCAPTCHA
+    useEffect(() => {
+      // حل مشكلة Cross-Origin لـ reCAPTCHA
+      if (typeof window !== 'undefined') {
+        // تنظيف السكريبت السابق إن وجد
+        const existingScript = document.querySelector('script[src*="recaptcha"]');
+        if (existingScript) {
+          existingScript.remove();
+        }
+        
+        // إضافة سكريبت reCAPTCHA جديد
+        const script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    }, []);
+
   const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
@@ -90,18 +112,22 @@ export default function Contact() {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      await sendMessage(values);
-      showSnackbar("✅ تم إرسال الرسالة بنجاح");
-      resetForm();
-      setCaptchaVerified(false);
-    } catch (err) {
-      showSnackbar("حدث خطأ أثناء إرسال الرسالة", 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+   setIsLoading(true);
+       try {
+         await sendMessage(values);
+         showSnackbar("✅ تم إرسال الرسالة بنجاح");
+         resetForm();
+         setCaptchaVerified(false);
+         // إعادة تعيين reCAPTCHA
+         if (window.grecaptcha) {
+           window.grecaptcha.reset();
+         }
+       } catch (err) {
+         showSnackbar("حدث خطأ أثناء إرسال الرسالة", 'error');
+       } finally {
+         setIsLoading(false);
+       }
+     };
 
   return (
     <Box  mb={8} sx={{  direction: "rtl" }}>
@@ -231,71 +257,87 @@ export default function Contact() {
           </Grid>
         </Grid>
 
-        {/* Contact Form */}
-        <Box id="contact-form" sx={{ mb: 0 }}>
-          <PrettyCard title="أرسل لنا رسالة">
+    {/* Contact Form */}
+        <Box id="contact-form" sx={{ mb: 4 }}>
+          <PrettyCard title="أرسل لنا رسالة" color={buttonColor}>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
+              enableReinitialize={false}
+              validateOnMount={false}
             >
               {({ values, errors, touched, handleChange }) => (
                 <Form noValidate>
-                  <Grid container spacing={1.5}>
+                  <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="الاسم" name="first_name"
-                        value={values.first_name} onChange={handleChange}
+                        fullWidth 
+                        placeholder="الاسم" 
+                        name="first_name"
+                        value={values.first_name} 
+                        onChange={handleChange}
                         error={touched.first_name && Boolean(errors.first_name)}
                         helperText={touched.first_name && errors.first_name}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="اسم العائلة" name="last_name"
-                        value={values.last_name} onChange={handleChange}
+                        fullWidth 
+                        placeholder="اسم العائلة" 
+                        name="last_name"
+                        value={values.last_name} 
+                        onChange={handleChange}
                         error={touched.last_name && Boolean(errors.last_name)}
                         helperText={touched.last_name && errors.last_name}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
 
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="البريد الإلكتروني" name="email"
-                        type="email" value={values.email} onChange={handleChange}
+                        fullWidth 
+                        placeholder="البريد الإلكتروني" 
+                        name="email"
+                        type="email" 
+                        value={values.email} 
+                        onChange={handleChange}
                         error={touched.email && Boolean(errors.email)}
                         helperText={touched.email && errors.email}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="رقم الهاتف" name="phone"
-                        type="tel" value={values.phone} onChange={handleChange}
+                        fullWidth 
+                        placeholder="رقم الهاتف" 
+                        name="phone"
+                        type="tel" 
+                        value={values.phone} 
+                        onChange={handleChange}
                         error={touched.phone && Boolean(errors.phone)}
                         helperText={touched.phone && errors.phone}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
@@ -304,10 +346,12 @@ export default function Contact() {
                         select
                         fullWidth
                         name="department"
+                        placeholder="اختر القسم"
                         value={values.department}
                         onChange={handleChange}
                         SelectProps={{ 
-                          native: true
+                          native: true,
+                          displayEmpty: true
                         }}
                         error={touched.department && Boolean(errors.department)}
                         helperText={touched.department && errors.department}
@@ -333,16 +377,20 @@ export default function Contact() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        fullWidth label="موضوع الرسالة" name="message"
-                        multiline rows={3} value={values.message}
+                        fullWidth 
+                        placeholder="موضوع الرسالة" 
+                        name="message"
+                        multiline 
+                        rows={4} 
+                        value={values.message}
                         onChange={handleChange}
                         error={touched.message && Boolean(errors.message)}
                         helperText={touched.message && errors.message}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
@@ -350,7 +398,21 @@ export default function Contact() {
                     <Grid item xs={12} textAlign="center">
                       <ReCAPTCHA
                         sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
-                        onChange={(val) => setCaptchaVerified(!!val)}
+                        onChange={handleCaptchaChange}
+                        onExpired={() => {
+                          setCaptchaVerified(false);
+                          console.log('reCAPTCHA expired');
+                        }}
+                        onError={(error) => {
+                          setCaptchaVerified(false);
+                          console.error('reCAPTCHA error:', error);
+                        }}
+                        onLoadCallback={() => {
+                          console.log('reCAPTCHA loaded successfully');
+                        }}
+                        size="normal"
+                        theme="light"
+                        hl="ar"
                       />
                     </Grid>
 
@@ -364,12 +426,13 @@ export default function Contact() {
                           padding: '12px 32px',
                           fontSize: '1.2rem',
                           fontWeight: 'bold',
+                          fontFamily: 'Cairo, sans-serif',
                           cursor: isLoading ? 'not-allowed' : 'pointer',
                           color: '#FFFFFF',
                           background: isLoading 
                             ? 'linear-gradient(180deg, #999 0%, #666 100%)' 
                             : headerGradient,
-                          borderRadius: '28px',
+                          borderRadius: '30px',
                           border: 'none',
                           minWidth: '150px',
                           minHeight: '50px',
