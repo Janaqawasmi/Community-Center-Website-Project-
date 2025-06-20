@@ -1,7 +1,7 @@
 // src/components/sections/SectionScrollButton.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import RoundedButton from '../Buttons/RoundedButton'; // ✅ Adjust path if needed
+import RoundedButton from '../layout/Buttons/RoundedButton'; // ✅ Adjust path if needed
 
 const SectionScrollButton = ({ label, sectionId, sectionColor = '#003366', targetId }) => {
   const navigate = useNavigate();

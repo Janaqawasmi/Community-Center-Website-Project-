@@ -26,7 +26,8 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
   return (
 <Card
   sx={{
-    height: "100%",
+    width: "100%",
+    height: "100%", // 🔁 FIXED: fills FlipCard height
     borderRadius: 4,
     p: 2,
     backgroundColor: " #ffffff",

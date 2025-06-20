@@ -26,7 +26,7 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import PersonIcon from '@mui/icons-material/Person';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
-import RoundedButton from "../components/Buttons/RoundedButton";
+import RoundedButton from "../components/layout/Buttons/RoundedButton";
 
 const programFields = [
   { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
@@ -90,10 +90,11 @@ export default function ProgramPage() {
   );
 
   return (
-    <Box sx={{  direction: "rtl" }}>
+    <Box  sx={{  direction: "rtl" }} >
+      <Box mb={8}>
       <HeroSection pageId="programs" />
-
-      <Container sx={{ pt: 8, pb: 8 }} dir="rtl">
+      </Box>
+      <Container sx={{ pb: 4 }} dir="rtl">
         {/* Search Bar */}
         <Box
           sx={{
