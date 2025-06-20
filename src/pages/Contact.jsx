@@ -259,7 +259,7 @@ export default function Contact() {
 
     {/* Contact Form */}
         <Box id="contact-form" sx={{ mb: 4 }}>
-          <PrettyCard title="أرسل لنا رسالة" color={buttonColor}>
+          <PrettyCard title="أرسل لنا رسالة">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
