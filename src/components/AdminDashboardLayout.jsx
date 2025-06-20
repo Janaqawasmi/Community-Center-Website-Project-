@@ -2,15 +2,19 @@ import React from 'react';
 import { AppBar, Box, Toolbar, Button, Typography, Avatar, IconButton, Divider } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AdminPanelSettings, Dashboard, EventNote, Article, Category, QuestionAnswer, CalendarMonth, ExitToApp } from '@mui/icons-material';
+import ListAlt from '@mui/icons-material/ListAlt'; // أيقونة قائمة "بديلة" (تشبه جدول)
 
 const sections = [
   { label: 'لوحة التحكم', path: '/admin/dashboard', icon: <Dashboard /> },
-  { label: 'البرامج', path: '/admin/programs', icon: <Category /> },
+  { label: 'الدورات', path: '/admin/programs', icon: <Category /> },
+    { label: 'الفعاليات', path: '/admin/events', icon: <EventNote /> },
+    
   { label: 'الأخبار', path: '/admin/news', icon: <Article /> },
   { label: 'الأقسام', path: '/admin/sections', icon: <Category /> },
-  { label: 'الفعاليات', path: '/admin/events', icon: <EventNote /> },
   { label: 'الاستفسارات', path: '/admin/inquiries', icon: <QuestionAnswer /> },
   { label: 'التقويم', path: '/admin/calendar', icon: <CalendarMonth /> },
+{ label: 'التسجيلات', path: '/admin/registrations', icon: <ListAlt /> },
+
 ];
 
 export default function AdminDashboardLayout({ children }) {

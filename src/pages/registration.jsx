@@ -119,7 +119,7 @@ const title =
     value={value || ''}
     onClick={onClick}
     inputProps={{ readOnly: true, style: { cursor: 'pointer' } }}
-    sx={{ mb: 2, height: '56px', width: 335 }} // height نفس باقي الحقول (56px هو الافتراضي في MUI)
+    sx={{ mb: 2, height: '56px', width: 325 }} // height نفس باقي الحقول (56px هو الافتراضي في MUI)
     error={error}
     helperText={helperText}
   />
@@ -188,7 +188,7 @@ clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
               onSubmit={async  e => {
                 if (step === 2) {
                   submitRegistration(e, form, setForm);
-                 await decrementCapacity({ programName, eventName }); // إنقاص السعة بعد التسجيل
+                // await decrementCapacity({ programName, eventName }); // إنقاص السعة بعد التسجيل
 
                 } else {
                   e.preventDefault();
@@ -202,8 +202,7 @@ clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                   
-                  label={RequiredLabel("الاسم الشخصي")}
+                      label={RequiredLabel("الاسم الشخصي باللغة العبرية")}
                       fullWidth
                       variant="outlined"
                       name="FirstName"
@@ -239,7 +238,7 @@ clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                     label={RequiredLabel("اسم العائلة")}
+                     label={RequiredLabel("اسم اسم العائلة باللغة العبرية")}
                       fullWidth
                       variant="outlined"
                       name="lastName"
@@ -303,8 +302,8 @@ clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
                      helperText={errors.gender}
                     >
                       <MenuItem value="">اختر الجنس</MenuItem>
-                      <MenuItem value="ذكر">ذكر</MenuItem>
-                      <MenuItem value="أنثى">أنثى</MenuItem>
+                      <MenuItem value="זכר">ذكر</MenuItem>
+                      <MenuItem value="נקבה">أنثى</MenuItem>
                     </TextField>
                   </Grid>
 

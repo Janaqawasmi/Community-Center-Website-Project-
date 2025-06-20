@@ -15,12 +15,14 @@ import NewsDetail from '../pages/NewsDetail';
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import Login from '../pages/Login';
 import ProtectedAdminRoute from './ProtectedAdminRoute'; // ✅ NEW
-import AdminPrograms from '../pages/admin/AdminPrograms';
+import AdminPrograms from '../pages/admin/AdminProgramEvents/AdminPrograms';
 import AdminWelcome from '../pages/admin/AdminWelcome'; // ✅ FIXED
 import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
-import AdminEvents from '../pages/admin/AdminEvents';
+import AdminEvents from '../pages/admin/AdminProgramEvents/AdminEvents';
 import AdminCalendar from '../pages/admin/AdminCalendar';
+import AdminRegistrationsMainPage from '../pages/admin/AdminRegistrations/AdminRegistrationsMainPage'; 
+
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -107,6 +109,15 @@ function AppRoutes({ sections }) {
   element={
     <ProtectedAdminRoute>
       <AdminCalendar />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/registrations"
+  element={
+    <ProtectedAdminRoute>
+      <AdminRegistrationsMainPage />
     </ProtectedAdminRoute>
   }
 />

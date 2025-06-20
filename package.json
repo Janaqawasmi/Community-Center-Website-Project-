@@ -19,6 +19,7 @@
     "@mui/material": "^5.17.1",
     "aos": "^2.3.4",
     "browser-image-compression": "^2.0.2",
+    "file-saver": "^2.0.5",
     "firebase": "^11.6.0",
     "formik": "^2.4.6",
     "framer-motion": "^12.11.4",
@@ -33,6 +34,7 @@
     "react-select": "^5.10.1",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
+    "xlsx": "^0.18.5",
     "yup": "^1.6.1"
   },
   "devDependencies": {
