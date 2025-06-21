@@ -72,18 +72,38 @@ export default function AdminItemsManager({
 
   // ==== FILTERS OPTIONS ====
   function getFilterOptions(fieldName) {
-    return ["الكل", ...Array.from(new Set(items.map(x => x[fieldName]).filter(x => x && x !== "")))];
+  if (fieldName === "category" && Array.isArray(categoryOptions)) {
+    return ["الكل", ...categoryOptions];
   }
+  if (fieldName === "featured") {
+    return ["الكل", "مميز فقط", "غير مميز فقط"];
+  }
+  return ["الكل", ...Array.from(new Set(items.map(x => x[fieldName]).filter(x => x && x !== "")))];
+}
+
+
 
   // ==== FILTERED DATA ====
   const filteredItems = items.filter(item =>
-    (!showArchived ? item.isActive !== false : item.isActive === false) &&
-    (!showFeatured || item.featured === true) &&
-    filters.every(filter => {
-      const val = filterValues[filter] || "الكل";
-      return val === "الكل" || item[filter] === val;
-    })
-  );
+  (!showArchived ? item.isActive !== false : item.isActive === false) &&
+  (!showFeatured || item.featured === true) &&
+  filters.every(filter => {
+  const val = filterValues[filter] || "الكل";
+  if (val === "الكل") return true;
+
+  if (filter === "category" && Array.isArray(item[filter])) {
+    return item[filter].includes(val);
+  }
+  if (filter === "featured") {
+    if (val === "مميز فقط") return item[filter] === true;
+    if (val === "غير مميز فقط") return item[filter] === false;
+    return true;
+  }
+  return item[filter] === val;
+})
+
+);
+
 
   // ==== DATE FORMATTING ====
   const formatDateTime = (ts) => {
@@ -244,6 +264,8 @@ export default function AdminItemsManager({
             {getFilterOptions(filter).map((op, idx) => (
               <option key={idx} value={op}>{op}</option>
             ))}
+
+
           </TextField>
         </Box>
       ))}
@@ -254,7 +276,7 @@ export default function AdminItemsManager({
           <TableHead>
             <TableRow>
               {fields.map(f => (
-                <TableCell key={f.name}>{f.label}</TableCell>
+                <TableCell key={f.name}>{f.label} </TableCell>
               ))}
               <TableCell>مميزة؟</TableCell>
               <TableCell>الحالة</TableCell>
@@ -274,8 +296,10 @@ export default function AdminItemsManager({
                 {fields.map(f =>
                   <TableCell key={f.name}>
                     {/* التاريخ أو الوقت */}
-                    {(f.name === "date" || f.name === "time") ? formatDateTime(item[f.name]) :
-                      item[f.name]}
+                    {(f.name === "date" || f.name === "time") ? formatDateTime(item[f.name])
+    : f.name === "category"
+      ? (item["category"] || []).join(", ")
+      : item[f.name]}
                   </TableCell>
                 )}
                 <TableCell>
@@ -409,6 +433,8 @@ value={form.category || []}
                 onChange={e => setForm({ ...form, isActive: e.target.checked })}
                 color="primary"
               />
+
+
             }
             label={`${itemLabel} فعّالة (غير مؤرشفة)`}
             sx={{ mt: 1 }}

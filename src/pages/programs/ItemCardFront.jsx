@@ -19,7 +19,6 @@ const date = config.getDate
   <Card
   sx={{
     width: "100%",
-    maxWidth: highlight ? { md: "650px" } : "100%",
     height: "100%", // 🔁 FIXED: fills FlipCard height
     borderRadius: 5,
     border: "1px solid #ccc",
@@ -30,14 +29,13 @@ const date = config.getDate
     flexDirection: "column",
     alignItems: "center",
     textAlign: "center",
-    fontFamily: "Arial, sans-serif",
     position: "relative",
     mx: "auto", // center horizontally
     overflow: "hidden",
 
   }}
 >
-      <Box sx={{ position: "relative", width: "100%", height: 180 }}>
+      <Box sx={{ position: "relative", width: "100%", height: 170 }}>
         <Box
           sx={{
             position: "absolute",
@@ -52,7 +50,7 @@ const date = config.getDate
           sx={{
             position: "absolute",
             width: "100%",
-            height: "98%",
+            height: "99%",
             top: 0,
             left: 0,
             clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",

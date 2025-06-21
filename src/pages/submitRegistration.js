@@ -70,6 +70,8 @@ export async function submitRegistration(e, formData, setForm) {
     groupNumber: formData.groupNumber || '',
     digit5: formData.digit5 || '',
     registrationDate: new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }),
+    archived: false,
+
   };
 
   if (age >= 18) {

@@ -1,6 +1,3 @@
-// AdminProgramAndEventRegistrations.jsx
-// ملف يضم الجدولين في تبويبات: دورات، فعاليات
-
 import React, { useState } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import AdminRegistrationsTable from "./AdminRegistrationsTable";
@@ -12,25 +9,21 @@ export default function AdminRegistrationsMainPage() {
 
   return (
     <AdminDashboardLayout>
-      
       <Box sx={{ p: 4 }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
           <Tab label="تسجيلات الدورات" />
           <Tab label="تسجيلات الفعاليات" />
-            <Tab label="كل التسجيلات" />
-
-          
+          <Tab label="كل التسجيلات" />
+          <Tab label="أرشيف التسجيلات" /> {/* ✅ أضف تبويب جديد للأرشيف */}
         </Tabs>
         {tab === 0 && <AdminRegistrationsTable collectionName="programRegistrations" label="تسجيلات الدورات" />}
         {tab === 1 && <AdminRegistrationsTable collectionName="eventRegistrations" label="تسجيلات الفعاليات" />}
         {tab === 2 && <AdminAllRegistrationsPage />}
-
-        
-        
-        
+        {tab === 3 && (
+          // ✅ مرر خاصية archivedOnly ليظهر فقط المؤرشف
+          <AdminAllRegistrationsPage archivedOnly={true} />
+        )}
       </Box>
     </AdminDashboardLayout>
-
-    
   );
 }

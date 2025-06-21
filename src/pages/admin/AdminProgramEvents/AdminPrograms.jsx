@@ -8,13 +8,15 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AdminDashboardLayout from "../../../components/AdminDashboardLayout";
+import CategoryManager from './CategoryManager'; // استيراد ملف التصنيفات
 
 export default function AdminPrograms() {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [openCategoriesDialog, setOpenCategoriesDialog] = useState(false);
-  const [newCategory, setNewCategory] = useState('');
-  const [openAddDialog, setOpenAddDialog] = useState(false);
+    const [categoriesChanged, setCategoriesChanged] = useState(false); // لمزامنة التحديثات
 
+  
+  
   // جلب التصنيفات من فايرستور
   const fetchCategories = async () => {
     const snap = await getDocs(collection(db, "programCategories"));
@@ -28,75 +30,32 @@ export default function AdminPrograms() {
     fetchCategories();
   }, []);
 
-  // حذف تصنيف
-  const handleDeleteCategory = async (categoryId) => {
-    if (window.confirm("هل أنت متأكد من حذف هذا التصنيف؟")) {
-      await deleteDoc(doc(db, "programCategories", categoryId));
-      fetchCategories();
-    }
-  };
+  
 
   // إضافة تصنيف جديد
-  const handleAddCategory = async () => {
-    if (newCategory.trim() === '') return;
-    await addDoc(collection(db, "programCategories"), { name: newCategory.trim() });
-    setNewCategory('');
-    fetchCategories();
-  };
+ 
 
   return (
             <AdminDashboardLayout>
-    
-    
-      {/* العنوان وزر إدارة التصنيفات وزر إضافة دورة */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-       
-        <Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            sx={{ mr: 150, mt: 4 }}
-            onClick={() => setOpenCategoriesDialog(true)}
-          >
-            إدارة التصنيفات
-          </Button>
-        </Box>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+        <Button sx={{ mt: 4, ml: 2 }}
+          variant="outlined"
+          color="primary"
+          
+          onClick={() => setOpenCategoriesDialog(true)}
+        >
+          إدارة التصنيفات
+        </Button>
       </Box>
 
-      {/* Dialog إدارة التصنيفات */}
-      <Dialog open={openCategoriesDialog} onClose={() => setOpenCategoriesDialog(false)}>
-        <DialogTitle>إدارة التصنيفات</DialogTitle>
-        <DialogContent>
-          <List>
-            {categoryOptions.map(cat => (
-              <ListItem key={cat.id}
-                secondaryAction={
-                  <IconButton edge="end" color="error" onClick={() => handleDeleteCategory(cat.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                }>
-                <ListItemText primary={cat.name} />
-              </ListItem>
-            ))}
-          </List>
-          <TextField
-            fullWidth
-            margin="dense"
-            label="تصنيف جديد"
-            value={newCategory}
-            onChange={e => setNewCategory(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') handleAddCategory();
-            }}
-          />
-          <Button variant="contained" color="primary" onClick={handleAddCategory} sx={{ mt: 1 }}>
-            إضافة تصنيف
-          </Button>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenCategoriesDialog(false)}>إغلاق</Button>
-        </DialogActions>
-      </Dialog>
+      <CategoryManager
+        open={openCategoriesDialog}
+        onClose={() => setOpenCategoriesDialog(false)}
+        onCategoriesChanged={() => setCategoriesChanged(!categoriesChanged)} // لمزامنة التحديث
+      />
+    
+      
+      
 
       <AdminItemsManager
         collectionName="programs"
@@ -116,6 +75,7 @@ export default function AdminPrograms() {
         filters={["category", "classNumber", "groupNumber", "featured"]}
         categoryOptions={categoryOptions.map(c => c.name)}
         fetchCategories={fetchCategories}
+        key={categoriesChanged}
       />
     </AdminDashboardLayout>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid, TextField, Typography, Button, Paper, Box, Snackbar, useMediaQuery
 } from '@mui/material';
@@ -13,6 +13,8 @@ import { sendMessage } from '../utils/contact_firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
+import RoundedButton from '../components/layout/Buttons/RoundedButton'; 
+import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
 
 export default function Contact() {
   const theme = useTheme();
@@ -25,74 +27,13 @@ export default function Contact() {
   const [departments, setDepartments] = useState([]);
 
   // لون للزر - التدرج الأزرق الجديد
-  const buttonColor = '#005588';
+  const buttonColor = ' #005588';
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
-  // دالة مساعدة لتغميق اللون
-  const darkenColor = (hex, amount) => {
-    const num = parseInt(hex.replace('#', ''), 16);
-    let r = (num >> 16) - amount * 255;
-    let g = ((num >> 8) & 0x00FF) - amount * 255;
-    let b = (num & 0x0000FF) - amount * 255;
-
-    r = Math.max(0, Math.min(255, r));
-    g = Math.max(0, Math.min(255, g));
-    b = Math.max(0, Math.min(255, b));
-
-    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-  };
-
-  // PrettyCard component
-  const PrettyCard = ({ title, color, children }) => {
-    return (
-      <Box
-        sx={{
-          position: 'relative',
-          borderRadius: '28px',
-          p: { xs: 3, sm: 4 },
-          mt: 5,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
-          overflow: 'hidden',
-          direction: 'rtl',
-          fontFamily: 'Cairo, sans-serif',
-          minHeight: '200px',
-        }}
-      >
-        {/* Top-Right Title Badge */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            height: { xs: '40px', sm: '40px' },
-            minWidth: 'fit-content',
-            padding: '0 20px',
-            background: headerGradient,
-            borderBottomLeftRadius: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: { xs: '1rem', sm: '1.1rem' },
-            zIndex: 2,
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-          }}
-        >
-          {title}
-        </Box>
-
-        {/* Card Body */}
-        <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-          {children}
-        </Box>
-      </Box>
-    );
-  };
+  // إضافة useCallback لمنع إعادة التحميل
+    const handleCaptchaChange = useCallback((value) => {
+      setCaptchaVerified(!!value);
+    }, []);
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -128,6 +69,25 @@ export default function Contact() {
     fetchDepartments();
   }, []);
 
+  // إضافة useEffect لحل مشكلة reCAPTCHA
+    useEffect(() => {
+      // حل مشكلة Cross-Origin لـ reCAPTCHA
+      if (typeof window !== 'undefined') {
+        // تنظيف السكريبت السابق إن وجد
+        const existingScript = document.querySelector('script[src*="recaptcha"]');
+        if (existingScript) {
+          existingScript.remove();
+        }
+        
+        // إضافة سكريبت reCAPTCHA جديد
+        const script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    }, []);
+
   const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
@@ -152,22 +112,26 @@ export default function Contact() {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      await sendMessage(values);
-      showSnackbar("✅ تم إرسال الرسالة بنجاح");
-      resetForm();
-      setCaptchaVerified(false);
-    } catch (err) {
-      showSnackbar("حدث خطأ أثناء إرسال الرسالة", 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+   setIsLoading(true);
+       try {
+         await sendMessage(values);
+         showSnackbar("✅ تم إرسال الرسالة بنجاح");
+         resetForm();
+         setCaptchaVerified(false);
+         // إعادة تعيين reCAPTCHA
+         if (window.grecaptcha) {
+           window.grecaptcha.reset();
+         }
+       } catch (err) {
+         showSnackbar("حدث خطأ أثناء إرسال الرسالة", 'error');
+       } finally {
+         setIsLoading(false);
+       }
+     };
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box  mb={8} sx={{  direction: "rtl" }}>
+      <Box mb={8}>
         <HeroSection pageId="contactUs" />
       </Box>
 
@@ -178,96 +142,24 @@ export default function Contact() {
             display: 'flex',
             justifyContent: 'right',
             mt: 0,
-            mb: 0.1,
-            px: 2,
+            mb: 4,
+            px: 0,
             direction: 'rtl',
           }}
         >
-          <Button
-            disableRipple
-            onClick={() => {
-              document.getElementById('contact-form').scrollIntoView({ 
-                behavior: 'smooth' 
-              });
-            }}
-            sx={{
-              position: 'relative',
-              padding: '10px 26px',
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              fontFamily: 'Cairo, sans-serif',
-              cursor: 'pointer',
-              color: buttonColor,
-              backgroundColor: 'transparent',
-              borderRadius: '30px',
-              overflow: 'hidden',
-              transition: 'all 0.4s ease-in-out',
-              boxShadow: `15px 15px 15px ${buttonColor}`,
-              textTransform: 'none',
-              minWidth: 'auto',
-
-              '&:focus:not(:focus-visible)': {
-                outline: 'none',
-              },
-
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '30px',
-                height: '30px',
-                border: `0px solid transparent`,
-                borderTopColor: buttonColor,
-                borderRightColor: buttonColor,
-                borderTopRightRadius: '22px',
-                transition: 'all 0.3s ease-in-out',
-                boxSizing: 'border-box',
-              },
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                width: '30px',
-                height: '30px',
-                border: `0px solid transparent`,
-                borderBottomColor: buttonColor,
-                borderLeftColor: buttonColor,
-                borderBottomLeftRadius: '22px',
-                transition: 'all 0.3s ease-in-out',
-                boxSizing: 'border-box',
-              },
-              '&:hover::before': {
-                width: '100%',
-                height: '100%',
-                border: `2px solid ${buttonColor}`,
-                borderRadius: '30px',
-                borderLeft: 'none',
-                borderBottom: 'none',
-              },
-              '&:hover::after': {
-                width: '100%',
-                height: '100%',
-                border: `2px solid ${buttonColor}`,
-                borderRadius: '30px',
-                borderRight: 'none',
-                borderTop: 'none',
-                textShadow: '0 0 5px rgba(0,0,0,0.1)',
-              },
-              '&:hover': {
-                boxShadow: '0 3px 12px rgba(0,0,0,0.1)',
-              },
-            }}
-          >
-            أرسل رسالة
-          </Button>
+         <RoundedButton
+  label="أرسل رسالة"
+  onClick={() => {
+    document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' });
+  }}
+  color={buttonColor}
+/>
         </Box>
 
         {/* معلومات التواصل في PrettyCard */}
         <Grid container spacing={4} mb={3}>
           <Grid item xs={12}>
-            <PrettyCard title="معلومات التواصل" color={buttonColor}>
+            <PrettyCard title="معلومات التواصل" >
               {siteInfo && (
                 <Grid container spacing={3}>
                   {/* العنوان والهاتف في نفس السطر */}
@@ -294,7 +186,7 @@ export default function Contact() {
                                   width: 40,
                                   height: 40,
                                   borderRadius: '50%',
-                                  backgroundColor: '#2D9CDB',
+                                  backgroundColor: ' #2D9CDB',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -365,71 +257,87 @@ export default function Contact() {
           </Grid>
         </Grid>
 
-        {/* Contact Form */}
+    {/* Contact Form */}
         <Box id="contact-form" sx={{ mb: 4 }}>
-          <PrettyCard title="أرسل لنا رسالة" color={buttonColor}>
+          <PrettyCard title="أرسل لنا رسالة">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
+              enableReinitialize={false}
+              validateOnMount={false}
             >
               {({ values, errors, touched, handleChange }) => (
                 <Form noValidate>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="الاسم" name="first_name"
-                        value={values.first_name} onChange={handleChange}
+                        fullWidth 
+                        placeholder="الاسم" 
+                        name="first_name"
+                        value={values.first_name} 
+                        onChange={handleChange}
                         error={touched.first_name && Boolean(errors.first_name)}
                         helperText={touched.first_name && errors.first_name}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="اسم العائلة" name="last_name"
-                        value={values.last_name} onChange={handleChange}
+                        fullWidth 
+                        placeholder="اسم العائلة" 
+                        name="last_name"
+                        value={values.last_name} 
+                        onChange={handleChange}
                         error={touched.last_name && Boolean(errors.last_name)}
                         helperText={touched.last_name && errors.last_name}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
 
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="البريد الإلكتروني" name="email"
-                        type="email" value={values.email} onChange={handleChange}
+                        fullWidth 
+                        placeholder="البريد الإلكتروني" 
+                        name="email"
+                        type="email" 
+                        value={values.email} 
+                        onChange={handleChange}
                         error={touched.email && Boolean(errors.email)}
                         helperText={touched.email && errors.email}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        fullWidth label="رقم الهاتف" name="phone"
-                        type="tel" value={values.phone} onChange={handleChange}
+                        fullWidth 
+                        placeholder="رقم الهاتف" 
+                        name="phone"
+                        type="tel" 
+                        value={values.phone} 
+                        onChange={handleChange}
                         error={touched.phone && Boolean(errors.phone)}
                         helperText={touched.phone && errors.phone}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
@@ -438,10 +346,12 @@ export default function Contact() {
                         select
                         fullWidth
                         name="department"
+                        placeholder="اختر القسم"
                         value={values.department}
                         onChange={handleChange}
                         SelectProps={{ 
-                          native: true
+                          native: true,
+                          displayEmpty: true
                         }}
                         error={touched.department && Boolean(errors.department)}
                         helperText={touched.department && errors.department}
@@ -467,16 +377,20 @@ export default function Contact() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        fullWidth label="موضوع الرسالة" name="message"
-                        multiline rows={4} value={values.message}
+                        fullWidth 
+                        placeholder="موضوع الرسالة" 
+                        name="message"
+                        multiline 
+                        rows={4} 
+                        value={values.message}
                         onChange={handleChange}
                         error={touched.message && Boolean(errors.message)}
                         helperText={touched.message && errors.message}
                         inputProps={{ 
                           style: { textAlign: 'right', direction: 'rtl' }
                         }}
-                        InputLabelProps={{
-                          style: { right: 24, left: 'auto', transformOrigin: 'top right' }
+                        InputProps={{
+                          style: { direction: 'rtl' }
                         }}
                       />
                     </Grid>
@@ -484,7 +398,21 @@ export default function Contact() {
                     <Grid item xs={12} textAlign="center">
                       <ReCAPTCHA
                         sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
-                        onChange={(val) => setCaptchaVerified(!!val)}
+                        onChange={handleCaptchaChange}
+                        onExpired={() => {
+                          setCaptchaVerified(false);
+                          console.log('reCAPTCHA expired');
+                        }}
+                        onError={(error) => {
+                          setCaptchaVerified(false);
+                          console.error('reCAPTCHA error:', error);
+                        }}
+                        onLoadCallback={() => {
+                          console.log('reCAPTCHA loaded successfully');
+                        }}
+                        size="normal"
+                        theme="light"
+                        hl="ar"
                       />
                     </Grid>
 

@@ -1,4 +1,5 @@
 import AdminItemsManager from './AdminItemsManager';
+import AdminDashboardLayout from "../../../components/AdminDashboardLayout";
 
 export default function AdminEvents() {
   return (

@@ -20,6 +20,7 @@ import {
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import HeroSection from "../components/HeroSection";
+import PrettyCard from '../components/layout/PrettyCard';
 
 export default function About() {
   const [aboutData, setAboutData] = useState(null);
@@ -64,74 +65,6 @@ export default function About() {
     return text.substring(0, maxLength) + '...';
   };
 
-  // دالة مساعدة لتغميق اللون
-  const darkenColor = (hex, amount) => {
-    const num = parseInt(hex.replace('#', ''), 16);
-    let r = (num >> 16) - amount * 255;
-    let g = ((num >> 8) & 0x00FF) - amount * 255;
-    let b = (num & 0x0000FF) - amount * 255;
-
-    r = Math.max(0, Math.min(255, r));
-    g = Math.max(0, Math.min(255, g));
-    b = Math.max(0, Math.min(255, b));
-
-    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-  };
-
-  // PrettyCard component
-  const PrettyCard = ({ title, color, children, section }) => {
-    const gradient = cardGradients[section] || `linear-gradient(135deg, ${color}, ${darkenColor(color, 0.2)})`;
-    
-    return (
-      <Box
-        sx={{
-          position: 'relative',
-          borderRadius: '28px',
-          p: { xs: 3, sm: 4 },
-          mt: 5,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, 0.3)",
-          overflow: 'hidden',
-          direction: 'rtl',
-          fontFamily: 'Cairo, sans-serif',
-          minHeight: '200px',
-        }}
-      >
-        {/* Top-Right Title Badge */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            height: { xs: '40px', sm: '40px' },
-            minWidth: 'fit-content',
-            padding: '0 20px',
-            background: gradient,
-            borderBottomLeftRadius: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: { xs: '1rem', sm: '1.1rem' },
-            zIndex: 2,
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-          }}
-        >
-          {title}
-        </Box>
-
-        {/* Card Body */}
-        <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444', pt: { xs: 5, sm: 6 } }}>
-          {children}
-        </Box>
-      </Box>
-    );
-  };
-
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -157,15 +90,15 @@ export default function About() {
 
   if (!aboutData) {
     return (
-      <Container sx={{ py: 10 }}>
+      <Container sx={{ py: 10}}>
         <Typography align="center">جاري تحميل معلومات عن المركز...</Typography>
       </Container>
     );
   }
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box mb={0} sx={{ direction: "rtl" }}>
+      <Box  mb={8} >
         <HeroSection pageId="aboutUs" />
       </Box>
 
@@ -174,7 +107,7 @@ export default function About() {
         {/* الفقرة التعريفية */}
         <PrettyCard 
           title="نبذة عن المركز" 
-          color={cardColors.about}
+          color={cardGradients.about}
           section="about"
         >
           <Typography 
@@ -212,7 +145,7 @@ export default function About() {
             </Grid>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 3 }}>
+          <Box sx={{ textAlign: 'center', mt: 6 }}>
             <Typography
               onClick={() => toggleSection('about')}
               sx={{
@@ -221,7 +154,6 @@ export default function About() {
                 fontSize: '1rem',
                 cursor: 'pointer',
                 textDecoration: 'underline',
-                fontFamily: 'Cairo, sans-serif',
                 '&:hover': {
                   color: '#1565c0',
                   textDecoration: 'underline',
@@ -237,7 +169,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.vision_title} 
-            color={cardColors.vision}
+            color={cardGradients.vision}
             section="vision"
           >
             <Typography
@@ -278,7 +210,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.message_title} 
-            color={cardColors.message}
+            color={cardGradients.message}
             section="message"
           >
             <Typography
@@ -319,7 +251,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.justifications_title} 
-            color={cardColors.justifications}
+            color={cardGradients.justifications}
             section="justifications"
           >
             <Typography
@@ -360,7 +292,7 @@ export default function About() {
         {expandedSections.about && (
           <PrettyCard 
             title={aboutData.goals_title} 
-            color={cardColors.goals}
+            color={cardGradients.goals}
             section="goals"
           >
             <Box component="ol" sx={{ px: 2 }}>

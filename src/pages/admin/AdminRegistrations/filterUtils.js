@@ -6,11 +6,12 @@ export const getUniqueValues = (data, key) =>
   [...new Set(data.map(r => r[key]).filter(Boolean))];
 
 // دالة الفلترة حسب الفلاتر المختلفة
-export const filterRegistrations = (data, { classNumber, groupNumber, search, paidOnly }) => {
+export const filterRegistrations = (data, { classNumber, groupNumber, search, paidOnly, archivedOnly }) => {
   let filtered = data;
   if (classNumber) filtered = filtered.filter(r => r.classNumber?.toString() === classNumber.toString());
   if (groupNumber) filtered = filtered.filter(r => r.groupNumber?.toString() === groupNumber.toString());
   if (paidOnly !== null && paidOnly !== undefined) filtered = filtered.filter(r => !!r.paid === paidOnly);
+  if (archivedOnly !== null && archivedOnly !== undefined) filtered = filtered.filter(r => !!r.archive === (archivedOnly === "archived"));
   if (search && search.trim()) {
     const q = search.trim().toLowerCase();
     filtered = filtered.filter(r =>
@@ -25,3 +26,4 @@ export const filterRegistrations = (data, { classNumber, groupNumber, search, pa
   }
   return filtered;
 };
+

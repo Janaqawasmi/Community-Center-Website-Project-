@@ -11,6 +11,7 @@ export default function AdminAllRegistrationsPage() {
   const [paidOnly, setPaidOnly] = useState(null);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState([]); // مصفوفة الفعليين المختارين
+const [archivedOnly, setArchivedOnly] = useState(null); // null=الكل, true=مؤرشف, false=غير مؤرشف
 
   // جلب كل التسجيلات
   useEffect(() => {
@@ -29,8 +30,9 @@ export default function AdminAllRegistrationsPage() {
   // فلترة
   useEffect(() => {
     setFiltered(
-      filterRegistrations(all, { classNumber: "", groupNumber: "", search, paidOnly })
-    );
+  filterRegistrations(all, { classNumber: "", groupNumber: "", search, paidOnly, archivedOnly })
+);
+
     setSelected([]); // كلما تغيرت الفلترة، الغِ التحديد
   }, [all, search, paidOnly]);
 
@@ -68,10 +70,75 @@ export default function AdminAllRegistrationsPage() {
             <MenuItem value="unpaid">غير مدفوع</MenuItem>
           </Select>
         </FormControl>
+
+
+
+<FormControl sx={{ minWidth: 130 }}>
+  <InputLabel id="archive-label">حالة الأرشفة</InputLabel>
+  <Select
+    labelId="archive-label"
+    value={archivedOnly === null ? "" : archivedOnly ? "archived" : "unarchived"}
+    label="حالة الأرشفة"
+    onChange={e => {
+      if (e.target.value === "") setArchivedOnly(null);
+      else setArchivedOnly(e.target.value === "archived");
+    }}
+    displayEmpty
+  >
+    <MenuItem value="">الكل</MenuItem>
+    <MenuItem value="archived">مؤرشف</MenuItem>
+    <MenuItem value="unarchived">غير مؤرشف</MenuItem>
+  </Select>
+</FormControl>
+
+        <FormControl sx={{ minWidth: 130 }}>
+
+
+
+  <InputLabel id="archive-label">حالة الأرشفة</InputLabel>
+  <Select
+    labelId="archive-label"
+    value={archivedOnly === null ? "" : archivedOnly ? "archived" : "unarchived"}
+    label="حالة الأرشفة"
+    onChange={e => {
+      if (e.target.value === "") setArchivedOnly(null);
+      else setArchivedOnly(e.target.value === "archived");
+    }}
+    displayEmpty
+  >
+    <MenuItem value="">الكل</MenuItem>
+    <MenuItem value="archived">مؤرشف</MenuItem>
+    <MenuItem value="unarchived">غير مؤرشف</MenuItem>
+  </Select>
+</FormControl>
+
         <TextField label="بحث..." value={search} onChange={e => setSearch(e.target.value)} sx={{ minWidth: 180 }} />
-        <Button variant="contained" color="success" onClick={() => exportRegistrationsToExcel(exportData)}>
-          تصدير المحدد إلى Excel
-        </Button>
+       <Button
+  variant="contained"
+  color="success"
+  onClick={async () => {
+    await exportRegistrationsToExcel(exportData);
+
+    // بعد التصدير: نقل للسجلات للأرشيف
+    for (const reg of exportData) {
+      await updateRegistration(
+        reg._type === "دورة" ? "programRegistrations" : "eventRegistrations",
+        { ...reg, archive: true }
+      );
+    }
+    // تحديث القائمة بعد النقل للأرشيف
+    const programs = await fetchRegistrations("programRegistrations");
+    const events = await fetchRegistrations("eventRegistrations");
+    const withType = [
+      ...programs.map(r => ({ ...r, _type: "دورة" })),
+      ...events.map(r => ({ ...r, _type: "فعالية" }))
+    ];
+    setAll(withType);
+  }}
+>
+  تصدير إلى Excel
+</Button>
+
       </Box>
       <Paper>
         <Table>
