@@ -1,3 +1,4 @@
+
 //src\pages\programs\ProgramCategoryPage.jsx
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Box, Typography, Grid } from "@mui/material";
@@ -8,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { trackPageView } from "../../components/Data Analysis/utils/trackPageView"; 
 
-// Icons
+// Import the icons you want for the fields
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import RepeatIcon from '@mui/icons-material/Repeat';
@@ -16,6 +17,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 const programFields = [
   { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
   { key: "time", label: "الوقت", icon: <AccessTimeIcon /> },
@@ -24,23 +28,23 @@ const programFields = [
   { key: "price", label: "السعر", icon: <AttachMoneyIcon /> },
   { key: "capacity", label: "المقاعد المتبقية", icon: <EventSeatIcon /> },
 ];
-
 export default function ProgramCategoryPage() {
-  const { categoryName } = useParams();
+  const { categoryName } = useParams();// save the category name from the URL
   const navigate = useNavigate();
-  const location = useLocation();
   const programs = useFetchPrograms(categoryName);
-  const [searchParams] = useSearchParams();
-  const highlightId = searchParams.get("highlight");
+const [searchParams] = useSearchParams();
+const highlightId = searchParams.get("highlight");
 
-  const cardRefs = useRef({});
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 960);
+// store refs
+const cardRefs = useRef({});
 
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 960);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+// after programs are loaded, scroll to highlighted one
+useEffect(() => {
+  if (highlightId && cardRefs.current[highlightId]) {
+    cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}, [programs, highlightId]);
+
 
    // Track page view only once per session 
   useEffect(() => {
@@ -68,8 +72,6 @@ useEffect(() => {
   const handleRegister = (programName) => {
     navigate(`/RegistrationForm?program=${encodeURIComponent(programName)}`);
   };
-
-  const highlightedProgram = programs.find((p) => p.id === highlightId);
 
   return (
     <Box sx={{ direction: "rtl" }}>

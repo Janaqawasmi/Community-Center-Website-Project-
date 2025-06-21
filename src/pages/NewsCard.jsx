@@ -1,136 +1,132 @@
-import { Box, Typography, Card, CardContent, Button } from '@mui/material';
+import { Box, Typography, Card, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function NewsCard({ data }) {
   const navigate = useNavigate();
+  const date = new Date(data.date);
+  const day = date.getDate();
+  const monthName = [
+    "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+    "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+  ][date.getMonth()];
+  const year = date.getFullYear();
 
   return (
     <Card
       sx={{
-        minHeight: 20,
-        width: 320,  
-        borderRadius: 3,
-        overflow: 'hidden',
-        boxShadow: '0 6px 15px rgba(0,0,0,0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        transition: '0.3s',
-        height: 440,
-        '&:hover': {
-          transform: 'scale(1.02)',
-          boxShadow: '0 10px 20px rgba(0,0,0,0.2)',
-        },
+        width: "104%",
+        height: "100%",
+        borderRadius: 5,
+        overflow: "hidden",
+        border: "1px solid #ccc",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        fontFamily: "Arial, sans-serif",
+        position: "relative",
+        mx: 'auto'
       }}
     >
-      {/* V-shaped image container with ONLY bottom V frame */}
-      <Box sx={{ position: 'relative', height: 180, width: '100%' }}>
-  <Box
-    sx={{
-      clipPath: 'polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%)',
-      width: '100%',
-      height: '100%',
-      overflow: 'hidden',
-    }}
-  >
-    <Box
-      component="img"
-      src={data.image}
-      alt={data.title}
-      sx={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        display: 'block',
-      }}
-    />
+      <Box sx={{ position: "relative", width: "100%", height: 151 }}>
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
+            background: "#0d47a1",
+            zIndex: 0,
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "98%",
+            top: 0,
+            left: 0,
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
+            overflow: "hidden",
+            zIndex: 1,
+            backgroundColor: "#0d47a1",
+          }}
+        >
+          <Box
+            component="img"
+            src={data.mainImage}
+            alt={data.title}
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
+        </Box>
+      </Box>
+
+      <Typography
+        variant="h6"
+        color="#0d47a1"
+        fontWeight="bold"
+        
+         gutterBottom={false} // remove extra spacing
+  sx={{ mt: 0.5, px: 2 }} // reduce top margin
+        //sx={{ mt: 1, px: 2}}
+      >
+        {data.title}
+      </Typography>
+
+      <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>
+  <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "#0d47a1" }}>{day}</Typography>
+  <Box sx={{ textAlign: "left", ml: 1 }}>
+    <Typography sx={{ fontSize: "16px", fontWeight: "bold", color: "#0d47a1" }}>{monthName}</Typography>
+    <Typography sx={{ fontSize: "12px", color: "#0d47a1" }}>{year}</Typography>
   </Box>
-  {/* Sharper V border line */}
-  <svg
-    width="100%"
-    height="100%"
-    viewBox="0 0 400 180"
-    style={{
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      zIndex: 2,
-      pointerEvents: 'none',
-    }}
-    preserveAspectRatio="none"
-  >
-    <polyline
-      points="0,135 200,179 400,135"
-      fill="none"
-      stroke="#003366"
-      strokeWidth="4"
-    />
-  </svg>
 </Box>
 
-
-      {/* Text and Button */}
-      <CardContent sx={{ textAlign: 'center', color: '#003366' }}>
-        <Typography fontSize="13px" color="text.secondary" mb={1}  sx={{
-    fontStyle: 'italic',
-    textAlign: 'center' // Optional: center if you want
-  }}>
-          {data.date} 
-        </Typography>
-        <Typography variant="h4" fontWeight="bold" gutterBottom >
-          {data.title}
-        </Typography>
-        <Typography
-  fontSize="14px"
-  color="text.secondary"
+{/* ✅ Description below date */}
+<Typography
   sx={{
-    minHeight: '60px',
-    display: '-webkit-box',
-    WebkitLineClamp: 3, // Show 3 lines only!
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
+    fontSize: "14px",
+    color: "#666",
+    mt: 1,
+    px: 2,
     textAlign: 'right',
-    mb: 2
+    display: '-webkit-box',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden'
   }}
 >
-  {data.full_description}
+  {data.full_description || "لا توجد تفاصيل إضافية"}
 </Typography>
 
-      </CardContent>
-
-      <Box sx={{ px: 10, pb: 10 }}>
       <Button
-  onClick={() => navigate(`/news/${data.id}`)}
-  fullWidth
-  sx={{
-    mt: 2,
-    fontWeight: 'bold',
-    fontSize: '16px',
-    borderRadius: '28px',
-    border: '2px solid #003366',   // Dark blue border
-    color: '#003366',              // Blue text by default
-    backgroundColor: '#fff',       // White background by default
-    transition: '0.2s',
-    boxShadow: '0 1.5px 6px rgba(0,51,102,0.08)',
-    '&:hover': {
-      backgroundColor: '#003366',  // Dark blue background on hover
-      color: '#fff',               // White text on hover
-      borderColor: '#003366',      // Keep border dark blue
-    },
-    '&:active': {
-      backgroundColor: '#00234c',  // Even darker on active/click, optional
-      color: '#fff',
-      borderColor: '#00234c',
-    },
-  }}
->
-  اقرأ المزيد
-</Button>
-
-      
-
-      </Box>
+        variant="outlined"
+        onClick={() => navigate(`/news/${data.id}`)}
+        sx={{
+          mt: 2,
+          mb: 2,
+          width: "70%",
+          mx: "auto",
+          borderRadius: "40px",
+          border: "2px solid #0d47a1",
+          color: "#0d47a1",
+          fontWeight: "bold",
+          px: 4,
+          textTransform: "none",
+          ":hover": {
+            backgroundColor: "#0d47a1",
+            borderColor: "#0288d1",
+            color: "white"
+          }
+        }}
+      >
+        اقرأ المزيد
+      </Button>
     </Card>
   );
 }

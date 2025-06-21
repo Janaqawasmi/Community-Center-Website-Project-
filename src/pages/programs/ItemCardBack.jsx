@@ -1,12 +1,14 @@
 import { Card, Typography, Box, Button } from "@mui/material";
 
 function formatValue(value) {
+  // لو القيمة وقت، أو تاريخ، حولها لنص عربي
   if (value instanceof Date) {
     return value.toLocaleString('ar-EG', {
       day: '2-digit', month: 'long', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
   }
+  // لو القيمة غير معرفة أو نص فارغ
   if (value === undefined || value === null) return "—";
   return value;
 }
@@ -22,12 +24,13 @@ function InfoRow({ icon, label, value }) {
 
 export default function ItemCardBack({ item, fields, onRegister, onFlipBack, highlight }) {
   return (
-   <Card
+<Card
   sx={{
     width: "100%",
     height: "100%", // 🔁 FIXED: fills FlipCard height
     borderRadius: 4,
     p: 2,
+
     mx: "auto",
     backgroundColor: "#ffffff",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)", // remove glowing shadow for both
@@ -78,7 +81,6 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
         >
           سجل الآن
         </Button>
-
         <Button
           variant="text"
           onClick={e => { e.stopPropagation(); onFlipBack(); }}

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Dialog, DialogTitle,
-  DialogContent, DialogActions, TextField, IconButton, List, ListItem
+  DialogContent, DialogActions, TextField, IconButton, Chip
 } from '@mui/material';
 import { db } from '../../components/firebase';
 import {
-  collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy
+  collection, getDocs, addDoc, updateDoc, deleteDoc, doc
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
@@ -29,6 +29,7 @@ export default function AdminSections() {
   const [isEdit, setIsEdit] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [formData, setFormData] = useState({});
+  const [fieldKey, setFieldKey] = useState('');
   const [newFieldKey, setNewFieldKey] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState(null);
@@ -49,6 +50,7 @@ export default function AdminSections() {
   useEffect(() => {
     fetchSections();
   }, []);
+
 
   const fetchSections = async () => {
     const q = query(collection(db, 'sections'), orderBy('order'));
@@ -187,6 +189,7 @@ const handleImageUpload = async (files, galleryIndex) => {
   const handleSave = async () => {
     const dataCopy = { ...formData };
     delete dataCopy.id;
+
     
     if (!formData.title || formData.title.trim() === '') {
       alert('يرجى إدخال اسم القسم قبل الحفظ.');
@@ -216,6 +219,7 @@ const handleImageUpload = async (files, galleryIndex) => {
     if (isEdit) {
       await updateDoc(doc(db, 'sections', currentId), dataCopy);
     } else {
+
       const sectionRef = await addDoc(collection(db, 'sections'), {
         ...dataCopy,
         order: sections.length,
@@ -581,6 +585,7 @@ const handleImageUpload = async (files, galleryIndex) => {
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
+
         <Box sx={{ padding: 4, direction: 'rtl' }}>
           <Typography variant="h4" gutterBottom>إدارة الأقسام</Typography>
 
