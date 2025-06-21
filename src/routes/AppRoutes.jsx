@@ -32,7 +32,6 @@ function AppRoutes({ sections }) {
   return (
     <>
       <ScrollToTop />
-      <ScrollToTop />
       <Routes location={location}>
 
         <Route element={<Layout sections={sections} />}>

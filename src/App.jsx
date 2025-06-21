@@ -4,7 +4,7 @@ import { fetchSections } from './utils/fetchSections';
 import AppRoutes from './routes/AppRoutes';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-//import './App.css'; 
+import './App.css'; 
 import './index.css';
 import Footer from './components/Footer/Footer';
 

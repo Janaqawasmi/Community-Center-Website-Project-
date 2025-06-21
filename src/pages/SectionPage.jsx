@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import { Box, Typography, Container, Grid, Paper, Button,Stack } from '@mui/material';
  import { sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
 import Collapse from '@mui/material/Collapse';
+import { useNavigate } from 'react-router-dom';
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
 import HeroSection from "../components/HeroSection";
 import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
@@ -239,7 +241,7 @@ const navigate = useNavigate();
 
         {section.programCards?.length > 0 && (
           <>
-            <Box id="programs" sx={{ textAlign: 'center', mt: 6, mb: 3 }}></Box>
+              <Box id="programs" sx={{ textAlign: 'center', mt: 6, mb: 3 }}></Box>
             <Box sx={{ textAlign: 'center', mt: 6, mb: 3 }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: sectionColor, display: 'inline-flex', alignItems: 'center', gap: 1 }}>
                 🧩 برامجنا الخاصة بالقسم
@@ -367,7 +369,7 @@ const navigate = useNavigate();
           </>
         )}
 
-        {/* Nurseries */}
+
         {section.nurseries?.length > 0 && (
           <Box id="nurseries" sx={{ scrollMarginTop: '100px' }}>
           <PrettyCard title="حضاناتنا" icon="🏫" color={sectionColor}>
@@ -387,7 +389,6 @@ const navigate = useNavigate();
           </Box>
         )}
 
-        {/* Kindergartens */}
         {section.kindergartens?.length > 0 && (
           <Box id="kindergartens" sx={{ scrollMarginTop: '100px' }}>
           <PrettyCard title="روضاتنا" icon="🏫" color={sectionColor}>
