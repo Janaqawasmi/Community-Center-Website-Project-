@@ -1,3 +1,4 @@
+//src/components/Data Analysis/AdminAnalytics.jsx
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
@@ -37,10 +38,7 @@ export default function PageViewsStats() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        📊 إحصائيات عدد المشاهدات
-      </Typography>
-
+    
       <TextField
         label="ابحث عن مسار..."
         variant="outlined"

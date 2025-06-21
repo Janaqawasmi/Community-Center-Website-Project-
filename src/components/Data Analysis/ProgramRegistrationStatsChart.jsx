@@ -1,3 +1,4 @@
+//src/components/Data Analysis/ProgramRegistrationStatsChart.jsx
 import {
   BarChart,
   Bar,
