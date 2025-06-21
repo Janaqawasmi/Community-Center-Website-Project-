@@ -202,7 +202,7 @@ const nextStep = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                    
-                  label={RequiredLabel("الاسم الشخصي")}
+                  label={RequiredLabel(" الاسم الشخصي باللغة العبرية")}
                       fullWidth
                       variant="outlined"
                       name="FirstName"
@@ -238,7 +238,7 @@ const nextStep = () => {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                     label={RequiredLabel("اسم العائلة")}
+                     label={RequiredLabel(" اسم العائلة باللغة العبرية")}
                       fullWidth
                       variant="outlined"
                       name="lastName"
@@ -407,7 +407,7 @@ marginInlineStart: 8, color: "#666" }}>02</span>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      label="اسم عائلة ولي الأمر"
+                      label="اسم عائلة ولي الأمر باللغة العبرية"
                       fullWidth
                       variant="outlined"
                       name="parentLastName"
