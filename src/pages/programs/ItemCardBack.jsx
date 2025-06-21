@@ -30,30 +30,36 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
     height: "100%", // 🔁 FIXED: fills FlipCard height
     borderRadius: 4,
     p: 2,
-    backgroundColor: " #ffffff",
-    bboxShadow: highlight
-      ? "0 0 15px #0d47a1"  // soft glowing shadow on highlight
-      : "0 4px 12px rgba(0,0,0,0.1)",       // normal subtle shadow
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    ...(highlight && {
-      animation: "pulseShadow 1.5s infinite",
-    }),
-    border: "1.5px solid #dbeafe"
-  }}
->
-    <Typography variant="h6" color="#0d47a1" fontWeight="bold" gutterBottom>
+
+    mx: "auto",
+    backgroundColor: "#ffffff",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)", // remove glowing shadow for both
+    transform: "none", // remove scaling for highlight
+     // remove smooth animation
+      border: "1.5px solid #dbeafe",
+      overflow: "hidden",
+
+      }}
+    >
+
+        <Typography variant="h6" color=" #003366" fontWeight="bold" gutterBottom>
         {item.name}
-      </Typography>
-      {fields.map((field) => (
+        </Typography>
+
+        {fields.map((field) => (
         <InfoRow
           key={field.key}
           icon={field.icon}
           label={field.label}
-          value={item[field.key]}
+          value={
+          field.key === "days" && Array.isArray(item[field.key])
+            ? item[field.key].join(", ")
+            : item[field.key]
+          }
         />
-      ))}
+        ))}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 2 }}>
         <Button
           variant="outlined"
           onClick={e => { e.stopPropagation(); onRegister(item.name); }}
@@ -61,14 +67,14 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
             width: "70%",
             mx: "auto",
             borderRadius: "28px",
-            border: "2px solid #0d47a1",
-            color: "#0d47a1",
+            border: "2px solid #003366",
+            color: " #003366",
             fontWeight: "bold",
             px: 4,
             textTransform: "none",
             ":hover": {
-              backgroundColor: "#0d47a1",
-              borderColor: "#0288d1",
+              backgroundColor: " #003366",
+              borderColor: "#003366",
               color: "white"
             }
           }}
@@ -78,7 +84,12 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
         <Button
           variant="text"
           onClick={e => { e.stopPropagation(); onFlipBack(); }}
-          sx={{ mt: 0.5, color: "#0d47a1", textDecoration: "underline", fontWeight: "bold" }}
+          sx={{
+            mt: 0.5,
+            color: "#003366",
+            textDecoration: "underline",
+            fontWeight: "bold"
+          }}
         >
           العودة
         </Button>

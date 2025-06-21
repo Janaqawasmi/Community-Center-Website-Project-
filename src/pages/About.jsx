@@ -22,6 +22,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import HeroSection from "../components/HeroSection";
 import PrettyCard from '../components/layout/PrettyCard';
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 export default function About() {
   const [aboutData, setAboutData] = useState(null);
@@ -89,6 +91,22 @@ export default function About() {
     fetchAboutData();
   }, []);
 
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
+
   if (!aboutData) {
     return (
       <Container sx={{ py: 10}}>
@@ -146,7 +164,7 @@ export default function About() {
             </Grid>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Box sx={{ textAlign: 'center', mt: 6 }}>
             <Typography
               onClick={() => toggleSection('about')}
               sx={{

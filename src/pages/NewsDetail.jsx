@@ -10,6 +10,8 @@ import SectionScrollButton from "../components/sections/SectionScrollButton";
 import ExpandableText from '../components/ExpandableText';
 import PrettyCard from '../components/layout/PrettyCard'; 
 import RoundedButton from '../components/layout/Buttons/RoundedButton';
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+
 
 const categoryToSectionId = {
   "أمسية": "section_evening",
@@ -37,6 +39,22 @@ function NewsDetail() {
     };
     fetchNews();
   }, [id]);
+
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   if (!news)
     return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;

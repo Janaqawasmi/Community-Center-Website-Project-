@@ -17,7 +17,6 @@ import { db } from "../components/firebase";
 import { useNavigate } from "react-router-dom";
 import { programCategories, iconMap } from "../constants/sectionMeta";
 import SearchIcon from "@mui/icons-material/Search";
-import { motion } from "framer-motion";
 import HeroSection from "../components/HeroSection";
 import ItemFlipCard from "./programs/ItemFlipCard";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -27,6 +26,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import RoundedButton from "../components/layout/Buttons/RoundedButton";
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 const programFields = [
   { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
@@ -56,6 +57,7 @@ function CategoryCard({ label, color, onClick, index }) {
 
 
 export default function ProgramPage() {
+  const location = useLocation();
   const [allPrograms, setAllPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,6 +84,22 @@ export default function ProgramPage() {
 
     fetchPrograms();
   }, []);
+
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   const filteredPrograms = allPrograms.filter(
     (p) =>

@@ -1,28 +1,47 @@
-import { Box, Typography, Divider } from '@mui/material';
+// src/pages/admin/AdminDashboard.jsx
+import { Box, Typography, Divider, Button, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
 import RequireAdmin from '../../components/auth/RequireAdmin';
-import ProgramStatsChart from '../../components/Data Analysis/ProgramRegistrationStatsChart.jsx';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
+
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
         <Box
           sx={{
             p: { xs: 2, md: 4 },
-            maxWidth: '1200px',
+            maxWidth: '900px',
             mx: 'auto',
-            textAlign: 'right', // RTL-aware layout
+            textAlign: 'right',
             direction: 'rtl',
           }}
         >
           <Typography variant="h4" gutterBottom>
-            عدد المسجلين في كل برنامج (خلال فترة زمنية)
+            لوحة التحكم الإدارية
           </Typography>
 
-          <Divider sx={{ my: 2 }} />
+          <Divider sx={{ my: 3 }} />
 
-          <ProgramStatsChart />
+          <Stack spacing={2}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => navigate('/admin/program-stats')}
+            >
+              📈 عدد المسجلين في كل برنامج
+            </Button>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate('/admin/analytics')}
+            >
+              📊 إحصائيات عدد المشاهدات
+            </Button>
+          </Stack>
         </Box>
       </AdminDashboardLayout>
     </RequireAdmin>

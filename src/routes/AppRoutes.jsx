@@ -20,10 +20,11 @@ import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
 import AdminEvents from '../pages/admin/AdminEvents';
 import AdminCalendar from '../pages/admin/AdminCalendar';
-import AdminAbout from '../pages/admin/AdminAbout'; // ✅ NEW: Added AdminAbout import
+import AdminAbout from '../pages/admin/AdminAbout'; 
 import AdminDashboard from '../pages/admin/AdminDashboard'; 
 import AdminInquiries from '../pages/admin/AdminInquiries';
-
+import ProgramStatsPage from '../pages/admin/ProgramStatsPage';
+import AnalyticsPage from '../pages/admin/AnalyticsPage'; 
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -66,7 +67,7 @@ function AppRoutes({ sections }) {
           path="/admin/dashboard"
           element={
             <ProtectedAdminRoute>
-              <AdminWelcome />
+              <AdminDashboard />
             </ProtectedAdminRoute>
           }
         />
@@ -149,6 +150,22 @@ function AppRoutes({ sections }) {
   }
 />
 
+  <Route
+          path="/admin/program-stats"
+          element={
+            <ProtectedAdminRoute>
+              <ProgramStatsPage />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <ProtectedAdminRoute>
+              <AnalyticsPage />
+            </ProtectedAdminRoute>
+          }
+        />
       </Routes>
     </>
   );

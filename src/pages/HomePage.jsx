@@ -7,11 +7,67 @@ import CalendarSection from "./CalendarSection";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import QuickLinksSection from "../components/homePage/QuickLinksSection";
+import { fetchSections } from "../utils/fetchSections";
+import AboutUsSection from "../components/homePage/AboutUsSection";
+import { fetchNews } from "../utils/fetchNews";
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
+export default function HomePage() {
+  const featuredPrograms = useFeaturedPrograms();
+  const featuredEvents = useFetchEvents(true); // Fetch only featured events 
+  const [featuredNews, setFeaturedNews] = useState([]); // ✅ Declare this BEFORE using it
+  const combinedSlides = [
+  ...featuredPrograms,
+  ...featuredEvents.map(e => ({ ...e, isEvent: true })),
+  ...featuredNews,
+];
+  const navigate = useNavigate();
+  const [sections, setSections] = useState([]);
+
+useEffect(() => {
+  const loadSections = async () => {
+    try {
+      const data = await fetchSections();
+      setSections(data);
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+    }
+  };
+  const loadNews = async () => {
+    try {
+      const data = await fetchNews(true); // ✅ only featured
+      setFeaturedNews(data);
+    } catch (error) {
+      console.error("Error fetching featured news:", error);
+    }
+  };
+
+  loadSections();
+  loadNews();
+}, []);
 
 export default function HomePage() {
   const featuredPrograms = useFeaturedPrograms(); // ✅ fetch array, not single program
   const navigate = useNavigate();
+
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
+
 
   const sliderSettings = {
     dots: true,
@@ -134,11 +190,13 @@ export default function HomePage() {
       )}
 
 {/* Quick Links */}
-<Box sx={{ mt: { xs: 4, md: 8 } }}>
-  {/* <QuickLinksSection sections={sections} /> */}
+
+<Box sx={{ mt: { xs: 8, md: 8 } }}>
+  <QuickLinksSection sections={sections} />
+
 </Box>   
 
-<Box sx={{ mt: { xs: 4, md: 8 }, px: { xs: 2, md: 30 } }}>
+<Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
           <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#003366' }}>
              التقويم والفعاليات
            </Typography>
@@ -149,13 +207,19 @@ export default function HomePage() {
 }
 
 function OverlayContent({ program, navigate, isEvent = false, isNews = false }) {
+  // Truncate description to 300 characters
+  const truncatedDescription =
+    program.description && program.description.length > 300
+      ? program.description.slice(0, 250) + "..."
+      : program.description;
+
   return (
     <>
-      <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2 , textAlign: "right" }}>
+      <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2, textAlign: "right", direction: "rtl" }}>
         {program.name}
       </Typography>
-      <Typography variant="body1" sx={{ color: "#fff", mb: 3,  textAlign: "right" }}>
-        {program.description}
+      <Typography variant="body1" sx={{ color: "#fff", mb: 3, textAlign: "right",direction: "rtl" }}>
+        {truncatedDescription}
       </Typography>
       <Button
         variant="contained"
@@ -168,14 +232,13 @@ function OverlayContent({ program, navigate, isEvent = false, isNews = false }) 
           textTransform: "none",
         }}
         onClick={() =>
-         navigate(
-  isNews
-    ? `/news/${program.id}`
-    : isEvent
-      ? `/events?highlight=${program.id}`
-      : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
-)
-
+          navigate(
+            isNews
+              ? `/news/${program.id}`
+              : isEvent
+                ? `/events?highlight=${program.id}`
+                : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
+          )
         }
       >
         عرض التفاصيل

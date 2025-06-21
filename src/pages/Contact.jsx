@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid, TextField, Typography, Button, Paper, Box, Snackbar, useMediaQuery
 } from '@mui/material';
@@ -15,6 +15,8 @@ import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
 import RoundedButton from '../components/layout/Buttons/RoundedButton'; 
 import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 export default function Contact() {
   const theme = useTheme();
@@ -28,6 +30,12 @@ export default function Contact() {
 
   const buttonColor = ' #005588';
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
+
+
+  // إضافة useCallback لمنع إعادة التحميل
+    const handleCaptchaChange = useCallback((value) => {
+      setCaptchaVerified(!!value);
+    }, []);
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -63,6 +71,41 @@ export default function Contact() {
     fetchDepartments();
   }, []);
 
+  // إضافة useEffect لحل مشكلة reCAPTCHA
+    useEffect(() => {
+      // حل مشكلة Cross-Origin لـ reCAPTCHA
+      if (typeof window !== 'undefined') {
+        // تنظيف السكريبت السابق إن وجد
+        const existingScript = document.querySelector('script[src*="recaptcha"]');
+        if (existingScript) {
+          existingScript.remove();
+        }
+        
+        // إضافة سكريبت reCAPTCHA جديد
+        const script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    }, []);
+    
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
+
   const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
@@ -87,18 +130,22 @@ export default function Contact() {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      await sendMessage(values);
-      showSnackbar("✅ تم إرسال الرسالة بنجاح");
-      resetForm();
-      setCaptchaVerified(false);
-    } catch (err) {
-      showSnackbar("حدث خطأ أثناء إرسال الرسالة", 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+   setIsLoading(true);
+       try {
+         await sendMessage(values);
+         showSnackbar("✅ تم إرسال الرسالة بنجاح");
+         resetForm();
+         setCaptchaVerified(false);
+         // إعادة تعيين reCAPTCHA
+         if (window.grecaptcha) {
+           window.grecaptcha.reset();
+         }
+       } catch (err) {
+         showSnackbar("حدث خطأ أثناء إرسال الرسالة", 'error');
+       } finally {
+         setIsLoading(false);
+       }
+     };
 
   return (
     <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
@@ -134,17 +181,211 @@ export default function Contact() {
           </Grid>
         </Grid>
 
-        <Box id="contact-form" sx={{ mb: 0 }}>
+
+    {/* Contact Form */}
+        <Box id="contact-form" sx={{ mb: 4 }}>
           <PrettyCard title="أرسل لنا رسالة">
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
+              enableReinitialize={false}
+              validateOnMount={false}
             >
               {({ values, errors, touched, handleChange }) => (
                 <Form noValidate>
-                  <Grid container spacing={1.5}>
-                    {/* Form fields go here */}
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth 
+                        placeholder="الاسم" 
+                        name="first_name"
+                        value={values.first_name} 
+                        onChange={handleChange}
+                        error={touched.first_name && Boolean(errors.first_name)}
+                        helperText={touched.first_name && errors.first_name}
+                        inputProps={{ 
+                          style: { textAlign: 'right', direction: 'rtl' }
+                        }}
+                        InputProps={{
+                          style: { direction: 'rtl' }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth 
+                        placeholder="اسم العائلة" 
+                        name="last_name"
+                        value={values.last_name} 
+                        onChange={handleChange}
+                        error={touched.last_name && Boolean(errors.last_name)}
+                        helperText={touched.last_name && errors.last_name}
+                        inputProps={{ 
+                          style: { textAlign: 'right', direction: 'rtl' }
+                        }}
+                        InputProps={{
+                          style: { direction: 'rtl' }
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth 
+                        placeholder="البريد الإلكتروني" 
+                        name="email"
+                        type="email" 
+                        value={values.email} 
+                        onChange={handleChange}
+                        error={touched.email && Boolean(errors.email)}
+                        helperText={touched.email && errors.email}
+                        inputProps={{ 
+                          style: { textAlign: 'right', direction: 'rtl' }
+                        }}
+                        InputProps={{
+                          style: { direction: 'rtl' }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth 
+                        placeholder="رقم الهاتف" 
+                        name="phone"
+                        type="tel" 
+                        value={values.phone} 
+                        onChange={handleChange}
+                        error={touched.phone && Boolean(errors.phone)}
+                        helperText={touched.phone && errors.phone}
+                        inputProps={{ 
+                          style: { textAlign: 'right', direction: 'rtl' }
+                        }}
+                        InputProps={{
+                          style: { direction: 'rtl' }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        select
+                        fullWidth
+                        name="department"
+                        placeholder="اختر القسم"
+                        value={values.department}
+                        onChange={handleChange}
+                        SelectProps={{ 
+                          native: true,
+                          displayEmpty: true
+                        }}
+                        error={touched.department && Boolean(errors.department)}
+                        helperText={touched.department && errors.department}
+                        sx={{
+                          '& .MuiInputBase-input': {
+                            textAlign: 'right',
+                            direction: 'rtl',
+                            paddingRight: '14px'
+                          },
+                          '& .MuiSelect-icon': {
+                            left: 7,
+                            right: 'auto'
+                          }
+                        }}
+                      >
+                        <option value="" style={{ textAlign: 'right', direction: 'rtl' }}>اختر القسم</option>
+                        {departments.map((dept) => (
+                          <option key={dept.id} value={dept.name} style={{ textAlign: 'right', direction: 'rtl' }}>
+                            {dept.name}
+                          </option>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth 
+                        placeholder="موضوع الرسالة" 
+                        name="message"
+                        multiline 
+                        rows={4} 
+                        value={values.message}
+                        onChange={handleChange}
+                        error={touched.message && Boolean(errors.message)}
+                        helperText={touched.message && errors.message}
+                        inputProps={{ 
+                          style: { textAlign: 'right', direction: 'rtl' }
+                        }}
+                        InputProps={{
+                          style: { direction: 'rtl' }
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} textAlign="center">
+                      <ReCAPTCHA
+                        sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
+                        onChange={handleCaptchaChange}
+                        onExpired={() => {
+                          setCaptchaVerified(false);
+                          console.log('reCAPTCHA expired');
+                        }}
+                        onError={(error) => {
+                          setCaptchaVerified(false);
+                          console.error('reCAPTCHA error:', error);
+                        }}
+                        onLoadCallback={() => {
+                          console.log('reCAPTCHA loaded successfully');
+                        }}
+                        size="normal"
+                        theme="light"
+                        hl="ar"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} textAlign="center">
+                      <Button
+                        disableRipple
+                        type="submit"
+                        disabled={isLoading}
+                        sx={{
+                          position: 'relative',
+                          padding: '12px 32px',
+                          fontSize: '1.2rem',
+                          fontWeight: 'bold',
+                          fontFamily: 'Cairo, sans-serif',
+                          cursor: isLoading ? 'not-allowed' : 'pointer',
+                          color: '#FFFFFF',
+                          background: isLoading 
+                            ? 'linear-gradient(180deg, #999 0%, #666 100%)' 
+                            : headerGradient,
+                          borderRadius: '30px',
+                          border: 'none',
+                          minWidth: '150px',
+                          minHeight: '50px',
+                          transition: 'all 0.3s ease-in-out',
+                          textTransform: 'none',
+                          boxShadow: isLoading 
+                            ? '0 2px 8px rgba(0,0,0,0.1)' 
+                            : '0 4px 15px rgba(0, 181, 240, 0.3)',
+                          
+                          '&:hover': !isLoading ? {
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 6px 20px rgba(0, 181, 240, 0.4)',
+                            background: 'linear-gradient(180deg, #1ac4ff 0%, #004477 100%)',
+                          } : {},
+                          
+                          '&:focus': {
+                            outline: 'none',
+                          },
+
+                          '&:disabled': {
+                            cursor: 'not-allowed',
+                          }
+                        }}
+                      >
+                        {isLoading ? 'جاري الإرسال...' : 'إرسال'}
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Form>
               )}

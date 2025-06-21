@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
-import { Box, Typography, Container, Grid, Paper } from '@mui/material';
-import { iconMap, sectionColors } from '../constants/sectionMeta';
+import { Box, Typography, Container, Grid, Paper, Button,Stack } from '@mui/material';
+ import { sectionColors } from '../constants/sectionMeta';
 import Slider from 'react-slick';
 import Collapse from '@mui/material/Collapse';
 import HeroSection from "../components/HeroSection";
@@ -11,11 +11,13 @@ import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
 import SectionScrollButton from '../components/sections/SectionScrollButton';
 import PrettyCard from '../components/layout/PrettyCard';
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 function SectionPage() {
   const [expanded, setExpanded] = useState(false);
 const navigate = useNavigate();
-
+  const location = useLocation();
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
   const { id } = useParams();
   const [section, setSection] = useState(null);
@@ -33,6 +35,23 @@ const navigate = useNavigate();
     };
     fetchSection();
   }, [id]);
+
+   // Track page view only once per session 
+  useEffect(() => {
+    const path = location.pathname;
+    const key = `viewed_${path}`;
+    const lastViewed = localStorage.getItem(key);
+    const today = new Date().toDateString();
+  
+    if (lastViewed !== today) {
+      console.log("📊 Tracking view for:", path);
+      trackPageView(path);
+      localStorage.setItem(key, today);
+    } else {
+      console.log("⏳ Already tracked today:", path);
+    }
+  }, [location.pathname]);
+  
 
   if (!section) return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
@@ -226,45 +245,125 @@ const navigate = useNavigate();
                 🧩 برامجنا الخاصة بالقسم
               </Typography>
             </Box>
-            <Grid container spacing={4} sx={{ px: 3, pb: 5 }}>
-              {section.programCards.map((program, i) => (
-                <Grid item xs={12} sm={6} md={4} key={i}>
-                  <Paper
-                    elevation={3}
-                    sx={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      borderRadius: 3,
-                      overflow: 'hidden',
-                      backgroundColor: '#fff',
-                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                      '&:hover': {
-                        boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',
-  transform: 'none',
-  cursor: 'default',
-                      },
-                    }}
-                  >
-                    {program.image && (
-                      <Box sx={{ height: 180, backgroundImage: `url(${program.image})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
-                    )}
-                    <Box sx={{ p: 2 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', color: sectionColor }}>{program.name}</Typography>
-                      <ExpandableText
-  text={program.description}
-  sx={{ mt: 1, color: '#555', fontSize: '0.95rem' }}
-  limit={250}
-/>
+<Grid container spacing={4} sx={{ px: 3, pb: 5 }}>
+  {section.programCards.map((program, i) => (
+    <Grid item xs={12} sm={6} md={4} key={i}>
+      <Box
+        sx={{
+          background: 'linear-gradient(145deg, #ffffff, #f3f3f3)',
+          borderRadius: '30px',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+     
+        }}
+      >
+        {/* Image Container */}
+        {program.image && (
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+              height: 200,
+              backgroundColor: '#f9f9f9',
+              borderTopLeftRadius: '30px',
+              borderTopRightRadius: '30px',
+              overflow: 'hidden',
+            }}
+          >
+            <Box
+              component="img"
+              src={program.image}
+              alt={program.name}
+              sx={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                objectPosition: 'center',
+                display: 'block',
+              }}
+            />
+            {/* Soft ombre overlay */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '40px',
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%)',
+              }}
+            />
+          </Box>
+        )}
 
-                      <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📝 <strong>الشروط:</strong> {program.conditions}</Typography>
-                      <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>🎓 <strong>المؤهلات:</strong> {program.qualifications}</Typography>
-                      <Typography sx={{ mt: 1, fontSize: '0.95rem' }}>📞 <strong>هاتف:</strong> <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>{program.phone}</span></Typography>
-                    </Box>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
+        {/* Content Box - Centered */}
+        <Box
+          sx={{
+            p: 3,
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          {/* Title */}
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 'bold',
+              color: sectionColor,
+              mb: 2,
+            }}
+          >
+            {program.name}
+          </Typography>
+
+          {/* Description */}
+          <Typography
+            sx={{
+              fontWeight: '500',
+              color: '#333',
+              fontSize: '1rem',
+              mb: 2,
+            }}
+          >
+            {program.description}
+          </Typography>
+
+          {/* Info List */}
+<Stack spacing={1.5} sx={{ color: '#555', fontSize: '0.95rem', textAlign: 'center' }}>
+  <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
+    <span>📝</span>
+    <span><strong>الشروط:</strong> {program.conditions}</span>
+  </Stack>
+
+  <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
+    <span>🎓</span>
+    <span><strong>المؤهلات:</strong> {program.qualifications}</span>
+  </Stack>
+
+  <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
+    <span>📞</span>
+    <span>
+      <strong>هاتف:</strong>{' '}
+      <span style={{ direction: 'ltr', unicodeBidi: 'embed' }}>
+        {program.phone}
+      </span>
+    </span>
+  </Stack>
+</Stack>
+
+        </Box>
+      </Box>
+    </Grid>
+  ))}
+</Grid>
+
+
           </>
         )}
 

@@ -1,10 +1,13 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { Box, Typography, Grid, Container, Paper } from "@mui/material";
+
+//src\pages\programs\ProgramCategoryPage.jsx
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { Box, Typography, Grid } from "@mui/material";
 import { useFetchPrograms } from "./useFetchPrograms";
-import ItemFlipCard from "./ItemFlipCard"; // import ProgramCard from "./ProgramCard";
-import HeroSection from "../../components/HeroSection"; 
-import { useSearchParams,useLocation } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import ItemFlipCard from "./ItemFlipCard";
+import HeroSection from "../../components/HeroSection";
+import { useSearchParams } from "react-router-dom";
+import { useRef, useEffect, useState } from "react";
+import { trackPageView } from "../../components/Data Analysis/utils/trackPageView"; 
 
 // Import the icons you want for the fields
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -42,6 +45,29 @@ useEffect(() => {
   }
 }, [programs, highlightId]);
 
+
+   // Track page view only once per session 
+  useEffect(() => {
+    const path = location.pathname;
+    const key = `viewed_${path}`;
+    const lastViewed = localStorage.getItem(key);
+    const today = new Date().toDateString();
+  
+    if (lastViewed !== today) {
+      console.log("📊 Tracking view for:", path);
+      trackPageView(path);
+      localStorage.setItem(key, today);
+    } else {
+      console.log("⏳ Already tracked today:", path);
+    }
+  }, [location.pathname]);
+  
+// Scroll to highlighted program if it exists
+useEffect(() => {
+    if (highlightId && cardRefs.current[highlightId]) {
+      cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [programs, highlightId]);
 
   const handleRegister = (programName) => {
     navigate(`/RegistrationForm?program=${encodeURIComponent(programName)}`);
