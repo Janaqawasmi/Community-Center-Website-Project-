@@ -7,6 +7,8 @@ import Slider from 'react-slick';
 import HeroSection from "../components/HeroSection";
 import { sectionColors } from '../constants/sectionMeta';
 import { useParams, useNavigate } from 'react-router-dom';
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 // Helper: Map Arabic category name to sectionColors key
 const categoryColorMap = {
@@ -94,6 +96,22 @@ function NewsDetail() {
     };
     fetchNews();
   }, [id]);
+
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   if (!news)
     return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;

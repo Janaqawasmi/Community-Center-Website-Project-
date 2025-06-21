@@ -32,27 +32,31 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
     backgroundColor: "#ffffff",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)", // remove glowing shadow for both
     transform: "none", // remove scaling for highlight
-    transition: "none", // remove smooth animation
-    border: "1.5px solid #dbeafe",
-    overflow: "hidden",
+     // remove smooth animation
+      border: "1.5px solid #dbeafe",
+      overflow: "hidden",
 
-  }}
->
+      }}
+    >
 
-      <Typography variant="h6" color="#0d47a1" fontWeight="bold" gutterBottom>
+        <Typography variant="h6" color=" #003366" fontWeight="bold" gutterBottom>
         {item.name}
-      </Typography>
+        </Typography>
 
-      {fields.map((field) => (
+        {fields.map((field) => (
         <InfoRow
           key={field.key}
           icon={field.icon}
           label={field.label}
-          value={item[field.key]}
+          value={
+          field.key === "days" && Array.isArray(item[field.key])
+            ? item[field.key].join(", ")
+            : item[field.key]
+          }
         />
-      ))}
+        ))}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 2 }}>
         <Button
           variant="outlined"
           onClick={e => { e.stopPropagation(); onRegister(item.name); }}
@@ -60,14 +64,14 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
             width: "70%",
             mx: "auto",
             borderRadius: "28px",
-            border: "2px solid #0d47a1",
-            color: "#0d47a1",
+            border: "2px solid #003366",
+            color: " #003366",
             fontWeight: "bold",
             px: 4,
             textTransform: "none",
             ":hover": {
-              backgroundColor: "#0d47a1",
-              borderColor: "#0288d1",
+              backgroundColor: " #003366",
+              borderColor: "#003366",
               color: "white"
             }
           }}
@@ -80,7 +84,7 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
           onClick={e => { e.stopPropagation(); onFlipBack(); }}
           sx={{
             mt: 0.5,
-            color: "#0d47a1",
+            color: "#003366",
             textDecoration: "underline",
             fontWeight: "bold"
           }}

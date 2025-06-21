@@ -71,7 +71,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
 
       <Typography
         variant="h6"
-        color="#0d47a1"
+        color=" #003366"
         fontWeight="bold"
         gutterBottom
         sx={{ mt: 1 }}
@@ -81,17 +81,19 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
 
       
 
-      <Typography sx={{ fontSize: "14px", color: "#666", mt: 1 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
+      <Typography sx={{ fontSize: "14px", color: " #666", mt: 1 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
 
       <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>
-        <Typography sx={{ fontSize: "48px", fontWeight: "bold", color: "#0d47a1" }}>{day}</Typography>
+        <Typography sx={{ fontSize: "48px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
         <Box sx={{ textAlign: "left", ml: 1 }}>
-          <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: "#0d47a1" }}>{monthName}</Typography>
-          <Typography sx={{ fontSize: "12px", color: "#0d47a1" }}>{year}</Typography>
+          <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: " #003366" }}>{monthName}</Typography>
+          <Typography sx={{ fontSize: "12px", color: " #003366" }}>{year}</Typography>
         </Box>
       </Box>
 
-      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 2, mb: 1, width: "70%", mx: "auto", borderRadius: "40px", border: "2px solid #0d47a1", color: "#0d47a1", fontWeight: "bold", px: 4, textTransform: "none", ":hover": { backgroundColor: "#0d47a1", borderColor: "#0288d1", color: "white" } }}>
+      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 2, mb: 1, width: "70%", mx: "auto", borderRadius: "40px", 
+        border: "2px solid #003366", color: " #003366", 
+        fontWeight: "bold", px: 4, textTransform: "none", ":hover": { backgroundColor: "#003366", borderColor: " #003366", color: "white" } }}>
         عرض التفاصيل
       </Button>
     </Card>

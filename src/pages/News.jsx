@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchNews } from '../utils/fetchNews';
 import NewsCard from './NewsCard';
-
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 import HeroSection from "../components/HeroSection"; // ⬅️ (already imported)
 import {
   Box,
@@ -22,6 +23,22 @@ function News() {
     };
     getNews();
   }, []);
+
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   const filteredItems =
     filter === 'الكل' ? newsItems : newsItems.filter((item) => item.category === filter);
