@@ -62,7 +62,7 @@ if (color) {
           zIndex: 2,
           textAlign: 'center',
           whiteSpace: 'nowrap',
-          boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
+         // boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
         }}
       >
         {icon && <span style={{ marginLeft: 6 }}>{icon}</span>}

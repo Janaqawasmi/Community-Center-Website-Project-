@@ -66,7 +66,7 @@ function AppRoutes({ sections }) {
           path="/admin/dashboard"
           element={
             <ProtectedAdminRoute>
-              <AdminWelcome />
+              <AdminDashboard />
             </ProtectedAdminRoute>
           }
         />
