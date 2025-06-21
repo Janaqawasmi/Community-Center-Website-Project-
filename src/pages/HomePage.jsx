@@ -194,13 +194,19 @@ useEffect(() => {
 }
 
 function OverlayContent({ program, navigate, isEvent = false, isNews = false }) {
+  // Truncate description to 300 characters
+  const truncatedDescription =
+    program.description && program.description.length > 300
+      ? program.description.slice(0, 250) + "..."
+      : program.description;
+
   return (
     <>
-      <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2 , textAlign: "right" }}>
+      <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2, textAlign: "right", direction: "rtl" }}>
         {program.name}
       </Typography>
-      <Typography variant="body1" sx={{ color: "#fff", mb: 3,  textAlign: "right" }}>
-        {program.description}
+      <Typography variant="body1" sx={{ color: "#fff", mb: 3, textAlign: "right",direction: "rtl" }}>
+        {truncatedDescription}
       </Typography>
       <Button
         variant="contained"
@@ -213,14 +219,13 @@ function OverlayContent({ program, navigate, isEvent = false, isNews = false }) 
           textTransform: "none",
         }}
         onClick={() =>
-         navigate(
-  isNews
-    ? `/news/${program.id}`
-    : isEvent
-      ? `/events?highlight=${program.id}`
-      : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
-)
-
+          navigate(
+            isNews
+              ? `/news/${program.id}`
+              : isEvent
+                ? `/events?highlight=${program.id}`
+                : `/programs/${encodeURIComponent(program.category?.[0] || '')}?highlight=${program.id}`
+          )
         }
       >
         عرض التفاصيل
