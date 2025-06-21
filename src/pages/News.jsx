@@ -32,7 +32,7 @@ function News() {
     <Box
       sx={{
         direction: 'rtl',
-        backgroundColor: '#f8f9fb',
+         //backgroundColor: '#f8f9fb',
         minHeight: '100vh',
         pb: 8,
       }}

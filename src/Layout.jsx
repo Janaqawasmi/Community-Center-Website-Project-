@@ -28,7 +28,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
-import NavButton from './components/Buttons/NavButton';
+import NavButton from './components/layout/Buttons/NavButton';
 import AccessibilityIconPlaceholder from './components/AccessibilityIconPlaceholder';
 import WheelchairPickupIcon from '@mui/icons-material/WheelchairPickup';
 
@@ -276,45 +276,6 @@ useEffect(() => {
   {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')}
   {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
   {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
-
-{/* Custom Accessibility for Desktop */}
-{!isMobile && (
-  <>
-    {/* Hidden real EqualWeb container */}
-   <Box
-  id="accessibility-placeholder"
-  sx={{
-    position: 'absolute',
-    top: '-10000px',
-    left: '-10000px',
-    width: 0,
-    height: 0,
-    overflow: 'hidden',
-    pointerEvents: 'none',
-  }}
-/>
-
-    {/* Fake icon that triggers it */}
-    <IconButton
-    onClick={() => {
-      setTimeout(() => {
-  const btn = document.querySelector('.ew-plugin-btn');
-  if (btn) btn.click();
-}, 100);
-
-    const btn = document.querySelector('#accessibility-placeholder .ew-plugin-btn, .ew-plugin-btn');
-    if (btn) btn.click();
-    else console.warn("EqualWeb button not found");
-  }}
-  sx={{
-    color: 'black',
-    '&:hover': { color: '#1976d2' },
-  }}
->
-      <WheelchairPickupIcon />
-    </IconButton>
-  </>
-)}
 
 </Box>
 

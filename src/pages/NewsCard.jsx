@@ -55,7 +55,7 @@ function NewsCard({ data }) {
         >
           <Box
             component="img"
-            src={data.image}
+            src={data.mainImage}
             alt={data.title}
             sx={{
               width: "100%",

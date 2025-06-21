@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 
-export default function HeroSection({ pageId }) {
+export default function HeroSection({ pageId, title }) {
   const [heroData, setHeroData] = useState(null);
 
   useEffect(() => {
@@ -30,14 +30,12 @@ export default function HeroSection({ pageId }) {
       <Box
         sx={{
           position: "relative",
-          height: { xs: 100, md: 200},
+          height: { xs: 100, md: 200 },
           display: "flex",
           flexDirection: "row-reverse",
           overflow: "hidden",
         }}
       >
-          {/* Add the HeroSection */}
-
         {/* Image */}
         <Box
           component="img"
@@ -72,7 +70,7 @@ export default function HeroSection({ pageId }) {
           }}
         >
           <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1 }}>
-            {heroData.title}
+            {title || heroData.title}
           </Typography>
           <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" }}>
             {heroData.subtitle}

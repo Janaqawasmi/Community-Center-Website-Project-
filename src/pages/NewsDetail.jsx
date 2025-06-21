@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
-import { Box, Container, Grid, Button } from '@mui/material';
+import { Box, Container, Grid } from '@mui/material';
 import Slider from 'react-slick';
 import HeroSection from "../components/HeroSection";
 import { sectionColors } from '../constants/sectionMeta';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SectionScrollButton from "../components/sections/SectionScrollButton";
 import ExpandableText from '../components/ExpandableText';
-import PrettyCard from '../components/layout/PrettyCard';
-
+import PrettyCard from '../components/layout/PrettyCard'; 
+import RoundedButton from '../components/layout/Buttons/RoundedButton';
 
 const categoryToSectionId = {
   "أمسية": "section_evening",
@@ -20,8 +20,10 @@ const categoryToSectionId = {
 
 function NewsDetail() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [news, setNews] = useState(null);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -68,108 +70,97 @@ function NewsDetail() {
   };
 
   return (
-    <Box sx={{ direction: 'rtl', backgroundColor: '#fcfcfc', minHeight: '100vh', py: 0 }}>
-      <HeroSection pageId="news" />
+    <Box sx={{ direction: 'rtl', minHeight: '100vh', py: 0 }}>
+      <HeroSection pageId="news" title={news.title} />
 
       <Box sx={{ display: 'flex', justifyContent: 'right', mt: 7, mb: 6, px: 7 }}>
-        <SectionScrollButton
-          label="تصفح المزيد من الأخبار"
-          sectionId={sectionId}
-          sectionColor={newsColor}
-          onClick={() => navigate('/news')}
-            sx={{
-            backgroundColor: '#003366',
-            color: 'white',
-            fontWeight: 'bold',
-            px: 3,
-            py: 1,
-            '&:hover': {
-              backgroundColor: newsColor,
-            },
-          }}
-        />
-      </Box>
+  <RoundedButton
+    label="تصفح المزيد من الأخبار"
+    onClick={() => {
+      if (location.pathname !== '/news') {
+        navigate('/news');
+      } else {
+        navigate('/', { replace: true });
+        setTimeout(() => navigate('/news'), 0);
+      }
+    }}
+    
+    color={newsColor}
+  />
+</Box>
+
+
       <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2 }}>
         <Grid container spacing={4} alignItems="stretch">
           {/* Right: عن الخبر */}
           <Grid item xs={12} md={6}>
-            <Box sx={{ height: '100%' }}>
-              <PrettyCard title="عن الخبر" color={newsColor}>
-                <Box
-                  sx={{
-                    mt: 5,
-                    textAlign: 'right',
-                    fontSize: '1rem',
-                    color: '#444',
-                    backgroundColor: 'transparent',
-                    boxShadow: 'none',
-                  }}
-                >
-                  <ExpandableText
-                    text={news.full_description || ''}
-                    sx={{ fontSize: '1.2rem', lineHeight: 2 }}
-                    limit={400}
-                    expandText="المزيد"
-                    collapseText="إخفاء"
-                    expandSx={{
-                      mt: 2,
-                      color: 'red',
-                      fontWeight: 'bold',
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      background: 'none',
-                      border: 'none',
-                      display: 'block'
-                    }}
-                    collapseSx={{
-                      mt: 2,
-                      color: 'red',
-                      fontWeight: 'bold',
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      background: 'none',
-                      border: 'none',
-                      display: 'block'
-                    }}
-                  />
-                </Box>
-              </PrettyCard>
-            </Box>
-          </Grid>
+  <Box sx={{ height: '100%' }}>
+    <PrettyCard title="عن الخبر">
+      <Box sx={{ textAlign: 'right', fontSize: '1rem', color: '#444' }}>
+        <ExpandableText
+          text={news.full_description}
+          expanded={expanded}
+          sx={{ fontSize: '1.2rem', lineHeight: 2 }}
+        />
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <button
+            onClick={() => setExpanded(prev => !prev)}
+            style={{
+              color: 'red',
+              fontWeight: 'bold',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              fontSize: '1rem',
+            }}
+          >
+            
+          </button>
+        </Box>
+      </Box>
+    </PrettyCard>
+  </Box>
+</Grid>
 
-          {/* Left: Image Slider */}
-          <Grid item xs={12} md={6}>
-            {Array.isArray(news.Pictures) && news.Pictures.length > 0 && (
-              <Box
-                sx={{
-                  height: '100%',
-                  borderRadius: '28px',
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }}
-              >
-                <Slider {...sliderSettings}>
-                  {news.Pictures.map((url, i) => (
-                    <Box key={i} sx={{ width: '100%', height: '100%', display: 'flex' }}>
-                      <img
-                        src={url}
-                        alt={`desc-img-${i}`}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          objectPosition: 'center',
-                          display: 'block',
-                        }}
-                      />
-                    </Box>
-                  ))}
-                </Slider>
-              </Box>
-            )}
-          </Grid>
+
+         <Grid item xs={12} md={6}>
+  {Array.isArray(news.Pictures) && news.Pictures.length > 0 && (
+    <Box
+      sx={{
+        height: 400, // ✅ fixed height in pixels
+        borderRadius: '28px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+      }}
+    >
+      <Slider {...sliderSettings}>
+        {news.Pictures.map((url, i) => (
+          <Box
+            key={i}
+            sx={{
+              width: '100%',
+              height: '100%', // ✅ same as parent
+              display: 'flex',
+            }}
+          >
+            <img
+              src={url}
+              alt={`desc-img-${i}`}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover', // ✅ makes it fill the container
+                objectPosition: 'center',
+                display: 'block',
+              }}
+            />
+          </Box>
+        ))}
+      </Slider>
+    </Box>
+  )}
+</Grid>
+
         </Grid>
       </Container>
     </Box>
