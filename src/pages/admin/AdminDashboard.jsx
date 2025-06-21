@@ -1,7 +1,7 @@
 import { Box, Typography, Divider } from '@mui/material';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
 import RequireAdmin from '../../components/auth/RequireAdmin';
-import ProgramStatsChart from '../../components/Data Analysis/ProgramRegistrationStatsChart.jsx';
+import PageViewsStats from '../../components/Data Analysis/AdminAnalytics';
 
 export default function AdminDashboard() {
   return (
@@ -22,7 +22,7 @@ export default function AdminDashboard() {
 
           <Divider sx={{ my: 2 }} />
 
-          <ProgramStatsChart />
+          <PageViewsStats />
         </Box>
       </AdminDashboardLayout>
     </RequireAdmin>

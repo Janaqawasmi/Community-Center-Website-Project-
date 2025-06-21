@@ -13,11 +13,13 @@ import ExpandableText from '../components/ExpandableText';
 import ExpandableList from '../components/ExpandableList';
 import SectionScrollButton from '../components/sections/SectionScrollButton';
 import PrettyCard from '../components/layout/PrettyCard';
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 function SectionPage() {
   const [expanded, setExpanded] = useState(false);
 const navigate = useNavigate();
-
+  const location = useLocation();
   const sectionsWithCourses = ['section_sports', 'section_women', 'section_culture', 'section_curricular'];
   const { id } = useParams();
   const [section, setSection] = useState(null);
@@ -35,6 +37,23 @@ const navigate = useNavigate();
     };
     fetchSection();
   }, [id]);
+
+   // Track page view only once per session 
+  useEffect(() => {
+    const path = location.pathname;
+    const key = `viewed_${path}`;
+    const lastViewed = localStorage.getItem(key);
+    const today = new Date().toDateString();
+  
+    if (lastViewed !== today) {
+      console.log("📊 Tracking view for:", path);
+      trackPageView(path);
+      localStorage.setItem(key, today);
+    } else {
+      console.log("⏳ Already tracked today:", path);
+    }
+  }, [location.pathname]);
+  
 
   if (!section) return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
