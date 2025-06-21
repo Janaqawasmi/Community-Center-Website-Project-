@@ -394,7 +394,7 @@ marginInlineStart: 8, color: "#666" }}>02</span>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      label="اسم ولي الأمر"
+                      label="اسم ولي الأمر باللغة العبربة"
                       fullWidth
                       variant="outlined"
                       name="fatherName"
