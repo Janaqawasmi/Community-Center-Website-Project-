@@ -13,13 +13,14 @@ import News from '../pages/News';
 import NewsDetail from '../pages/NewsDetail';
 
 import Login from '../pages/Login';
-import ProtectedAdminRoute from './ProtectedAdminRoute';
-import AdminPrograms from '../pages/admin/AdminPrograms';
-import AdminWelcome from '../pages/admin/AdminWelcome';
+import ProtectedAdminRoute from './ProtectedAdminRoute'; // ✅ NEW
+import AdminPrograms from '../pages/admin/AdminProgramEvents/AdminPrograms';
+import AdminWelcome from '../pages/admin/AdminWelcome'; // ✅ FIXED
 import AdminNews from '../pages/admin/AdminNews';
 import AdminSections from '../pages/admin/AdminSections';
-import AdminEvents from '../pages/admin/AdminEvents';
+import AdminEvents from '../pages/admin/AdminProgramEvents/AdminEvents';
 import AdminCalendar from '../pages/admin/AdminCalendar';
+import AdminRegistrationsMainPage from '../pages/admin/AdminRegistrations/AdminRegistrationsMainPage'; 
 import AdminAbout from '../pages/admin/AdminAbout'; 
 import AdminDashboard from '../pages/admin/AdminDashboard'; 
 import AdminInquiries from '../pages/admin/AdminInquiries';
@@ -49,6 +50,81 @@ function AppRoutes({ sections }) {
 
         </Route>
      
+     
+          {/* ✅ PROTECTED ADMIN ROUTE */}
+          {/* Admin routes */}
+<Route
+  path="/admin"
+  element={
+    <ProtectedAdminRoute>
+      <AdminWelcome />
+    </ProtectedAdminRoute>
+  }
+/>
+
+
+<Route
+  path="/admin/programs"
+  element={
+    <ProtectedAdminRoute>
+      <AdminPrograms />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/inquiries"
+  element={
+    <ProtectedAdminRoute>
+      <AdminInquiries />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/news"
+  element={
+    <ProtectedAdminRoute>
+      <AdminNews />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/sections"
+  element={
+    <ProtectedAdminRoute>
+      <AdminSections />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/events"
+  element={
+    <ProtectedAdminRoute>
+      <AdminEvents />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/calendar"
+  element={
+    <ProtectedAdminRoute>
+      <AdminCalendar />
+    </ProtectedAdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/registrations"
+  element={
+    <ProtectedAdminRoute>
+      <AdminRegistrationsMainPage />
+    </ProtectedAdminRoute>
+  }
+/>
         {/* ✅ PROTECTED ADMIN ROUTES */}
         
         {/* Admin Dashboard - Main admin page */}

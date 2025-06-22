@@ -32,6 +32,7 @@ import NavButton from './components/layout/Buttons/NavButton';
 import AccessibilityIconPlaceholder from './components/AccessibilityIconPlaceholder';
 import WheelchairPickupIcon from '@mui/icons-material/WheelchairPickup';
 
+
 const NAV_ITEMS = [
   { label: 'الرئيسية', path: '/' },
   { label: 'الدورات', path: '/programs' },
@@ -95,6 +96,7 @@ const handleNavClick = (path) => {
     };
     fetchSiteInfo();
   }, []);
+
 // Initialize EqualWeb accessibility script
   useEffect(() => {
     const isMobile = window.innerWidth < 900;

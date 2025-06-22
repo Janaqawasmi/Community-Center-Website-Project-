@@ -21,6 +21,7 @@
     "aos": "^2.3.4",
     "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.13",
+    "file-saver": "^2.0.5",
     "firebase": "^11.6.0",
     "formik": "^2.4.6",
     "framer-motion": "^12.11.4",
@@ -38,6 +39,7 @@
     "react-slick": "^0.30.3",
     "recharts": "^2.15.3",
     "slick-carousel": "^1.8.1",
+    "xlsx": "^0.18.5",
     "yup": "^1.6.1"
   },
   "devDependencies": {

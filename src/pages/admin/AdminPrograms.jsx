@@ -14,6 +14,8 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import Autocomplete from '@mui/material/Autocomplete';
 import { uploadImage } from "../../utils/uploadImage";
 import { deleteImage } from "../../utils/deleteImage";
+import { compressImage } from "../../utils/compressImage";
+import { Timestamp } from "firebase/firestore";
 
 
 export default function AdminPrograms() {
@@ -36,6 +38,7 @@ time: "",
 imageUrl: "",
 classNumber: "",
 groupNumber: "",
+digit5: "",
 isActive: true,
 featured: false,
 });
@@ -127,6 +130,7 @@ time: "",
 imageUrl: "",
 classNumber: "",
 groupNumber: "",
+digit5: "",
 isActive: true,
 featured: false,
 });
@@ -152,7 +156,7 @@ if (!form.category || (Array.isArray(form.category) && form.category.length === 
 alert("يرجى اختيار تصنيف واحد على الأقل.");
 return false;
 }
-if (!form.price || isNaN(Number(form.price)) || Number(form.price) <= 0) {
+if (!form.price || isNaN(Number(form.price)) || Number(form.price) < 0) {
 alert("يرجى إدخال سعر الدورة بشكل صحيح.");
 return false;
 }
@@ -162,6 +166,10 @@ return false;
 }
 if (!form.classNumber.trim()) {
 alert("يرجى إدخال رقم الصف.");
+return false;
+}
+if (!form.digit5.trim()) {
+alert("يرجى إدخال ספרה 5");
 return false;
 }
 if (!form.groupNumber.trim()) {
@@ -196,6 +204,9 @@ const handleAdd = async () => {
 
 const docRef = await addDoc(collection(db, "programs"), {
   ...formData,
+  startDate: formData.startDate ? Timestamp.fromDate(new Date(formData.startDate)) : null,
+  endDate: formData.endDate ? Timestamp.fromDate(new Date(formData.endDate)) : null,
+  
   imageUrl: "", // نحجز مكانًا للرابط
   category: categoryArray,
   isActive: form.isActive,
@@ -218,7 +229,6 @@ const docRef = await addDoc(collection(db, "programs"), {
   handleCloseDialog();
 };
 
-
 const handleEdit = async () => {
   if (!validateRequiredFields()) return;
 
@@ -230,22 +240,31 @@ const handleEdit = async () => {
       ? [form.category]
       : [];
 
-  // تحديث البيانات أولًا بدون صورة
-  await updateDoc(docRef, {
-    ...form,
-    imageUrl: "", // سيتم تحديثه لاحقًا
+  const { imageFile, ...formToUpdate } = form;
+  let updatedData = {
+    ...formToUpdate,
+     startDate: formToUpdate.startDate ? Timestamp.fromDate(new Date(formToUpdate.startDate)) : null,
+  endDate: formToUpdate.endDate ? Timestamp.fromDate(new Date(formToUpdate.endDate)) : null,
     category: categoryArray,
     isActive: form.isActive,
     featured: form.featured,
-  });
+  };
 
-  // إذا وُجدت صورة جديدة، احذف القديمة ثم ارفع الجديدة
-  if (form.imageFile) {
+  // إذا رفع المستخدم صورة جديدة
+  if (imageFile) {
+    updatedData.imageUrl = ""; // سيتم تحديثها بعد رفع الصورة
+  }
+
+  // تحديث البيانات في Firestore
+  await updateDoc(docRef, updatedData);
+
+  // رفع الصورة الجديدة إذا وُجدت، وحذف القديمة
+  if (imageFile) {
     if (form.imageUrl) {
       await deleteImage(form.imageUrl);
     }
     await uploadImage({
-      file: form.imageFile,
+      file: imageFile,
       storagePath: `programs/${currentId}.jpg`,
       firestorePath: ["programs", currentId],
       field: "imageUrl",
@@ -255,6 +274,7 @@ const handleEdit = async () => {
   fetchPrograms();
   handleCloseDialog();
 };
+
 
 
 
@@ -374,8 +394,8 @@ return (
     <TableHead>
       <TableRow>
         <TableCell>اسم الدورة</TableCell>
-        <TableCell>الفصل</TableCell>
-        <TableCell>المجموعة</TableCell>
+        <TableCell>חוג</TableCell>
+        <TableCell>קבוצה</TableCell>
         <TableCell>الوصف</TableCell>
         <TableCell>المدرب</TableCell>
         <TableCell>السعر</TableCell>
@@ -493,6 +513,15 @@ return (
       value={form.groupNumber}
       onChange={handleChange}
     />
+
+    <TextField
+      fullWidth
+      margin="dense"
+      name="digit5"
+      label={requiredLabel("ספרה 5")}
+      value={form.digit5}
+      onChange={handleChange}
+    />
     <TextField fullWidth margin="dense" name="description" label="الوصف" value={form.description} onChange={handleChange} />
 
     <TextField fullWidth margin="dense" name="instructor_name" label="اسم المدرب" value={form.instructor_name} onChange={handleChange} />
@@ -531,7 +560,22 @@ return (
             alt="صورة الفعالية"
             style={{ width: 100, borderRadius: 4, marginTop: 4 }}
           />
+
+          <Button
+  variant="outlined"
+  color="error"
+  size="small"
+  onClick={async () => {
+    await deleteImage(form.imageUrl);
+    setForm(prev => ({ ...prev, imageUrl: "", imageFile: undefined }));
+  }}
+  style={{ marginRight: 8 }}
+>
+  حذف الصورة
+</Button>
+
         </Box>
+        
       )}
 
     </Box>            <FormControlLabel
