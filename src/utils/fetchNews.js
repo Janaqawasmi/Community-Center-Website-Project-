@@ -15,7 +15,7 @@ const fetchNews = async (featuredOnly = false) => {
     isNews: true,
     name: doc.data().title,
     description: doc.data().full_description,
-    imageUrl: doc.data().image,
+    imageUrl: doc.data().mainImage,
   }));
   return data;
 };

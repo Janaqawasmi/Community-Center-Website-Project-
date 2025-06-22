@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 
-export default function HeroSection({ pageId }) {
+export default function HeroSection({ pageId, title  }) {
   const [heroData, setHeroData] = useState(null);
 
   useEffect(() => {
@@ -66,8 +66,7 @@ export default function HeroSection({ pageId }) {
           }}
         >
           <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.3rem', md: '2rem' }, }}>
-            {heroData.title}
-          </Typography>
+                 {title || heroData.title}  </Typography>
                     <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" , display: { xs: "none", md: "block" },
  }}>
             {heroData.subtitle}
