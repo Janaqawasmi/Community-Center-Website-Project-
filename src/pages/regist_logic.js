@@ -134,12 +134,10 @@ export function validateLandLineNumber(number) {
 }
 
 
-
-
-const hebrewRegex = /^[\u0590-\u05FF\s]*$/;
-const emailRegex1 = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const emailRegex2 = /^[A-Za-z]+$/
 const numberRegex = /^\d*$/;
+const hebrewRegex = /^[\u0590-\u05FF\s]*$/;
+const emailAllowedRegex = /^[a-zA-Z0-9._%+\-@]*$/; // فقط الحروف اللاتينية والأرقام والرموز المسموحة
+const emailFullRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // الشكل النهائي للإيميل
 
 export function validateField(name, value) {
   if (["id", "fatherId", "landLine", "personalPhone", "fatherPhone"].includes(name)) {
@@ -155,17 +153,17 @@ export function validateField(name, value) {
   }
 
   if (name === 'email') {
-    if (!emailRegex1.test(value) && !emailRegex2.test(value)&& value.length > 0) {
-      return 'يرجى إدخال بريد إلكتروني صحيح باللغة الإنجليزية فقط';
+    // ممنوع أحرف غير لاتينية أو رموز غريبة حتى أثناء الكتابة
+    if (value.length > 0 && !emailAllowedRegex.test(value)) {
+      return 'يرجى إدخال بريد إلكتروني بالإنجليزية فقط وبدون رموز غريبة';
     }
+    // عند الإرسال أو الخروج من الحقل (لو تحب تفحص هنا أيضا):
+    // يمكن عمل فحص إضافي في onBlur أو عند الإرسال النهائي فقط
+    // إذا أردت الفحص أثناء الكتابة:
+    // if (value.includes('@') && !emailFullRegex.test(value)) {
+    //   return 'يرجى إدخال بريد إلكتروني صحيح بالإنجليزية فقط';
+    // }
   }
-
-
-
-
-
 
   return '';
 }
-
-
