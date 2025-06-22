@@ -1,6 +1,6 @@
 //src\pages\programs\ProgramCategoryPage.jsx
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid,Container } from "@mui/material";
 import { useFetchPrograms } from "./useFetchPrograms";
 import ItemFlipCard from "./ItemFlipCard";
 import HeroSection from "../../components/HeroSection";
@@ -77,9 +77,9 @@ useEffect(() => {
         <HeroSection pageId={categoryName} />
       </Box>
 
-      <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
+      <Container>
         {highlightId && highlightedProgram && isDesktop && (
-          <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
+          <Box sx={{ mb: 8 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
             <Grid container justifyContent="center">
               <Grid item md={4}>
                 <ItemFlipCard
@@ -122,7 +122,7 @@ useEffect(() => {
             لا توجد برامج حالياً تحت هذا التصنيف.
           </Typography>
         )}
-      </Box>
+      </Container>
     </Box>
   );
 }

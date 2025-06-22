@@ -38,7 +38,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
             width: "100%",
             height: "100%",
             clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
-            background: config.getLineColor ? config.getLineColor(item) : item.lineColor || "#004e92",
+            background: config.getLineColor ? config.getLineColor(item) : item.lineColor || " #003366",
             zIndex: 0,
           }}
         />
@@ -52,7 +52,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
             clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
             //overflow: "hidden",
             zIndex: 1,
-            backgroundColor: config.getLineColor ? config.getLineColor(item) : item.lineColor || "#004e92",
+            backgroundColor: config.getLineColor ? config.getLineColor(item) : item.lineColor || " #003366",
           }}
         >
           <Box
