@@ -384,7 +384,6 @@ export default function AdminAbout() {
     <Box>
       <Box sx={{ 
         display: 'flex', 
-        alignItems: 'center', 
         justifyContent: 'space-between', 
         mb: 2,
         flexDirection: isMobile ? 'column' : 'row',
