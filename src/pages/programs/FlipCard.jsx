@@ -2,9 +2,9 @@ import { styled } from '@mui/system';
 
 export const FlipCard = styled('div')({
   width: "100%",            // allow responsive sizing from Grid
-  maxWidth: 320,            // fixed size for uniformity (adjust if needed)
+  maxWidth: 350,            // fixed size for uniformity (adjust if needed)
   height: 450,              // fixed height for equal layout
-  perspective: 1000,
+  perspective: 100,
   margin: "auto",           // center within Grid cell
   cursor: "pointer",
 });

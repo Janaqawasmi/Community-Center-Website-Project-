@@ -1,10 +1,12 @@
+//src\pages\programs\ProgramCategoryPage.jsx
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid,Container } from "@mui/material";
 import { useFetchPrograms } from "./useFetchPrograms";
 import ItemFlipCard from "./ItemFlipCard";
 import HeroSection from "../../components/HeroSection";
 import { useSearchParams } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
+import { trackPageView } from "../../components/Data Analysis/utils/trackPageView"; 
 
 // Icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -40,7 +42,24 @@ export default function ProgramCategoryPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+   // Track page view only once per session 
   useEffect(() => {
+    const path = location.pathname;
+    const key = `viewed_${path}`;
+    const lastViewed = localStorage.getItem(key);
+    const today = new Date().toDateString();
+  
+    if (lastViewed !== today) {
+      console.log("📊 Tracking view for:", path);
+      trackPageView(path);
+      localStorage.setItem(key, today);
+    } else {
+      console.log("⏳ Already tracked today:", path);
+    }
+  }, [location.pathname]);
+  
+// Scroll to highlighted program if it exists
+useEffect(() => {
     if (highlightId && cardRefs.current[highlightId]) {
       cardRefs.current[highlightId].scrollIntoView({ behavior: "smooth", block: "center" });
     }
@@ -58,9 +77,9 @@ export default function ProgramCategoryPage() {
         <HeroSection pageId={categoryName} />
       </Box>
 
-      <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
+      <Container>
         {highlightId && highlightedProgram && isDesktop && (
-          <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
+          <Box sx={{ mb: 8 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
             <Grid container justifyContent="center">
               <Grid item md={4}>
                 <ItemFlipCard
@@ -103,7 +122,7 @@ export default function ProgramCategoryPage() {
             لا توجد برامج حالياً تحت هذا التصنيف.
           </Typography>
         )}
-      </Box>
+      </Container>
     </Box>
   );
 }

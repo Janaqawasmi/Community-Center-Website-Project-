@@ -32,9 +32,9 @@ function News() {
     <Box
       sx={{
         direction: 'rtl',
-        backgroundColor: '#f8f9fb',
+         //backgroundColor: '#f8f9fb',
         minHeight: '100vh',
-        pb: 8,
+        pb: 4,
       }}
     >
       {/* 🟦 Hero Banner - replaced with HeroSection for consistency */}
@@ -48,9 +48,7 @@ function News() {
           display: 'flex',
           justifyContent: 'center',
           flexWrap: 'wrap',
-          gap: 2,
-          py: 3,
-          mb: 4,
+          py: 4,
         }}
       >
        
@@ -63,9 +61,11 @@ function News() {
             لا توجد أخبار حالياً
           </Typography>
         ) : (
-          <Grid container spacing={4}>
+          <Grid container spacing={8} justifyContent="center">
             {filteredItems.map((item) => (
-              <Grid item xs={12} md={4} key={item.id}>
+              <Grid item xs={12} sm={6} md={4} key={item.id} 
+                display="flex"
+                justifyContent="center">
                 <NewsCard data={item} />
               </Grid>
             ))}

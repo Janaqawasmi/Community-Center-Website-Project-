@@ -15,6 +15,8 @@ import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
 import RoundedButton from '../components/layout/Buttons/RoundedButton'; 
 import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 export default function Contact() {
   const theme = useTheme();
@@ -87,6 +89,22 @@ export default function Contact() {
         document.head.appendChild(script);
       }
     }, []);
+    
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),

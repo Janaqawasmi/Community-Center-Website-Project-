@@ -29,6 +29,8 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
 import NavButton from './components/layout/Buttons/NavButton';
+import AccessibilityIconPlaceholder from './components/AccessibilityIconPlaceholder';
+import WheelchairPickupIcon from '@mui/icons-material/WheelchairPickup';
 
 
 const NAV_ITEMS = [
@@ -94,45 +96,69 @@ const handleNavClick = (path) => {
     };
     fetchSiteInfo();
   }, []);
- 
 
-useEffect(() => {
-  window.interdeal = {
-    sitekey: "947480020c6a6fee1201647fae5ab297",
-    Position: "right",
-    domains: {
-      js: "https://cdn.equalweb.com/",
-      acc: "https://access.equalweb.com/"
-    },
-    Menulang: "AR", // Arabic language
-    btnStyle: {
-      vPosition: ["80%", "80%"],
-      scale: ["0.8", "0.5"],
-      color: {
-        main: "#1c4bb6",
-        second: "#f3f1f1"
+// Initialize EqualWeb accessibility script
+  useEffect(() => {
+    const isMobile = window.innerWidth < 900;
+
+    window.interdeal = {
+      sitekey: "947480020c6a6fee1201647fae5ab297",
+      Position: isMobile ? "left" : "custom",
+      dragAndDrop: isMobile,
+      domains: {
+        js: "https://cdn.equalweb.com/",
+        acc: "https://access.equalweb.com/",
       },
-      icon: {
-        outline: false,
-        type: 10,
-        shape: "semicircle"
-      }
+      Menulang: "AR",
+      btnStyle: {
+        vPosition: ["80%", "20%"],
+        scale: ["0.8", "0.5"],
+        color: {
+          main: "#1c4bb6",
+          second: "#f3f1f1",
+        },
+        icon: {
+          outline: false,
+          type: 10,
+          shape: "semicircle",
+        },
+      },
+      customStyle: isMobile
+        ? undefined
+        : {
+            Position: "custom",
+            container: "#accessibility-placeholder",
+          },
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://cdn.equalweb.com/core/5.1.13/accessibility.js";
+    script.defer = true;
+    script.integrity =
+      "sha512-70/AbMe6C9H3r5hjsQleJEY4y5l9ykt4WYSgyZj/WjpY/ord/26LWfva163b9W+GwWkfwbP0iLT+h6KRl+LoXA==";
+    script.crossOrigin = "anonymous";
+    script.setAttribute("data-cfasync", true);
+    document.body.appendChild(script);
+
+    if (!isMobile) {
+      const style = document.createElement("style");
+      style.innerHTML = `
+        #accessibility-placeholder .ew-accessibility-menu {
+          position: static !important;
+          margin: 0 !important;
+        }
+        #accessibility-placeholder .ew-plugin-btn {
+          margin: 0 auto !important;
+          box-shadow: none !important;
+        }
+      `;
+      document.head.appendChild(style);
     }
-  };
 
-  const script = document.createElement("script");
-  script.src = "https://cdn.equalweb.com/core/5.1.2/accessibility.js";
-  script.defer = true;
-  script.integrity = "sha512-PUyQFF3HFjRiVfjOiFFu+RTc0nGmLV5FN3CVw8zWFK6pVbWPAEKy9X2bTUn10GNu1EbxN56MuWu0P8ZHC6xv3Q==";
-  script.crossOrigin = "anonymous";
-  script.setAttribute("data-cfasync", true);
-
-  document.body.appendChild(script);
-
-  return () => {
-    document.body.removeChild(script);
-  };
-}, []);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const renderSocialIcon = (href, Icon, color) => (
   <IconButton
@@ -151,6 +177,7 @@ useEffect(() => {
     <Icon />
   </IconButton>
 );
+
 
   return (
     <>

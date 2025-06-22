@@ -187,7 +187,7 @@ function RegistrationForm() {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        label={RequiredLabel("الاسم الشخصي")}
+                  label={RequiredLabel(" الاسم الشخصي باللغة العبرية")}
                         fullWidth
                         variant="outlined"
                         name="FirstName"
@@ -222,7 +222,7 @@ function RegistrationForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        label={RequiredLabel("اسم العائلة")}
+                     label={RequiredLabel(" اسم العائلة باللغة العبرية")}
                         fullWidth
                         variant="outlined"
                         name="lastName"
@@ -390,7 +390,7 @@ function RegistrationForm() {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        label="اسم ولي الأمر"
+                      label="اسم ولي الأمر باللغة العبربة"
                         fullWidth
                         variant="outlined"
                         name="fatherName"
@@ -403,7 +403,7 @@ function RegistrationForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        label="اسم عائلة ولي الأمر"
+                      label="اسم عائلة ولي الأمر باللغة العبرية"
                         fullWidth
                         variant="outlined"
                         name="parentLastName"
