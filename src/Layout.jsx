@@ -101,35 +101,40 @@ const handleNavClick = (path) => {
   useEffect(() => {
     const isMobile = window.innerWidth < 900;
 
-    window.interdeal = {
-      sitekey: "947480020c6a6fee1201647fae5ab297",
-      Position: isMobile ? "left" : "custom",
-      dragAndDrop: isMobile,
-      domains: {
-        js: "https://cdn.equalweb.com/",
-        acc: "https://access.equalweb.com/",
+   if (!window.interdeal) {
+  window.interdeal = {};
+}
+
+Object.assign(window.interdeal, {
+  sitekey: "947480020c6a6fee1201647fae5ab297",
+  Position: isMobile ? "left" : "custom",
+  dragAndDrop: isMobile,
+  domains: {
+    js: "https://cdn.equalweb.com/",
+    acc: "https://access.equalweb.com/",
+  },
+  Menulang: "AR",
+  btnStyle: {
+    vPosition: ["80%", "20%"],
+    scale: ["0.8", "0.5"],
+    color: {
+      main: "#1c4bb6",
+      second: "#f3f1f1",
+    },
+    icon: {
+      outline: false,
+      type: 10,
+      shape: "semicircle",
+    },
+  },
+  customStyle: isMobile
+    ? undefined
+    : {
+        Position: "custom",
+        container: "#accessibility-placeholder",
       },
-      Menulang: "AR",
-      btnStyle: {
-        vPosition: ["80%", "20%"],
-        scale: ["0.8", "0.5"],
-        color: {
-          main: "#1c4bb6",
-          second: "#f3f1f1",
-        },
-        icon: {
-          outline: false,
-          type: 10,
-          shape: "semicircle",
-        },
-      },
-      customStyle: isMobile
-        ? undefined
-        : {
-            Position: "custom",
-            container: "#accessibility-placeholder",
-          },
-    };
+});
+
 
     const script = document.createElement("script");
     script.src = "https://cdn.equalweb.com/core/5.1.13/accessibility.js";
