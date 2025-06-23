@@ -29,8 +29,6 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
 import NavButton from './components/layout/Buttons/NavButton';
-import AccessibilityIconPlaceholder from './components/AccessibilityIconPlaceholder';
-import WheelchairPickupIcon from '@mui/icons-material/WheelchairPickup';
 
 
 const NAV_ITEMS = [
@@ -98,36 +96,27 @@ const handleNavClick = (path) => {
   }, []);
  
 useEffect(() => {
-  const isMobile = window.innerWidth < 900;
-
   window.interdeal = {
-    sitekey: "947480020c6a6fee1201647fae5ab297",
-    Position: isMobile ? "left" : "custom",
-    dragAndDrop: isMobile,
+    sitekey: "275cc400069738bc738aaa49ba44ec3c",
+    Position: "Left",
     domains: {
       js: "https://cdn.equalweb.com/",
-      acc: "https://access.equalweb.com/",
+      acc: "https://access.equalweb.com/"
     },
     Menulang: "AR",
     btnStyle: {
-      vPosition: ["80%", "20%"],
+      vPosition: ["80%", "80%"],
       scale: ["0.8", "0.5"],
       color: {
         main: "#1c4bb6",
-        second: "#f3f1f1",
+        second: "#ffffff"
       },
       icon: {
         outline: false,
         type: 10,
-        shape: "semicircle", // ← updated shape
-      },
-    },
-    customStyle: isMobile
-      ? undefined
-      : {
-        Position: "custom",
-          container: "#accessibility-placeholder",
-        },
+        shape: "semicircle"
+      }
+    }
   };
 
   const script = document.createElement("script");
@@ -139,25 +128,11 @@ useEffect(() => {
   script.setAttribute("data-cfasync", true);
   document.body.appendChild(script);
 
-  if (!isMobile) {
-    const style = document.createElement("style");
-    style.innerHTML = `
-      #accessibility-placeholder .ew-accessibility-menu {
-        position: static !important;
-        margin: 0 !important;
-      }
-      #accessibility-placeholder .ew-plugin-btn {
-        margin: 0 auto !important;
-        box-shadow: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
   return () => {
     document.body.removeChild(script);
   };
 }, []);
+
 
 
   const renderSocialIcon = (href, Icon, color) => (
