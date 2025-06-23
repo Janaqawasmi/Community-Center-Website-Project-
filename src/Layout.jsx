@@ -153,6 +153,7 @@ useEffect(() => {
   </IconButton>
 );
 
+
   return (
     <>
 <AppBar
@@ -238,22 +239,18 @@ useEffect(() => {
 </Box>
 
 
-{/* Desktop Social + Accessibility */}
+          {/* Desktop Social Icons */}
 <Box
   sx={{
     display: { xs: 'none', md: 'flex' },
-    gap: 2,
+    gap: 4,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    position: 'relative',
   }}
 >
   {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')}
   {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
   {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
-
 </Box>
-
         </Toolbar>
       </AppBar>
 

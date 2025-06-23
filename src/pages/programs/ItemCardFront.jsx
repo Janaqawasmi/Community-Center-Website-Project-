@@ -6,7 +6,11 @@ import { Card, Typography, Box, Button } from "@mui/material";
  */
 export default function ItemCardFront({ item, onFlip, config = {} , highlight}) {
   // Get date for display, or fallback to today
-  const date = config.getDate ? config.getDate(item) : (item.startDate instanceof Date ? item.startDate : new Date());
+const date = config.getDate
+  ? config.getDate(item)
+  : (item.date && item.date.seconds
+      ? new Date(item.date.seconds * 1000)
+      : new Date());
   const day = date.getDate();
   const monthName = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"][date.getMonth()];
   const year = date.getFullYear();
@@ -38,7 +42,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
             width: "100%",
             height: "100%",
             clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
-            background: config.getLineColor ? config.getLineColor(item) : item.lineColor || "#004e92",
+            background: config.getLineColor ? config.getLineColor(item) : item.lineColor || " #003366",
             zIndex: 0,
           }}
         />
@@ -52,7 +56,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
             clipPath: "polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%)",
             //overflow: "hidden",
             zIndex: 1,
-            backgroundColor: config.getLineColor ? config.getLineColor(item) : item.lineColor || "#004e92",
+            backgroundColor: config.getLineColor ? config.getLineColor(item) : item.lineColor || " #003366",
           }}
         >
           <Box
@@ -71,7 +75,7 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
 
       <Typography
         variant="h6"
-        color="#0d47a1"
+        color=" #003366"
         fontWeight="bold"
         gutterBottom
         sx={{ mt: 1 }}
@@ -81,17 +85,19 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
 
       
 
-      <Typography sx={{ fontSize: "14px", color: "#666", mt: 1 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
+      <Typography sx={{ fontSize: "14px", color: " #666", mt: 1 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
 
       <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>
-        <Typography sx={{ fontSize: "48px", fontWeight: "bold", color: "#0d47a1" }}>{day}</Typography>
+        <Typography sx={{ fontSize: "48px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
         <Box sx={{ textAlign: "left", ml: 1 }}>
-          <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: "#0d47a1" }}>{monthName}</Typography>
-          <Typography sx={{ fontSize: "12px", color: "#0d47a1" }}>{year}</Typography>
+          <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: " #003366" }}>{monthName}</Typography>
+          <Typography sx={{ fontSize: "12px", color: " #003366" }}>{year}</Typography>
         </Box>
       </Box>
 
-      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 2, mb: 1, width: "70%", mx: "auto", borderRadius: "40px", border: "2px solid #0d47a1", color: "#0d47a1", fontWeight: "bold", px: 4, textTransform: "none", ":hover": { backgroundColor: "#0d47a1", borderColor: "#0288d1", color: "white" } }}>
+      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 2, mb: 1, width: "70%", mx: "auto", borderRadius: "40px", 
+        border: "2px solid #003366", color: " #003366", 
+        fontWeight: "bold", px: 4, textTransform: "none", ":hover": { backgroundColor: "#003366", borderColor: " #003366", color: "white" } }}>
         عرض التفاصيل
       </Button>
     </Card>

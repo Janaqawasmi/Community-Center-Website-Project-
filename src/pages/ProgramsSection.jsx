@@ -15,9 +15,8 @@ import {
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { useNavigate } from "react-router-dom";
-import { programCategories, iconMap } from "../constants/sectionMeta";
+import { programCategories } from "../constants/sectionMeta";
 import SearchIcon from "@mui/icons-material/Search";
-import { motion } from "framer-motion";
 import HeroSection from "../components/HeroSection";
 import ItemFlipCard from "./programs/ItemFlipCard";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -27,6 +26,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import RoundedButton from "../components/layout/Buttons/RoundedButton";
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 const programFields = [
   { key: "days", label: "الأيام", icon: <CalendarTodayIcon /> },
@@ -56,10 +57,14 @@ function CategoryCard({ label, color, onClick, index }) {
 
 
 export default function ProgramPage() {
+  const location = useLocation();
   const [allPrograms, setAllPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+const handleRegister = (programName) => {
+  navigate(`/RegistrationForm?program=${encodeURIComponent(programName)}`);
+};
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -82,6 +87,22 @@ export default function ProgramPage() {
 
     fetchPrograms();
   }, []);
+
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   const filteredPrograms = allPrograms.filter(
     (p) =>
@@ -164,76 +185,53 @@ export default function ProgramPage() {
 )}
 
 
-        {/* Category View */}
+     {/* Category View */}
 {searchQuery.trim() === "" && (
-          <Box sx={{ maxWidth: 700, mx: "auto" }}>
-            <Grid container spacing={2}>
-              {categories.map((label, index) => {
-                const iconKey = Object.keys(iconMap).find((key) =>
-                  key.includes(label)
-                );
-                const Icon = iconMap[iconKey];
-                const color = getCategoryColor(label);
-                return (
-                  <Grid item xs={12} sm={6} key={label}>
-                    <CategoryCard
-                      label={label}
-                      icon={Icon}
-                      color={color}
-                      index={index}
-                      onClick={() =>
-                        navigate(`/programs/${encodeURIComponent(label)}`)
-                      }
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Box>
-        )}
+  <Box sx={{ maxWidth: 700, mx: "auto" }}>
+    <Grid container spacing={2}>
+      {categories.map((label, index) => {
+        const color = getCategoryColor(label);
+        return (
+          <Grid item xs={12} sm={6} key={label}>
+            <CategoryCard
+              label={label}
+              color={color}
+              index={index}
+              onClick={() =>
+                navigate(`/programs/${encodeURIComponent(label)}`)
+              }
+            />
+          </Grid>
+        );
+      })}
+    </Grid>
+  </Box>
+)}
+
 
        
 
         {/* Search Results */}
-        {searchQuery.trim() !== "" && (
-          <Grid container spacing={3} mt={2}>
-            {filteredPrograms.map((program) => (
-              <Grid item xs={12} md={4} key={program.id}>
-                <Card sx={{ height: "100%" }}>
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      fontWeight="bold"
-                      gutterBottom
-                      fontFamily="Cairo, sans-serif"
-                    >
-                      {program.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      fontFamily="Cairo, sans-serif"
-                    >
-                      {program.description}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      onClick={() =>
-                        navigate(
-                          `/programs/${encodeURIComponent(program.category)}`
-                        )
-                      }
-                    >
-                      عرض التفاصيل
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
+      {searchQuery.trim() !== "" && (
+  <Grid container spacing={3} mt={2}>
+    {filteredPrograms.map((program) => (
+      <Grid item xs={12} sm={6} md={4} key={program.id}>
+        <ItemFlipCard
+          item={program}
+          fields={programFields}
+          onRegister={handleRegister}
+          highlight={false}
+        />
+      </Grid>
+    ))}
+
+    {filteredPrograms.length === 0 && (
+      <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
+        لا توجد نتائج مطابقة لبحثك.
+      </Typography>
+    )}
+  </Grid>
+)}
       </Container>
     </Box>
   );

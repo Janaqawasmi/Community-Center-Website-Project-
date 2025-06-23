@@ -21,7 +21,7 @@ export const useFetchPrograms = (categoryName) => {
             const startDate = docData.startDate?.toDate?.() ?? null;
 
             // Fetch the corresponding lineColor from heroSection
-            let lineColor = "#004e92";
+            let lineColor = " #004e92";
             try {
               const heroRef = doc(db, "heroSection", categoryName);
               const heroSnap = await getDoc(heroRef);

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Dialog, DialogTitle,
-  DialogContent, DialogActions, TextField, IconButton, Chip
+  DialogContent, DialogActions, TextField, IconButton, List, ListItem
 } from '@mui/material';
 import { db } from '../../components/firebase';
 import {
-  collection, getDocs, addDoc, updateDoc, deleteDoc, doc
+  collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
@@ -29,7 +29,6 @@ export default function AdminSections() {
   const [isEdit, setIsEdit] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [formData, setFormData] = useState({});
-  const [fieldKey, setFieldKey] = useState('');
   const [newFieldKey, setNewFieldKey] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState(null);

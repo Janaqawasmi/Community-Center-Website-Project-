@@ -15,6 +15,8 @@ import { db } from '../components/firebase';
 import HeroSection from "../components/HeroSection";
 import RoundedButton from '../components/layout/Buttons/RoundedButton'; 
 import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
+import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
+import { useLocation } from "react-router-dom";
 
 export default function Contact() {
   const theme = useTheme();
@@ -26,6 +28,7 @@ export default function Contact() {
   const [siteInfo, setSiteInfo] = useState(null);
   const [departments, setDepartments] = useState([]);
 
+  // لون للزر - التدرج الأزرق الجديد
   const buttonColor = ' #005588';
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
@@ -86,6 +89,22 @@ export default function Contact() {
         document.head.appendChild(script);
       }
     }, []);
+    
+  // Track page view only once per session 
+useEffect(() => {
+  const path = location.pathname;
+  const key = `viewed_${path}`;
+  const lastViewed = localStorage.getItem(key);
+  const today = new Date().toDateString();
+
+  if (lastViewed !== today) {
+    console.log("📊 Tracking view for:", path);
+    trackPageView(path);
+    localStorage.setItem(key, today);
+  } else {
+    console.log("⏳ Already tracked today:", path);
+  }
+}, [location.pathname]);
 
   const validationSchema = Yup.object({
     first_name: Yup.string().required("الاسم مطلوب"),
@@ -129,11 +148,12 @@ export default function Contact() {
      };
 
   return (
-    <Box sx={{ fontFamily: "Cairo, sans-serif", direction: "rtl" }}>
-      <Box mb={4}>
+    <Box  mb={8} sx={{  direction: "rtl" }}>
+      <Box mb={8}>
         <HeroSection pageId="contactUs" />
       </Box>
 
+      {/* الزر في أعلى الصفحة */}
       <Box mx={{ xs: 2, md: 7 }}>
         <Box
           sx={{
@@ -142,22 +162,115 @@ export default function Contact() {
             mt: 0,
             mb: 4,
             px: 0,
-            direction: 'rtl'
+            direction: 'rtl',
           }}
         >
-          <RoundedButton
-            label="أرسل رسالة"
-            onClick={() => {
-              document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' });
-            }}
-            color={buttonColor}
-          />
+         <RoundedButton
+  label="أرسل رسالة"
+  onClick={() => {
+    document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' });
+  }}
+  color={buttonColor}
+/>
         </Box>
 
+        {/* معلومات التواصل في PrettyCard */}
         <Grid container spacing={4} mb={3}>
           <Grid item xs={12}>
-            <PrettyCard title="معلومات التواصل">
-              {/* Remaining UI content stays unchanged */}
+            <PrettyCard title="معلومات التواصل" >
+              {siteInfo && (
+                <Grid container spacing={3}>
+                  {/* العنوان والهاتف في نفس السطر */}
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      {/* العنوان مع رابط الويز */}
+                      <Grid item xs={12} md={6}>
+                        <Box display="flex" alignItems="center" gap={0.5}>
+                          <Box component="span" sx={{ color: buttonColor }}>
+                            <FaMapMarkerAlt size={20} />
+                          </Box>
+                          <Typography component="span" sx={{ fontSize: '1.1rem', mr: 0.5 }}>
+                            <strong>العنوان:</strong> {siteInfo.address}
+                          </Typography>
+                          {siteInfo?.waze_link && (
+                            <a
+                              href={siteInfo.waze_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ textDecoration: 'none', marginRight: '4px' }}
+                            >
+                              <Box
+                                sx={{
+                                  width: 40,
+                                  height: 40,
+                                  borderRadius: '50%',
+                                  backgroundColor: ' #2D9CDB',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  transition: '0.3s',
+                                  cursor: 'pointer',
+                                  '&:hover': {
+                                    transform: 'scale(1.05)',
+                                    backgroundColor: '#1e7db8',
+                                  },
+                                }}
+                              >
+                                <SiWaze size={22} color="#fff" />
+                              </Box>
+                            </a>
+                          )}
+                        </Box>
+                      </Grid>
+
+                      {/* الهاتف */}
+                      <Grid item xs={12} md={6}>
+                        <Box display="flex" alignItems="center">
+                          <Box component="span" sx={{ color: buttonColor, ml: 1 }}>
+                            <FaPhoneAlt size={20} />
+                          </Box>
+                          <Typography sx={{ fontSize: '1.1rem' }}>
+                            <strong>الهاتف:</strong> {siteInfo.phone_number}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  {/* ساعات العمل والبريد الإلكتروني في نفس السطر */}
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      {/* ساعات العمل */}
+                      <Grid item xs={12} md={6}>
+                        <Box display="flex" alignItems="flex-start">
+                          <Box component="span" sx={{ color: buttonColor, ml: 1, mt: 0.5 }}>
+                            <FaClock size={20} />
+                          </Box>
+                          <Box>
+                            <Typography sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
+                              ساعات العمل:
+                            </Typography>
+                            <Typography sx={{ fontSize: '1rem' }}>{siteInfo.working_days || ""}</Typography>
+                            <Typography sx={{ fontSize: '1rem' }}>{siteInfo.working_hours || ""}</Typography>
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      {/* البريد الإلكتروني */}
+                      <Grid item xs={12} md={6}>
+                        <Box display="flex" alignItems="center">
+                          <Box component="span" sx={{ color: buttonColor, ml: 1 }}>
+                            <FaEnvelope size={20} />
+                          </Box>
+                          <Typography sx={{ fontSize: '1.1rem' }}>
+                            <strong>البريد الإلكتروني:</strong> {siteInfo.email}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              )}
             </PrettyCard>
           </Grid>
         </Grid>
@@ -373,6 +486,7 @@ export default function Contact() {
         </Box>
       </Box>
 
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

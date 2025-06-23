@@ -35,9 +35,8 @@ export default function ProtectedAdminRoute({ children }) {
   }
 
   if (!isAdmin) {
-  return <Navigate to="/login" replace />;
-}
-
+    return <Navigate to="/" replace />;
+  }
 
   return children;
 }

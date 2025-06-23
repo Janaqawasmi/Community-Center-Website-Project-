@@ -32,10 +32,23 @@ export function validateStep(step, form, requiredFieldsByStep, setErrors) {
     }
 
    
-    if (!isValidIsraeliID(form.id)) {
-      valid = false;
-      newErrors.id = "رقم الهوية الشخصي غير صحيح.";
+    if (!form.id || form.id.trim() === "") {
+  valid = false;
+  newErrors.id = "هذا الحقل مطلوب";
+} else {
+  const idCheck = isValidIsraeliID(form.id);
+  if (!idCheck.valid) {
+    if (idCheck.reason === 'length') {
+      newErrors.id = "رقم الهوية يجب أن يكون 9 أرقام";
+    } else if (idCheck.reason === 'algorithm') {
+      newErrors.id = "رقم الهوية غير صحيح.";
+    } else if (idCheck.reason === 'digits') {
+      newErrors.id = "رقم الهوية يجب أن يحتوي على أرقام فقط";
     }
+    valid = false;
+  }
+}
+
 
   
 
@@ -84,35 +97,34 @@ export function validateEmail(email) {
 
 
 export function isValidIsraeliID(id) {
-  // تحويل الإدخال إلى سلسلة نصية وإزالة المسافات الزائدة
   id = String(id).trim();
 
-  // التحقق من أن الإدخال يحتوي فقط على أرقام وأن طوله بين 5 و9 خانات
-  if (id.length < 7 || id.length > 9 || isNaN(id)) {
-    return false;
+  if (!/^\d+$/.test(id)) {
+    return { valid: false, reason: 'digits' }; // ليس أرقام فقط
   }
 
-  // إكمال الرقم إلى 9 خانات بإضافة أصفار إلى اليسار
-  // id = id.padStart(9, '0'); 
+  if (id.length !== 9) {
+    return { valid: false, reason: 'length' }; // ليس 9 أرقام
+  }
 
+  // تحقق من الجوريتم
   let sum = 0;
-
   for (let i = 0; i < 9; i++) {
     let digit = Number(id[i]);
-
-    // مضاعفة كل رقم في المواقع الفردية (بدءًا من الفهرس 0)
     if (i % 2 === 0) {
       digit *= 1;
     } else {
       digit *= 2;
       if (digit > 9) digit -= 9;
     }
-
     sum += digit;
   }
 
-  // التحقق من أن المجموع قابل للقسمة على 10
-  return sum % 10 === 0;
+  if (sum % 10 !== 0) {
+    return { valid: false, reason: 'algorithm' }; // فشل الجوريتم
+  }
+
+  return { valid: true };
 }
 
 
@@ -122,12 +134,10 @@ export function validateLandLineNumber(number) {
 }
 
 
-
-
-const hebrewRegex = /^[\u0590-\u05FF\s]*$/;
-const emailRegex1 = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const emailRegex2 = /^[A-Za-z]+$/
 const numberRegex = /^\d*$/;
+const hebrewRegex = /^[\u0590-\u05FF\s]*$/;
+const emailAllowedRegex = /^[a-zA-Z0-9._%+\-@]*$/; // فقط الحروف اللاتينية والأرقام والرموز المسموحة
+const emailFullRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // الشكل النهائي للإيميل
 
 export function validateField(name, value) {
   if (["id", "fatherId", "landLine", "personalPhone", "fatherPhone"].includes(name)) {
@@ -143,17 +153,17 @@ export function validateField(name, value) {
   }
 
   if (name === 'email') {
-    if (!emailRegex1.test(value) && !emailRegex2.test(value)&& value.length > 0) {
-      return 'يرجى إدخال بريد إلكتروني صحيح باللغة الإنجليزية فقط';
+    // ممنوع أحرف غير لاتينية أو رموز غريبة حتى أثناء الكتابة
+    if (value.length > 0 && !emailAllowedRegex.test(value)) {
+      return 'يرجى إدخال بريد إلكتروني بالإنجليزية فقط وبدون رموز غريبة';
     }
+    // عند الإرسال أو الخروج من الحقل (لو تحب تفحص هنا أيضا):
+    // يمكن عمل فحص إضافي في onBlur أو عند الإرسال النهائي فقط
+    // إذا أردت الفحص أثناء الكتابة:
+    // if (value.includes('@') && !emailFullRegex.test(value)) {
+    //   return 'يرجى إدخال بريد إلكتروني صحيح بالإنجليزية فقط';
+    // }
   }
-
-
-
-
-
 
   return '';
 }
-
-
