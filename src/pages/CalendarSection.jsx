@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { db, auth } from "../components/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import calendarIcon from '../assets/calendar-icon.png';
 
 export default function CalendarSection() {
   const [events, setEvents] = useState([]);
@@ -13,6 +14,46 @@ export default function CalendarSection() {
   const [user, loading] = useAuthState(auth);
   const [currentDate, setCurrentDate] = useState(new Date());
   const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.innerHTML = `.scroll-calendar-button {
+      position: fixed;
+      bottom: 100px;
+      right: 0px;
+      background-color: #f97316;
+      border-radius: 40px 0 0 40px;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 9999;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .scroll-calendar-button:hover {
+      background-color: #f97316;
+      transform: scale(1.03);
+    }
+
+    .calendar-icon {
+      width: 35px;
+      height: 35px;
+    }`;
+    document.head.appendChild(style);
+  }, []);
+
+  const handleScrollToCalendar = () => {
+    const el = document.getElementById("calendar-section");
+    if (el) {
+      const yOffset = -80; // adjust this number to fine-tune the scroll offset
+const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  };
 
   // جلب فعاليات التقويم (EventsCalender)
   useEffect(() => {
@@ -43,7 +84,6 @@ export default function CalendarSection() {
         let eventDate = new Date();
         
         try {
-          // إذا كان التاريخ string مثل "2025-06-11"
           if (typeof data.date === 'string' && data.date.includes('-')) {
             if (data.time && typeof data.time === 'string') {
               const dateTimeString = `${data.date}T${data.time}:00`;
@@ -52,7 +92,6 @@ export default function CalendarSection() {
               eventDate = new Date(data.date + 'T09:00:00');
             }
           }
-          // إذا كان التاريخ Firestore Timestamp
           else if (data.date && typeof data.date === 'object' && data.date.toDate) {
             eventDate = data.date.toDate();
             if (data.time && typeof data.time === 'string') {
@@ -60,7 +99,6 @@ export default function CalendarSection() {
               eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
             }
           }
-          // إذا كان التاريخ بصيغة أخرى
           else if (data.date) {
             eventDate = new Date(data.date);
           }
@@ -158,7 +196,6 @@ export default function CalendarSection() {
   const handleDayClick = (day, dayEvents = []) => {
     if (!day || dayEvents.length === 0) return;
     
-    // إذا كان هناك فعاليات في هذا اليوم، عرضها
     setSelectedDayEvents(dayEvents);
     setShowDayEvents(true);
   };
@@ -191,7 +228,7 @@ export default function CalendarSection() {
       <div className="loading-container">
         <style jsx={"true"}>{`
           .loading-container {
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
           }
         `}</style>
@@ -204,21 +241,21 @@ export default function CalendarSection() {
     <>
       <style jsx={"true"}>{`
         .calendar-container {
-          max-width: 1200px;
+          max-width: 900px;
           margin: 0 auto;
-          padding: 1.5rem;
+          padding: 0.5rem;
         }
         
         .calendar-header {
           text-align: center;
-          margin-bottom: -40px;
+          margin-bottom: -20px;
         }
         
         .calendar-wrapper {
           background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-          border-radius: 16px;
-          padding: 1.5rem;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          padding: 0.8rem;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
           direction: rtl;
           overflow: hidden;
         }
@@ -227,15 +264,15 @@ export default function CalendarSection() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 1rem 1.5rem;
-          margin-bottom: 1rem;
+          padding: 0.5rem 1rem;
+          margin-bottom: 0.5rem;
           background: rgba(255, 255, 255, 0.95);
-          border-radius: 12px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
         
         .month-title {
-          font-size: 1.4rem;
+          font-size: 1.1rem;
           font-weight: bold;
           background: linear-gradient(45deg, #ea580c, #f97316);
           background-clip: text;
@@ -249,23 +286,23 @@ export default function CalendarSection() {
           background: linear-gradient(45deg, #ea580c, #f97316);
           border: none;
           color: white;
-          border-radius: 8px;
+          border-radius: 6px;
           font-weight: bold;
-          padding: 0.5rem 1rem;
-          font-size: 0.85rem;
+          padding: 0.4rem 0.8rem;
+          font-size: 0.75rem;
           cursor: pointer;
           transition: all 0.3s ease;
         }
         
         .nav-button:hover {
           background: linear-gradient(45deg, #f97316, #ea580c);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
         }
         
         .calendar-grid {
           background: rgba(255, 255, 255, 0.9);
-          border-radius: 8px;
+          border-radius: 6px;
           overflow: hidden;
         }
         
@@ -277,11 +314,11 @@ export default function CalendarSection() {
         }
         
         .day-header {
-          padding: 1rem 0;
+          padding: 0.5rem 0;
           text-align: center;
           color: #374151;
           font-weight: bold;
-          font-size: 1rem;
+          font-size: 0.8rem;
           border-left: 1px solid rgba(0,0,0,0.1);
           background: rgba(255, 255, 255, 0.98);
         }
@@ -297,8 +334,8 @@ export default function CalendarSection() {
         }
         
         .day-cell {
-          min-height: 100px;
-          padding: 0.5rem;
+          min-height: 60px;
+          padding: 0.3rem;
           border-left: 1px solid rgba(0,0,0,0.1);
           border-bottom: 1px solid rgba(0,0,0,0.1);
           background: rgba(255, 255, 255, 0.8);
@@ -314,7 +351,7 @@ export default function CalendarSection() {
         .day-cell:hover {
           background: rgba(255, 255, 255, 0.95);
           transform: scale(1.02);
-          box-shadow: 0 8px 25px rgba(234, 88, 12, 0.15);
+          box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
           z-index: 1;
         }
         
@@ -324,45 +361,45 @@ export default function CalendarSection() {
         
         .day-number {
           font-weight: bold;
-          font-size: 0.9rem;
+          font-size: 0.75rem;
           color: #374151;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.3rem;
         }
         
         .day-number.today {
           background: linear-gradient(45deg, #ea580c, #f97316);
           color: white;
           border-radius: 50%;
-          width: 32px;
-          height: 32px;
+          width: 20px;
+          height: 20px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
-          font-size: 0.9rem;
-          box-shadow: 0 4px 15px rgba(234, 88, 12, 0.4);
+          font-size: 0.7rem;
+          box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
         }
         
         .event-item {
           background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
           border: 1px solid #fdba74;
-          border-right: 4px solid #ea580c;
+          border-right: 2px solid #ea580c;
           color: #9a3412;
-          padding: 0.5rem;
-          margin-bottom: 0.25rem;
-          border-radius: 8px;
-          font-size: 0.75rem;
+          padding: 0.25rem;
+          margin-bottom: 0.15rem;
+          border-radius: 4px;
+          font-size: 0.6rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
+          box-shadow: 0 1px 4px rgba(234, 88, 12, 0.1);
           overflow: hidden;
           text-align: right;
         }
         
         .event-item:hover {
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+          box-shadow: 0 2px 8px rgba(234, 88, 12, 0.2);
           border-color: #ea580c;
           background: linear-gradient(135deg, #fff7ed 0%, #fb923c 100%);
           color: white;
@@ -371,7 +408,7 @@ export default function CalendarSection() {
         .event-item.center-event {
           background: linear-gradient(135deg, #f0f9ff 0%, #bae6fd 100%);
           border: 1px solid #7dd3fc;
-          border-right: 4px solid #0369a1;
+          border-right: 2px solid #0369a1;
           color: #0c4a6e;
         }
         
@@ -383,28 +420,28 @@ export default function CalendarSection() {
         
         .event-title {
           color: #1f2937;
-          line-height: 1.3;
+          line-height: 1.2;
           display: block;
         }
         
         .more-events {
           background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
           color: white;
-          padding: 0.3rem;
-          margin-top: 0.25rem;
-          border-radius: 6px;
-          font-size: 0.65rem;
+          padding: 0.2rem;
+          margin-top: 0.15rem;
+          border-radius: 4px;
+          font-size: 0.55rem;
           font-weight: 600;
           text-align: center;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
+          box-shadow: 0 1px 4px rgba(245, 158, 11, 0.2);
         }
         
         .more-events:hover {
           background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
           transform: translateY(-1px);
-          box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35);
+          box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
         }
         
         .modal-overlay {
@@ -605,77 +642,17 @@ export default function CalendarSection() {
         /* Media Queries للهواتف والتابلت */
         @media (max-width: 768px) {
           .calendar-container {
-            padding: 0.5rem;
-          }
-          
-          .calendar-wrapper {
-            padding: 0.8rem;
-            border-radius: 12px;
-          }
-          
-          .calendar-navigation {
-            padding: 0.5rem 0.8rem;
-            margin-bottom: 0.5rem;
-          }
-          
-          .month-title {
-            font-size: 1.1rem;
-          }
-          
-          .nav-button {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.75rem;
-          }
-          
-          .day-header {
-            padding: 0.5rem 0;
-            font-size: 0.8rem;
-          }
-          
-          .day-cell {
-            min-height: 70px;
-            padding: 0.3rem;
-          }
-          
-          .day-number {
-            font-size: 0.8rem;
-            margin-bottom: 0.3rem;
-          }
-          
-          .day-number.today {
-            width: 24px;
-            height: 24px;
-            font-size: 0.75rem;
-          }
-          
-          .event-item {
-            font-size: 0.65rem;
-            padding: 0.3rem;
-            margin-bottom: 0.15rem;
-            border-radius: 6px;
-          }
-          
-          .event-title {
-            line-height: 1.2;
-          }
-          
-          .more-events {
-            font-size: 0.6rem;
-            padding: 0.25rem;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .calendar-container {
             padding: 0.3rem;
           }
           
           .calendar-wrapper {
             padding: 0.5rem;
+            border-radius: 8px;
           }
           
           .calendar-navigation {
             padding: 0.4rem 0.6rem;
+            margin-bottom: 0.3rem;
           }
           
           .month-title {
@@ -693,26 +670,26 @@ export default function CalendarSection() {
           }
           
           .day-cell {
-            min-height: 60px;
+            min-height: 50px;
             padding: 0.2rem;
           }
           
           .day-number {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             margin-bottom: 0.2rem;
           }
           
           .day-number.today {
-            width: 20px;
-            height: 20px;
-            font-size: 0.65rem;
+            width: 18px;
+            height: 18px;
+            font-size: 0.6rem;
           }
           
           .event-item {
-            font-size: 0.6rem;
-            padding: 0.25rem;
+            font-size: 0.55rem;
+            padding: 0.2rem;
             margin-bottom: 0.1rem;
-            border-radius: 4px;
+            border-radius: 3px;
             border-right-width: 2px;
           }
           
@@ -721,16 +698,75 @@ export default function CalendarSection() {
           }
           
           .more-events {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
+            padding: 0.15rem;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .calendar-container {
             padding: 0.2rem;
+          }
+          
+          .calendar-wrapper {
+            padding: 0.4rem;
+          }
+          
+          .calendar-navigation {
+            padding: 0.3rem 0.5rem;
+          }
+          
+          .month-title {
+            font-size: 0.9rem;
+          }
+          
+          .nav-button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.65rem;
+          }
+          
+          .day-header {
+            padding: 0.3rem 0;
+            font-size: 0.65rem;
+          }
+          
+          .day-cell {
+            min-height: 45px;
+            padding: 0.15rem;
+          }
+          
+          .day-number {
+            font-size: 0.6rem;
+            margin-bottom: 0.15rem;
+          }
+          
+          .day-number.today {
+            width: 16px;
+            height: 16px;
+            font-size: 0.55rem;
+          }
+          
+          .event-item {
+            font-size: 0.5rem;
+            padding: 0.15rem;
+            margin-bottom: 0.08rem;
+            border-radius: 2px;
+            border-right-width: 1px;
+          }
+          
+          .event-title {
+            line-height: 1;
+          }
+          
+          .more-events {
+            font-size: 0.45rem;
+            padding: 0.1rem;
           }
         }
       `}</style>
       
-      <div className="calendar-container">
-        <div className="calendar-header">
-          
-        </div>
+      <div id="calendar-section" className="calendar-container">
+        <div className="calendar-header"></div>
 
         <div className="calendar-wrapper">
           <div className="calendar-navigation">
@@ -760,10 +796,10 @@ export default function CalendarSection() {
               {getDaysInMonth(currentDate).map((day, index) => {
                 const dayEvents = getEventsForDay(day);
                 const todayClass = isToday(day) ? 'today' : '';
-                const maxVisibleEvents = 1; // عرض فعالية واحدة فقط
+                const maxVisibleEvents = 1;
                 const visibleEvents = dayEvents.slice(0, maxVisibleEvents);
                 const remainingEvents = dayEvents.length - maxVisibleEvents;
-                
+
                 return (
                   <div
                     key={index}
@@ -776,7 +812,6 @@ export default function CalendarSection() {
                           {day}
                         </div>
                         
-                        {/* عرض فعالية واحدة فقط */}
                         {visibleEvents.map((event) => (
                           <div
                             key={`${event.type}-${event.id}`}
@@ -787,7 +822,6 @@ export default function CalendarSection() {
                           </div>
                         ))}
                         
-                        {/* عرض عدد الفعاليات الإضافية */}
                         {remainingEvents > 0 && (
                           <div className="more-events">
                             +{remainingEvents} أخرى
@@ -850,7 +884,6 @@ export default function CalendarSection() {
             </div>
           </div>
         )}
-
         {/* Modal لعرض تفاصيل فعالية واحدة */}
         {showDetails && (
           <div className="modal-overlay" onClick={() => setShowDetails(false)}>
@@ -924,6 +957,14 @@ export default function CalendarSection() {
           </div>
         )}
       </div>
+     <div className="scroll-calendar-button" onClick={handleScrollToCalendar} title="الانتقال إلى التقويم">
+  <svg className="calendar-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
+    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z"/>
+  </svg>
+</div>
+
+
+
     </>
   );
 }
