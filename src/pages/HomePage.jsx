@@ -6,6 +6,8 @@ import { useFeaturedPrograms } from "./programs/hooks/useFeaturedPrograms"; // �
 import CalendarSection from "./CalendarSection";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import QuickLinksSection from '../components/homePage/QuickLinksSection';
+
 
 
 
@@ -134,11 +136,11 @@ export default function HomePage() {
       )}
 
 {/* Quick Links */}
-<Box sx={{ mt: { xs: 4, md: 8 } }}>
-  {/* <QuickLinksSection sections={sections} /> */}
+<Box sx={{ mt: { xs: 8, md: 8 } }}>
+<QuickLinksSection sections={[]} />
 </Box>   
 
-<Box sx={{ mt: { xs: 4, md: 8 }, px: { xs: 2, md: 30 } }}>
+<Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
           <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#003366' }}>
              التقويم والفعاليات
            </Typography>

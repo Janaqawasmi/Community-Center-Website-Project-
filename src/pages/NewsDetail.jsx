@@ -83,6 +83,7 @@ function NewsDetail() {
         navigate('/', { replace: true });
         setTimeout(() => navigate('/news'), 0);
       }
+      
     }}
     
     color={newsColor}

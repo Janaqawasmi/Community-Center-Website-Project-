@@ -295,7 +295,7 @@ export default function AdminAbout() {
           sx={{
             color: 'white',
             fontWeight: 'bold',
-            fontFamily: 'Cairo, sans-serif',
+            fontamily: 'Cairo, sans-serif',
             textShadow: '0 2px 4px rgba(0,0,0,0.3)',
             transform: 'skew(5deg)',
             fontSize: { xs: '1.1rem', md: '1.4rem' }
@@ -464,7 +464,6 @@ export default function AdminAbout() {
       <Box sx={{ 
         p: { xs: 2, md: 4 }, 
         direction: 'rtl', 
-        fontFamily: 'Cairo, sans-serif',
         pb: isMobile ? 12 : 4
       }}>
         {/* Header مع تصميم جميل */}
@@ -472,7 +471,6 @@ export default function AdminAbout() {
   variant="h4"
   fontWeight={500}
   sx={{
-    fontFamily: "Cairo, sans-serif",
     fontSize: { xs: "1.8rem", sm: "2.3rem" },
     textAlign: "right",
     mb: 4

@@ -72,7 +72,6 @@ export default function AdminDashboardLayout({ children }) {
                 sx={{ 
                   fontWeight: 'bold',
                   color: 'white',
-                  fontFamily: 'Cairo, sans-serif',
                   fontSize: { xs: '0.9rem', md: '1.2rem' },
                   display: { xs: 'none', sm: 'block' }
 
@@ -178,7 +177,6 @@ export default function AdminDashboardLayout({ children }) {
                     px: { xs: 1.5, md: 3 },
                     py: { xs: 1, md: 1.5 },
                     borderRadius: { xs: '8px', md: '12px' },
-                    fontFamily: 'Cairo, sans-serif',
 
                     fontWeight: 600,
                     fontSize: { xs: '0.8rem', md: '0.95rem' },

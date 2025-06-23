@@ -1,3 +1,4 @@
+//src/components/Data Analysis/ProgramRegistrationStatsChart.jsx
 import {
   BarChart,
   Bar,
@@ -12,8 +13,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import DateRangePicker from '../layout/common/DateRangePicker';
 import dayjs from 'dayjs';
-import { Box, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, MenuItem, Select, FormControl, InputLabel,Button  } from '@mui/material';
 import { PieChart, Pie, Cell, Legend } from 'recharts';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { useRef } from 'react';
 
 const COLORS = ['#003366', '#b67bb2'];
 
@@ -116,10 +120,53 @@ const formatted = Object.entries(counts)
     { name: 'أنثى', value: genderCounts.female }
   ];
 const totalParticipants = genderCounts.male + genderCounts.female;
+// Create a ref to hold the combined chart container
+const combinedChartRef = useRef(null);
+
+const exportCombinedChartsAsPDF = async () => {
+  if (!combinedChartRef.current) return;
+
+  const canvas = await html2canvas(combinedChartRef.current, { backgroundColor: "#fff", scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    format: [canvas.width, canvas.height]
+  });
+
+  pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+  pdf.save("charts.pdf");
+};
 
   return (
     <Box dir="rtl">
+      <Button
+  variant="outlined"
+  onClick={exportCombinedChartsAsPDF}
+  sx={{
+    borderRadius: "30px",
+    px: 3,
+    py: 1.3,
+    fontSize: "1rem",
+    fontWeight: "bold",
+    color: "#003366",
+    borderColor: "#003366",
+    mb: 3,
+    '&:hover': {
+      backgroundColor: "#003366",
+      color: "#fff",
+    },
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 1,
+    direction: "rtl",
+  }}
+>
+  📄 تصدير كملف PDF
+</Button>
       <Box display="flex" flexWrap="wrap" gap={2} mb={2} justifyContent="center">
+       
         <DateRangePicker
           fromDate={fromDate}
           toDate={toDate}
@@ -142,7 +189,7 @@ const totalParticipants = genderCounts.male + genderCounts.female;
         </FormControl>
       </Box>
 
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
+      <Box ref={combinedChartRef}  sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
         <Box sx={{ width: '100%', maxWidth: 700, minHeight: 400 }} dir="ltr">
           {stats.length === 0 ? (
             <Typography color="text.secondary" align="center" sx={{ mt: 8 }}>

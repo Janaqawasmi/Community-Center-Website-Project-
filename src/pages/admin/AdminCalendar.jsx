@@ -585,7 +585,6 @@ export default function AdminCalendar() {
             overflow-y: auto;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
             position: relative;
-            font-family: 'Cairo', sans-serif;
             border: 1px solid rgba(0, 0, 0, 0.1);
           }
           
