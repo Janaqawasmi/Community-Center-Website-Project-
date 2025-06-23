@@ -89,7 +89,7 @@ useEffect(() => {
                 display: "flex",
                 flexDirection: "row",
                 overflow: "hidden",
-                height: { xs: 320, sm: 400, md: 460 },
+                height: { xs: 200, sm: 400, md: 300 },
                 width: "100%",
 
               }}
