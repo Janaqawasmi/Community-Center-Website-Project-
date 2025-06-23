@@ -12,6 +12,7 @@ import { useAnonymousAuth } from "../components/auth/useAnonymousAuth";
 import { calculateAge } from './regist_logic';
 import { decrementCapacity } from "./programs/decrementCapacity"; // عدلي المسار حسب مكان الملف
 import PrettyCard from '../components/layout/PrettyCard';
+import React from 'react';
 
 const steps = ['المعلومات الشخصية', 'معلومات ولي الأمر'];
 function RequiredLabel(text) {
@@ -24,6 +25,8 @@ function RequiredLabel(text) {
 
 function RegistrationForm() {
   useAnonymousAuth();
+const [formSubmitted, setFormSubmitted] = useState(false);
+const [submitSuccess, setSubmitSuccess] = useState(null); // true / false
 
   const [step, setStep] = useState(0);
 
@@ -104,20 +107,30 @@ function RegistrationForm() {
     }
   };
 
-  const CustomInput = ({ value, onClick, error, helperText }) => (
-    <TextField
-      fullWidth
-      variant="outlined"
-      size="medium"
-      label={RequiredLabel("تاريخ الميلاد")}
-      value={value || ''}
-      onClick={onClick}
-      inputProps={{ readOnly: true, style: { cursor: 'pointer' } }}
-      sx={{ mb: 2, height: '56px', width: 335 }}
-      error={error}
-      helperText={helperText}
-    />
-  );
+  const CustomInput = React.forwardRef(({ value, onClick, error, helperText }, ref) => (
+  <TextField
+    fullWidth
+    variant="outlined"
+    size="medium"
+    label={RequiredLabel("تاريخ الميلاد")}
+    value={value || ''}
+    onClick={onClick}
+    inputRef={ref} // ✅ use the forwarded ref here
+    inputProps={{ readOnly: true, style: { cursor: 'pointer' } }}
+    sx={{
+      '& .MuiInputBase-root': {
+        height: '56px',
+        fontSize: '1rem',
+        paddingLeft: '150px' // 🟡 This may break RTL layout – change to `paddingRight` if needed
+      },
+      '& .MuiInputLabel-root': {
+        fontSize: '1rem'
+      }
+    }}
+    error={error}
+    helperText={helperText}
+  />
+));
 
   const nextStep = () => {
     if (validateStep(step, form, requiredFieldsByStep, setErrors)) {
@@ -133,9 +146,8 @@ function RegistrationForm() {
         sx={{
           width: '100%',
           height: "250px",
-          mb: 8,
+          mb: 4,
           background: "linear-gradient(180deg, #fff 0%,rgb(7, 130, 175) 40%, #003366 100%)",
-          clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           ml: 0,
           mr: 'auto',
           zIndex: 0,
@@ -165,20 +177,44 @@ function RegistrationForm() {
         <Grid container justifyContent="center">
           <Grid item xs={12} sm={10} md={6} lg={6}>
             <PrettyCard title={title ? `التسجيل لـ${title}` : "التسجيل"}>
-              <form
-                autoComplete="off"
-                onSubmit={async e => {
-                  if (
-                    (step === 0 && calculateAge(form.birthdate) >= 18) ||
-                    step === 1
-                  ) {
-                    await submitRegistration(e, form, setForm);
-                    await decrementCapacity({ programName, eventName });
-                  } else {
-                    e.preventDefault();
-                    nextStep();
-                  }
-                }}
+           {formSubmitted ? (
+  <Box textAlign="center" py={6}>
+    {submitSuccess ? (
+      <Typography variant="h6" color="success.main">
+        ✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك.
+      </Typography>
+    ) : (
+      <Typography variant="h6" color="error.main">
+        ❌ حدث خطأ أثناء الإرسال. حاول مرة أخرى لاحقًا.
+      </Typography>
+    )}
+  </Box>
+) : (
+             
+              <form autoComplete="off"
+             onSubmit={async e => {
+  e.preventDefault(); // always prevent default first
+
+  if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
+    try {
+      await submitRegistration(e, form, setForm);
+if (programName) {
+  await decrementCapacity("programs", programName);
+} else if (eventName) {
+  await decrementCapacity("events", eventName);
+}
+      setFormSubmitted(true);
+      setSubmitSuccess(true);
+    } catch (err) {
+      console.error("❌ Submission failed:", err);
+      setFormSubmitted(true);
+      setSubmitSuccess(false);
+    }
+  } else {
+    nextStep();
+  }
+}}
+
                 style={{ direction: "rtl" }}
               >
 
@@ -306,7 +342,7 @@ function RegistrationForm() {
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Box>
+                      <Box >
                         <Typography sx={{ fontSize: 14, mb: 0.5 }}>اسم المدينة</Typography>
                         <Select
                           options={citiesData.map(city => ({
@@ -352,7 +388,7 @@ function RegistrationForm() {
                       </Box>
                     </Grid>
                     <Grid item xs={12}>
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
                         {/* منطق زر التالي أو إرسال حسب العمر */}
                         {(() => {
                           const age = calculateAge(form.birthdate);
@@ -464,6 +500,8 @@ function RegistrationForm() {
                 )}
 
               </form>
+                )}
+
             </PrettyCard>
           </Grid>
         </Grid>

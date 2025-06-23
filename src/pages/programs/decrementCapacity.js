@@ -3,12 +3,6 @@ import { db } from "../../components/firebase"; // مسار استيراد قا�
 
 // دالة لإنقاص السعة (capacity)
 export async function decrementCapacity({ programName, eventName }) {
-  console.log("decrementCapacity called", programName, eventName);
-  console.log("docRef:", docRef.path);
-console.log("currentCapacity:", currentCapacity);
-console.log("سيتم التحديث إلى:", currentCapacity - 1);
-console.log("القيم المرسلة:", { capacity: currentCapacity - 1 });
-
 
   let collectionName = "";
   let searchField = "";
@@ -33,6 +27,12 @@ console.log("القيم المرسلة:", { capacity: currentCapacity - 1 });
     const docRef = snapshot.docs[0].ref;
     const currentCapacity = snapshot.docs[0].data().capacity;
     // قلل الـ capacity إذا كان أكبر من صفر
+     console.log("decrementCapacity called", programName, eventName);
+  console.log("docRef:", docRef.path);
+console.log("currentCapacity:", currentCapacity);
+console.log("سيتم التحديث إلى:", currentCapacity - 1);
+console.log("القيم المرسلة:", { capacity: currentCapacity - 1 });
+   
     if (currentCapacity > 0) {
       await updateDoc(docRef, {
         capacity: currentCapacity - 1
