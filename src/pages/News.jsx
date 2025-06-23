@@ -48,7 +48,7 @@ function News() {
           display: 'flex',
           justifyContent: 'center',
           flexWrap: 'wrap',
-          py: 4,
+          py: 2,
         }}
       >
        

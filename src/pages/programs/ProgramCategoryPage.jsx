@@ -50,12 +50,10 @@ export default function ProgramCategoryPage() {
     const today = new Date().toDateString();
   
     if (lastViewed !== today) {
-      console.log("📊 Tracking view for:", path);
       trackPageView(path);
       localStorage.setItem(key, today);
-    } else {
-      console.log("⏳ Already tracked today:", path);
-    }
+    } 
+  
   }, [location.pathname]);
   
 // Scroll to highlighted program if it exists
@@ -71,11 +69,13 @@ useEffect(() => {
 
   const highlightedProgram = programs.find((p) => p.id === highlightId);
 
+  
   return (
     <Box sx={{ direction: "rtl" }}>
-      <Box mb={8}>
+      <Box mb={4}>
         <HeroSection pageId={categoryName} />
       </Box>
+
 
       <Container>
         {highlightId && highlightedProgram && isDesktop && (

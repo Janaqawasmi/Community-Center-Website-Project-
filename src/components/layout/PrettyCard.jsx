@@ -33,7 +33,7 @@ if (color) {
       sx={{
         position: 'relative',
         borderRadius: '28px',
-        p: { xs: 3, sm: 4 },
+        p: { xs: 2, sm: 2 },
         mt: 0,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',

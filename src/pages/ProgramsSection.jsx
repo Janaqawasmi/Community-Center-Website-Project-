@@ -96,12 +96,9 @@ useEffect(() => {
   const today = new Date().toDateString();
 
   if (lastViewed !== today) {
-    console.log("📊 Tracking view for:", path);
     trackPageView(path);
     localStorage.setItem(key, today);
-  } else {
-    console.log("⏳ Already tracked today:", path);
-  }
+  } 
 }, [location.pathname]);
 
   const filteredPrograms = allPrograms.filter(
@@ -112,7 +109,7 @@ useEffect(() => {
 
   return (
     <Box  sx={{  direction: "rtl" }} >
-      <Box mb={8}>
+      <Box mb={4}>
       <HeroSection pageId="programs" />
       </Box>
       <Container sx={{ pb: 4 }} dir="rtl">
