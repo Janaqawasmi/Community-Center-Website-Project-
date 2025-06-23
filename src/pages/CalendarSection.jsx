@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { db, auth } from "../components/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import calendarIcon from '../assets/calendar-icon.png';
 
 export default function CalendarSection() {
   const [events, setEvents] = useState([]);
