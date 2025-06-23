@@ -7,6 +7,7 @@ import HeroSection from "../../components/HeroSection";
 import { useSearchParams } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { trackPageView } from "../../components/Data Analysis/utils/trackPageView"; 
+import GradientSearchBar from "../../components/layout/common/GradientSearchBar";
 
 // Icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -69,13 +70,27 @@ useEffect(() => {
 
   const highlightedProgram = programs.find((p) => p.id === highlightId);
 
-  
+  const [searchTerm, setSearchTerm] = useState("");
+
+const filteredPrograms = programs.filter(
+  (prog) =>
+    prog.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    prog.description?.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
   return (
     <Box sx={{ direction: "rtl" }}>
       <Box mb={4}>
         <HeroSection pageId={categoryName} />
       </Box>
-
+<Box sx={{ mt: -2, mb: 2 }}>
+  <GradientSearchBar
+    label="بحث سريع"
+    placeholder="ابحث عن برنامج"
+    searchQuery={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+</Box>
 
       <Container>
         {highlightId && highlightedProgram && isDesktop && (
@@ -94,9 +109,9 @@ useEffect(() => {
         )}
 
         <Grid container spacing={8} justifyContent="center">
-          {programs
-            .filter((prog) => !(highlightId === prog.id && isDesktop))
-            .map((prog) => (
+        {filteredPrograms
+  .filter((prog) => !(highlightId === prog.id && isDesktop))
+  .map((prog) => (
               <Grid
                 item
                 key={prog.id}
@@ -116,12 +131,17 @@ useEffect(() => {
               </Grid>
             ))}
         </Grid>
+{filteredPrograms.length === 0 && searchTerm.trim() !== "" && (
+  <Typography sx={{ mt: 8, textAlign: "center", color: "text.secondary" }}>
+    لا توجد نتائج مطابقة لبحثك.
+  </Typography>
+)}
 
-        {programs.length === 0 && (
-          <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
-            لا توجد برامج حالياً تحت هذا التصنيف.
-          </Typography>
-        )}
+{filteredPrograms.length === 0 && searchTerm.trim() === "" && (
+  <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
+    لا توجد برامج حالياً تحت هذا التصنيف.
+  </Typography>
+)}
       </Container>
     </Box>
   );

@@ -11,7 +11,7 @@ export default function GradientSearchBar({
   return (
     <Box
       sx={{
-        background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
+        background: "#003366",
         borderRadius: "18px",           // 🔽 slightly reduced
         padding: "3px 6px",             // 🔽 tighter padding
         display: "flex",

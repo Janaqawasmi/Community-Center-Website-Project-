@@ -66,18 +66,20 @@ const filteredEvents = useMemo(() => {
 
 return (
   <Box sx={{ direction: "rtl" }}>
-    <Box mb={4}>
+    <Box mb={2}>
       <HeroSection pageId="events" />
     </Box>
 
     <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
       {/* 🔍 Styled Gradient Search Bar */}
+      <Box sx={{ mt: 2, mb: 2 }}>
       <GradientSearchBar
         label="بحث سريع"
         placeholder="ابحث عن فعالية "
         searchQuery={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+    </Box>
 
       {/* Highlighted Event (Large Card on Desktop) */}
       {highlightId && highlightedEvent && isDesktop && (

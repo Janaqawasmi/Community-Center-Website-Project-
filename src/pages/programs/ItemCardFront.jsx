@@ -85,9 +85,9 @@ const date = config.getDate
 
       
 
-      <Typography sx={{ fontSize: "14px", color: " #666", mt: 1 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
+      <Typography sx={{ fontSize: "14px", color: " #666", mt: 0.5 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
 
-      <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "baseline", mt: 0.5 }}>
         <Typography sx={{ fontSize: "40px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
         <Box sx={{ textAlign: "left", ml: 1 }}>
           <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: " #003366" }}>{monthName}</Typography>

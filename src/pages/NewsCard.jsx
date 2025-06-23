@@ -16,7 +16,7 @@ function NewsCard({ data }) {
       sx={{
         width: "100%",
         height: "100%",
-        minHeight: 450,
+        minHeight: 400,
         borderRadius: 5,
         overflow: "hidden",
         border: "1px solid #ccc",
@@ -30,7 +30,7 @@ function NewsCard({ data }) {
         mx: 'auto'
       }}
     >
-      <Box sx={{ position: "relative", width: "100%", height: 170 }}>
+      <Box sx={{ position: "relative", width: "100%", height: 150 }}>
         <Box
           sx={{
             position: "absolute",
@@ -80,7 +80,7 @@ function NewsCard({ data }) {
         {data.title}
       </Typography>
 
-      <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "baseline", mt: 0.5 }}>
   <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
   <Box sx={{ textAlign: "left", ml: 1 }}>
     <Typography sx={{ fontSize: "16px", fontWeight: "bold", color: "#003366" }}>{monthName}</Typography>
