@@ -17,6 +17,8 @@ import RoundedButton from '../components/layout/Buttons/RoundedButton';
 import PrettyCard from '../components/layout/PrettyCard'; // ✅ Use the shared component
 import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
 import { useLocation } from "react-router-dom";
+import { Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel } from '@mui/material';
 
 export default function Contact() {
   const theme = useTheme();
@@ -258,7 +260,7 @@ useEffect(() => {
               >
                 {({ values, errors, touched, handleChange }) => (
                   <Form noValidate>
-                    <Grid container spacing={1.5}>
+                    <Grid container spacing={0.5}>
                       <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth 
@@ -368,44 +370,59 @@ useEffect(() => {
                           }}
                         />
                       </Grid>
-                      
-                      <Grid item xs={12}>
-                        <TextField
-                          select
-                          fullWidth
-                          size="small"
-                          name="department"
-                          placeholder="اختر القسم"
-                          value={values.department}
-                          onChange={handleChange}
-                          SelectProps={{ 
-                            native: true,
-                            displayEmpty: true
-                          }}
-                          error={touched.department && Boolean(errors.department)}
-                          helperText={touched.department && errors.department}
-                          sx={{
-                            '& .MuiInputBase-input': {
-                              textAlign: 'right',
-                              direction: 'rtl',
-                              paddingRight: '14px',
-                              fontSize: '0.85rem'
-                            },
-                            '& .MuiSelect-icon': {
-                              left: 7,
-                              right: 'auto'
-                            }
-                          }}
-                        >
-                          <option value="" style={{ textAlign: 'right', direction: 'rtl' }}>اختر القسم</option>
-                          {departments.map((dept) => (
-                            <option key={dept.id} value={dept.name} style={{ textAlign: 'right', direction: 'rtl' }}>
-                              {dept.name}
-                            </option>
-                          ))}
-                        </TextField>
-                      </Grid>
-                      
+ <Grid item xs={12}>
+<FormControl fullWidth size="small" error={touched.department && Boolean(errors.department)}>
+  <Select
+    displayEmpty
+    name="department"
+    value={values.department}
+    onChange={handleChange}
+    sx={{
+      direction: 'rtl',
+      textAlign: 'right',
+      fontSize: '0.85rem',
+      minHeight: '40px',
+      '& .MuiSelect-icon': {
+        left: 7,
+        right: 'auto',
+      }
+    }}
+    MenuProps={{
+    PaperProps: {
+      style: {
+        maxHeight: 280, // ✅ Make the menu shorter
+        direction: 'rtl',
+      },
+    },
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'right',
+    },
+    transformOrigin: {
+      vertical: 'top',
+      horizontal: 'right',
+    },
+    disableAutoFocusItem: true,
+  }}
+  >
+    <MenuItem value="" disabled>
+      <span style={{ color: '#888' }}>اختر القسم</span>
+    </MenuItem>
+    {departments.map((dept) => (
+      <MenuItem key={dept.id} value={dept.name}>
+        {dept.name}
+      </MenuItem>
+    ))}
+  </Select>
+
+  {touched.department && errors.department && (
+    <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
+      {errors.department}
+    </Typography>
+  )}
+</FormControl>
+
+</Grid>
                       <Grid item xs={12}>
                         <TextField
                           fullWidth 
