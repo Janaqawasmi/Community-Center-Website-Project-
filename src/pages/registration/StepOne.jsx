@@ -36,24 +36,32 @@ function StepOne({ form, setForm, errors, setErrors, handleValidatedChange, hand
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
-        <DatePicker 
-          selected={form.birthdate ? new Date(form.birthdate) : null}
-          onChange={(date) => {
-            setForm((prev) => ({ ...prev, birthdate: date }));
-            if (date) {
-              setErrors((prev) => ({ ...prev, birthdate: "" }));
-            }
-          }}
-          dateFormat="dd/MM/yyyy"
-          maxDate={new Date()}
-          customInput={<CustomDateInput error={!!errors.birthdate} helperText={errors.birthdate} />}
-          showYearDropdown
-          scrollableYearDropdown
-          yearDropdownItemNumber={100}
-          withPortal
-        />
-      </Grid>
+<Grid item xs={12} sm={6}>
+  <DatePicker
+  selected={form.birthdate ? new Date(form.birthdate) : null}
+  onChange={(date) => {
+    setForm((prev) => ({ ...prev, birthdate: date }));
+    if (date) {
+      setErrors((prev) => ({ ...prev, birthdate: "" }));
+    }
+  }}
+  dateFormat="dd/MM/yyyy"
+  maxDate={new Date()}
+  customInput={
+    <CustomDateInput
+      error={!!errors.birthdate}
+      helperText={errors.birthdate}
+    />
+  }
+  showYearDropdown
+  scrollableYearDropdown
+  yearDropdownItemNumber={100}
+  popperClassName="rtl-datepicker-popper"
+  popperPlacement="bottom-end" // ✅ aligns it to the right
+/>
+
+</Grid>
+
 
       <Grid item xs={12} sm={6}>
         <TextField
@@ -130,7 +138,7 @@ function StepOne({ form, setForm, errors, setErrors, handleValidatedChange, hand
       </Grid>
 
       <Grid item xs={12}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
           {age >= 18 ? (
             <Button variant="contained" color="primary" type="submit" size="large">
               إرسال

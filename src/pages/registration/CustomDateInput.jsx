@@ -16,7 +16,7 @@ const CustomDateInput = React.forwardRef(({ value, onClick, error, helperText },
       '& .MuiInputBase-root': {
         height: '56px',
         fontSize: '1rem',
-        paddingRight: '150px', // ✅ RTL fix
+        paddingLeft: '150px', // ✅ RTL fix
       },
       '& .MuiInputLabel-root': {
         fontSize: '1rem',
