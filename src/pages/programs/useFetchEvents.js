@@ -14,13 +14,15 @@ export const useFetchEvents = (onlyFeatured = false) => {
       try {
         const snapshot = await getDocs(collection(db, "Events"));
 
-        const data = snapshot.docs.map((docSnap) => {
+          const data = snapshot.docs.map((docSnap) => {
           const docData = docSnap.data();
+          const startDate = docData.date?.toDate?.() ?? null;
           let time = docData.time;
           if (time?.toDate) time = time.toDate();
           return {
             id: docSnap.id,
             ...docData,
+            startDate,
             time,
           };
         });

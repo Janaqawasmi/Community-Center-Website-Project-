@@ -6,11 +6,7 @@ import { Card, Typography, Box, Button } from "@mui/material";
  */
 export default function ItemCardFront({ item, onFlip, config = {} , highlight}) {
   // Get date for display, or fallback to today
-const date = config.getDate
-  ? config.getDate(item)
-  : (item.date && item.date.seconds
-      ? new Date(item.date.seconds * 1000)
-      : new Date());
+ const date = config.getDate ? config.getDate(item) : (item.startDate instanceof Date ? item.startDate : new Date());
   const day = date.getDate();
   const monthName = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"][date.getMonth()];
   const year = date.getFullYear();
