@@ -9,7 +9,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import QuickLinksSection from "../components/homePage/QuickLinksSection";
 import { fetchSections } from "../utils/fetchSections";
-import AboutUsSection from "../components/homePage/AboutUsSection";
 import { fetchNews } from "../utils/fetchNews";
 import { trackPageView } from "../components/Data Analysis/utils/trackPageView"; 
 import { useLocation } from "react-router-dom";
@@ -104,7 +103,7 @@ useEffect(() => {
                   height: "100%",
                   objectFit: "cover",
                   objectPosition: { xs: "center", md: "left" },
-                 paddingRight: { xs: "0%", md: "35%" },
+                 paddingRight: { xs: "0%", md: "40%" },
 
 
                 }}
@@ -117,14 +116,14 @@ useEffect(() => {
                   position: "absolute",
                   top: 0,
                   right: 0,
-                  width: "50%",
+                  width: "52%",
                   height: "100%",
                   background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
                   clipPath: "polygon(100% 0%, 20% 0%, 0% 50%, 20% 100%, 100% 100%)",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "flex-end",
-                  px: 8,
+                  pl: 8, pr: 3,
                   zIndex: 1,
                 }}
               >
@@ -152,7 +151,7 @@ useEffect(() => {
                 }}
               >
                 <Typography
-                  variant="h5"
+                  variant="h4"
                   fontWeight="bold"
                   sx={{
                     color: "#fff",
@@ -200,13 +199,6 @@ useEffect(() => {
 <Box sx={{ mt: { xs: 4, md: 4 } }}>
   <QuickLinksSection sections={sections} />
 </Box>   
-
-<Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
-          <Typography variant="h4" fontWeight="bold" textAlign="center" mb={4} sx={{ color: '#003366' }}>
-             التقويم والفعاليات
-           </Typography>
-           <CalendarSection />
-         </Box>
     </Box>
   );
 }
@@ -220,10 +212,10 @@ function OverlayContent({ program, navigate, isEvent = false, isNews = false }) 
 
   return (
     <>
-      <Typography variant="h3" fontWeight="bold" sx={{ color: "#fff", mb: 2, textAlign: "right", direction: "rtl" }}>
+      <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 2, textAlign: "right", direction: "rtl" }}>
         {program.name}
       </Typography>
-      <Typography variant="body1" sx={{ color: "#fff", mb: 3, textAlign: "right",direction: "rtl" }}>
+      <Typography variant="body2" sx={{ color: "#fff", mb: 3, textAlign: "right",direction: "rtl" }}>
         {truncatedDescription}
       </Typography>
       <Button
@@ -246,7 +238,7 @@ function OverlayContent({ program, navigate, isEvent = false, isNews = false }) 
           )
         }
       >
-        عرض التفاصيل
+  {isNews ? "اقرأ المزيد" : "للتسجيل"}
       </Button>
     </>
   );
