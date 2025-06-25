@@ -19,6 +19,7 @@ import { trackPageView } from "../components/Data Analysis/utils/trackPageView";
 import { useLocation } from "react-router-dom";
 import { Select, MenuItem } from '@mui/material';
 import { FormControl, InputLabel } from '@mui/material';
+import wazeIcon from '../assets/waze2.png';
 
 export default function Contact() {
   const theme = useTheme();
@@ -169,35 +170,34 @@ useEffect(() => {
                       <Typography sx={{ fontSize: '0.95rem' }}>
                         <strong>العنوان:</strong> {siteInfo.address}
                       </Typography>
-                      {siteInfo?.waze_link && (
-                        <a
-                          href={siteInfo.waze_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <Box
-                            sx={{
-                              width: 28,
-                              height: 28,
-                              borderRadius: '50%',
-                              backgroundColor: '#2D9CDB',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              transition: '0.3s',
-                              cursor: 'pointer',
-                              '&:hover': {
-                                transform: 'scale(1.05)',
-                                backgroundColor: '#1e7db8',
-                              },
-                              ml: 1,
-                            }}
-                          >
-                            <SiWaze size={16} color="#fff" />
-                          </Box>
-                        </a>
-                      )}
+         {siteInfo?.waze_link && (
+  <a
+    href={siteInfo.waze_link}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{ textDecoration: 'none' }}
+  >
+    <Box
+      component="img"
+      src={wazeIcon}
+      alt="Waze"
+      sx={{
+        width: 40,         // ✅ Bigger width
+        height: 40,        // ✅ Bigger height
+        objectFit: 'contain',
+        cursor: 'pointer',
+        transition: '0.3s',
+        '&:hover': {
+          transform: 'scale(1.05)',
+        },
+        ml: 1,
+      }}
+    />
+  </a>
+)}
+
+
+
                     </Box>
                   </Grid>
 
