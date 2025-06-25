@@ -11,7 +11,7 @@ import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/programs/EventsPage';
 import News from '../pages/News';
 import NewsDetail from '../pages/NewsDetail';
-
+import CalendarSection from '../pages/CalendarSection';
 import Login from '../pages/Login';
 import ProtectedAdminRoute from './ProtectedAdminRoute'; // ✅ NEW
 import AdminPrograms from '../pages/admin/AdminProgramEvents/AdminPrograms';
@@ -47,7 +47,7 @@ function AppRoutes({ sections }) {
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
-
+          <Route path="/calendar" element={<CalendarSection />} />
         </Route>
      
      

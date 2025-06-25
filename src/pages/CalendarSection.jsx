@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { db, auth } from "../components/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from 'react-router-dom'; // at the top
+import { Typography,Box } from '@mui/material';
 
 export default function CalendarSection() {
   const [events, setEvents] = useState([]);
@@ -14,45 +16,8 @@ export default function CalendarSection() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
-  useEffect(() => {
-    const style = document.createElement("style");
-    style.innerHTML = `.scroll-calendar-button {
-      position: fixed;
-      bottom: 100px;
-      right: 0px;
-      background-color: #f97316;
-      border-radius: 40px 0 0 40px;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      cursor: pointer;
-      z-index: 9999;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
 
-    .scroll-calendar-button:hover {
-      background-color: #f97316;
-      transform: scale(1.03);
-    }
-
-    .calendar-icon {
-      width: 35px;
-      height: 35px;
-    }`;
-    document.head.appendChild(style);
-  }, []);
-
-  const handleScrollToCalendar = () => {
-    const el = document.getElementById("calendar-section");
-    if (el) {
-      const yOffset = -80; // adjust this number to fine-tune the scroll offset
-const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
+ 
 
   // جلب فعاليات التقويم (EventsCalender)
   useEffect(() => {
@@ -222,6 +187,9 @@ window.scrollTo({ top: y, behavior: "smooth" });
 
   const dayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
+
+  const navigate = useNavigate(); // inside the component
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -238,6 +206,7 @@ window.scrollTo({ top: y, behavior: "smooth" });
 
   return (
     <>
+    
       <style jsx={"true"}>{`
         .calendar-container {
           max-width: 900px;
@@ -763,7 +732,19 @@ window.scrollTo({ top: y, behavior: "smooth" });
           }
         }
       `}</style>
-      
+<Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
+
+      <Typography
+  variant="h4"
+  fontWeight="bold"
+  textAlign="center"
+  mb={2}
+  sx={{ color: '#003366' }}
+>
+  التقويم والفعاليات
+</Typography>
+         </Box>
+
       <div id="calendar-section" className="calendar-container">
         <div className="calendar-header"></div>
 
@@ -956,11 +937,7 @@ window.scrollTo({ top: y, behavior: "smooth" });
           </div>
         )}
       </div>
-     <div className="scroll-calendar-button" onClick={handleScrollToCalendar} title="الانتقال إلى التقويم">
-  <svg className="calendar-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
-    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z"/>
-  </svg>
-</div>
+
 
 
 

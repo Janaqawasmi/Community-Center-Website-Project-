@@ -29,6 +29,7 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './components/firebase';
 import NavButton from './components/layout/Buttons/NavButton';
+import CalendarIcon  from './components/layout/Buttons/CalendarIcon';
 
 
 const NAV_ITEMS = [
@@ -189,7 +190,7 @@ const handleNavClick = (path) => {
       position: { xs: 'absolute', md: 'static' },
       left: { xs: '50%', md: 'auto' },
       transform: { xs: 'translateX(-50%)', md: 'none' },
-      zIndex: 1, // ensure it's above the drawer button
+      zIndex: 3, // ensure it's above the drawer button
     }}
   >
     <NavButton to="/" sx={{ p: 0, minWidth: 0 }}>
@@ -200,6 +201,7 @@ const handleNavClick = (path) => {
       />
     </NavButton>
   </Box>
+  
 )}
 
           {/* Desktop Nav */}
@@ -227,18 +229,29 @@ const handleNavClick = (path) => {
 </Box>
 
 
-          {/* Mobile Menu Button on the right */}
+      {/* Mobile: Calendar on left, Menu on right */}
 <Box
   sx={{
-    display: { xs: 'block', md: 'none' },
+    display: { xs: 'flex', md: 'none' },
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     position: 'absolute',
+    left: 0,
     right: 0,
+    px: 2,
     zIndex: 2,
   }}
 >
+
+  {/* Menu icon on the right */}
   <IconButton onClick={toggleMobileDrawer(true)} sx={{ color: 'black' }}>
     <MenuIcon sx={{ fontSize: 36 }} />
   </IconButton>
+  
+  {/* Calendar icon on the left */}
+  <CalendarIcon />
+
 </Box>
 
 
@@ -246,13 +259,14 @@ const handleNavClick = (path) => {
 <Box
   sx={{
     display: { xs: 'none', md: 'flex' },
-    gap: 4,
+    gap: 2,
     alignItems: 'center',
   }}
 >
   {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')}
   {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
   {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
+<CalendarIcon />
 
 
 </Box>
