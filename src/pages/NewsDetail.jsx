@@ -73,7 +73,7 @@ function NewsDetail() {
     <Box sx={{ direction: 'rtl', minHeight: '100vh', py: 0 }}>
       <HeroSection pageId="news" title={news.title} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'right', mt: 7, mb: 6, px: 7 }}>
+<Box sx={{ display: 'flex', justifyContent: 'right', mt: 4, mb: 2, px: 4 }}>
   <RoundedButton
     label="تصفح المزيد من الأخبار"
     onClick={() => {

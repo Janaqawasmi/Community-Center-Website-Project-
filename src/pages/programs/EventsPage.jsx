@@ -1,9 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid ,TextField} from "@mui/material";
 import ItemFlipCard from "./ItemFlipCard";
 import HeroSection from "../../components/HeroSection";
 import { useFetchEvents } from "./useFetchEvents";
 import { useMemo, useRef, useEffect, useState } from "react";
+import GradientSearchBar from "../../components/layout/common/GradientSearchBar";
 
 // الأيقونات...
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -49,56 +50,85 @@ export default function EventsPage() {
   };
 
   const highlightedEvent = events.find((e) => e.id === highlightId);
+ 
+ // State for search term
+const [searchTerm, setSearchTerm] = useState("");
 
-  return (
-    <Box sx={{  direction: "rtl" }}>
-      <Box mb={8}>
-        <HeroSection pageId="events" />
-      </Box>
-
-      <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
-        {/* Highlighted Event (Large Card on Desktop) */}
-        {highlightId && highlightedEvent && isDesktop && (
-          <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
-            <Grid container justifyContent="center">
-              <Grid item md={4}>
-                <ItemFlipCard
-                  item={highlightedEvent}
-                  fields={eventFields}
-                  onRegister={handleRegister}
-                  highlight={true}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        )}
-
-        {/* All Other Cards */}
-        <Grid container spacing={8} justifyContent="center">
-          {events
-            .filter((event) => !(highlightId === event.id && isDesktop))
-            .map((event) => (
-              <Grid
-                item
-                key={event.id}
-                xs={12}
-                sm={6}
-                md={4}
-                display="flex"
-                justifyContent="center"
-                ref={(el) => (cardRefs.current[event.id] = el)}
-              >
-                <ItemFlipCard
-                  item={event}
-                  fields={eventFields}
-                  onRegister={handleRegister}
-                  highlight={highlightId === event.id}
-                />
-              </Grid>
-            ))}
-        </Grid>
-      </Box>
-
-    </Box>
+const filteredEvents = useMemo(() => {
+  const term = searchTerm.toLowerCase();
+  return events.filter(
+    (event) =>
+      event.name?.toLowerCase().includes(term) ||
+      event.description?.toLowerCase().includes(term)
   );
+}, [searchTerm, events]);
+
+
+return (
+  <Box sx={{ direction: "rtl" }}>
+    <Box mb={2}>
+      <HeroSection pageId="events" />
+    </Box>
+
+    <Box sx={{ px: { xs: 2, md: 6 }, pb: 4 }}>
+      {/* 🔍 Styled Gradient Search Bar */}
+      <Box sx={{ mt: 2, mb: 2 }}>
+      <GradientSearchBar
+        label="بحث سريع"
+        placeholder="ابحث عن فعالية "
+        searchQuery={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+    </Box>
+
+      {/* Highlighted Event (Large Card on Desktop) */}
+      {highlightId && highlightedEvent && isDesktop && (
+        <Box sx={{ mb: 6 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
+          <Grid container justifyContent="center">
+            <Grid item md={4}>
+              <ItemFlipCard
+                item={highlightedEvent}
+                fields={eventFields}
+                onRegister={handleRegister}
+                highlight={true}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      )}
+
+      {/* Filtered Event Cards */}
+      <Grid container spacing={8} justifyContent="center">
+        {filteredEvents
+          .filter((event) => !(highlightId === event.id && isDesktop))
+          .map((event) => (
+            <Grid
+              item
+              key={event.id}
+              xs={12}
+              sm={6}
+              md={4}
+              display="flex"
+              justifyContent="center"
+              ref={(el) => (cardRefs.current[event.id] = el)}
+            >
+              <ItemFlipCard
+                item={event}
+                fields={eventFields}
+                onRegister={handleRegister}
+                highlight={highlightId === event.id}
+              />
+            </Grid>
+          ))}
+      </Grid>
+
+      {/* No Results Message */}
+      {filteredEvents.length === 0 && searchTerm.trim() !== "" && (
+        <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
+          لا توجد نتائج مطابقة لبحثك.
+        </Typography>
+      )}
+    </Box>
+  </Box>
+);
 }

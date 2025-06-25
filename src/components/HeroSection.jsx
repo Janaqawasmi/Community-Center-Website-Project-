@@ -30,7 +30,7 @@ export default function HeroSection({ pageId, title  }) {
       <Box
         sx={{
           position: "relative",
-          height: { xs:80, md: 100},
+          height: { xs:60, md: 65},
           display: "flex",
           flexDirection: "row-reverse",
           width: "100%",
@@ -43,7 +43,7 @@ export default function HeroSection({ pageId, title  }) {
           src={heroData.imageURL}
           alt="Hero"
           sx={{
-            width: { xs: "50%", md: "50%" },
+            width: { xs: "46%", md: "50%" },
             height: "100%",
             zIndex: 0,
             objectFit: "contain", // Ensures full coverage
@@ -53,7 +53,7 @@ export default function HeroSection({ pageId, title  }) {
         {/* Text area */}
         <Box
           sx={{
-            width: { xs: "60%", md: "50%" },
+            width: { xs: "64%", md: "50%" },
             height: "100%",
             background: heroData.bgGradient || "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
             clipPath: "polygon(100% 0%, 20% 0%, 11% 50%, 20% 100%, 100% 100%)",
@@ -61,16 +61,13 @@ export default function HeroSection({ pageId, title  }) {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "flex-start",
-            px: { xs: 2, md: 4 },
+            px: { xs: 1, md: 4 },
             zIndex: 1,
           }}
         >
-          <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.3rem', md: '2rem' }, }}>
+          <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.1rem', md: '2rem' }, }}>
                  {title || heroData.title}  </Typography>
-                    <Typography variant="body1" sx={{ color: "#fff", fontSize: "1rem" , display: { xs: "none", md: "block" },
- }}>
-            {heroData.subtitle}
-          </Typography>
+                   
 
         </Box>
       </Box>

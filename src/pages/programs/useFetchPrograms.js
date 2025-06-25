@@ -18,7 +18,7 @@ export const useFetchPrograms = (categoryName) => {
         const data = await Promise.all(
           snapshot.docs.map(async (docSnap) => {
             const docData = docSnap.data();
-            const startDate = docData.startDate?.toDate?.() ?? null;
+            const startDate = docData.date?.toDate?.() ?? null;
 
             // Fetch the corresponding lineColor from heroSection
             let lineColor = " #004e92";

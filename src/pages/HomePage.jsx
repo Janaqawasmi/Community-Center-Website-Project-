@@ -197,7 +197,7 @@ useEffect(() => {
       )}
 
 {/* Quick Links */}
-<Box sx={{ mt: { xs: 8, md: 8 } }}>
+<Box sx={{ mt: { xs: 4, md: 4 } }}>
   <QuickLinksSection sections={sections} />
 </Box>   
 
