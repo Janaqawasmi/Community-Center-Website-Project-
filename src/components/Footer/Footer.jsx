@@ -242,21 +242,31 @@ useEffect(() => {
                   </Box>
                 </Box>
 
-                <Typography variant="subtitle2" fontWeight="bold" color="#003366" sx={{ mt: 2.5 }}>
-                  ساعات استقبال المركز والرد الهاتفي
-                </Typography>
-                <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0, backgroundColor: 'white', borderRadius: 2, p: 2 }}>
-                  {[
-                    { day: 'الأحد – الخميس', hours: '9:00 - 17:00' },
-                    { day: 'الجمعة', hours: 'مغلق' },
-                    { day: 'السبت', hours: '9:00 - 17:00' }
-                  ].map((s, i) => (
-                    <Box key={i} component="li" sx={{ display: 'flex', justifyContent: 'flex-start', gap: 1.5, fontSize: '0.85rem', mb: i < 2 ? 1 : 0 }}>
-                      <Typography variant="body2" fontWeight="bold" sx={{ color: '#003366', minWidth: '100px' }}>{s.day}:</Typography>
-                      <Typography variant="body2" sx={{ color: s.hours === 'مغلق' ? '#d32f2f' : '#2e7d32', fontWeight: 500 }}>{s.hours}</Typography>
-                    </Box>
-                  ))}
-                </Box>
+<Typography variant="subtitle2" fontWeight="bold" color="#003366" sx={{ mt: 2.5 }}>
+  ساعات استقبال المركز والرد الهاتفي
+</Typography>
+<Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0, backgroundColor: 'white', borderRadius: 2, p: 2 }}>
+  {(siteInfo.reception_hours || []).map((s, i) => (
+    <Box
+      key={i}
+      component="li"
+      sx={{
+        display: 'flex',
+        justifyContent: 'flex-start',
+        gap: 1.5,
+        fontSize: '0.85rem',
+        mb: i < siteInfo.reception_hours.length - 1 ? 1 : 0
+      }}
+    >
+      <Typography variant="body2" fontWeight="bold" sx={{ color: '#003366', minWidth: '100px' }}>{s.day}:</Typography>
+      <Typography variant="body2" sx={{ color: s.hours === 'مغلق' ? '#d32f2f' : '#2e7d32', fontWeight: 500 }}>{s.hours}</Typography>
+    </Box>
+  ))}
+</Box>
+
+
+
+
               </Grid>
               
             </Grid>
