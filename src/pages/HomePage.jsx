@@ -238,7 +238,7 @@ function OverlayContent({ program, navigate, isEvent = false, isNews = false }) 
           )
         }
       >
-        عرض التفاصيل
+  {isNews ? "اقرأ المزيد" : "للتسجيل"}
       </Button>
     </>
   );

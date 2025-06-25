@@ -31,6 +31,8 @@ export const useFetchEvents = (onlyFeatured = false) => {
         const filtered = onlyFeatured
           ? data.filter((event) => event.featured === true)
           : data;
+ // ✅ Sort by startDate (earliest first)
+        filtered.sort((a, b) => (a.startDate || 0) - (b.startDate || 0));
 
         setEvents(filtered);
       } catch (err) {

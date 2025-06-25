@@ -17,7 +17,7 @@ export default function GradientSearchBar({
         display: "flex",
         alignItems: "center",
         gap: 1,
-        maxWidth: 440,                  // 🔽 slightly narrower
+        maxWidth:{xs:350, md:440},                  // 🔽 slightly narrower
         mx: "auto",
         my: 1,
       }}
