@@ -74,7 +74,7 @@ export default function ProgramStatsChart() {
 
 regSnapshot.forEach(doc => {
   const data = doc.data();
-  const programId = data.programId;
+  const programId = data.docId;
 
   if (filteredProgramIds.includes(programId)) {
     if (!counts[programId]) {
