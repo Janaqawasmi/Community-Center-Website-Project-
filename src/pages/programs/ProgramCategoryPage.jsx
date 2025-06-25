@@ -92,7 +92,7 @@ const filteredPrograms = programs.filter(
   />
 </Box>
 
-      <Container>
+      <Container sx={{  mb: 4 }} >
         {highlightId && highlightedProgram && isDesktop && (
           <Box sx={{ mb: 8 }} ref={(el) => (cardRefs.current[highlightId] = el)}>
             <Grid container justifyContent="center">
