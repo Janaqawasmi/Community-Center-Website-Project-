@@ -109,62 +109,61 @@ useEffect(() => {
 
   return (
     <Box  sx={{  direction: "rtl" }} >
-      <Box mb={4}>
+      <Box mb={2}>
       <HeroSection pageId="programs" />
       </Box>
       <Container sx={{ pb: 4 }} dir="rtl">
         {/* Search Bar */}
-        <Box
-          sx={{
-            background: "linear-gradient(180deg, #00b0f0 0%, #003366 100%)",
-            borderRadius: "28px",
-            padding: "6px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            maxWidth: 700,
-            mx: "auto",
-            my: 2,
-          }}
-        >
-          <Typography
-            sx={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: "16px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            بحث سريع
-          </Typography>
+         <Box
+      sx={{
+        background: "#003366",
+        borderRadius: "18px",           // 🔽 slightly reduced
+        padding: "3px 6px",             // 🔽 tighter padding
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        maxWidth: 700,                  // 🔽 slightly narrower
+        mx: "auto",
+        my: 1,
+      }}
+    >
+      <Typography
+        sx={{
+          color: "white",
+          fontWeight: "bold",
+          fontSize: "13px",             // 🔽 smaller font
+          whiteSpace: "nowrap",
+        }}
+      >
+         بحث سريع
+      </Typography>
 
-          <TextField
-            fullWidth
+      <TextField
+        fullWidth
             placeholder="ابحث عن دورة..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            variant="outlined"
-            dir="rtl"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: "rgba(0, 0, 0, 0.8)" }} />
-                </InputAdornment>
-              ),
-              sx: {
-                backgroundColor: "#fff",
-                borderRadius: "28px",
-                color: "rgb(0, 0, 0)",
-                fontSize: "1.2rem",
-                height: "42px",
-                px: 2,
-                "& fieldset": {
-                  border: "none",
-                },
-              },
-            }}
-          />
-        </Box>
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        variant="outlined"
+        dir="rtl"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon sx={{ color: "rgba(0, 0, 0, 0.7)", fontSize: 16 }} />
+            </InputAdornment>
+          ),
+          sx: {
+            backgroundColor: "#fff",
+            borderRadius: "18px",       // 🔽 matches outer radius
+            fontSize: "0.85rem",        // 🔽 input text slightly smaller
+            height: "34px",             // 🔽 slightly shorter
+            px: 1.2,
+            "& fieldset": {
+              border: "none",
+            },
+          },
+        }}
+      />
+    </Box>
 
    {/* Filter Title - Static Text */}
 {searchQuery.trim() === "" && (
@@ -210,7 +209,7 @@ useEffect(() => {
 
         {/* Search Results */}
       {searchQuery.trim() !== "" && (
-  <Grid container spacing={3} mt={2}>
+  <Grid container spacing={2} mt={0}>
     {filteredPrograms.map((program) => (
       <Grid item xs={12} sm={6} md={4} key={program.id}>
         <ItemFlipCard

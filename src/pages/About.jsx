@@ -160,7 +160,7 @@ useEffect(() => {
             </Grid>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 6 }}>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Typography
               onClick={() => toggleSection('about')}
               sx={{
@@ -168,9 +168,10 @@ useEffect(() => {
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 cursor: 'pointer',
+                color: ' red',
                 textDecoration: 'underline',
                 '&:hover': {
-                  color: '#1565c0',
+                  color: ' #1565c0',
                   textDecoration: 'underline',
                 }
               }}
