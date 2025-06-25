@@ -58,7 +58,7 @@ export default function Footer() {
       sx={{
         backgroundColor: '#ffffff',
         borderTop: '6px solid #003366',
-        mt: 8,
+        mt: 0,
         pt: 6,
         pb: 3,
         direction: 'rtl',
