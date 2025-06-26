@@ -117,15 +117,16 @@ const handleChange = (e) => {
       try {
         await submitRegistration(e, form, setForm);
         if (programId) {
-          await decrementCapacity("programRegistrations", programId);
+          await decrementCapacity({collectionName:"programs", docId:programId});
         } else if (eventName) {
-          await decrementCapacity("eventRegistrations", eventId);
+          await decrementCapacity({collectionName:"Events", docId:eventId});
         }
-        set
-        (true);
+        setFormSubmitted(true); // ✅ fixed
         setSubmitSuccess(true);
+         console.log('تم خفض السعة بنجاح');
       } catch (err) {
         console.error("❌ Submission failed:", err);
+        console.error('❌ خطأ أثناء خفض السعة:', err);
         setFormSubmitted(true);
         setSubmitSuccess(false);
       }

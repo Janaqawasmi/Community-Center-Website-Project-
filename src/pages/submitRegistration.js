@@ -102,14 +102,4 @@ const { collectionName, sourceCollection, docId } = getRegistrationInfo();
   }
 
 
-  try {
- await decrementCapacity({
-   collectionName: sourceCollection,
-     docId
-   });    console.log('تم خفض السعة بنجاح');
-  } catch (capErr) {
-    console.error('❌ خطأ أثناء خفض السعة:', capErr);
-    // هنا يمكن أن تختار إظهار تحذير بسيط أو التجاهل
-    // alert('حدث خطأ أثناء تحديث السعة');
-  }
 }
