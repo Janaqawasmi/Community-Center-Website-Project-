@@ -74,25 +74,25 @@ export default function ItemCardFront({ item, onFlip, config = {} , highlight}) 
         color=" #003366"
         fontWeight="bold"
         gutterBottom
-        sx={{ mt: 1 }}
+        sx={{ mt: 0.5 }}
       >
         {item.name}
       </Typography>
 
       
 
-      <Typography sx={{ fontSize: "14px", color: " #666", mt: 0.5 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
+      <Typography sx={{ fontSize: "14px", color: " #666" }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
 
-      <Box sx={{ display: "flex", alignItems: "baseline", mt: 0.5 }}>
-        <Typography sx={{ fontSize: "40px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
+      <Box sx={{ display: "flex", alignItems: "baseline" }}>
+        <Typography sx={{ fontSize: "38px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
         <Box sx={{ textAlign: "left", ml: 1 }}>
           <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: " #003366" }}>{monthName}</Typography>
           <Typography sx={{ fontSize: "12px", color: " #003366" }}>{year}</Typography>
         </Box>
       </Box>
 
-      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 2, mb: 0.5, width: "70%", mx: "auto", borderRadius: "40px", 
-        border: "2px solid #003366", color: " #003366", 
+      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 1, mb: 0.5, width: "70%", mx: "auto", borderRadius: "40px", 
+        border: "1.5px solid #003366", color: " #003366", 
         fontWeight: "bold", px: 4, textTransform: "none", ":hover": { backgroundColor: "#003366", borderColor: " #003366", color: "white" } }}>
         عرض التفاصيل
       </Button>
