@@ -71,96 +71,6 @@ useEffect(() => {
   }
 
   return (
-<<<<<<< sortProg+Event-addAdmin-Form
-    <Box
-      sx={{
-        backgroundColor: '#ffffff',
-        borderTop: '6px solid #003366',
-        mt: 0,
-        pt: 6,
-        pb: 3,
-        direction: 'rtl',
-        position: 'relative' // ✅ important
-
-      }}
-    >
-      <Container maxWidth="lg">
-     <Grid 
-  container 
-  spacing={5} // 👈 increase this to add more horizontal space
-  sx={{
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  }}
->
-
-          {/* Logo & Slogan Column */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center',
-                height: '100%',
-              }}
-            >
-              {/* Logo and Title */}
-              <Box sx={{ textAlign: 'center', mb: 3 }}>
-             <img
-  src={siteInfo.logo_url || defaultLogo}
-  alt="شعار المركز"
-  style={{ 
-    width: 130,                    // ⬅️ Bigger logo
-    maxWidth: '100%', 
-    marginBottom: 12,
-    display: 'block',
-    marginLeft: 'auto',            // ⬅️ Center horizontally
-    marginRight: 'auto'
-  }}
-/>
-
-                <Typography
-                  variant="h5"
-                  fontWeight="bold"
-                  color="#003366"
-                  sx={{ mb: 1, lineHeight: 1.8 }}
-                >
-                  المركز الجماهيري بيت حنينا
-                </Typography>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary"
-                  sx={{ lineHeight: 1.4 }}
-                >
-                  {siteInfo.slogan || 'معًا نبني مجتمعًا متماسكًا وداعمًا للجميع 🧡'}
-                </Typography>
-              </Box>
-
-              {/* Volunteer Button */}
-              <Button
-                variant="outlined"
-                href="/volunteer"
-                sx={{
-                  borderColor: '#003366',
-                  color: '#003366',
-                  fontWeight: 'bold',
-                  borderRadius: '25px',
-                  px: 4,
-                  py: 1,
-                  fontSize: '0.9rem',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: '#003366',
-                    color: '#fff',
-                    transform: 'translateY(-2px)',
-                  }
-                }}
-              >
-                🌟 انضم كمتطوع
-              </Button>
-            </Box>
-          </Grid>
-=======
     <>
       {/* Collapsed Footer Bar */}
       {!isExpanded && (
@@ -197,7 +107,6 @@ useEffect(() => {
           </IconButton>
         </Box>
       )}
->>>>>>> main
 
       {/* Expanded Footer */}
       {isExpanded && (
