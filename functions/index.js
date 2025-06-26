@@ -37,7 +37,7 @@ const buildEmailHtml = (userName, title, itemsHtml, siteInfo) => `
 
 // ✅ Program registration confirmation
 exports.sendProgramConfirmation = functions.firestore
-  .document("programRegistrations/{regId}")
+  .document("`programRegistrations`/{regId}")
   .onCreate(async (snap, context) => {
     const registration = snap.data();
     const programId = registration.docId;

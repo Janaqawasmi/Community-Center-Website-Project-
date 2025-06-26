@@ -121,7 +121,7 @@ const handleChange = (e) => {
           await decrementCapacity({ collectionName: "Events", docId: eventId });
         }
 
-      setSubmitMessage("✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك. ستصلك رسالة بريد إلكتروني تحتوي على تفاصيل التسجيل.");
+setSubmitMessage("✅ تم إرسال النموذج بنجاح!<br/>شكرًا لتسجيلك.<br/>ستصلك رسالة بريد إلكتروني تحتوي على تفاصيل التسجيل.");
       } else if (result.reason === "duplicate") {
         setSubmitMessage("❌ تم التسجيل مسبقًا لنفس الدورة/الفعالية.");
       } else {
@@ -174,9 +174,11 @@ const handleChange = (e) => {
             <PrettyCard title={title ? `التسجيل لـ${title}` : "التسجيل"} >
             {formSubmitted ? (
   <Box textAlign="center" py={6}>
-    <Typography variant="h6" color={submitMessage.startsWith("✅") ? "success.main" : "error.main"}>
-      {submitMessage}
-    </Typography>
+   <div
+  style={{ color: submitMessage.startsWith("✅") ? "#2e7d32" : "#d32f2f", fontSize: "1.25rem" }}
+  dangerouslySetInnerHTML={{ __html: submitMessage }}
+/>
+
   </Box>
 ) : (
 
