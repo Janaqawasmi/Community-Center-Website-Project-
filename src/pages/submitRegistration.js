@@ -1,6 +1,7 @@
 import { db } from '../components/firebase';
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, addDoc,  getDoc, updateDoc } from 'firebase/firestore';
 import { calculateAge } from './regist_logic';
+import { decrementCapacity } from './programs/decrementCapacity';
 
 function removeLastDigit(num) {
   if (!num) return "";
@@ -9,40 +10,26 @@ function removeLastDigit(num) {
 
 function getRegistrationInfo() {
   const params = new URLSearchParams(window.location.search);
-  if (params.has("program")) {
+
+  if (params.has("programId")) {
     return {
-      collectionName: "programRegistrations",
-      name: decodeURIComponent(params.get("program")),
-      sourceCollection: "programs"
+      collectionName:    "programRegistrations",
+      sourceCollection: "programs",
+      docId:             params.get("programId")
     };
   }
-  if (params.has("event")) {
+
+  if (params.has("eventId")) {
     return {
-      collectionName: "eventRegistrations",
-      name: decodeURIComponent(params.get("event")),
-      sourceCollection: "events"
+      collectionName:    "eventRegistrations",
+      sourceCollection: "Events",
+      docId:             params.get("eventId")
     };
   }
-  return { collectionName: null, name: "", sourceCollection: null };
+
+  return { collectionName: null, sourceCollection: null, docId: null };
 }
 
-// دالة لإنقاص السعة لدورة أو فعالية
-async function decrementCapacity(name, sourceCollection) {
-  // ابحث عن الوثيقة حسب الاسم
-  const q = query(collection(db, sourceCollection), where("name", "==", name));
-  const querySnapshot = await getDocs(q);
-  if (!querySnapshot.empty) {
-    const docID = querySnapshot.docs[0].id;
-    const docRef = doc(db, sourceCollection, docID);
-
-    // استعمل increment حتى لو أكثر من شخص سجّل بنفس اللحظة
-    await updateDoc(docRef, {
-      capacity: increment(-1)
-    });
-  } else {
-    alert("لم يتم العثور على الدورة أو الفعالية المطلوبة لإنقاص السعة!");
-  }
-}
 
 export async function submitRegistration(e, formData, setForm) {
   e.preventDefault();
@@ -52,7 +39,7 @@ export async function submitRegistration(e, formData, setForm) {
   const idWithoutLast = removeLastDigit(formData.id);
   const fatherIdWithoutLast = removeLastDigit(formData.fatherId);
 
-  const { collectionName, name, sourceCollection } = getRegistrationInfo();
+const { collectionName, sourceCollection, docId } = getRegistrationInfo();
 
   if (!collectionName || !sourceCollection) {
     alert('لم يتم تحديد نوع التسجيل (دورة أو فعالية)');
@@ -65,10 +52,6 @@ export async function submitRegistration(e, formData, setForm) {
     fatherId: fatherIdWithoutLast,
     birthdate: formData.birthdate ? formData.birthdate.toLocaleDateString('en-GB') : '',
     landLine: formData.landLine ? `02${formData.landLine}` : '',
-    name: name,
-    classNumber: formData.classNumber || '',
-    groupNumber: formData.groupNumber || '',
-    digit5: formData.digit5 || '',
     registrationDate: new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }),
     archived: false,
 
@@ -90,7 +73,7 @@ export async function submitRegistration(e, formData, setForm) {
     await addDoc(collection(db, collectionName), formattedForm);
 
     // 2. بعد نجاح الحفظ، أنقص السعة من الدورة أو الفعالية
-    await decrementCapacity(name, sourceCollection);
+   
 
     alert('تم التسجيل وحفظ البيانات بنجاح!');
     if (setForm) {
@@ -111,13 +94,23 @@ export async function submitRegistration(e, formData, setForm) {
         fatherName: '',
         fatherPhone: '',
         parentLastName: '',
-        classNumber: '',
-        groupNumber: '',
-        digit5: '',
       });
     }
   } catch (error) {
     console.error('خطأ أثناء حفظ البيانات:', error);
     alert('حدث خطأ أثناء حفظ البيانات');
   }
+
+
+  try {
+ await decrementCapacity({
+   collectionName: sourceCollection,
+     docId
+   });    console.log('تم خفض السعة بنجاح');
+  } catch (capErr) {
+    console.error('❌ خطأ أثناء خفض السعة:', capErr);
+    // هنا يمكن أن تختار إظهار تحذير بسيط أو التجاهل
+    // alert('حدث خطأ أثناء تحديث السعة');
+  }
 }
+

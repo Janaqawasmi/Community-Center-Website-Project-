@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Paper, Typography, TextField, Button, Grid, MenuItem } from '@mui/material';
 import { validateField } from './regist_logic';
 import DatePicker from "react-datepicker";
@@ -10,7 +10,6 @@ import { useLocation } from 'react-router-dom';
 import { validateStep } from './regist_logic';
 import { useAnonymousAuth } from "../components/auth/useAnonymousAuth";
 import { calculateAge } from './regist_logic';
-import { decrementCapacity } from "./programs/decrementCapacity"; // عدلي المسار حسب مكان الملف
 import PrettyCard from '../components/layout/PrettyCard';
 
 const steps = ['المعلومات الشخصية', 'معلومات ولي الأمر'];
@@ -44,7 +43,20 @@ function RegistrationForm() {
     fatherName: '',
     fatherPhone: '',
     parentLastName: '',
+    docId: '',
   });
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  
+  const programId = searchParams.get("programId");
+const eventId   = searchParams.get("eventId");
+const docId     = programId || eventId || '';
+//const title     = programId || eventId || '';
+
+ useEffect(() => {
+    setForm(prev => ({ ...prev, docId }));
+  }, [docId]);
 
   const requiredFieldsByStep = [
     // الخطوة الأولى
@@ -53,8 +65,8 @@ function RegistrationForm() {
     ['fatherName', 'parentLastName', 'fatherId', 'fatherPhone'],
   ];
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  
+
 
   const programName = searchParams.get("program");
   const eventName = searchParams.get("event");
@@ -173,7 +185,6 @@ function RegistrationForm() {
                     step === 1
                   ) {
                     await submitRegistration(e, form, setForm);
-                    await decrementCapacity({ programName, eventName });
                   } else {
                     e.preventDefault();
                     nextStep();
@@ -183,6 +194,8 @@ function RegistrationForm() {
               >
 
                 {/* ------- الخطوة 1 ------- */}
+                {/* حقل مخفي لحفظ docId */}
+                <input type='hidden' name='docId' value={form.docId} />
                 {step === 0 && (
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
