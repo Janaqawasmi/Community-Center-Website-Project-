@@ -45,9 +45,11 @@ export default function EventsPage() {
     }
   }, [events, highlightId]);
 
-  const handleRegister = (eventTitle) => {
-    navigate(`/RegistrationForm?event=${encodeURIComponent(eventTitle)}`);
-  };
+const handleRegister = (selectedEvent) => {
+  navigate(
+    `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.name)}`
+  );
+};
 
   const highlightedEvent = events.find((e) => e.id === highlightId);
  

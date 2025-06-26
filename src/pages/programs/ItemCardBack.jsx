@@ -104,7 +104,7 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
               return;
             }
             setFullMsg("");
-            onRegister(item.name);
+            onRegister(item);
           }}
           sx={{
             width: "70%",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import { validateField, validateStep, calculateAge } from '../regist_logic';
 import citiesData from '../../assets/codes.json';
@@ -18,7 +18,6 @@ function RegistrationForm() {
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
-
   const [form, setForm] = useState({
     FirstName: '',
     birthdate: '',
@@ -36,18 +35,28 @@ function RegistrationForm() {
     fatherName: '',
     fatherPhone: '',
     parentLastName: '',
+    docId: '',
   });
+
 
   const requiredFieldsByStep = [
     ['FirstName', 'birthdate', 'id', 'lastName', 'email', 'personalPhone', 'gender', 'address'],
     ['fatherName', 'parentLastName', 'fatherId', 'fatherPhone'],
   ];
 
-  const location = useLocation();
+ const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  
+  const programId = searchParams.get("programId");
+  const eventId   = searchParams.get("eventId");
+  const docId     = programId || eventId || '';
+
+ useEffect(() => {
+    setForm(prev => ({ ...prev, docId }));
+  }, [docId]);
+
   const programName = searchParams.get("program");
   const eventName = searchParams.get("event");
-
   const title =
     (programName && programName !== "undefined" && programName !== "")
       ? programName
@@ -55,7 +64,8 @@ function RegistrationForm() {
         ? eventName
         : "";
 
-  const handleChange = (e) => {
+
+const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
       const updatedForm = { ...prev, [name]: value };
@@ -78,8 +88,12 @@ function RegistrationForm() {
     if (!error) {
       setForm((prev) => {
         const updatedForm = { ...prev, [name]: value };
-        if (name === "id") updatedForm.cheackDigit = (parseInt(value) % 10).toString();
-        if (name === "fatherId") updatedForm.fatherCheackDigit = (parseInt(value) % 10).toString();
+      if (name === "id") {
+          updatedForm.cheackDigit = value ? (parseInt(value) % 10).toString() : '';
+        }
+        if (name === "fatherId") {
+          updatedForm.fatherCheackDigit = value ? (parseInt(value) % 10).toString() : '';
+        }
         return updatedForm;
       });
       setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -87,6 +101,7 @@ function RegistrationForm() {
       setErrors((prev) => ({ ...prev, [name]: error }));
     }
   };
+
 
   const nextStep = () => {
     if (validateStep(step, form, requiredFieldsByStep, setErrors)) {
@@ -101,12 +116,13 @@ function RegistrationForm() {
     if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
       try {
         await submitRegistration(e, form, setForm);
-        if (programName) {
-          await decrementCapacity("programs", programName);
+        if (programId) {
+          await decrementCapacity("programRegistrations", programId);
         } else if (eventName) {
-          await decrementCapacity("events", eventName);
+          await decrementCapacity("eventRegistrations", eventId);
         }
-        setFormSubmitted(true);
+        set
+        (true);
         setSubmitSuccess(true);
       } catch (err) {
         console.error("❌ Submission failed:", err);
@@ -159,7 +175,11 @@ function RegistrationForm() {
                 </Box>
               ) : (
                 <form autoComplete="off" onSubmit={handleSubmit} style={{ direction: "rtl" }}>
-                  {step === 0 && (
+              
+              {/* ------- الخطوة 1 ------- */}
+                {/* حقل مخفي لحفظ docId */}
+                <input type='hidden' name='docId' value={form.docId} /> 
+                 {step === 0 && (
                     <StepOne
                       form={form}
                       setForm={setForm}
@@ -170,7 +190,7 @@ function RegistrationForm() {
                       nextStep={nextStep}
                     />
                   )}
-
+                {/* ------- الخطوة 2 ------- */}
                   {step === 1 && (
                     <StepTwo
                       form={form}
