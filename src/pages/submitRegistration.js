@@ -94,6 +94,7 @@ const { collectionName, sourceCollection, docId } = getRegistrationInfo();
         fatherName: '',
         fatherPhone: '',
         parentLastName: '',
+          docId: '', // ✅ ADD THIS
       });
     }
   } catch (error) {
