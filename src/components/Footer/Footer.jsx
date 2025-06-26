@@ -245,7 +245,7 @@ useEffect(() => {
 <Typography variant="subtitle2" fontWeight="bold" color="#003366" sx={{ mt: 2.5 }}>
   ساعات استقبال المركز والرد الهاتفي
 </Typography>
-<Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0, backgroundColor: 'white', borderRadius: 2, p: 2 }}>
+<Box component="ul" sx={{ listStyle: 'none', m: 0, backgroundColor: 'white', borderRadius: 2, py: 1, px:0 }}>
   {(siteInfo.reception_hours || []).map((s, i) => (
     <Box
       key={i}
