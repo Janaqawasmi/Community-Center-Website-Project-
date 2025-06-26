@@ -13,7 +13,7 @@ import StepTwo from './StepTwo';
 
 function RegistrationForm() {
   useAnonymousAuth();
-
+  const [submitMessage, setSubmitMessage] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [step, setStep] = useState(0);
@@ -108,28 +108,38 @@ const handleChange = (e) => {
   const prevStep = () => setStep(s => s - 1);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
-      try {
-        await submitRegistration(e, form, setForm);
+  e.preventDefault();
+
+  if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
+    try {
+      const result = await submitRegistration(e, form, setForm);
+
+      if (result.success) {
         if (programId) {
-          await decrementCapacity({collectionName:"programs", docId:programId});
+          await decrementCapacity({ collectionName: "programs", docId: programId });
         } else if (eventName) {
-          await decrementCapacity({collectionName:"Events", docId:eventId});
+          await decrementCapacity({ collectionName: "Events", docId: eventId });
         }
-        setFormSubmitted(true); // ✅ fixed
-        setSubmitSuccess(true);
-         console.log('تم خفض السعة بنجاح');
-      } catch (err) {
-        console.error("❌ Submission failed:", err);
-        console.error('❌ خطأ أثناء خفض السعة:', err);
-        setFormSubmitted(true);
-        setSubmitSuccess(false);
+
+        setSubmitMessage("✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك.");
+      } else if (result.reason === "duplicate") {
+        setSubmitMessage("❌ تم التسجيل مسبقًا لنفس الدورة/الفعالية.");
+      } else {
+        setSubmitMessage("❌ حدث خطأ أثناء معالجة التسجيل.");
       }
-    } else {
-      nextStep();
+
+      setFormSubmitted(true);
+    } catch (err) {
+      console.error("❌ Submission error:", err);
+      setSubmitMessage("❌ حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.");
+      setFormSubmitted(true);
     }
-  };
+  } else {
+    nextStep();
+  }
+};
+
+
 
   return (
     <>
@@ -162,15 +172,14 @@ const handleChange = (e) => {
         <Grid container justifyContent="center" >
           <Grid item xs={12} sm={10} md={6} lg={6}>
             <PrettyCard title={title ? `التسجيل لـ${title}` : "التسجيل"} >
-              {formSubmitted ? (
-                <Box textAlign="center" py={6}>
-                  {submitSuccess ? (
-                    <Typography variant="h6" color="success.main">✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك.</Typography>
-                  ) : (
-                    <Typography variant="h6" color="error.main">❌ حدث خطأ أثناء الإرسال. حاول مرة أخرى لاحقًا.</Typography>
-                  )}
-                </Box>
-              ) : (
+            {formSubmitted ? (
+  <Box textAlign="center" py={6}>
+    <Typography variant="h6" color={submitMessage.startsWith("✅") ? "success.main" : "error.main"}>
+      {submitMessage}
+    </Typography>
+  </Box>
+) : (
+
                 <form autoComplete="off" onSubmit={handleSubmit} style={{ direction: "rtl" }}>
               
               {/* ------- الخطوة 1 ------- */}

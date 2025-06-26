@@ -1,60 +1,86 @@
 import { db } from '../components/firebase';
-import { collection, addDoc,  getDoc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} from 'firebase/firestore';
 import { calculateAge } from './regist_logic';
-import { decrementCapacity } from './programs/decrementCapacity';
 
+// 🔧 Remove last digit for validation
 function removeLastDigit(num) {
   if (!num) return "";
   return num.toString().slice(0, -1);
 }
 
+// 🔧 Get Firestore collection info
 function getRegistrationInfo() {
   const params = new URLSearchParams(window.location.search);
 
   if (params.has("programId")) {
     return {
-      collectionName:    "programRegistrations",
+      collectionName: "programRegistrations",
       sourceCollection: "programs",
-      docId:             params.get("programId")
+      docId: params.get("programId"),
     };
   }
 
   if (params.has("eventId")) {
     return {
-      collectionName:    "eventRegistrations",
+      collectionName: "eventRegistrations",
       sourceCollection: "Events",
-      docId:             params.get("eventId")
+      docId: params.get("eventId"),
     };
   }
 
   return { collectionName: null, sourceCollection: null, docId: null };
 }
 
-
+// ✅ Main function
 export async function submitRegistration(e, formData, setForm) {
   e.preventDefault();
 
   const age = calculateAge(formData.birthdate);
-
   const idWithoutLast = removeLastDigit(formData.id);
   const fatherIdWithoutLast = removeLastDigit(formData.fatherId);
+  const checkDigit = formData.id.slice(-1);
+  const fatherCheckDigit = formData.fatherId.slice(-1);
 
-const { collectionName, sourceCollection, docId } = getRegistrationInfo();
+  const { collectionName, sourceCollection, docId } = getRegistrationInfo();
 
-  if (!collectionName || !sourceCollection) {
-    alert('لم يتم تحديد نوع التسجيل (دورة أو فعالية)');
-    return;
+  if (!collectionName || !sourceCollection || !docId) {
+    return { success: false, reason: 'invalid_collection' };
   }
 
+  // 🔒 Check for duplicate registration
+  const duplicateQuery = query(
+    collection(db, collectionName),
+    where("id", "==", idWithoutLast),
+    where("docId", "==", docId)
+  );
+
+  const existing = await getDocs(duplicateQuery);
+  if (!existing.empty) {
+    return { success: false, reason: 'duplicate' };
+  }
+
+  // 📝 Prepare the registration object
   let formattedForm = {
     ...formData,
     id: idWithoutLast,
+    cheackDigit: checkDigit,
     fatherId: fatherIdWithoutLast,
-    birthdate: formData.birthdate ? formData.birthdate.toLocaleDateString('en-GB') : '',
+    fatherCheackDigit: fatherCheckDigit,
+    birthdate: formData.birthdate
+      ? formData.birthdate.toLocaleDateString('en-GB')
+      : '',
     landLine: formData.landLine ? `02${formData.landLine}` : '',
-    registrationDate: new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }),
+    registrationDate: new Date().toLocaleString('en-GB', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    }),
     archived: false,
-
   };
 
   if (age >= 18) {
@@ -64,18 +90,13 @@ const { collectionName, sourceCollection, docId } = getRegistrationInfo();
       parentLastName: formData.lastName,
       fatherId: idWithoutLast,
       fatherPhone: formData.personalPhone,
-      fatherCheackDigit: formData.cheackDigit,
+      fatherCheackDigit: checkDigit,
     };
   }
 
   try {
-    // 1. أضف التسجيل أولاً
     await addDoc(collection(db, collectionName), formattedForm);
 
-    // 2. بعد نجاح الحفظ، أنقص السعة من الدورة أو الفعالية
-   
-
-    alert('تم التسجيل وحفظ البيانات بنجاح!');
     if (setForm) {
       setForm({
         FirstName: '',
@@ -94,13 +115,13 @@ const { collectionName, sourceCollection, docId } = getRegistrationInfo();
         fatherName: '',
         fatherPhone: '',
         parentLastName: '',
-          docId: '', // ✅ ADD THIS
+        docId: '',
       });
     }
+
+    return { success: true };
   } catch (error) {
     console.error('خطأ أثناء حفظ البيانات:', error);
-    alert('حدث خطأ أثناء حفظ البيانات');
+    return { success: false, reason: 'error' };
   }
-
-
 }
