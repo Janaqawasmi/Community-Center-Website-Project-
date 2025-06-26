@@ -5,7 +5,7 @@ import SectionPage from '../pages/SectionPage';
 import Contact from '../pages/Contact';
 import ScrollToTop from '../components/ScrollToTop';
 import About from '../pages/About';
-import RegistrationForm from '../pages/registration';
+import RegistrationForm from '../pages/registration/registration';
 import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/programs/EventsPage';

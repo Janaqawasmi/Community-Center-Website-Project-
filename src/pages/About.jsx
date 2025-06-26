@@ -117,7 +117,7 @@ useEffect(() => {
         <HeroSection pageId="aboutUs" />
       </Box>
 
-      <Container maxWidth="lg" sx={{ pb: 4, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+      <Container maxWidth="lg" sx={{ pb: 2, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
         
         {/* الفقرة التعريفية */}
         <PrettyCard 
@@ -164,7 +164,6 @@ useEffect(() => {
             <Typography
               onClick={() => toggleSection('about')}
               sx={{
-                color: cardColors.about,
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 cursor: 'pointer',

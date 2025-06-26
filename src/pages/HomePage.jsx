@@ -140,7 +140,7 @@ useEffect(() => {
                   background: "linear-gradient(180deg, rgba(0, 176, 240, 0.65) 0%, rgba(0, 51, 102, 0.7) 100%)",
                   clipPath: "polygon(100% 0%, 20% 0%, 0% 50%, 20% 100%, 100% 100%)",
                   borderRadius: 2,
-                  pl: 4,
+                  pl: 5,
                   pr: 1,
                   py: 1.5,
                   zIndex: 2,
@@ -151,7 +151,7 @@ useEffect(() => {
                 }}
               >
                 <Typography
-                  variant="h4"
+                  variant="h6"
                   fontWeight="bold"
                   sx={{
                     color: "#fff",
@@ -187,7 +187,7 @@ useEffect(() => {
   )
 }
             >
-        عرض التفاصيل
+                {item.isNews ? "اقرأ المزيد" : "للتسجيل"}
                 </Button>
               </Box>
             </Box>

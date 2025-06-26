@@ -33,7 +33,6 @@ export default function RoundedButton({
           transition: "0.3s",
           width: "100%",
 minHeight: { xs: "40px", sm: "50px", md: "50px" },
-height: "auto",
           height: "auto",
           boxShadow: 1,
           textTransform: "none",

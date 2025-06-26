@@ -743,7 +743,8 @@ export default function CalendarSection() {
 >
   التقويم والفعاليات
 </Typography>
-         </Box>
+         </Box> 
+<Box sx={{ mb: 2 }}>
 
       <div id="calendar-section" className="calendar-container">
         <div className="calendar-header"></div>
@@ -937,6 +938,7 @@ export default function CalendarSection() {
           </div>
         )}
       </div>
+         </Box> 
 
 
 

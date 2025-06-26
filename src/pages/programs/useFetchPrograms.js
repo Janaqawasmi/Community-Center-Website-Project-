@@ -41,6 +41,9 @@ export const useFetchPrograms = (categoryName) => {
             };
           })
         );
+        
+        // ✅ Sort by startDate (earliest first)
+        data.sort((a, b) => a.startDate - b.startDate);
 
         setPrograms(data);
       } catch (err) {
