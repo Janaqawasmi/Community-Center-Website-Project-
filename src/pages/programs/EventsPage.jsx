@@ -44,8 +44,10 @@ export default function EventsPage() {
     }
   }, [events, highlightId]);
 
-  const handleRegister = (eventTitle) => {
-    navigate(`/RegistrationForm?event=${encodeURIComponent(eventTitle)}`);
+ const handleRegister = (selectedEvent) => {
+  navigate(
+      `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}`
+    );
   };
 
   const highlightedEvent = events.find((e) => e.id === highlightId);
@@ -65,8 +67,7 @@ export default function EventsPage() {
                 <ItemFlipCard
                   item={highlightedEvent}
                   fields={eventFields}
-                  onRegister={handleRegister}
-                  highlight={true}
+ onRegister={() => handleRegister(event)}                  highlight={true}
                 />
               </Grid>
             </Grid>
@@ -91,8 +92,7 @@ export default function EventsPage() {
                 <ItemFlipCard
                   item={event}
                   fields={eventFields}
-                  onRegister={handleRegister}
-                  highlight={highlightId === event.id}
+ onRegister={() => handleRegister(event)}                  highlight={highlightId === event.id}
                 />
               </Grid>
             ))}
