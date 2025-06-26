@@ -77,8 +77,8 @@ useEffect(() => {
         <Box
           sx={{
             backgroundColor: '#ffffff',
-            borderTop: '6px solid #003366',
-            py: 2,
+            borderTop: '4px solid #003366',
+            py: 0,
             px: 3,
             direction: 'rtl',
             display: 'flex',
