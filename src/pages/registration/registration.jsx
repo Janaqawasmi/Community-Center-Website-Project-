@@ -121,7 +121,7 @@ const handleChange = (e) => {
           await decrementCapacity({ collectionName: "Events", docId: eventId });
         }
 
-        setSubmitMessage("✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك.");
+      setSubmitMessage("✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك. ستصلك رسالة بريد إلكتروني تحتوي على تفاصيل التسجيل.");
       } else if (result.reason === "duplicate") {
         setSubmitMessage("❌ تم التسجيل مسبقًا لنفس الدورة/الفعالية.");
       } else {
