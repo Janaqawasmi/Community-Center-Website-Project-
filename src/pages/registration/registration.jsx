@@ -18,6 +18,19 @@ function RegistrationForm() {
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
+
+
+
+  const requiredFieldsByStep = [
+    ['FirstName', 'birthdate', 'id', 'lastName', 'email', 'personalPhone', 'gender', 'address'],
+    ['fatherName', 'parentLastName', 'fatherId', 'fatherPhone'],
+  ];
+
+ const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const docId = searchParams.get("programId") || searchParams.get("eventId") || '';
+  const programId = searchParams.get("programId");
+  const eventId   = searchParams.get("eventId");
   const [form, setForm] = useState({
     FirstName: '',
     birthdate: '',
@@ -35,25 +48,8 @@ function RegistrationForm() {
     fatherName: '',
     fatherPhone: '',
     parentLastName: '',
-    docId: '',
+   docId: docId, // ✅ set docId initially
   });
-
-
-  const requiredFieldsByStep = [
-    ['FirstName', 'birthdate', 'id', 'lastName', 'email', 'personalPhone', 'gender', 'address'],
-    ['fatherName', 'parentLastName', 'fatherId', 'fatherPhone'],
-  ];
-
- const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  
-  const programId = searchParams.get("programId");
-  const eventId   = searchParams.get("eventId");
-  const docId     = programId || eventId || '';
-
- useEffect(() => {
-    setForm(prev => ({ ...prev, docId }));
-  }, [docId]);
 
   const programName = searchParams.get("program");
   const eventName = searchParams.get("event");
