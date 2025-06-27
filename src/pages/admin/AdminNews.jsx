@@ -1,300 +1,319 @@
+// Final version of AdminNews.jsx with previews, delete icons, Arabic labels, and URL input
+
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Typography, Paper, Button, Grid, CircularProgress, IconButton, Stack,
-  TextField, Chip, Checkbox, FormControlLabel
+  Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField, IconButton, Checkbox, FormControlLabel, MenuItem
 } from '@mui/material';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+import { db } from '../../components/firebase';
+import AdminDashboardLayout from '../../components/AdminDashboardLayout';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import AdminDashboardLayout from '../../components/AdminDashboardLayout';
-import { collection, getDocs, deleteDoc, doc, addDoc, Timestamp, updateDoc } from 'firebase/firestore';
-import { db } from '../../components/firebase';
-
+import { uploadImage } from '../../utils/uploadImage';
+import LinkIcon from '@mui/icons-material/Link'; 
 const categories = ['دورة', 'أمسية', 'فعالية', 'برنامج'];
 
 export default function AdminNews() {
   const [newsList, setNewsList] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [addForm, setAddForm] = useState({
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterDate, setFilterDate] = useState('');
+const [urlInput, setUrlInput] = useState('');
+const [mainImageUrlInput, setMainImageUrlInput] = useState('');
+const [picturesUrlInput, setPicturesUrlInput] = useState('');
+  const [form, setForm] = useState({
     date: '',
     title: '',
     category: '',
-    pictures: [],
-    pictureURL: '',
     mainImage: '',
+    pictures: [],
     fullDescription: '',
     featured: false,
-    intro: 'عن الخبر',
   });
-  const [addError, setAddError] = useState('');
-
-  const [editId, setEditId] = useState(null);
-  const [editForm, setEditForm] = useState({
-    date: '',
-    title: '',
-    category: '',
-    pictures: [],
-    pictureURL: '',
-    mainImage: '',
-    fullDescription: '',
-    featured: false,
-    intro: 'عن الخبر',
-  });
-  const [editError, setEditError] = useState('');
-  const [editSaving, setEditSaving] = useState(false);
 
   useEffect(() => {
-    async function fetchNews() {
-      const snapshot = await getDocs(collection(db, 'News'));
-      setNewsList(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      setLoading(false);
-    }
     fetchNews();
   }, []);
 
-  const handleAddPicture = () => {
-    if (addForm.pictureURL.trim()) {
-      setAddForm({
-        ...addForm,
-        pictures: [...addForm.pictures, addForm.pictureURL.trim()],
-        pictureURL: ''
+  const fetchNews = async () => {
+    const snapshot = await getDocs(collection(db, 'News'));
+    const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setNewsList(items);
+  };
+
+  const handleOpenDialog = (news = null) => {
+    if (news) {
+      setEditMode(true);
+      setCurrentId(news.id);
+      setForm({
+        date: news.date || '',
+        title: news.title || '',
+        category: news.category || '',
+        mainImage: news.mainImage || '',
+        pictures: news.Pictures || [],
+        fullDescription: news.full_description || '',
+        featured: news.featured || false,
       });
+    } else {
+      setEditMode(false);
+      setForm({ date: '', title: '', category: '', mainImage: '', pictures: [], fullDescription: '', featured: false });
+    }
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setCurrentId(null);
+  };
+
+  const handleMainImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const url = await uploadImage({
+          file,
+          storagePath: `news/main_${Date.now()}_${file.name}`,
+          firestorePath: null
+        });
+        setForm(prev => ({ ...prev, mainImage: url }));
+      } catch (err) {
+        alert('فشل رفع الصورة');
+      }
     }
   };
 
-  const handleDeletePicture = (idx) => {
-    setAddForm({
-      ...addForm,
-      pictures: addForm.pictures.filter((_, i) => i !== idx)
-    });
+  const handlePicturesUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    const uploaded = [];
+    for (const file of files) {
+      try {
+        const url = await uploadImage({
+          file,
+          storagePath: `news/pic_${Date.now()}_${file.name}`,
+          firestorePath: null
+        });
+        uploaded.push(url);
+      } catch (err) {
+        alert('فشل رفع صورة من الصور');
+      }
+    }
+    setForm(prev => ({ ...prev, pictures: [...prev.pictures, ...uploaded] }));
   };
 
-  const handleAddSubmit = async (e) => {
-    e.preventDefault();
-    setAddError('');
-    setSaving(true);
-
-    if (!addForm.date || !addForm.title || !addForm.category || !addForm.fullDescription || !addForm.pictures) {
-      setAddError('الرجاء تعبئة جميع الحقول الأساسية');
-      setSaving(false);
+  const handleSave = async () => {
+    const { title, date, category, mainImage, pictures, fullDescription, featured } = form;
+    if (!title || !date || !category || !mainImage || !pictures.length || !fullDescription) {
+      alert('يرجى تعبئة جميع الحقول المطلوبة');
       return;
     }
-
-    try {
-      const docRef = await addDoc(collection(db, 'News'), {
-        date: addForm.date,
-        title: addForm.title,
-        category: addForm.category,
-        Pictures: addForm.pictures,
-        mainImage: addForm.mainImage,
-        full_description: addForm.fullDescription,
-        featured: addForm.featured,
-        intro: addForm.intro,
-        createdAt: Timestamp.now(),
-      });
-
-      setNewsList([{
-        id: docRef.id,
-        ...addForm,
-      }, ...newsList]);
-
-      setAddForm({
-        date: '',
-        title: '',
-        category: '',
-        pictures: [],
-        pictureURL: '',
-        mainImage: '',
-        fullDescription: '',
-        featured: false,
-        intro: 'عن الخبر',
-      });
-
-      setShowAddForm(false);
-    } catch (err) {
-      setAddError('حدث خطأ أثناء إضافة الخبر');
-    } finally {
-      setSaving(false);
+    const data = {
+      title, date, category, mainImage, Pictures: pictures, full_description: fullDescription,
+      featured, createdAt: Timestamp.now()
+    };
+    if (editMode) {
+      await updateDoc(doc(db, 'News', currentId), data);
+    } else {
+      await addDoc(collection(db, 'News'), data);
     }
-  };
-  const handleEditClick = (news) => {
-    setEditId(news.id);
-    setEditForm({
-      date: news.date || '',
-      title: news.title || '',
-      category: news.category || '',
-      pictures: news.Pictures || [],
-      pictureURL: '',
-      mainImage: news.mainImage || '',
-      fullDescription: news.full_description || '',
-      featured: news.featured || false,
-      intro: news.intro || 'عن الخبر',
-    });
-    setEditError('');
+    fetchNews();
+    handleCloseDialog();
   };
 
-  const handleEditPictureAdd = () => {
-    if (editForm.pictureURL.trim()) {
-      setEditForm({
-        ...editForm,
-        pictures: [...editForm.pictures, editForm.pictureURL.trim()],
-        pictureURL: ''
-      });
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm('هل انت متاكد انك تريد حذف هذا الخبر؟');
+    if (confirmDelete) {
+      deleteDoc(doc(db, 'News', id)).then(fetchNews);
     }
   };
 
-  const handleEditPictureDelete = (idx) => {
-    setEditForm({
-      ...editForm,
-      pictures: editForm.pictures.filter((_, i) => i !== idx)
-    });
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    setEditError('');
-    setEditSaving(true);
-
-    if (!editForm.date || !editForm.title || !editForm.category || !editForm.fullDescription || !editForm.pictures) {
-      setEditError('الرجاء تعبئة جميع الحقول الأساسية');
-      setEditSaving(false);
-      return;
-    }
-
-    try {
-      const docRef = doc(db, 'News', editId);
-      await updateDoc(docRef, {
-        date: editForm.date,
-        title: editForm.title,
-        category: editForm.category,
-        Pictures: editForm.pictures,
-        mainImage: editForm.mainImage,
-        full_description: editForm.fullDescription,
-        featured: editForm.featured,
-        intro: editForm.intro,
-      });
-
-      setNewsList(newsList.map(n =>
-        n.id === editId
-          ? { ...n, ...editForm }
-          : n
-      ));
-
-      setEditId(null);
-    } catch (err) {
-      setEditError('حدث خطأ أثناء تعديل الخبر');
-    } finally {
-      setEditSaving(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('هل أنت متأكد أنك تريد حذف هذا الخبر؟')) {
-      await deleteDoc(doc(db, 'News', id));
-      setNewsList(newsList.filter((item) => item.id !== id));
-    }
-  };
+  const filteredNews = newsList.filter(n =>
+    (!filterCategory || n.category === filterCategory) &&
+    (!filterDate || n.date === filterDate)
+  );
 
   return (
     <AdminDashboardLayout>
-      <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h4" fontWeight="bold" color="black">إدارة الأخبار</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setShowAddForm(p => !p)}>
-          {showAddForm ? 'إغلاق النموذج' : 'إضافة خبر جديد'}
-        </Button>
-      </Box>
-
-      {showAddForm && (
-        <Box maxWidth={600} mx="auto" mb={5}>
-          <Paper sx={{ p: 4 }}>
-            <Typography variant="h5" fontWeight="bold" mb={2} color="primary">إضافة خبر جديد</Typography>
-            <form onSubmit={handleAddSubmit}>
-              <TextField label="التاريخ" value={addForm.date} onChange={e => setAddForm({ ...addForm, date: e.target.value })} fullWidth required sx={{ mb: 2 }} />
-              <TextField label="العنوان" value={addForm.title} onChange={e => setAddForm({ ...addForm, title: e.target.value })} fullWidth required sx={{ mb: 2 }} />
-              <TextField label="الصورة الرئيسية" value={addForm.mainImage} onChange={e => setAddForm({ ...addForm, mainImage: e.target.value })} fullWidth required sx={{ mb: 2 }} />
-              <FormControlLabel control={<Checkbox checked={addForm.featured} onChange={e => setAddForm({ ...addForm, featured: e.target.checked })} />} label="مميزة (عرض في الصفحة الرئيسية)" sx={{ mb: 2 }} />
-              <TextField label="مقدمة" value={addForm.intro} fullWidth InputProps={{ readOnly: true }} sx={{ mb: 2 }} />
-              <TextField select label="الفئة" value={addForm.category} onChange={e => setAddForm({ ...addForm, category: e.target.value })} fullWidth required SelectProps={{ native: true }} sx={{ mb: 2 }}>
-                <option value="">اختر الفئة</option>
-                {categories.map((cat) => (<option key={cat} value={cat}>{cat}</option>))}
-              </TextField>
-              <Typography fontWeight="bold">رابط صورة (يمكن إضافة أكثر من صورة):</Typography>
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                <TextField label="رابط الصورة" value={addForm.pictureURL} onChange={e => setAddForm({ ...addForm, pictureURL: e.target.value })} fullWidth required sx={{ mt: 1 }} />
-                <IconButton color="primary" onClick={handleAddPicture} sx={{ mt: 1 }}><AddPhotoAlternateIcon /></IconButton>
-              </Stack>
-              <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
-                {addForm.pictures.map((url, idx) => (<Chip key={idx} label={url} onDelete={() => handleDeletePicture(idx)} sx={{ mb: 1, maxWidth: 180 }} />))}
-              </Stack>
-              <TextField label="نص الخبر الكامل" value={addForm.fullDescription} onChange={e => setAddForm({ ...addForm, fullDescription: e.target.value })} fullWidth required multiline rows={5} sx={{ mb: 2 }} />
-              {addError && <Typography color="error" sx={{ mb: 2 }}>{addError}</Typography>}
-              <Button type="submit" variant="contained" color="primary" fullWidth disabled={saving}>{saving ? 'جاري الحفظ...' : 'حفظ الخبر'}</Button>
-            </form>
-          </Paper>
+      <Box sx={{ my: 4, px: 2 }}>
+        <Typography variant="h4" gutterBottom>إدارة الأخبار</Typography>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+          <TextField label="تاريخ" type="date" InputLabelProps={{ shrink: true }} value={filterDate} onChange={e => setFilterDate(e.target.value)} />
+          <TextField label="الفئة" select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} sx={{ minWidth: 160 }}>
+            <MenuItem value="">الكل</MenuItem>
+            {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
+          </TextField>
+          <Button variant="contained" onClick={() => handleOpenDialog()}>إضافة خبر جديد</Button>
         </Box>
-      )}
 
-      {loading ? (
-        <Box textAlign="center" mt={8}><CircularProgress /></Box>
-      ) : (
-        <Grid container spacing={3}>
-          {newsList.map((news) => (
-            <Grid item xs={12} md={6} lg={4} key={news.id}>
-              {editId === news.id ? (
-                <Paper sx={{ p: 3, minHeight: 220 }}>
-                  <Typography variant="h6" fontWeight="bold" mb={2}>تعديل الخبر</Typography>
-                  <form onSubmit={handleEditSubmit}>
-                    <TextField label="التاريخ" value={editForm.date} onChange={e => setEditForm({ ...editForm, date: e.target.value })} fullWidth required sx={{ mb: 2 }} />
-                    <TextField label="العنوان" value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })} fullWidth required sx={{ mb: 2 }} />
-                    <TextField label="الصورة الرئيسية" value={editForm.mainImage} onChange={e => setEditForm({ ...editForm, mainImage: e.target.value })} fullWidth required sx={{ mb: 2 }} />
-                    <FormControlLabel control={<Checkbox checked={editForm.featured} onChange={e => setEditForm({ ...editForm, featured: e.target.checked })} />} label="مميزة (عرض في الصفحة الرئيسية)" sx={{ mb: 2 }} />
-                    <TextField label="مقدمة" value={editForm.intro} fullWidth InputProps={{ readOnly: true }} sx={{ mb: 2 }} />
-                    <TextField select label="الفئة" value={editForm.category} onChange={e => setEditForm({ ...editForm, category: e.target.value })} fullWidth required SelectProps={{ native: true }} sx={{ mb: 2 }}>
-                      <option value="">اختر الفئة</option>
-                      {categories.map((cat) => (<option key={cat} value={cat}>{cat}</option>))}
-                    </TextField>
-                    <Typography fontWeight="bold">رابط صورة (يمكن تعديل الصور):</Typography>
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                      <TextField label="رابط الصورة" value={editForm.pictureURL} onChange={e => setEditForm({ ...editForm, pictureURL: e.target.value })} fullWidth sx={{ mt: 1 }} />
-                      <IconButton color="primary" onClick={handleEditPictureAdd} sx={{ mt: 1 }}><AddPhotoAlternateIcon /></IconButton>
-                    </Stack>
-                    <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
-                      {editForm.pictures.map((url, idx) => (<Chip key={idx} label={url} onDelete={() => handleEditPictureDelete(idx)} sx={{ mb: 1, maxWidth: 180 }} />))}
-                    </Stack>
-                    <TextField label="نص الخبر الكامل" value={editForm.fullDescription} onChange={e => setEditForm({ ...editForm, fullDescription: e.target.value })} fullWidth required multiline rows={5} sx={{ mb: 2 }} />
-                    {editError && <Typography color="error" sx={{ mb: 2 }}>{editError}</Typography>}
-                    <Stack direction="row" spacing={1}>
-                      <Button type="submit" variant="contained" color="primary" disabled={editSaving}>{editSaving ? 'جارٍ الحفظ...' : 'حفظ التعديلات'}</Button>
-                      <Button variant="outlined" color="secondary" onClick={() => setEditId(null)}>إلغاء</Button>
-                    </Stack>
-                  </form>
-                </Paper>
-              ) : (
-                <Paper sx={{ p: 3, minHeight: 220, position: 'relative' }}>
-                  <Typography fontSize="15px" color="text.secondary" sx={{ fontStyle: 'italic', mb: 1 }}>{news.date}</Typography>
-                  <Typography variant="h6" fontWeight="bold">{news.title}</Typography>
-                  {news.featured && (
-                    <Typography fontSize="13px" color="primary" fontWeight="bold" sx={{ mb: 1 }}>
-                      ✓ مميزة
-                    </Typography>
-                  )}
-                  {news.Pictures && news.Pictures[0] && (
-                    <img src={news.Pictures[0]} alt={news.title} style={{ width: '100%', height: 110, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }} />
-                  )}
-                  <Stack direction="row" spacing={1} sx={{ position: 'absolute', bottom: 12, right: 16 }}>
-                    <IconButton color="primary" onClick={() => handleEditClick(news)}><EditIcon /></IconButton>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>التاريخ</TableCell>
+                <TableCell>العنوان</TableCell>
+                <TableCell>الفئة</TableCell>
+                <TableCell>مميزة؟</TableCell>
+                <TableCell>تعديل</TableCell>
+                <TableCell>حذف</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredNews.map(news => (
+                <TableRow key={news.id}>
+                  <TableCell>{news.date}</TableCell>
+                  <TableCell>{news.title}</TableCell>
+                  <TableCell>{news.category}</TableCell>
+                  <TableCell>{news.featured ? '✔' : ''}</TableCell>
+                  <TableCell>
+                    <IconButton color="primary" onClick={() => handleOpenDialog(news)}><EditIcon /></IconButton>
+                  </TableCell>
+                  <TableCell>
                     <IconButton color="error" onClick={() => handleDelete(news.id)}><DeleteIcon /></IconButton>
-                  </Stack>
-                </Paper>
-              )}
-            </Grid>
-          ))}
-        </Grid>
-      )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+          <DialogTitle>{editMode ? 'تعديل الخبر' : 'إضافة خبر جديد'}</DialogTitle>
+          <DialogContent>
+            <TextField label="التاريخ" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} fullWidth required sx={{ my: 1 }} InputLabelProps={{ shrink: true }} />
+            <TextField label="العنوان" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} fullWidth required sx={{ my: 1 }} />
+            <TextField select label="الفئة" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} fullWidth required sx={{ my: 1 }}>
+              {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
+            </TextField>
+
+        <Typography sx={{ mt: 2, fontWeight: 'bold' }}>الصورة الرئيسية:</Typography>
+
+{/* File Upload Button */}
+<Button component="label" variant="outlined" sx={{ my: 1 }}>
+  اختر الصورة من الجهاز
+  <input hidden accept="image/*" type="file" onChange={handleMainImageUpload} />
+</Button>
+
+{/* OR URL input with label and button */}
+<Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1 }}>
+  <TextField
+  size="small"
+  label="أو أدخل رابط الصورة"
+  value={mainImageUrlInput}
+  onChange={(e) => setMainImageUrlInput(e.target.value)}
+  fullWidth
+/>
+<Button
+  variant="outlined"
+  startIcon={<LinkIcon />}
+  onClick={() => {
+    const url = mainImageUrlInput.trim();
+    if (!url) return;
+
+    const testImage = new Image();
+    testImage.onload = () => {
+      setForm(prev => ({
+        ...prev,
+        mainImage: url
+      }));
+      setMainImageUrlInput('');
+    };
+    testImage.onerror = () => {
+      alert('الرابط لا يشير إلى صورة صالحة. يرجى التحقق من الرابط.');
+    };
+    testImage.src = url;
+  }}
+>
+  إضافة
+</Button>
+
+</Box>
+
+            {form.mainImage && (
+              <Box sx={{ mt: 1, position: 'relative', width: 100 }}>
+                <img src={form.mainImage} alt="main" style={{ width: '100%', borderRadius: 4 }} />
+                <IconButton
+                  size="small"
+                  sx={{ position: 'absolute', top: -8, right: -8, bgcolor: 'white' }}
+                  onClick={() => setForm(prev => ({ ...prev, mainImage: '' }))}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            )}
+
+            <Typography sx={{ mt: 2, fontWeight: 'bold' }}>صور إضافية:</Typography>
+            <Button component="label" variant="outlined" sx={{ my: 1 }}>
+              اختر صور إضافية
+              <input hidden accept="image/*" type="file" multiple onChange={handlePicturesUpload} />
+            </Button>
+
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', my: 1 }}>
+              {form.pictures.map((url, idx) => (
+                <Box key={idx} sx={{ position: 'relative' }}>
+                  <img src={url} alt={`preview-${idx}`} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 4 }} />
+                  <IconButton
+                    size="small"
+                    sx={{ position: 'absolute', top: -8, right: -8, bgcolor: 'white' }}
+                    onClick={() => {
+                      const updated = form.pictures.filter((_, i) => i !== idx);
+                      setForm(prev => ({ ...prev, pictures: updated }));
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>
+
+         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1 }}>
+  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1 }}>
+  <TextField
+    size="small"
+    placeholder="أدخل رابط صورة إضافية"
+    value={picturesUrlInput}
+    onChange={(e) => setPicturesUrlInput(e.target.value)}
+    sx={{ flexGrow: 1 }}
+  />
+  <Button
+    variant="outlined"
+    startIcon={<LinkIcon />}
+    onClick={() => {
+      const url = picturesUrlInput.trim();
+      if (!url) return;
+
+      const testImage = new Image();
+      testImage.onload = () => {
+        setForm(prev => ({
+          ...prev,
+          pictures: [...prev.pictures, url]
+        }));
+        setPicturesUrlInput('');
+      };
+      testImage.onerror = () => {
+        alert('الرابط لا يشير إلى صورة صالحة. يرجى التحقق من الرابط.');
+      };
+      testImage.src = url;
+    }}
+  >
+    إضافة
+  </Button>
+</Box>
+
+</Box>
+
+
+            <TextField label="نص الخبر الكامل" value={form.fullDescription} onChange={e => setForm({ ...form, fullDescription: e.target.value })} fullWidth required multiline rows={4} sx={{ my: 2 }} />
+            <FormControlLabel control={<Checkbox checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} />} label="مميزة (عرض في الصفحة الرئيسية)" />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>إلغاء</Button>
+            <Button onClick={handleSave} variant="contained">{editMode ? 'تعديل' : 'إضافة'}</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
     </AdminDashboardLayout>
   );
 }
