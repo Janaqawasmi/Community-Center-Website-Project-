@@ -6,13 +6,9 @@ import {
   getDocs
 } from "firebase/firestore";
 
-// ✅ Send message with message number (id)
+
 export const sendMessage = async ({ first_name, phone, message, last_name, email, department }) => {
   try {
-    const snapshot = await getDocs(collection(db, "contactMessages"));
-    const count = snapshot.size;
-    const nextId = count + 1;
-
     await addDoc(collection(db, "contactMessages"), {
       first_name,
       last_name,
@@ -26,7 +22,7 @@ export const sendMessage = async ({ first_name, phone, message, last_name, email
       timestamp: serverTimestamp()
     });
 
-    return { success: true, id: nextId };
+    return { success: true};
   } catch (error) {
     console.error("خطأ أثناء إرسال الرسالة:", error);
     throw error;
