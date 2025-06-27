@@ -97,29 +97,31 @@ const handleNavClick = (path) => {
   }, []);
  
 useEffect(() => {
-  window.interdeal = {
-    sitekey: "275cc400069738bc738aaa49ba44ec3c",
-    Position: "right",
-    domains: {
-      js: "https://cdn.equalweb.com/",
-      acc: "https://access.equalweb.com/"
-    },
-    Menulang: "AR",
-    draggable: false,
-    btnStyle: {
-      vPosition: ["68%", "80%"],
-      scale: ["0.5", "0.5"],
-      color: {
-        main: "#1c4bb6",
-        second: "#ffffff"
+  if (!window.interdeal) {
+    window.interdeal = {
+      sitekey: "275cc400069738bc738aaa49ba44ec3c",
+      Position: "right",
+      domains: {
+        js: "https://cdn.equalweb.com/",
+        acc: "https://access.equalweb.com/"
       },
-      icon: {
-        outline: false,
-        type: 10,
-        shape: "semicircle"
+      Menulang: "AR",
+      draggable: false,
+      btnStyle: {
+        vPosition: ["68%", "80%"],
+        scale: ["0.5", "0.5"],
+        color: {
+          main: "#1c4bb6",
+          second: "#ffffff"
+        },
+        icon: {
+          outline: false,
+          type: 10,
+          shape: "semicircle"
+        }
       }
-    }
-  };
+    };
+  }
 
   const script = document.createElement("script");
   script.src = window.interdeal.domains.js + "core/5.1.13/accessibility.js";
@@ -140,6 +142,7 @@ useEffect(() => {
     }
   };
 }, []);
+
 
 
 
