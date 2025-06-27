@@ -32,6 +32,7 @@ import { db } from "../../components/firebase";
 import { useNavigate } from "react-router-dom";
 import ConfirmDeleteDialog from "../../components/ConfirmDeleteDialog";
 import AdminDashboardLayout from "../../components/AdminDashboardLayout";
+import { withProgress } from '../../utils/withProgress';
 
 
 export default function AdminAbout() {
