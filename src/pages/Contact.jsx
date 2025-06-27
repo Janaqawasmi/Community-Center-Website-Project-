@@ -107,7 +107,9 @@ useEffect(() => {
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
     email: Yup.string().email("صيغة البريد الإلكتروني غير صحيحة").required("البريد الإلكتروني مطلوب"),
-    phone: Yup.string().required("رقم الهاتف مطلوب"),
+    phone: Yup.string()
+    .matches(/^05\d{8}$/, "رقم الهاتف غير صحيح")
+    .required("رقم الهاتف مطلوب"),
     message: Yup.string().required("محتوى الرسالة مطلوب"),
     department: Yup.string().required("القسم مطلوب")
   });
@@ -406,9 +408,7 @@ useEffect(() => {
                           setCaptchaVerified(false);
                           console.error('reCAPTCHA error:', error);
                         }}
-                        onLoadCallback={() => {
-                          console.log('reCAPTCHA loaded successfully');
-                        }}
+                     
                         theme="light"
                         hl="ar"
                       />
