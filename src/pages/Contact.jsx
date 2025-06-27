@@ -110,7 +110,9 @@ useEffect(() => {
     first_name: Yup.string().required("الاسم مطلوب"),
     last_name: Yup.string().required("اسم العائلة مطلوب"),
     email: Yup.string().email("صيغة البريد الإلكتروني غير صحيحة").required("البريد الإلكتروني مطلوب"),
-    phone: Yup.string().required("رقم الهاتف مطلوب"),
+    phone: Yup.string()
+    .matches(/^05\d{8}$/, "رقم الهاتف غير صحيح")
+    .required("رقم الهاتف مطلوب"),
     message: Yup.string().required("محتوى الرسالة مطلوب"),
     department: Yup.string().required("القسم مطلوب")
   });
@@ -414,6 +416,7 @@ useEffect(() => {
       </MenuItem>
     ))}
   </Select>
+
 
   {touched.department && errors.department && (
     <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
