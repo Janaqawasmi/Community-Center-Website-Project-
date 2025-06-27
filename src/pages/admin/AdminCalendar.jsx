@@ -10,6 +10,182 @@ import {
 } from "firebase/firestore";
 import RequireAdmin from '../../components/auth/RequireAdmin';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
+import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog';
+
+// =======================
+// Helper Functions
+// =======================
+
+const CALENDAR_CONSTANTS = {
+  MONTH_NAMES: [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+  ],
+  DAY_NAMES: [
+    'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 
+    'الخميس', 'الجمعة', 'السبت'
+  ],
+  MESSAGES: {
+    SUCCESS: {
+      EVENT_ADDED: "✅ تم إضافة الفعالية",
+      EVENT_UPDATED: "✅ تم التحديث بنجاح",
+      EVENT_DELETED: "🗑️ تم حذف الفعالية"
+    },
+    ERROR: {
+      PAST_DATE: "❌ لا يمكن إضافة فعالية في يوم ماضٍ",
+      SAVE_ERROR: "❌ حدث خطأ بالحفظ",
+      DELETE_ERROR: "❌ حدث خطأ بالحذف"
+    }
+  },
+  MAX_VISIBLE_EVENTS: 1
+};
+
+// دالة معالجة بيانات Firestore
+const processFirestoreEvent = (doc, type) => {
+  const data = doc.data();
+  
+  if (type === "calendar") {
+    return {
+      id: doc.id,
+      type: type,
+      title: data.title,
+      start: data.time?.toDate?.() || new Date(data.time),
+      description: data.description || "",
+      location: data.location || ""
+    };
+  } else if (type === "center") {
+    let eventDate = new Date();
+    
+    try {
+      if (typeof data.date === 'string' && data.date.includes('-')) {
+        if (data.time && typeof data.time === 'string') {
+          const dateTimeString = `${data.date}T${data.time}:00`;
+          eventDate = new Date(dateTimeString);
+        } else {
+          eventDate = new Date(data.date + 'T09:00:00');
+        }
+      } else if (data.date && typeof data.date === 'object' && data.date.toDate) {
+        eventDate = data.date.toDate();
+        if (data.time && typeof data.time === 'string') {
+          const [hours, minutes] = data.time.split(':');
+          eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        }
+      } else if (data.date) {
+        eventDate = new Date(data.date);
+      }
+      
+      if (isNaN(eventDate.getTime())) {
+        eventDate = new Date();
+      }
+    } catch (error) {
+      eventDate = new Date();
+    }
+
+    return {
+      id: doc.id,
+      type: type,
+      title: data.name || "فعالية المركز",
+      start: eventDate,
+      description: data.description || "",
+      location: data.location || "",
+      capacity: data.capacity || "",
+      price: data.price || 0,
+      imageUrl: data.imageUrl || "",
+      isActive: data.isActive !== false
+    };
+  }
+  
+  return { id: doc.id, type: type };
+};
+
+// دالة الحصول على أيام الشهر
+const getDaysInMonth = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startingDay = firstDay.getDay();
+  
+  const days = [];
+  
+  for (let i = 0; i < startingDay; i++) {
+    days.push(null);
+  }
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    days.push(day);
+  }
+  
+  return days;
+};
+
+// دالة التحقق من اليوم الحالي
+const isToday = (day, currentDate) => {
+  if (!day) return false;
+  const today = new Date();
+  return (
+    day === today.getDate() &&
+    currentDate.getMonth() === today.getMonth() &&
+    currentDate.getFullYear() === today.getFullYear()
+  );
+};
+
+// دالة الحصول على فعاليات اليوم
+const getEventsForDay = (day, currentDate, allEvents) => {
+  if (!day) return [];
+  
+  return allEvents.filter(event => {
+    const eventDate = new Date(event.start);
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    return (
+      eventDate.getDate() === day &&
+      eventDate.getMonth() === currentMonth &&
+      eventDate.getFullYear() === currentYear
+    );
+  });
+};
+
+// دالة التحقق من إمكانية إضافة فعالية
+const canAddEventOnDate = (selectedDate) => {
+  const now = new Date();
+  selectedDate.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  return selectedDate >= now;
+};
+
+// مكون TextField للعربية
+const RTLTextField = (props) => {
+  return (
+    <TextField 
+      {...props}
+      sx={{ 
+        '& .MuiInputBase-input': {
+          textAlign: 'right',
+          direction: 'rtl'
+        },
+        '& .MuiInputLabel-root': {
+          right: 24,
+          left: 'auto',
+          transformOrigin: 'top right',
+          top: '-8px',
+          fontSize: '0.85rem'
+        },
+        '& .MuiInputLabel-shrink': {
+          top: '-8px',
+          fontSize: '0.85rem'
+        },
+        ...props.sx
+      }}
+    />
+  );
+};
+
+// =======================
+// Main Component
+// =======================
 
 export default function AdminCalendar() {
   const [events, setEvents] = useState([]);
@@ -24,125 +200,38 @@ export default function AdminCalendar() {
     title: "", time: "", description: "", location: ""
   });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false });
 
-  // جلب فعاليات التقويم (EventsCalender) - قابلة للتعديل
+  // دالة إظهار الرسائل
+  const showMessage = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  // جلب فعاليات التقويم
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "EventsCalender"), (snapshot) => {
-      const formatted = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.title,
-          start: data.time?.toDate?.() || new Date(data.time),
-          description: data.description || "",
-          location: data.location || "",
-          type: "calendar"
-        };
-      });
+      const formatted = snapshot.docs.map((doc) => 
+        processFirestoreEvent(doc, "calendar")
+      );
       setEvents(formatted);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // جلب فعاليات المركز (Events) - للعرض فقط
+  // جلب فعاليات المركز
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "Events"), (snapshot) => {
-      console.log("=== تحليل فعاليات المركز ===");
+      const formatted = snapshot.docs.map((doc) => 
+        processFirestoreEvent(doc, "center")
+      );
       
-      const formatted = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        console.log(`الفعالية: ${data.name}`);
-        console.log(`التاريخ الخام:`, data.date);
-        console.log(`الوقت الخام:`, data.time);
-        
-        let eventDate = new Date(); // قيمة افتراضية
-        
-        try {
-          // إذا كان التاريخ string مثل "2025-06-11"
-          if (typeof data.date === 'string' && data.date.includes('-')) {
-            if (data.time && typeof data.time === 'string') {
-              // دمج التاريخ والوقت: "2025-06-11" + "01:00" = "2025-06-11T01:00:00"
-              const dateTimeString = `${data.date}T${data.time}:00`;
-              eventDate = new Date(dateTimeString);
-              console.log(`تم دمج التاريخ والوقت: ${dateTimeString} -> ${eventDate}`);
-            } else {
-              // تاريخ فقط بدون وقت
-              eventDate = new Date(data.date + 'T09:00:00');
-              console.log(`تاريخ فقط: ${data.date} -> ${eventDate}`);
-            }
-          }
-          // إذا كان التاريخ Firestore Timestamp
-          else if (data.date && typeof data.date === 'object' && data.date.toDate) {
-            eventDate = data.date.toDate();
-            if (data.time && typeof data.time === 'string') {
-              const [hours, minutes] = data.time.split(':');
-              eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            }
-            console.log(`Firestore Timestamp: ${eventDate}`);
-          }
-          // إذا كان التاريخ بصيغة أخرى
-          else if (data.date) {
-            eventDate = new Date(data.date);
-            console.log(`صيغة أخرى: ${data.date} -> ${eventDate}`);
-          }
-          
-          // التحقق من صحة التاريخ
-          if (isNaN(eventDate.getTime())) {
-            console.error(`تاريخ غير صحيح للفعالية: ${data.name}`);
-            eventDate = new Date(); // استخدام التاريخ الحالي كبديل
-          }
-          
-          console.log(`النتيجة النهائية: اليوم ${eventDate.getDate()}, الشهر ${eventDate.getMonth() + 1}, السنة ${eventDate.getFullYear()}`);
-          console.log("---");
-          
-        } catch (error) {
-          console.error("خطأ في معالجة التاريخ:", error);
-          eventDate = new Date();
-        }
-
-        return {
-          id: doc.id,
-          title: data.name || "فعالية المركز",
-          start: eventDate,
-          description: data.description || "",
-          location: data.location || "",
-          capacity: data.capacity || "",
-          price: data.price || 0,
-          imageUrl: data.imageUrl || "",
-          isActive: data.isActive !== false,
-          type: "center"
-        };
-      });
-      
-      const activeEvents = formatted.filter(event => event.isActive);
-      console.log("الفعاليات النشطة النهائية:", activeEvents);
+      const activeEvents = formatted.filter(event => event.isActive !== false);
       setCenterEvents(activeEvents);
     });
 
     return () => unsubscribe();
   }, []);
-
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay();
-    
-    const days = [];
-    
-    for (let i = 0; i < startingDay; i++) {
-      days.push(null);
-    }
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push(day);
-    }
-    
-    return days;
-  };
 
   const navigateMonth = (direction) => {
     const newDate = new Date(currentDate);
@@ -150,51 +239,21 @@ export default function AdminCalendar() {
     setCurrentDate(newDate);
   };
 
-  const getEventsForDay = (day) => {
-    if (!day) return [];
-    
-    const allEvents = [...events, ...centerEvents];
-    
-    return allEvents.filter(event => {
-      const eventDate = new Date(event.start);
-      const eventDay = eventDate.getDate();
-      const eventMonth = eventDate.getMonth();
-      const eventYear = eventDate.getFullYear();
-      
-      const currentMonth = currentDate.getMonth();
-      const currentYear = currentDate.getFullYear();
-      
-      return (
-        eventDay === day &&
-        eventMonth === currentMonth &&
-        eventYear === currentYear
-      );
-    });
-  };
-
-  const isToday = (day) => {
-    if (!day) return false;
-    const today = new Date();
-    return (
-      day === today.getDate() &&
-      currentDate.getMonth() === today.getMonth() &&
-      currentDate.getFullYear() === today.getFullYear()
-    );
-  };
-
   const handleDayClick = (day, dayEvents = []) => {
     if (!day) return;
     
-    // للأدمن: السماح بإضافة فعاليات دون حد أقصى
-    // فقط إذا ضغط على المنطقة الفارغة من الخلية (وليس على فعالية)
-    
-    const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    const now = new Date();
-    selectedDate.setHours(0, 0, 0, 0);
-    now.setHours(0, 0, 0, 0);
+    // إذا كانت هناك فعاليات في اليوم، اعرضها
+    if (dayEvents.length > 0) {
+      setSelectedDayEvents(dayEvents);
+      setShowDayEvents(true);
+      return;
+    }
 
-    if (selectedDate < now) {
-      setSnackbar({ open: true, message: "❌ لا يمكن إضافة فعالية في يوم ماضٍ", severity: "error" });
+    // إذا لم تكن هناك فعاليات، اعرض نموذج إضافة فعالية جديدة
+    const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+
+    if (!canAddEventOnDate(selectedDate)) {
+      showMessage(CALENDAR_CONSTANTS.MESSAGES.ERROR.PAST_DATE, "error");
       return;
     }
 
@@ -207,7 +266,9 @@ export default function AdminCalendar() {
     setDialogOpen(true);
   };
 
-  const handleEventClick = (event) => {
+  const handleEventClick = (event, e) => {
+    e.stopPropagation();
+    
     if (event.type === "center") {
       setSelectedEvent({
         id: event.id,
@@ -224,9 +285,7 @@ export default function AdminCalendar() {
       return;
     }
 
-    const rawTime = event.start;
-    const formattedTime = new Date(rawTime).toISOString().slice(0, 16);
-
+    const formattedTime = new Date(event.start).toISOString().slice(0, 16);
     setFormData({
       title: event.title,
       time: formattedTime,
@@ -251,15 +310,15 @@ export default function AdminCalendar() {
 
       if (selectedEvent && selectedEvent.type === "calendar") {
         await updateDoc(doc(db, "EventsCalender", selectedEvent.id), data);
-        setSnackbar({ open: true, message: "✅ تم التحديث بنجاح", severity: "success" });
+        showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_UPDATED);
       } else {
         await addDoc(collection(db, "EventsCalender"), data);
-        setSnackbar({ open: true, message: "✅ تم إضافة الفعالية", severity: "success" });
+        showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_ADDED);
       }
 
       setDialogOpen(false);
     } catch (error) {
-      setSnackbar({ open: true, message: "❌ حدث خطأ بالحفظ", severity: "error" });
+      showMessage(CALENDAR_CONSTANTS.MESSAGES.ERROR.SAVE_ERROR, "error");
     }
   };
 
@@ -267,41 +326,40 @@ export default function AdminCalendar() {
     try {
       if (selectedEvent && selectedEvent.type === "calendar") {
         await deleteDoc(doc(db, "EventsCalender", selectedEvent.id));
-        setSnackbar({ open: true, message: "🗑️ تم حذف الفعالية", severity: "success" });
+        showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_DELETED);
         setDialogOpen(false);
       }
     } catch (error) {
-      setSnackbar({ open: true, message: "❌ حدث خطأ بالحذف", severity: "error" });
+      showMessage(CALENDAR_CONSTANTS.MESSAGES.ERROR.DELETE_ERROR, "error");
     }
   };
 
-  const monthNames = [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-  ];
-
-  const dayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  // دمج الفعاليات
+  const allEvents = [...events, ...centerEvents];
+  const days = getDaysInMonth(currentDate);
+  const monthName = CALENDAR_CONSTANTS.MONTH_NAMES[currentDate.getMonth()];
+  const year = currentDate.getFullYear();
 
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
-        <style jsx>{`
+        <style >{`
           .calendar-container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 1.5rem;
+            padding: 0.5rem;
           }
           
           .calendar-header {
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: -20px;
           }
           
           .calendar-wrapper {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 0.8rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             direction: rtl;
             overflow: hidden;
           }
@@ -310,15 +368,15 @@ export default function AdminCalendar() {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
           }
           
           .month-title {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: bold;
             background: linear-gradient(45deg, #ea580c, #f97316);
             background-clip: text;
@@ -332,23 +390,23 @@ export default function AdminCalendar() {
             background: linear-gradient(45deg, #ea580c, #f97316);
             border: none;
             color: white;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: bold;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.3s ease;
           }
           
           .nav-button:hover {
             background: linear-gradient(45deg, #f97316, #ea580c);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
           }
           
           .calendar-grid {
             background: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
           }
           
@@ -360,11 +418,11 @@ export default function AdminCalendar() {
           }
           
           .day-header {
-            padding: 1rem 0;
+            padding: 0.5rem 0;
             text-align: center;
             color: #374151;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 0.8rem;
             border-left: 1px solid rgba(0,0,0,0.1);
             background: rgba(255, 255, 255, 0.98);
           }
@@ -380,8 +438,8 @@ export default function AdminCalendar() {
           }
           
           .day-cell {
-            min-height: 100px;
-            padding: 0.5rem;
+            min-height: 60px;
+            padding: 0.3rem;
             border-left: 1px solid rgba(0,0,0,0.1);
             border-bottom: 1px solid rgba(0,0,0,0.1);
             background: rgba(255, 255, 255, 0.8);
@@ -397,7 +455,7 @@ export default function AdminCalendar() {
           .day-cell:hover {
             background: rgba(255, 255, 255, 0.95);
             transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(234, 88, 12, 0.15);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
             z-index: 1;
           }
           
@@ -407,70 +465,54 @@ export default function AdminCalendar() {
           
           .day-number {
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: #374151;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
           }
           
           .day-number.today {
             background: linear-gradient(45deg, #ea580c, #f97316);
             color: white;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 20px;
+            height: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.4);
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
           }
           
           .event-item {
             background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
             border: 1px solid #fdba74;
-            border-right: 4px solid #ea580c;
+            border-right: 2px solid #ea580c;
             color: #9a3412;
-            padding: 0.5rem;
-            margin-bottom: 0.25rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
+            padding: 0.25rem;
+            margin-bottom: 0.15rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
+            box-shadow: 0 1px 4px rgba(234, 88, 12, 0.1);
             overflow: hidden;
             text-align: right;
-            position: relative;
           }
           
           .event-item:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.2);
             border-color: #ea580c;
             background: linear-gradient(135deg, #fff7ed 0%, #fb923c 100%);
             color: white;
           }
           
-          .event-item.admin-event {
-            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-            border: 1px solid #fdba74;
-            border-right: 4px solid #ea580c;
-            color: #9a3412;
-          }
-          
-          .event-item.admin-event:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
-            border-color: #ea580c;
-            background: linear-gradient(135deg, #fff7ed 0%, #fb923c 100%);
-            color: white;
-          }
-
           .event-item.center-event {
             background: linear-gradient(135deg, #f0f9ff 0%, #bae6fd 100%);
             border: 1px solid #7dd3fc;
-            border-right: 4px solid #0369a1;
+            border-right: 2px solid #0369a1;
             color: #0c4a6e;
           }
           
@@ -480,45 +522,32 @@ export default function AdminCalendar() {
             color: white;
           }
           
-          .admin-badge {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            background: #ea580c;
-            color: white;
-            border-radius: 50%;
-            width: 12px;
-            height: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            font-weight: bold;
-          }
-
-          .center-badge {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            background: #0369a1;
-            color: white;
-            border-radius: 50%;
-            width: 12px;
-            height: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            font-weight: bold;
-          }
-          
           .event-title {
             color: #1f2937;
-            line-height: 1.3;
+            line-height: 1.2;
             display: block;
-            padding-right: 16px;
           }
           
+          .more-events {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 0.2rem;
+            margin-top: 0.15rem;
+            border-radius: 4px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 4px rgba(245, 158, 11, 0.2);
+          }
+          
+          .more-events:hover {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+          }
+
           .add-event-hint {
             position: absolute;
             bottom: 4px;
@@ -541,26 +570,6 @@ export default function AdminCalendar() {
             opacity: 1;
           }
           
-          .more-events {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 0.3rem;
-            margin-top: 0.25rem;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
-          }
-          
-          .more-events:hover {
-            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35);
-          }
-
           .modal-overlay {
             position: fixed;
             top: 0;
@@ -661,18 +670,6 @@ export default function AdminCalendar() {
             box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
           }
           
-          .day-event-item.center-event {
-            background: #fff7ed;
-            border-right-color: #ea580c;
-            border-left-color: #fdba74;
-            border-top-color: #fdba74;
-            border-bottom-color: #fdba74;
-          }
-          
-          .day-event-item.center-event:hover {
-            background: #fef3e2;
-          }
-          
           .event-time {
             background: linear-gradient(45deg, #ea580c, #f97316);
             color: white;
@@ -683,9 +680,67 @@ export default function AdminCalendar() {
             min-width: 60px;
             text-align: center;
           }
-          
+
+          /* أنماط فعاليات المركز في قائمة اليوم - أزرق */
+          .day-event-item.center-event {
+            background: #f0f9ff;
+            border-right-color: #0369a1;
+            border-left-color: #7dd3fc;
+            border-top-color: #7dd3fc;
+            border-bottom-color: #7dd3fc;
+          }
+
+          .day-event-item.center-event:hover {
+            background: #e0f2fe;
+          }
+
+          .day-event-item.center-event .event-title-day {
+            color: #0c4a6e;
+          }
+
+          .day-event-item.center-event .event-desc {
+            color: #0369a1;
+          }
+
           .day-event-item.center-event .event-time {
-            background: linear-gradient(45deg, #ea580c, #d97706);
+            background: linear-gradient(45deg, #0369a1, #0284c7);
+          }
+
+          .day-event-item.center-event .event-type-badge {
+            background: #f0f9ff;
+            border-color: #7dd3fc;
+            color: #0369a1;
+          }
+
+          /* أنماط الفعاليات الإدارية - برتقالي */
+          .day-event-item.admin-event {
+            background: #fff7ed;
+            border-right-color: #ea580c;
+            border-left-color: #fdba74;
+            border-top-color: #fdba74;
+            border-bottom-color: #fdba74;
+          }
+
+          .day-event-item.admin-event:hover {
+            background: #fef3e2;
+          }
+
+          .day-event-item.admin-event .event-title-day {
+            color: #9a3412;
+          }
+
+          .day-event-item.admin-event .event-desc {
+            color: #ea580c;
+          }
+
+          .day-event-item.admin-event .event-time {
+            background: linear-gradient(45deg, #ea580c, #f97316);
+          }
+
+          .day-event-item.admin-event .event-type-badge {
+            background: #fff7ed;
+            border-color: #fdba74;
+            color: #ea580c;
           }
           
           .event-content {
@@ -714,11 +769,6 @@ export default function AdminCalendar() {
             font-size: 0.8rem;
             color: #ea580c;
           }
-          
-          .event-type-badge.center {
-            background: #fff7ed;
-            border-color: #fdba74;
-          }
 
           .event-details {
             display: flex;
@@ -726,6 +776,7 @@ export default function AdminCalendar() {
             gap: 0.7rem;
           }
           
+          /* الأنماط الافتراضية (للفعاليات الإدارية - برتقالي) */
           .event-detail-item {
             padding: 0.7rem;
             background: #fff7ed;
@@ -755,15 +806,165 @@ export default function AdminCalendar() {
             font-weight: 500;
             word-wrap: break-word;
           }
+
+          /* الأنماط لفعاليات المركز - أزرق */
+          .event-details.center-event .event-detail-item {
+            background: #f0f9ff;
+            border-right-color: #0369a1;
+            border-left-color: #7dd3fc;
+            border-top-color: #7dd3fc;
+            border-bottom-color: #7dd3fc;
+          }
+
+          .event-details.center-event .event-detail-label {
+            color: #0369a1;
+          }
+
+          .event-details.center-event .event-detail-value {
+            color: #0c4a6e;
+          }
+
+          /* Media Queries للهواتف والتابلت */
+          @media (max-width: 768px) {
+            .calendar-container {
+              padding: 0.3rem;
+            }
+            
+            .calendar-wrapper {
+              padding: 0.5rem;
+              border-radius: 8px;
+            }
+            
+            .calendar-navigation {
+              padding: 0.4rem 0.6rem;
+              margin-bottom: 0.3rem;
+            }
+            
+            .month-title {
+              font-size: 1rem;
+            }
+            
+            .nav-button {
+              padding: 0.3rem 0.6rem;
+              font-size: 0.7rem;
+            }
+            
+            .day-header {
+              padding: 0.4rem 0;
+              font-size: 0.7rem;
+            }
+            
+            .day-cell {
+              min-height: 50px;
+              padding: 0.2rem;
+            }
+            
+            .day-number {
+              font-size: 0.65rem;
+              margin-bottom: 0.2rem;
+            }
+            
+            .day-number.today {
+              width: 18px;
+              height: 18px;
+              font-size: 0.6rem;
+            }
+            
+            .event-item {
+              font-size: 0.55rem;
+              padding: 0.2rem;
+              margin-bottom: 0.1rem;
+              border-radius: 3px;
+              border-right-width: 2px;
+            }
+            
+            .event-title {
+              line-height: 1.1;
+            }
+            
+            .more-events {
+              font-size: 0.5rem;
+              padding: 0.15rem;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .calendar-container {
+              padding: 0.2rem;
+            }
+            
+            .calendar-wrapper {
+              padding: 0.4rem;
+            }
+            
+            .calendar-navigation {
+              padding: 0.3rem 0.5rem;
+            }
+            
+            .month-title {
+              font-size: 0.9rem;
+            }
+            
+            .nav-button {
+              padding: 0.25rem 0.5rem;
+              font-size: 0.65rem;
+            }
+            
+            .day-header {
+              padding: 0.3rem 0;
+              font-size: 0.65rem;
+            }
+            
+            .day-cell {
+              min-height: 45px;
+              padding: 0.15rem;
+            }
+            
+            .day-number {
+              font-size: 0.6rem;
+              margin-bottom: 0.15rem;
+            }
+            
+            .day-number.today {
+              width: 16px;
+              height: 16px;
+              font-size: 0.55rem;
+            }
+            
+            .event-item {
+              font-size: 0.5rem;
+              padding: 0.15rem;
+              margin-bottom: 0.08rem;
+              border-radius: 2px;
+              border-right-width: 1px;
+            }
+            
+            .event-title {
+              line-height: 1;
+            }
+            
+            .more-events {
+              font-size: 0.45rem;
+              padding: 0.1rem;
+            }
+          }
         `}</style>
         
-        <Container maxWidth="xl" sx={{ mt: 3, }}>
+        <Container maxWidth="xl" sx={{ mt: 3 }}>
+          <Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              textAlign="center"
+              mb={2}
+              sx={{ color: '#003366' }}
+            >
+              التقويم - لوحة الإدارة
+            </Typography>
+          </Box>
+
           <div className="calendar-container">
-            <div className="calendar-header">
-              <Typography variant="h5" fontWeight="bold" color="primary" align="center" mb={2}>
-                التقويم - لوحة الإدارة
-              </Typography>
-            </div>
+            <div className="calendar-header"></div>
 
             <div className="calendar-wrapper">
               <div className="calendar-navigation">
@@ -772,7 +973,7 @@ export default function AdminCalendar() {
                 </button>
                 
                 <div className="month-title">
-                  {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                  {monthName} {year}
                 </div>
                 
                 <button className="nav-button" onClick={() => navigateMonth(1)}>
@@ -782,7 +983,7 @@ export default function AdminCalendar() {
 
               <div className="calendar-grid">
                 <div className="days-header">
-                  {dayNames.map((dayName) => (
+                  {CALENDAR_CONSTANTS.DAY_NAMES.map((dayName) => (
                     <div key={dayName} className="day-header">
                       {dayName}
                     </div>
@@ -790,12 +991,11 @@ export default function AdminCalendar() {
                 </div>
 
                 <div className="days-grid">
-                  {getDaysInMonth(currentDate).map((day, index) => {
-                    const dayEvents = getEventsForDay(day);
-                    const todayClass = isToday(day) ? 'today' : '';
-                    const maxVisibleEvents = 1; // عرض فعالية واحدة فقط
-                    const visibleEvents = dayEvents.slice(0, maxVisibleEvents);
-                    const remainingEvents = dayEvents.length - maxVisibleEvents;
+                  {days.map((day, index) => {
+                    const dayEvents = getEventsForDay(day, currentDate, allEvents);
+                    const todayClass = isToday(day, currentDate) ? 'today' : '';
+                    const visibleEvents = dayEvents.slice(0, CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS);
+                    const remainingEvents = dayEvents.length - CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS;
                     
                     return (
                       <div
@@ -813,29 +1013,16 @@ export default function AdminCalendar() {
                             {visibleEvents.map((event) => (
                               <div
                                 key={`${event.type}-${event.id}`}
-                                className={`event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEventClick(event);
-                                }}
+                                className={`event-item ${event.type === 'center' ? 'center-event' : ''}`}
+                                onClick={(e) => handleEventClick(event, e)}
                               >
-                                <div className={event.type === 'center' ? 'center-badge' : 'admin-badge'}>
-                                  {event.type === 'center' ? '👁' : '✎'}
-                                </div>
                                 <span className="event-title">{event.title}</span>
                               </div>
                             ))}
                             
                             {/* عرض عدد الفعاليات الإضافية */}
                             {remainingEvents > 0 && (
-                              <div 
-                                className="more-events"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedDayEvents(dayEvents);
-                                  setShowDayEvents(true);
-                                }}
-                              >
+                              <div className="more-events">
                                 +{remainingEvents} أخرى
                               </div>
                             )}
@@ -878,30 +1065,13 @@ export default function AdminCalendar() {
               mt: 1,
               direction: 'rtl'
             }}>
-              <TextField 
+              <RTLTextField 
                 label="عنوان الفعالية" 
                 value={formData.title} 
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })} 
                 fullWidth 
-                sx={{ 
-                  '& .MuiInputBase-input': {
-                    textAlign: 'right',
-                    direction: 'rtl'
-                  },
-                  '& .MuiInputLabel-root': {
-                    right: 24,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  },
-                  '& .MuiInputLabel-shrink': {
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  }
-                }}
               />
-              <TextField
+              <RTLTextField
                 label="تاريخ ووقت الفعالية"
                 type="datetime-local"
                 value={formData.time}
@@ -909,86 +1079,33 @@ export default function AdminCalendar() {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 inputProps={{ step: 900 }}
-                sx={{ 
-                  '& .MuiInputBase-input': {
-                    textAlign: 'right',
-                    direction: 'rtl'
-                  },
-                  '& .MuiInputLabel-root': {
-                    right: 24,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  },
-                  '& .MuiInputLabel-shrink': {
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  }
-                }}
               />
-              <TextField 
+              <RTLTextField 
                 label="الوصف" 
                 multiline 
                 rows={3} 
                 value={formData.description} 
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
                 fullWidth 
-                sx={{ 
-                  '& .MuiInputBase-input': {
-                    textAlign: 'right',
-                    direction: 'rtl'
-                  },
-                  '& .MuiInputLabel-root': {
-                    right: 24,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  },
-                  '& .MuiInputLabel-shrink': {
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  }
-                }}
               />
-              <TextField 
+              <RTLTextField 
                 label="الموقع" 
                 value={formData.location} 
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })} 
                 fullWidth 
-                sx={{ 
-                  '& .MuiInputBase-input': {
-                    textAlign: 'right',
-                    direction: 'rtl'
-                  },
-                  '& .MuiInputLabel-root': {
-                    right: 24,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  },
-                  '& .MuiInputLabel-shrink': {
-                    top: '-8px',
-                    fontSize: '0.85rem'
-                  }
-                }}
               />
             </DialogContent>
             <DialogActions sx={{ padding: '16px 24px' }}>
               {selectedEvent && selectedEvent.type === "calendar" && (
                 <Button 
-                  onClick={handleDelete} 
+                  onClick={() => setDeleteDialog({ open: true })} 
                   color="error"
                   variant="outlined"
                 >
                   حذف
                 </Button>
               )}
-              <Button 
-                onClick={() => setDialogOpen(false)}
-              >
+              <Button onClick={() => setDialogOpen(false)}>
                 إلغاء
               </Button>
               <Button 
@@ -1023,10 +1140,10 @@ export default function AdminCalendar() {
                   {selectedDayEvents.map((event) => (
                     <div
                       key={`${event.type}-${event.id}`}
-                      className={`day-event-item ${event.type === 'center' ? 'center-event' : ''}`}
+                      className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
                       onClick={() => {
                         setShowDayEvents(false);
-                        handleEventClick(event);
+                        handleEventClick(event, { stopPropagation: () => {} });
                       }}
                     >
                       <div className="event-time">
@@ -1043,7 +1160,7 @@ export default function AdminCalendar() {
                         )}
                       </div>
                       <div className={`event-type-badge ${event.type}`}>
-                        {event.type === 'center' ? '👁' : '✎'}
+                        {event.type === 'center' ? '📋' : '📅'}
                       </div>
                     </div>
                   ))}
@@ -1052,13 +1169,13 @@ export default function AdminCalendar() {
             </div>
           )}
 
-          {/* Modal لعرض تفاصيل فعاليات المركز */}
+          {/* Modal لعرض تفاصيل فعالية واحدة */}
           {showDetails && (
             <div className="modal-overlay" onClick={() => setShowDetails(false)}>
               <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                   <h2 className="modal-title">
-                    📋 تفاصيل فعالية المركز
+                    {selectedEvent?.type === 'center' ? '📋' : '📅'} تفاصيل الفعالية
                   </h2>
                   <button 
                     className="close-button"
@@ -1068,17 +1185,21 @@ export default function AdminCalendar() {
                   </button>
                 </div>
 
-                <div className="event-details">
+                <div className={`event-details ${selectedEvent?.type === 'center' ? 'center-event' : 'admin-event'}`}>
                   <div className="event-detail-item">
                     <div className="event-detail-label">📌 العنوان:</div>
                     <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
                   </div>
                   
                   <div className="event-detail-item">
-                    <div className="event-detail-label">⏰ الوقت:</div>
+                    <div className="event-detail-label">📅 التاريخ:</div>
                     <div className="event-detail-value">
                       {selectedEvent?.date
-                        ? new Date(selectedEvent.date).toLocaleTimeString("ar-EG", {
+                        ? new Date(selectedEvent.date).toLocaleString("ar-EG", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: false
@@ -1097,20 +1218,24 @@ export default function AdminCalendar() {
                     <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
                   </div>
 
-                  {selectedEvent?.capacity && (
-                    <div className="event-detail-item">
-                      <div className="event-detail-label">👥 السعة:</div>
-                      <div className="event-detail-value">{selectedEvent.capacity}</div>
-                    </div>
-                  )}
-
-                  {selectedEvent?.price !== undefined && (
-                    <div className="event-detail-item">
-                      <div className="event-detail-label">💰 السعر:</div>
-                      <div className="event-detail-value">
-                        {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
-                      </div>
-                    </div>
+                  {/* عرض السعة والسعر إذا كانت الفعالية من نوع center */}
+                  {selectedEvent?.type === 'center' && (
+                    <>
+                      {selectedEvent?.capacity && (
+                        <div className="event-detail-item">
+                          <div className="event-detail-label">👥 السعة:</div>
+                          <div className="event-detail-value">{selectedEvent.capacity}</div>
+                        </div>
+                      )}
+                      {selectedEvent?.price !== undefined && (
+                        <div className="event-detail-item">
+                          <div className="event-detail-label">💰 السعر:</div>
+                          <div className="event-detail-value">
+                            {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -1133,6 +1258,16 @@ export default function AdminCalendar() {
               {snackbar.message}
             </Alert>
           </Snackbar>
+
+          <ConfirmDeleteDialog
+            open={deleteDialog.open}
+            onClose={() => setDeleteDialog({ open: false })}
+            onConfirm={async () => {
+              await handleDelete();
+              setDeleteDialog({ open: false });
+            }}
+            message="هل أنت متأكد أنك تريد حذف هذه الفعالية؟"
+          />
         </Container>
       </AdminDashboardLayout>
     </RequireAdmin>
