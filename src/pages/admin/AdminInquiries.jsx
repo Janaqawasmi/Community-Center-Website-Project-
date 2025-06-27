@@ -51,6 +51,7 @@ import AdminDashboardLayout from "../../components/AdminDashboardLayout";
 import RequireAdmin from "../../components/auth/RequireAdmin";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { withProgress } from '../../utils/withProgress';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -161,7 +162,8 @@ export default function AdminInquiries() {
     try {
       if (!docId || typeof docId !== "string") return;
 
-      await deleteDoc(doc(db, "contactMessages", docId));
+      await withProgress(() => deleteDoc(doc(db, "contactMessages", docId)));
+
       const updated = messages.filter((msg) => msg.id !== docId);
       setMessages(updated);
       setFilteredMessages(updated);
@@ -234,12 +236,10 @@ export default function AdminInquiries() {
 
       const message = messages.find((m) => m.id === msgId);
 
-      const emailResult = await sendEmailReply(
-        customerEmail,
-        customerName,
-        replyText,
-        message.message
-      );
+     const emailResult = await withProgress(() =>
+  sendEmailReply(customerEmail, customerName, replyText, message.message)
+);
+
 
       if (emailResult.success) {
         const docRef = doc(db, "contactMessages", msgId);
@@ -331,11 +331,14 @@ export default function AdminInquiries() {
       setSavingContactInfo(true);
       const docRef = doc(db, "siteInfo", "9ib8qFqM732MnTlg6YGz");
 
-      await updateDoc(docRef, {
-        ...values,
-        updatedAt: serverTimestamp(),
-        updatedBy: "admin",
-      });
+      await withProgress(() =>
+  updateDoc(docRef, {
+    ...values,
+    updatedAt: serverTimestamp(),
+    updatedBy: "admin",
+  })
+);
+      // تحديث الحالة المحلية
 
       setContactInfo(values);
       showSnackbar("✅ تم حفظ معلومات التواصل بنجاح");
@@ -346,11 +349,10 @@ export default function AdminInquiries() {
       setSavingContactInfo(false);
     }
   };
-
-  useEffect(() => {
-    fetchMessages();
-    fetchContactInfo();
-  }, []);
+useEffect(() => {
+  withProgress(fetchMessages);
+  withProgress(fetchContactInfo);
+}, []);
 
   useEffect(() => {
     handleFilterChange();

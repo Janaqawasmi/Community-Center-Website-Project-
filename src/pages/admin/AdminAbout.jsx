@@ -49,6 +49,7 @@ import {
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../components/firebase';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
+import { withProgress } from '../../utils/withProgress';
 
 export default function AdminAbout() {
   const theme = useTheme();
@@ -126,7 +127,8 @@ export default function AdminAbout() {
 
   // جلب البيانات من Firebase
   const fetchAboutData = async () => {
-    setLoading(true);
+  setLoading(true);
+  await withProgress(async () => {
     try {
       const docRef = doc(db, "siteInfo", "about us");
       const docSnap = await getDoc(docRef);
@@ -151,11 +153,14 @@ export default function AdminAbout() {
     } finally {
       setLoading(false);
     }
-  };
+  });
+};
+
 
   // حفظ البيانات في Firebase
-  const saveAboutData = async () => {
-    setSaving(true);
+const saveAboutData = async () => {
+  setSaving(true);
+  await withProgress(async () => {
     try {
       const docRef = doc(db, "siteInfo", "about us");
       await updateDoc(docRef, aboutData);
@@ -166,7 +171,9 @@ export default function AdminAbout() {
     } finally {
       setSaving(false);
     }
-  };
+  });
+};
+
 
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });

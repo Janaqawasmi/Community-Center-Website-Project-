@@ -23,6 +23,9 @@ import { setDoc } from 'firebase/firestore';
 import { compressImage } from '../../utils/compressImage';
 import { deleteImage } from '../../utils/deleteImage';
 import { uploadImage } from '../../utils/uploadImage';
+import { withProgress } from '../../utils/withProgress';
+import 'nprogress/nprogress.css';
+
 export default function AdminSections() {
   const [sections, setSections] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -35,6 +38,8 @@ export default function AdminSections() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [uploadingImages, setUploadingImages] = useState({});
+const [loading, setLoading] = useState(false);
+const [saving, setSaving] = useState(false);
 
   // Function to validate if a string is a valid URL
   function isValidURL(str) {
@@ -50,12 +55,14 @@ export default function AdminSections() {
     fetchSections();
   }, []);
 
-  const fetchSections = async () => {
+const fetchSections = async () => {
+  await withProgress(async () => {
     const q = query(collection(db, 'sections'), orderBy('order'));
     const snapshot = await getDocs(q);
     const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setSections(data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
-  };
+  });
+};
 
 const handleOpenAdd = () => {
   setIsEdit(false);
@@ -67,21 +74,19 @@ const handleOpenAdd = () => {
     imageGallery: [],
     programs: [],
     heroImage: '',
-programCards: [
-  {
-    name: '',
-    description: '',
-    conditions: '',
-    qualifications: '',
-    phone: '',
-    image: ''
-  }
-]
-
+    programCards: [
+      {
+        name: '',
+        description: '',
+        conditions: '',
+        qualifications: '',
+        phone: '',
+        image: ''
+      }
+    ]
   });
   setOpenDialog(true);
 };
-
 
   const handleOpenEdit = (section) => {
     setIsEdit(true);
@@ -114,12 +119,15 @@ const handleImageUpload = async (files, galleryIndex) => {
       const storagePath = `sections/gallery/${Date.now()}-${i}.jpg`;
 
       // Upload image WITHOUT updating Firestore inside the helper
-      const imageUrl = await uploadImage({
-        file: compressed,
-        storagePath,
-        firestorePath: [], // skip update inside uploadImage.js
-        field: ''           // avoid invalid update
-      });
+    const imageUrl = await withProgress(() =>
+  uploadImage({
+    file: compressed,
+    storagePath,
+    firestorePath: [],
+    field: ''
+  })
+);
+
 
       // Update Firestore manually
       const updatedGallery = [...(formData.imageGallery || []), imageUrl];
@@ -184,10 +192,11 @@ const handleImageUpload = async (files, galleryIndex) => {
     }
   };
 
-  const handleSave = async () => {
+const handleSave = async () => {
+  await withProgress(async () => {
     const dataCopy = { ...formData };
     delete dataCopy.id;
-    
+
     if (!formData.title || formData.title.trim() === '') {
       alert('يرجى إدخال اسم القسم قبل الحفظ.');
       return;
@@ -202,7 +211,7 @@ const handleImageUpload = async (files, galleryIndex) => {
         return;
       }
     }
-    
+
     if (formData.heroImage) {
       if (!isValidURL(formData.heroImage)) {
         alert("رابط صورة الترويسة غير صالح. تأكد من أنه يبدأ بـ http أو https.");
@@ -231,12 +240,17 @@ const handleImageUpload = async (files, galleryIndex) => {
 
     setOpenDialog(false);
     fetchSections();
-  };
+  });
+};
 
-  const handleDelete = async (id) => {
+
+const handleDelete = async (id) => {
+  await withProgress(async () => {
     await deleteDoc(doc(db, 'sections', id));
     fetchSections();
-  };
+  });
+};
+
 
   const handleFieldChange = (key, value) => {
     setFormData(prev => ({ ...prev, [key]: value }));
@@ -256,44 +270,39 @@ const handleImageUpload = async (files, galleryIndex) => {
   };
 
   // Manual move up/down functions as fallback
-  const moveSection = async (index, direction) => {
+ const moveSection = async (index, direction) => {
+  await withProgress(async () => {
     const newSections = [...sections];
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    
     if (targetIndex < 0 || targetIndex >= newSections.length) return;
-    
     [newSections[index], newSections[targetIndex]] = [newSections[targetIndex], newSections[index]];
     setSections(newSections);
-    
-    // Update Firebase
     await Promise.all(
       newSections.map((sec, idx) =>
         updateDoc(doc(db, 'sections', sec.id), { order: idx })
       )
     );
-  };
+  });
+};
 
-  const handleDragEnd = async (result) => {
-    if (!result.destination) return;
+const handleDragEnd = async (result) => {
+  if (!result.destination) return;
 
+  await withProgress(async () => {
     const items = Array.from(sections);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
     setSections(items);
 
-    // Update Firebase
-    try {
-      await Promise.all(
-        items.map((sec, index) =>
-          updateDoc(doc(db, 'sections', sec.id), { order: index })
-        )
-      );
-    } catch (error) {
-      console.error('Error updating order:', error);
-      fetchSections(); // Revert on error
-    }
-  };
+    await Promise.all(
+      items.map((sec, index) =>
+        updateDoc(doc(db, 'sections', sec.id), { order: index })
+      )
+    );
+  });
+};
+
 
   const DraggableListView = () => (
     <DragDropContext onDragEnd={handleDragEnd}>

@@ -26,9 +26,21 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import ProgramStatsPage from '../pages/admin/ProgramStatsPage';
 import AnalyticsPage from '../pages/admin/AnalyticsPage'; 
+import { useEffect } from 'react'; // ✅ ADD THIS
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 function AppRoutes({ sections }) {
   const location = useLocation();
+   useEffect(() => {
+  NProgress.start();
+  // Slight delay just to simulate a loading effect — optional
+  const timeout = setTimeout(() => {
+    NProgress.done();
+  }, 300);
+
+  return () => clearTimeout(timeout);
+}, [location.pathname]);
 
   return (
     <>

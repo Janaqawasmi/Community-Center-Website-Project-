@@ -10,6 +10,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
 import { collection, getDocs, deleteDoc, doc, addDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../../components/firebase';
+import { withProgress } from '../../utils/withProgress';
 
 const categories = ['دورة', 'أمسية', 'فعالية', 'برنامج'];
 
@@ -47,14 +48,14 @@ export default function AdminNews() {
   const [editError, setEditError] = useState('');
   const [editSaving, setEditSaving] = useState(false);
 
-  useEffect(() => {
-    async function fetchNews() {
-      const snapshot = await getDocs(collection(db, 'News'));
-      setNewsList(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      setLoading(false);
-    }
-    fetchNews();
-  }, []);
+useEffect(() => {
+  withProgress(async () => {
+    const snapshot = await getDocs(collection(db, 'News'));
+    setNewsList(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    setLoading(false);
+  });
+}, []);
+
 
   const handleAddPicture = () => {
     if (addForm.pictureURL.trim()) {
@@ -84,42 +85,43 @@ export default function AdminNews() {
       return;
     }
 
-    try {
-      const docRef = await addDoc(collection(db, 'News'), {
-        date: addForm.date,
-        title: addForm.title,
-        category: addForm.category,
-        Pictures: addForm.pictures,
-        mainImage: addForm.mainImage,
-        full_description: addForm.fullDescription,
-        featured: addForm.featured,
-        intro: addForm.intro,
-        createdAt: Timestamp.now(),
-      });
+  try {
+  await withProgress(async () => {
+    const docRef = await addDoc(collection(db, 'News'), {
+      date: addForm.date,
+      title: addForm.title,
+      category: addForm.category,
+      Pictures: addForm.pictures,
+      mainImage: addForm.mainImage,
+      full_description: addForm.fullDescription,
+      featured: addForm.featured,
+      intro: addForm.intro,
+      createdAt: Timestamp.now(),
+    });
 
-      setNewsList([{
-        id: docRef.id,
-        ...addForm,
-      }, ...newsList]);
+    setNewsList([{
+      id: docRef.id,
+      ...addForm,
+    }, ...newsList]);
 
-      setAddForm({
-        date: '',
-        title: '',
-        category: '',
-        pictures: [],
-        pictureURL: '',
-        mainImage: '',
-        fullDescription: '',
-        featured: false,
-        intro: 'عن الخبر',
-      });
+    setAddForm({
+      date: '',
+      title: '',
+      category: '',
+      pictures: [],
+      pictureURL: '',
+      mainImage: '',
+      fullDescription: '',
+      featured: false,
+      intro: 'عن الخبر',
+    });
 
-      setShowAddForm(false);
-    } catch (err) {
-      setAddError('حدث خطأ أثناء إضافة الخبر');
-    } finally {
-      setSaving(false);
-    }
+    setShowAddForm(false);
+  });
+} catch {
+  setAddError('حدث خطأ أثناء إضافة الخبر');
+}
+
   };
   const handleEditClick = (news) => {
     setEditId(news.id);
@@ -165,37 +167,42 @@ export default function AdminNews() {
       return;
     }
 
-    try {
-      const docRef = doc(db, 'News', editId);
-      await updateDoc(docRef, {
-        date: editForm.date,
-        title: editForm.title,
-        category: editForm.category,
-        Pictures: editForm.pictures,
-        mainImage: editForm.mainImage,
-        full_description: editForm.fullDescription,
-        featured: editForm.featured,
-        intro: editForm.intro,
-      });
+ try {
+  await withProgress(async () => {
+    const docRef = doc(db, 'News', editId);
+    await updateDoc(docRef, {
+      date: editForm.date,
+      title: editForm.title,
+      category: editForm.category,
+      Pictures: editForm.pictures,
+      mainImage: editForm.mainImage,
+      full_description: editForm.fullDescription,
+      featured: editForm.featured,
+      intro: editForm.intro,
+    });
 
-      setNewsList(newsList.map(n =>
-        n.id === editId
-          ? { ...n, ...editForm }
-          : n
-      ));
+    setNewsList(newsList.map(n =>
+      n.id === editId
+        ? { ...n, ...editForm }
+        : n
+    ));
 
-      setEditId(null);
-    } catch (err) {
-      setEditError('حدث خطأ أثناء تعديل الخبر');
-    } finally {
-      setEditSaving(false);
-    }
-  };
+    setEditId(null);
+  });
+} catch {
+  setEditError('حدث خطأ أثناء تعديل الخبر');
+} finally {
+  setEditSaving(false);
+}
+};
 
   const handleDelete = async (id) => {
     if (window.confirm('هل أنت متأكد أنك تريد حذف هذا الخبر؟')) {
-      await deleteDoc(doc(db, 'News', id));
-      setNewsList(newsList.filter((item) => item.id !== id));
+      await withProgress(async () => {
+  await deleteDoc(doc(db, 'News', id));
+  setNewsList(newsList.filter((item) => item.id !== id));
+});
+
     }
   };
 
