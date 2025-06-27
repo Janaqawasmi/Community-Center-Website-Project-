@@ -861,8 +861,7 @@ const handleRegisterForEvent = (eventTitle) => {
 >
   التقويم والفعاليات
 </Typography>
-         </Box> 
-<Box sx={{ mb: 2 }}>
+         </Box>
 
       <div id="calendar-section" className="calendar-container">
         <div className="calendar-header"></div>
@@ -1057,7 +1056,6 @@ const handleRegisterForEvent = (eventTitle) => {
           </>
         )}
       </div>
-         </Box> 
 
       {/* زر التسجيل للفعالية - يظهر فقط لفعاليات المركز */}
       {selectedEvent?.type === 'center' && (
