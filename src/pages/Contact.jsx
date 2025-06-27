@@ -461,13 +461,16 @@ useEffect(() => {
                       </Grid>
 
                       <Grid item xs={12} textAlign="center">
-                        <Box 
-                          sx={{ 
-                            transform: 'scale(0.85)', 
-                            transformOrigin: 'center',
-                            mb: -1
-                          }}
-                        >
+                        <Box
+    sx={{
+      direction: 'rtl',
+      display: 'flex',
+      justifyContent: 'center',
+      transform: 'scale(0.85)',
+      transformOrigin: 'center',
+      mb: 0,
+    }}
+  >
                           <ReCAPTCHA
                             sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
                             onChange={handleCaptchaChange}
