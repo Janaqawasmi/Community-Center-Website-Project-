@@ -77,7 +77,7 @@ function NewsDetail() {
 
 
 
-      <Container maxWidth="lg" sx={{ pt: 8, pb: 6, px: 2 }}>
+      <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2 }}>
         <Grid container spacing={4} alignItems="stretch">
           {/* Right: عن الخبر */}
           <Grid item xs={12} md={6}>
