@@ -18,7 +18,7 @@ export default function SectionGrid({ sections }) {
   const isLoading = !sections || sections.length === 0;
 
   return (
-    <Box sx={{ px: { xs: 2, md: 6 }, pt: 0, pb: 1 }}>
+    <Box sx={{ px: { xs: 1, md: 6 }, pt: 0, pb: 1 }}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ export default function SectionGrid({ sections }) {
                   sm: "1fr 1fr 1fr 1fr",
                   md: "1fr 1fr 1fr 1fr 1fr 1fr",
                 },
-                gap: 1.5,
+                gap:{ xs: 0.5, md: 2 },
               }}
             >
               {sections.map((section, index) => {

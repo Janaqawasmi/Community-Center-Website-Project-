@@ -107,7 +107,7 @@ useEffect(() => {
     Menulang: "AR",
     draggable: false,
     btnStyle: {
-      vPosition: ["50%", "80%"],
+      vPosition: ["68%", "80%"],
       scale: ["0.5", "0.5"],
       color: {
         main: "#1c4bb6",
