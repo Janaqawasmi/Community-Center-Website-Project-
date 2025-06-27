@@ -133,7 +133,7 @@ export default function About() {
         <HeroSection pageId="aboutUs" />
       </Box>
 
-      <Container maxWidth="lg" sx={{ pb: 4, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+      <Container maxWidth="lg" sx={{ pb: 2, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
         
         {/* الفقرة التعريفية - تظهر فقط إذا كان لها محتوى */}
         {hasContent('about_us_text') && (
@@ -185,6 +185,7 @@ export default function About() {
                   fontSize: '1rem',
                   cursor: 'pointer',
                   color: ' red',
+
                   textDecoration: 'underline',
                   '&:hover': {
                     color: ' #1565c0',

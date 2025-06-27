@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import AdminDashboardLayout from "../../components/AdminDashboardLayout";
 import { exportRegistrationsToExcel } from "./exportToExcel"; // Assuming you have this function to export data
+import { withProgress } from "../../utils/withProgress"; // adjust path if needed
 
 export default function AdminProgramAndEventRegistrations() {
   // تبويب: 0 = الدورات، 1 = الفعاليات
@@ -34,7 +35,8 @@ export default function AdminProgramAndEventRegistrations() {
   const [eventSearch, setEventSearch] = useState("");
 
   // جلب تسجيلات الدورات
-  const fetchData = async () => {
+const fetchData = async () => {
+  await withProgress(async () => {
     const snapshot = await getDocs(collection(db, "programRegistrations"));
     const data = snapshot.docs.map(doc => ({
       firebaseId: doc.id,
@@ -42,10 +44,11 @@ export default function AdminProgramAndEventRegistrations() {
     }));
     setRegistrations(data);
     setFiltered(data);
-  };
+  });
+};
 
-  // جلب تسجيلات الفعاليات
-  const fetchEventData = async () => {
+const fetchEventData = async () => {
+  await withProgress(async () => {
     const snapshot = await getDocs(collection(db, "eventRegistrations"));
     const data = snapshot.docs.map(doc => ({
       firebaseId: doc.id,
@@ -53,7 +56,9 @@ export default function AdminProgramAndEventRegistrations() {
     }));
     setEventRegistrations(data);
     setFilteredEvents(data);
-  };
+  });
+};
+
 
   useEffect(() => {
     fetchData();
@@ -108,16 +113,21 @@ export default function AdminProgramAndEventRegistrations() {
   };
 
   // حفظ التعديلات مع إعادة تحميل البيانات
-  const handleSaveEdit = async () => {
-    if (!currentEdit) return;
+const handleSaveEdit = async () => {
+  if (!currentEdit) return;
+
+  await withProgress(async () => {
     const docRef = doc(db, "programRegistrations", currentEdit.firebaseId);
     let editCopy = { ...currentEdit };
     delete editCopy.firebaseId;
 
     await updateDoc(docRef, editCopy);
-    await fetchData();
-    setEditOpen(false);
-  };
+    await fetchData(); // already wrapped internally
+  });
+
+  setEditOpen(false);
+};
+
 
   // فتح نافذة عرض جميع الدورات لهذا الشخص
   const handleShowPrograms = (person) => {
@@ -211,13 +221,14 @@ export default function AdminProgramAndEventRegistrations() {
                 مسح الفلاتر
               </Button>
 
-              <Button
-                variant="contained"
-                color="success"
-                onClick={exportRegistrationsToExcel}
-              >
-                تصدير إلى Excel
-              </Button>
+             <Button
+  variant="contained"
+  color="success"
+  onClick={() => withProgress(exportRegistrationsToExcel)}
+>
+  تصدير إلى Excel
+</Button>
+
 
             </Box>
             <Paper sx={{ overflowX: "auto" }}>

@@ -33,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import ConfirmDeleteDialog from "../../components/ConfirmDeleteDialog";
 import AdminDashboardLayout from "../../components/AdminDashboardLayout";
 
+
 export default function AdminAbout() {
   const [aboutData, setAboutData] = useState(null);
   const [editData, setEditData] = useState({});
@@ -65,6 +66,9 @@ export default function AdminAbout() {
   }, []);
 
   const fetchAboutData = async () => {
+
+  setLoading(true);
+  await withProgress(async () => {
     try {
       setLoading(true);
       const docRef = doc(db, "siteInfo", "about us");
@@ -83,7 +87,9 @@ export default function AdminAbout() {
     } finally {
       setLoading(false);
     }
-  };
+  });
+};
+
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -99,6 +105,7 @@ export default function AdminAbout() {
   };
 
   const handleSave = async (field) => {
+
     try {
       setSaving(true);
       const docRef = doc(db, "siteInfo", "about us");
@@ -117,7 +124,9 @@ export default function AdminAbout() {
     } finally {
       setSaving(false);
     }
-  };
+  });
+};
+
 
   const handleInputChange = (field, value) => {
     setEditData(prev => ({ ...prev, [field]: value }));

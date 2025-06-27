@@ -5,7 +5,7 @@ import SectionPage from '../pages/SectionPage';
 import Contact from '../pages/Contact';
 import ScrollToTop from '../components/ScrollToTop';
 import About from '../pages/About';
-import RegistrationForm from '../pages/registration';
+import RegistrationForm from '../pages/registration/registration';
 import ProgramCategoryPage from '../pages/programs/ProgramCategoryPage';
 import ProgramePage from '../pages/ProgramsSection';
 import EventsPage from '../pages/programs/EventsPage';
@@ -26,9 +26,21 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import ProgramStatsPage from '../pages/admin/ProgramStatsPage';
 import AnalyticsPage from '../pages/admin/AnalyticsPage'; 
+import { useEffect } from 'react'; // ✅ ADD THIS
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 function AppRoutes({ sections }) {
   const location = useLocation();
+   useEffect(() => {
+  NProgress.start();
+  // Slight delay just to simulate a loading effect — optional
+  const timeout = setTimeout(() => {
+    NProgress.done();
+  }, 300);
+
+  return () => clearTimeout(timeout);
+}, [location.pathname]);
 
   return (
     <>

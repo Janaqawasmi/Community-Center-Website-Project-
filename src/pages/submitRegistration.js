@@ -1,6 +1,8 @@
 import { db } from '../components/firebase';
 import { collection, addDoc, getDocs, query, where, doc, updateDoc, increment } from 'firebase/firestore';
 import { calculateAge } from './regist_logic';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 function removeLastDigit(num) {
   if (!num) return "";
@@ -85,39 +87,41 @@ export async function submitRegistration(e, formData, setForm) {
     };
   }
 
-  try {
-    // 1. أضف التسجيل أولاً
-    await addDoc(collection(db, collectionName), formattedForm);
+NProgress.start(); // ✅ Start the loading bar
 
-    // 2. بعد نجاح الحفظ، أنقص السعة من الدورة أو الفعالية
-    await decrementCapacity(name, sourceCollection);
+try {
+  await addDoc(collection(db, collectionName), formattedForm);
+  await decrementCapacity(name, sourceCollection);
 
-    alert('تم التسجيل وحفظ البيانات بنجاح!');
-    if (setForm) {
-      setForm({
-        FirstName: '',
-        birthdate: '',
-        id: '',
-        cheackDigit: '',
-        email: '',
-        personalPhone: '',
-        lastName: '',
-        gender: '',
-        address: '',
-        cityCode: '',
-        landLine: '',
-        fatherCheackDigit: '',
-        fatherId: '',
-        fatherName: '',
-        fatherPhone: '',
-        parentLastName: '',
-        classNumber: '',
-        groupNumber: '',
-        digit5: '',
-      });
-    }
-  } catch (error) {
-    console.error('خطأ أثناء حفظ البيانات:', error);
-    alert('حدث خطأ أثناء حفظ البيانات');
+  alert('تم التسجيل وحفظ البيانات بنجاح!');
+  if (setForm) {
+    setForm({
+      FirstName: '',
+      birthdate: '',
+      id: '',
+      cheackDigit: '',
+      email: '',
+      personalPhone: '',
+      lastName: '',
+      gender: '',
+      address: '',
+      cityCode: '',
+      landLine: '',
+      fatherCheackDigit: '',
+      fatherId: '',
+      fatherName: '',
+      fatherPhone: '',
+      parentLastName: '',
+      classNumber: '',
+      groupNumber: '',
+      digit5: '',
+    });
   }
+} catch (error) {
+  console.error('خطأ أثناء حفظ البيانات:', error);
+  alert('حدث خطأ أثناء حفظ البيانات');
+} finally {
+  NProgress.done(); // ✅ Stop the loading bar
+}
+
 }

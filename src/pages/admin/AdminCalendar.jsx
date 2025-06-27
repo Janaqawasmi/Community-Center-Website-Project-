@@ -187,6 +187,9 @@ const RTLTextField = (props) => {
 // Main Component
 // =======================
 
+import { withProgress } from "../../utils/withProgress";
+
+
 export default function AdminCalendar() {
   const [events, setEvents] = useState([]);
   const [centerEvents, setCenterEvents] = useState([]);
@@ -309,11 +312,18 @@ export default function AdminCalendar() {
       };
 
       if (selectedEvent && selectedEvent.type === "calendar") {
-        await updateDoc(doc(db, "EventsCalender", selectedEvent.id), data);
-        showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_UPDATED);
-      } else {
-        await addDoc(collection(db, "EventsCalender"), data);
+
+       await withProgress(() =>
+  updateDoc(doc(db, "EventsCalender", selectedEvent.id), data)
+);
+
         showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_ADDED);
+      } else {
+       await withProgress(() =>
+  addDoc(collection(db, "EventsCalender"), data)
+);
+
+        showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_UPDATED);
       }
 
       setDialogOpen(false);
@@ -325,7 +335,9 @@ export default function AdminCalendar() {
   const handleDelete = async () => {
     try {
       if (selectedEvent && selectedEvent.type === "calendar") {
-        await deleteDoc(doc(db, "EventsCalender", selectedEvent.id));
+       await withProgress(() =>
+  deleteDoc(doc(db, "EventsCalender", selectedEvent.id))
+);
         showMessage(CALENDAR_CONSTANTS.MESSAGES.SUCCESS.EVENT_DELETED);
         setDialogOpen(false);
       }
