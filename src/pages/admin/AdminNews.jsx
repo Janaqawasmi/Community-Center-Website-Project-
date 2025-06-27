@@ -39,6 +39,7 @@ const [picturesUrlInput, setPicturesUrlInput] = useState('');
     fetchNews();
   }, []);
 
+
   const fetchNews = async () => {
     const snapshot = await getDocs(collection(db, 'News'));
     const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -63,6 +64,7 @@ const [picturesUrlInput, setPicturesUrlInput] = useState('');
       setForm({ date: '', title: '', category: '', mainImage: '', pictures: [], fullDescription: '', featured: false });
     }
     setOpenDialog(true);
+
   };
 
   const handleCloseDialog = () => {
@@ -127,6 +129,7 @@ const [picturesUrlInput, setPicturesUrlInput] = useState('');
     const confirmDelete = window.confirm('هل انت متاكد انك تريد حذف هذا الخبر؟');
     if (confirmDelete) {
       deleteDoc(doc(db, 'News', id)).then(fetchNews);
+
     }
   };
 

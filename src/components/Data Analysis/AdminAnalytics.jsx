@@ -99,18 +99,16 @@ return (
   variant="outlined"
   onClick={exportCombinedChartsAsPDF}
   sx={{
-    borderRadius: "30px",
+    borderRadius: "0px",
     px: 3,
     py: 1.3,
     fontSize: "1rem",
     fontWeight: "bold",
-    color: "#003366",
-    borderColor: "#003366",
     mb: 3,
     '&:hover': {
-      backgroundColor: "#003366",
-      color: "#fff",
-    },
+      backgroundColor: "rgb(50, 127, 214)",
+      color: "white",
+},
     display: "inline-flex",
     alignItems: "center",
     gap: 1,

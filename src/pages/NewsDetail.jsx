@@ -75,7 +75,7 @@ function NewsDetail() {
     <Box sx={{ direction: 'rtl', minHeight: '100vh', py: 0 }}>
       <HeroSection pageId="news" title={news.title} />
 
-      
+
 
       <Container maxWidth="lg" sx={{ pt: 8, pb: 6, px: 2 }}>
         <Grid container spacing={4} alignItems="stretch">

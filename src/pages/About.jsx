@@ -98,12 +98,9 @@ useEffect(() => {
   const today = new Date().toDateString();
 
   if (lastViewed !== today) {
-    console.log("📊 Tracking view for:", path);
     trackPageView(path);
     localStorage.setItem(key, today);
-  } else {
-    console.log("⏳ Already tracked today:", path);
-  }
+  } 
 }, [location.pathname]);
 
   if (!aboutData) {
@@ -116,11 +113,11 @@ useEffect(() => {
 
   return (
     <Box mb={0} sx={{ direction: "rtl" }}>
-      <Box  mb={8} >
+      <Box  mb={4} >
         <HeroSection pageId="aboutUs" />
       </Box>
 
-      <Container maxWidth="lg" sx={{ pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+      <Container maxWidth="lg" sx={{ pb: 2, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
         
         {/* الفقرة التعريفية */}
         <PrettyCard 
@@ -163,17 +160,17 @@ useEffect(() => {
             </Grid>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 6 }}>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Typography
               onClick={() => toggleSection('about')}
               sx={{
-                color: cardColors.about,
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 cursor: 'pointer',
+                color: ' red',
                 textDecoration: 'underline',
                 '&:hover': {
-                  color: '#1565c0',
+                  color: ' #1565c0',
                   textDecoration: 'underline',
                 }
               }}

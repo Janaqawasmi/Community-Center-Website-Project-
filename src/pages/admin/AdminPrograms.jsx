@@ -16,6 +16,7 @@ import { uploadImage } from "../../utils/uploadImage";
 import { deleteImage } from "../../utils/deleteImage";
 import { compressImage } from "../../utils/compressImage";
 import { Timestamp } from "firebase/firestore";
+import { withProgress } from "../../utils/withProgress";
 
 
 export default function AdminPrograms() {
@@ -91,7 +92,7 @@ setAllCategories(["الكل", ...Array.from(cats)]);
 };
 
 useEffect(() => {
-fetchPrograms();
+  withProgress(fetchPrograms);
 }, []);
 
 const handleOpenDialog = (program = null) => {
@@ -202,26 +203,31 @@ const handleAdd = async () => {
   
  const { imageFile, ...formData } = form;
 
-const docRef = await addDoc(collection(db, "programs"), {
-  ...formData,
-  startDate: formData.startDate ? Timestamp.fromDate(new Date(formData.startDate)) : null,
-  endDate: formData.endDate ? Timestamp.fromDate(new Date(formData.endDate)) : null,
-  
-  imageUrl: "", // نحجز مكانًا للرابط
-  category: categoryArray,
-  isActive: form.isActive,
-  featured: form.featured,
-});
+const docRef = await withProgress(() =>
+  addDoc(collection(db, "programs"), {
+    ...formData,
+    startDate: formData.startDate ? Timestamp.fromDate(new Date(formData.startDate)) : null,
+    endDate: formData.endDate ? Timestamp.fromDate(new Date(formData.endDate)) : null,
+    imageUrl: "",
+    category: categoryArray,
+    isActive: form.isActive,
+    featured: form.featured,
+  })
+);
+
 
   // إذا وُجدت صورة، ارفعها ثم احفظ رابطها
- if (imageFile) {
-  await uploadImage({
-    file: imageFile,
-    storagePath: `programs/${docRef.id}.jpg`,
-    firestorePath: ["programs", docRef.id],
-    field: "imageUrl",
-  });
+if (imageFile) {
+  await withProgress(() =>
+    uploadImage({
+      file: imageFile,
+      storagePath: `programs/${docRef.id}.jpg`,
+      firestorePath: ["programs", docRef.id],
+      field: "imageUrl",
+    })
+  );
 }
+
 
 
 
@@ -256,10 +262,11 @@ const handleEdit = async () => {
   }
 
   // تحديث البيانات في Firestore
-  await updateDoc(docRef, updatedData);
+await withProgress(() => updateDoc(docRef, updatedData));
 
   // رفع الصورة الجديدة إذا وُجدت، وحذف القديمة
-  if (imageFile) {
+if (imageFile) {
+  await withProgress(async () => {
     if (form.imageUrl) {
       await deleteImage(form.imageUrl);
     }
@@ -269,7 +276,9 @@ const handleEdit = async () => {
       firestorePath: ["programs", currentId],
       field: "imageUrl",
     });
-  }
+  });
+}
+
 
   fetchPrograms();
   handleCloseDialog();
@@ -285,12 +294,14 @@ const handleDelete = async (id) => {
 
   if (window.confirm("هل أنتِ متأكدة من حذف هذه الدورة نهائيًا؟")) {
     // حذف الوثيقة من Firestore
-    await deleteDoc(doc(db, "programs", id));
+   await withProgress(() => deleteDoc(doc(db, "programs", id)));
+;
 
     // إذا كان هناك صورة محفوظة، احذفيها من Firebase Storage
     if (programToDelete?.imageUrl) {
-      await deleteImage(programToDelete.imageUrl);
-    }
+  await withProgress(() => deleteImage(programToDelete.imageUrl));
+}
+
 
     // إعادة تحميل الدورات
     fetchPrograms();
