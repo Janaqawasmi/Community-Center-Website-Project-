@@ -4,7 +4,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from 'react-router-dom'; // at the top
 import { Typography,Box } from '@mui/material';
-import RegistrationForm from '../pages/registration';
+import RegistrationForm from '../pages/registration/registration';
 
 
 export default function CalendarSection() {
