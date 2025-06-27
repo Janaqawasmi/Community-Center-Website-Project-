@@ -104,27 +104,26 @@ export default function AdminAbout() {
     setEditData(prev => ({ ...prev, [field]: aboutData[field] }));
   };
 
-  const handleSave = async (field) => {
+const handleSave = async (field) => {
 
-    try {
-      setSaving(true);
-      const docRef = doc(db, "siteInfo", "about us");
-      
-      await updateDoc(docRef, {
-        [field]: editData[field]
-      });
+  try {
+    setSaving(true);
+    const docRef = doc(db, "siteInfo", "about us");
+    
+    await updateDoc(docRef, {
+      [field]: editData[field]
+    });
 
-      setAboutData(prev => ({ ...prev, [field]: editData[field] }));
-      setEditMode(prev => ({ ...prev, [field]: false }));
-      showSnackbar("تم حفظ التعديلات بنجاح");
-      
-    } catch (error) {
-      console.error("Error updating data:", error);
-      showSnackbar("خطأ في حفظ التعديلات", "error");
-    } finally {
-      setSaving(false);
-    }
-  });
+    setAboutData(prev => ({ ...prev, [field]: editData[field] }));
+    setEditMode(prev => ({ ...prev, [field]: false }));
+    showSnackbar("تم حفظ التعديلات بنجاح");
+    
+  } catch (error) {
+    console.error("Error updating data:", error);
+    showSnackbar("خطأ في حفظ التعديلات", "error");
+  } finally {
+    setSaving(false);
+  }
 };
 
 
