@@ -1,59 +1,213 @@
-// EditRegistrationDialog.jsx
-// مكون مربع حوار لتعديل بيانات تسجيل (دورة أو فعالية)
+import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Grid,
+  FormControlLabel,
+  Checkbox,
+  MenuItem
+} from "@mui/material";
+import { ConfirmEditDialog } from "../../../components/ConfirmDialog.jsx";
+import { updateRegistration } from "./registrationService.jsx";
+import { validateField } from "../../regist_logic";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, TextField,Checkbox } from "@mui/material";
+export default function EditRegistrationDialog({
+  open,
+  onClose,
+  registration,
+  onSave,
+  collectionName,
+  readOnly = false
+}) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [editedData, setEditedData] = useState(registration || {});
+  const [errors, setErrors] = useState({});
 
-export default function EditRegistrationDialog({ open, registration, onChange, onSave, onClose }) {
-  // دوال تغيير أي حقل
-  const handleChange = (key, value) => {
-    onChange({ ...registration, [key]: value });
+  useEffect(() => {
+    if (!registration) return;
+
+    const edited = { ...registration };
+
+    if (edited.birthdate && edited.birthdate.includes("/")) {
+      const [day, month, year] = edited.birthdate.split("/");
+      edited.birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+
+    if (edited.landLine && edited.landLine.startsWith("02")) {
+      edited.landLine = edited.landLine.slice(2);
+    }
+
+    setEditedData(edited);
+    setErrors({});
+  }, [registration]);
+
+  const hasChanges = JSON.stringify(editedData) !== JSON.stringify(registration);
+
+  const handleChange = (field, value) => {
+    if (readOnly) return; // لا تعدل شيء في وضع القراءة فقط
+
+    if (field === "landLine") {
+      if (value.startsWith("02")) value = value.slice(2);
+      if (value.length > 7) return;
+    }
+
+    const error = validateField(field, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: error || "",
+    }));
+
+    setEditedData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  if (!registration) return null;
+  const handleUpdateRegistration = async () => {
+    try {
+      const updatedData = { ...editedData };
+
+      if (updatedData.landLine && !updatedData.landLine.startsWith("02")) {
+        updatedData.landLine = "02" + updatedData.landLine;
+      }
+
+      await updateRegistration(collectionName, updatedData);
+      onSave(updatedData);
+      onClose();
+    } catch (err) {
+      console.error("فشل التحديث:", err);
+    }
+  };
+
+  if (!editedData) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>تعديل بيانات المسجل</DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>{readOnly ? "عرض تفاصيل التسجيل" : "تعديل التسجيل"}</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 1 }}>
-          {/* جميع الحقول المشتركة */}
-          <TextField label="الاسم الشخصي" value={registration.FirstName || ""} onChange={e => handleChange("FirstName", e.target.value)} />
-          <TextField label="اسم العائلة" value={registration.lastName || ""} onChange={e => handleChange("lastName", e.target.value)} />
-          <TextField label="تاريخ الميلاد" value={registration.birthdate || ""} onChange={e => handleChange("birthdate", e.target.value)} />
-          <TextField label="رقم الهوية" value={registration.id || ""} onChange={e => handleChange("id", e.target.value)} />
-          <TextField label="رقم التحقق" value={registration.cheackDigit || ""} onChange={e => handleChange("cheackDigit", e.target.value)} />
-          <TextField label="الإيميل" value={registration.email || ""} onChange={e => handleChange("email", e.target.value)} />
-          <TextField label="رقم الهاتف" value={registration.personalPhone || ""} onChange={e => handleChange("personalPhone", e.target.value)} />
-          <TextField label="الجنس" value={registration.gender || ""} onChange={e => handleChange("gender", e.target.value)} />
-          <TextField label="العنوان" value={registration.address || ""} onChange={e => handleChange("address", e.target.value)} />
-          <TextField label="رمز المدينة" value={registration.cityCode || ""} onChange={e => handleChange("cityCode", e.target.value)} />
-          <TextField label="الهاتف الأرضي" value={registration.landLine || ""} onChange={e => handleChange("landLine", e.target.value)} />
-          <TextField label="رقم تحقق الأب" value={registration.fatherCheackDigit || ""} onChange={e => handleChange("fatherCheackDigit", e.target.value)} />
-          <TextField label="هوية الأب" value={registration.fatherId || ""} onChange={e => handleChange("fatherId", e.target.value)} />
-          <TextField label="اسم الأب" value={registration.fatherName || ""} onChange={e => handleChange("fatherName", e.target.value)} />
-          <TextField label="هاتف الأب" value={registration.fatherPhone || ""} onChange={e => handleChange("fatherPhone", e.target.value)} />
-          <TextField label="اسم عائلة الأب" value={registration.parentLastName || ""} onChange={e => handleChange("parentLastName", e.target.value)} />
-          <TextField label="חוג" value={registration.classNumber || ""} onChange={e => handleChange("classNumber", e.target.value)} />
-          <TextField label="קבוצה" value={registration.groupNumber || ""} onChange={e => handleChange("groupNumber", e.target.value)} />
-          <TextField label="digit5" value={registration.digit5 || ""} onChange={e => handleChange("digit5", e.target.value)} />
-          <TextField label="اسم البرنامج/الفعالية" value={registration.name || ""} onChange={e => handleChange("name", e.target.value)} />
-          <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-  <Checkbox
-    checked={registration.paid || false}
-    onChange={e => handleChange("paid", e.target.checked)}
-    sx={{ mr: 1 }}
-  />
-  <span style={{ fontWeight: "bold" }}>تم الدفع؟</span>
-</Box>
+        <Grid container spacing={2} mt={1}>
+          {[
+            { label: "رقم الهوية", key: "id" },
+            { label: "الاسم الشخصي", key: "FirstName" },
+            { label: "اسم العائلة", key: "lastName" },
+            { label: "تاريخ الميلاد", key: "birthdate" },
+            { label: "الجنس", key: "gender" },
+            { label: "رقم التحقق", key: "cheackDigit" },
+            { label: "اسم عائلة الأب", key: "parentLastName" },
+            { label: "اسم الأب", key: "fatherName" },
+            { label: "هوية الأب", key: "fatherId" },
+            { label: "رقم تحقق الأب", key: "fatherCheackDigit" },
+            { label: "العنوان", key: "address" },
+            { label: "رمز المدينة", key: "cityCode" },
+            { label: "الهاتف الأرضي", key: "landLine" },
+            { label: "رقم الهاتف", key: "personalPhone" },
+            { label: "الإيميل", key: "email" },
+            { label: "رقم الدورة", key: "classNumber" },
+            { label: "رقم المجموعة", key: "groupNumber" },
+            { label: "اسم الدورة / الفعالية", key: "name" },
+            { label: "رقم التحقق الخامس", key: "digit5" },
+          ].map((field) => (
+            <Grid item xs={6} sm={4} key={field.key}>
+              {field.key === "birthdate" ? (
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="تاريخ الميلاد"
+                  InputLabelProps={{ shrink: true }}
+                  value={editedData.birthdate || ""}
+                  onChange={(e) => handleChange("birthdate", e.target.value)}
+                  error={!!errors.birthdate}
+                  helperText={errors.birthdate}
+                  disabled={readOnly}
+                />
+              ) : field.key === "gender" ? (
+                <TextField
+                  select
+                  fullWidth
+                  label="الجنس"
+                  value={editedData.gender || ""}
+                  onChange={(e) => handleChange("gender", e.target.value)}
+                  error={!!errors.gender}
+                  helperText={errors.gender}
+                  disabled={readOnly}
+                >
+                  <MenuItem value="">اختر الجنس</MenuItem>
+                  <MenuItem value="ذكر">ذكر</MenuItem>
+                  <MenuItem value="أنثى">أنثى</MenuItem>
+                </TextField>
+              ) : field.key === "landLine" ? (
+                <TextField
+                  fullWidth
+                  label="الهاتف الأرضي"
+                  value={`02${editedData.landLine || ""}`}
+                  onChange={(e) => handleChange("landLine", e.target.value.replace(/^02/, ""))}
+                  error={!!errors.landLine}
+                  helperText={errors.landLine}
+                  disabled={readOnly}
+                />
+              ) : (
+                <TextField
+                  fullWidth
+                  label={field.label}
+                  value={editedData[field.key] || ""}
+                  onChange={(e) => handleChange(field.key, e.target.value)}
+                  error={!!errors[field.key]}
+                  helperText={errors[field.key]}
+                  disabled={readOnly}
+                />
+              )}
+            </Grid>
+          ))}
 
-          
-        </Box>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={editedData.paid || false}
+                  onChange={(e) => handleChange("paid", e.target.checked)}
+                  disabled={readOnly}
+                />
+              }
+              label="تم الدفع؟"
+            />
+          </Grid>
+        </Grid>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>إلغاء</Button>
-        <Button onClick={onSave} variant="contained">حفظ</Button>
-      </DialogActions>
+
+      {!readOnly && (
+        <DialogActions>
+          <Button onClick={onClose}>إلغاء</Button>
+          <Button
+            onClick={() => {
+              if (hasChanges) {
+                setConfirmOpen(true);
+              } else {
+                onClose();
+              }
+            }}
+            variant="contained"
+          >
+            حفظ
+          </Button>
+        </DialogActions>
+      )}
+
+      {!readOnly && (
+        <ConfirmEditDialog
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={async () => {
+            await handleUpdateRegistration();
+            setConfirmOpen(false);
+          }}
+        />
+      )}
     </Dialog>
   );
 }
