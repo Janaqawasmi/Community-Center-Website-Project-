@@ -26,6 +26,7 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import ProgramStatsPage from '../pages/admin/ProgramStatsPage';
 import AnalyticsPage from '../pages/admin/AnalyticsPage'; 
+import MonthlyViews from '../pages/admin/MonthlyViews'; // ✅ NEW
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -241,7 +242,17 @@ function AppRoutes({ sections }) {
             </ProtectedAdminRoute>
           }
         />
+        <Route
+  path="/admin/monthly-views"
+  element={
+    <ProtectedAdminRoute>
+      <MonthlyViews />
+    </ProtectedAdminRoute>
+  }
+/>
+
       </Routes>
+      
     </>
   );
 }

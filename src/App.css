@@ -11,3 +11,9 @@ body {
   font-family: 'Tajawal', sans-serif;
   direction: rtl;
 }
+#google_translate_element select {
+  background: white;
+  border: none;
+  padding: 6px;
+  font-size: 14px;
+}

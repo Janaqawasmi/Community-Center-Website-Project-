@@ -8,6 +8,7 @@ import './App.css';
 import './index.css';
 import Footer from './components/Footer/Footer';
 
+
 function App() {
   const [sections, setSections] = useState([]);
 
@@ -31,6 +32,7 @@ function App() {
       </div>
       <Footer sectionId="section_general" />
     </div>
+    
     );
 }
 

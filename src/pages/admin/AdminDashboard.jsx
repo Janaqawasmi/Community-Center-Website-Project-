@@ -41,6 +41,13 @@ export default function AdminDashboard() {
             >
               📊 إحصائيات عدد المشاهدات
             </Button>
+             <Button
+              variant="outlined"
+              fullWidth
+               onClick={() => navigate('/admin/monthly-views')}
+            >
+              📊 إحصائيات شهرية عدد المشاهدات
+            </Button>
           </Stack>
         </Box>
       </AdminDashboardLayout>
