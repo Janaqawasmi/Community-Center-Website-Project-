@@ -19,6 +19,7 @@ export default function AdminEvents() {
         { name: "location", label: "المكان" },
         { name: "date", label: "تاريخ الفعالية", type: "date" },
         { name: "time", label: "وقت الفعالية", type: "time" },
+
       ]}
       filters={["classNumber", "groupNumber", "featured"]}
     />

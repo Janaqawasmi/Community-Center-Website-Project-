@@ -71,6 +71,11 @@ export default function AdminPrograms() {
           { name: "description", label: "الوصف" },
           { name: "date", label: "تاريخ الدورة", type: "date" },
           { name: "time", label: "وقت الدورة", type: "time" },
+          { name: "instructor_name", label: "اسم المدرب", required: false, type: "text" },
+          { name: "meetingNum", label: "عدد اللقاءات", required: false, type: "number" },
+
+
+
         ]}
         filters={["category", "classNumber", "groupNumber", "featured"]}
         categoryOptions={categoryOptions.map(c => c.name)}

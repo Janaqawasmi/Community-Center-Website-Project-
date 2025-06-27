@@ -15,6 +15,26 @@ import { deleteImage } from "../../../utils/deleteImage";
 import { compressImage } from "../../../utils/compressImage";
 import AdminDashboardLayout from "../../../components/AdminDashboardLayout";
 import Autocomplete from '@mui/material/Autocomplete';
+import { ConfirmEditDialog,ConfirmDeleteDialog } from './../../../components/ConfirmDialog';
+
+
+function hasFormChanged(editMode, currentId, form, items, fields) {
+  if (!editMode || !currentId) return false;
+  const original = items.find(i => i.id === currentId);
+  if (!original) return false;
+
+  for (let f of fields) {
+    const key = f.name;
+    const originalValue = original[key];
+    const currentValue = form[key];
+
+    if (f.type === "date" || f.type === "time") continue;
+
+    if (String(originalValue || '') !== String(currentValue || '')) return true;
+  }
+
+  return false;
+}
 
 
 
@@ -36,6 +56,12 @@ export default function AdminItemsManager({
   const [showArchived, setShowArchived] = useState(false);
   const [showFeatured, setShowFeatured] = useState(false);
   const [filterValues, setFilterValues] = useState({});
+  const [showEditConfirm, setShowEditConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+const [itemToDelete, setItemToDelete] = useState(null);
+
+
+
 
   // ==== INIT FORM ====
   const defaultForm = {};
@@ -165,61 +191,99 @@ export default function AdminItemsManager({
   }
 
   // ==== ADD ====
-  const handleAdd = async () => {
+  // ==== ADD ====
+const handleAdd = async () => {
+  if (!validateRequiredFields()) return;
 
-    if (!validateRequiredFields()) return;
-    let dateValue = form.date
-      ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
-      : null;
-    const { imageFile, ...formData } = form;
-    
-    let dataToAdd = { ...formData, date: dateValue, imageUrl: "", isActive: form.isActive, featured: form.featured };
-    const docRef = await addDoc(collection(db, collectionName), dataToAdd);
-    if (imageFile) {
-      await uploadImage({
-        file: imageFile,
-        storagePath: `${collectionName.toLowerCase()}/${docRef.id}.jpg`,
-        firestorePath: [collectionName, docRef.id],
-        field: "imageUrl",
-      });
+  let dateValue = form.date
+    ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
+    : null;
+
+  const { imageFile, ...formData } = form;
+
+  // ✅ حولي الأرقام قبل إنشاء dataToAdd
+  fields.forEach(f => {
+    if (f.type === "number" && formData[f.name] !== undefined) {
+      formData[f.name] = parseFloat(formData[f.name]);
     }
-    fetchItems();
-    handleCloseDialog();
+  });
+
+  let dataToAdd = {
+    ...formData,
+    date: dateValue,
+    imageUrl: "",
+    isActive: form.isActive,
+    featured: form.featured
   };
+
+  const docRef = await addDoc(collection(db, collectionName), dataToAdd);
+
+  if (imageFile) {
+    await uploadImage({
+      file: imageFile,
+      storagePath: `${collectionName.toLowerCase()}/${docRef.id}.jpg`,
+      firestorePath: [collectionName, docRef.id],
+      field: "imageUrl",
+    });
+  }
+
+  fetchItems();
+  handleCloseDialog();
+};
+
 
   // ==== EDIT ====
   const handleEdit = async () => {
-    if (!validateRequiredFields()) return;
-    let dateValue = form.date
-      ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
-      : null;
-    const docRef = doc(db, collectionName, currentId);
-    const { imageFile, ...formToUpdate } = form;
-    let updatedData = { ...formToUpdate, date: dateValue, isActive: form.isActive, featured: form.featured };
-    if (imageFile) updatedData.imageUrl = "";
-    await updateDoc(docRef, updatedData);
-    if (imageFile) {
-      if (form.imageUrl) await deleteImage(form.imageUrl);
-      await uploadImage({
-        file: imageFile,
-        storagePath: `${collectionName.toLowerCase()}/${currentId}.jpg`,
-        firestorePath: [collectionName, currentId],
-        field: "imageUrl",
-      });
+  if (!validateRequiredFields()) return;
+
+  let dateValue = form.date
+    ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
+    : null;
+
+  const docRef = doc(db, collectionName, currentId);
+  const { imageFile, ...formToUpdate } = form;
+
+  // أولًا: تحويل الحقول الرقمية في formToUpdate
+  fields.forEach(f => {
+    if (f.type === "number" && formToUpdate[f.name] !== undefined) {
+      formToUpdate[f.name] = parseFloat(formToUpdate[f.name]);
     }
-    fetchItems();
-    handleCloseDialog();
+  });
+
+  // الآن أنشئ updatedData بعد التحويل
+  let updatedData = {
+    ...formToUpdate,
+    date: dateValue,
+    isActive: form.isActive,
+    featured: form.featured
   };
+
+  if (imageFile) updatedData.imageUrl = "";
+
+  await updateDoc(docRef, updatedData);
+
+  if (imageFile) {
+    if (form.imageUrl) await deleteImage(form.imageUrl);
+    await uploadImage({
+      file: imageFile,
+      storagePath: `${collectionName.toLowerCase()}/${currentId}.jpg`,
+      firestorePath: [collectionName, currentId],
+      field: "imageUrl",
+    });
+  }
+
+  fetchItems();
+  handleCloseDialog();
+};
 
   // ==== DELETE ====
   const handleDelete = async (id) => {
-    const itemToDelete = items.find(e => e.id === id);
-    if (window.confirm("هل أنت متأكد من حذف العنصر نهائيًا؟")) {
-      await deleteDoc(doc(db, collectionName, id));
-      if (itemToDelete?.imageUrl) await deleteImage(itemToDelete.imageUrl);
-      fetchItems();
-    }
-  };
+  const itemToDelete = items.find(e => e.id === id);
+  await deleteDoc(doc(db, collectionName, id));
+  if (itemToDelete?.imageUrl) await deleteImage(itemToDelete.imageUrl);
+  fetchItems();
+};
+
 
   // ==== ARCHIVE ====
   const handleArchiveToggle = async (item) => {
@@ -316,7 +380,13 @@ export default function AdminItemsManager({
                   <IconButton color="primary" onClick={() => handleOpenDialog(item)}><EditIcon /></IconButton>
                 </TableCell>
                 <TableCell>
-                  <IconButton color="error" onClick={() => handleDelete(item.id)}><DeleteIcon /></IconButton>
+                 <IconButton color="error" onClick={() => {
+  setItemToDelete(item.id);
+  setShowDeleteConfirm(true);
+}}>
+  <DeleteIcon />
+</IconButton>
+
                 </TableCell>
               </TableRow>
             ))}
@@ -453,9 +523,47 @@ value={form.category || []}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>إلغاء</Button>
-          <Button onClick={editMode ? handleEdit : handleAdd} variant="contained">{editMode ? "تعديل" : "إضافة"}</Button>
+<Button
+  onClick={() => {
+    if (editMode) {
+if (hasFormChanged(editMode, currentId, form, items, fields)) {
+        setShowEditConfirm(true);
+      } else {
+        alert("لم تقم بأي تعديل.");
+      }
+    } else {
+      handleAdd();
+    }
+  }}
+  variant="contained"
+>
+  {editMode ? "تعديل" : "إضافة"}
+</Button>
+
         </DialogActions>
       </Dialog>
+      <ConfirmEditDialog
+  open={showEditConfirm}
+  onClose={() => setShowEditConfirm(false)}
+  onConfirm={() => {
+    setShowEditConfirm(false);
+    handleEdit();
+  }}
+/>
+
+<ConfirmDeleteDialog
+  open={showDeleteConfirm}
+  onClose={() => setShowDeleteConfirm(false)}
+  onConfirm={async () => {
+    if (itemToDelete) {
+      await handleDelete(itemToDelete);
+      setShowDeleteConfirm(false);
+      setItemToDelete(null);
+    }
+  }}
+/>
+
+
     </Box>
         </>
     

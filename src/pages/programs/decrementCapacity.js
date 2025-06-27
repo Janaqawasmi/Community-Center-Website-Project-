@@ -23,11 +23,15 @@ export async function decrementCapacity({ collectionName, docId }) {
   console.log(`Current capacity for ${collectionName}/${docId}:`, currentCapacity);
 
   // إذا كانت القيمة أكبر من صفر، قم بتخفيضها بمقدار 1
-  if (currentCapacity > 0) {
-    const newCapacity = currentCapacity - 1;
-    await updateDoc(docRef, { capacity: newCapacity });
-    console.log(`Updated capacity for ${collectionName}/${docId}:`, newCapacity);
-  } else {
-    console.log(`Capacity already zero for ${collectionName}/${docId}`);
+  try {
+    if (currentCapacity > 0) {
+      const newCapacity = currentCapacity - 1;
+      await updateDoc(docRef, { capacity: newCapacity });
+      console.log(`Updated capacity for ${collectionName}/${docId}:`, newCapacity);
+    } else {
+      console.log(`Capacity already zero for ${collectionName}/${docId}`);
+    }
+  } catch (error) {
+    console.error(`Error updating capacity for ${collectionName}/${docId}:`, error);
   }
 }
