@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import RequireAdmin from '../../components/auth/RequireAdmin';
 import AdminDashboardLayout from '../../components/AdminDashboardLayout';
+import { withProgress } from "../../utils/withProgress";
 
 export default function AdminCalendar() {
   const [events, setEvents] = useState([]);
@@ -250,10 +251,16 @@ export default function AdminCalendar() {
       };
 
       if (selectedEvent && selectedEvent.type === "calendar") {
-        await updateDoc(doc(db, "EventsCalender", selectedEvent.id), data);
+       await withProgress(() =>
+  updateDoc(doc(db, "EventsCalender", selectedEvent.id), data)
+);
+
         setSnackbar({ open: true, message: "✅ تم التحديث بنجاح", severity: "success" });
       } else {
-        await addDoc(collection(db, "EventsCalender"), data);
+       await withProgress(() =>
+  addDoc(collection(db, "EventsCalender"), data)
+);
+
         setSnackbar({ open: true, message: "✅ تم إضافة الفعالية", severity: "success" });
       }
 
@@ -266,7 +273,10 @@ export default function AdminCalendar() {
   const handleDelete = async () => {
     try {
       if (selectedEvent && selectedEvent.type === "calendar") {
-        await deleteDoc(doc(db, "EventsCalender", selectedEvent.id));
+       await withProgress(() =>
+  deleteDoc(doc(db, "EventsCalender", selectedEvent.id))
+);
+
         setSnackbar({ open: true, message: "🗑️ تم حذف الفعالية", severity: "success" });
         setDialogOpen(false);
       }

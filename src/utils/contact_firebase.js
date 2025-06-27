@@ -5,9 +5,12 @@ import {
   serverTimestamp,
   getDocs
 } from "firebase/firestore";
+import NProgress from 'nprogress'; // ✅ Add this line
 
 // ✅ Send message with message number (id)
 export const sendMessage = async ({ first_name, phone, message, last_name, email, department }) => {
+  NProgress.start(); // ✅ Start progress bar
+
   try {
     const snapshot = await getDocs(collection(db, "contactMessages"));
     const count = snapshot.size;
@@ -21,8 +24,6 @@ export const sendMessage = async ({ first_name, phone, message, last_name, email
       email,
       department,
       reply: "",
-      
-      
       timestamp: serverTimestamp()
     });
 
@@ -30,5 +31,7 @@ export const sendMessage = async ({ first_name, phone, message, last_name, email
   } catch (error) {
     console.error("خطأ أثناء إرسال الرسالة:", error);
     throw error;
+  } finally {
+    NProgress.done(); // ✅ Stop progress bar
   }
 };
