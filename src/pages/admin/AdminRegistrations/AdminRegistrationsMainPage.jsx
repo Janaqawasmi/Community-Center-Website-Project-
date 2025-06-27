@@ -15,6 +15,7 @@ export default function AdminRegistrationsMainPage() {
     <AdminDashboardLayout>
       <Box sx={{ p: 4 }}>
         {/* أزرار الإضافة وتبديل العرض */}
+        {!archivedOnly && (
         <Box sx={{ display: 'flex', gap: 2  }}>
           <Button
             variant="contained"
@@ -24,39 +25,29 @@ export default function AdminRegistrationsMainPage() {
             إضافة تسجيل جديد
           </Button>
  </Box>
+ )}
+ 
  <AddNewRegistration open={openDialog} onClose={() => setOpenDialog(false)} />
 
 
-<Box sx={{ display: 'flex', justifyContent: 'flex-start', mr:138, mt:-4}}>
+<Box sx={{ display: 'flex', justifyContent: 'flex-start', mr: 135, mt: -2 }}>
+  <Button
+    variant="outlined"
+    sx={{ width: 180, textAlign: 'center' }} // ⬅️ عرض ثابت لمنع التحرك
+    color={archivedOnly ? "primary" : "secondary"}
+    onClick={() => {
+      if (archivedOnly) {
+        setArchivedOnly(false);
+      } else {
+        setArchivedOnly(true);
+        setTab(0);
+      }
+    }}
+  >
+    {archivedOnly ? "العودة للتسجيلات الحالية" : "أرشيف التسجيلات"}
+  </Button>
+</Box>
 
-          {/* زر عرض الأرشيف (يظهر إذا كنا في العرض العادي) */}
-          {!archivedOnly && (
-            
-            <Button 
-              variant="outlined"
-              color="secondary"
-              onClick={() => {
-                setArchivedOnly(true);
-                // نعيد اختيار التبويب الأول لتجنّب بقاء أي تبويب مفعل
-                setTab(0);
-              }}
-            >
-أرشيف التسجيلات
-            </Button>
-          )}
-
-          {/* زر العودة للعرض العادي */}
-          {archivedOnly && (
-            <Button 
-              variant="outlined"
-              onClick={() => {
-                setArchivedOnly(false);
-              }}
-            >
-العودة للتسجيلات الحالية
-            </Button>
-          )}
-       </Box>
 
         {/* إذا كنا في العرض العادي، نظهر التبويبات */}
         {!archivedOnly && (

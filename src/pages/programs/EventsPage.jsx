@@ -67,7 +67,8 @@ export default function EventsPage() {
                 <ItemFlipCard
                   item={highlightedEvent}
                   fields={eventFields}
- onRegister={() => handleRegister(event)}                  highlight={true}
+         onRegister={() => handleRegister(event)}       
+            highlight={true}
                 />
               </Grid>
             </Grid>

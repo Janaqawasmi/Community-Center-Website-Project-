@@ -16,7 +16,7 @@ const fetchCollectionWithDetails = async (collectionName) => {
       const docId = data.docId;
 
       if (!docId) {
-        return { firebaseId, ...data, classNumber: "", groupNumber: "", name: "" };
+        return { firebaseId, ...data, classNumber: "", groupNumber: "", name: "" , digit5:""};
       }
 
       const defColl = collectionName === "programRegistrations"
@@ -32,6 +32,8 @@ const fetchCollectionWithDetails = async (collectionName) => {
         classNumber: defData.classNumber ?? "",
         groupNumber: defData.groupNumber ?? "",
         name: defData.name ?? "",
+        digit5: defData.digit5 ?? "",
+        collectionName,
       };
     })
   );
@@ -53,8 +55,15 @@ export const fetchRegistrations = async (collectionName) => {
 
 // تحديث تسجيل بناءً على firebaseId
 export const updateRegistration = async (collectionName, registration) => {
+try{
   const docRef = doc(db, collectionName, registration.firebaseId);
   let editCopy = { ...registration };
   delete editCopy.firebaseId;
-  await updateDoc(docRef, editCopy);
+
+  await updateDoc(docRef, editCopy);}
+  catch (error) {
+    console.error("Error updating registration:", error);
+    throw error;
+  }
+
 };

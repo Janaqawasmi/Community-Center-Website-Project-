@@ -22,6 +22,7 @@ export const filterRegistrations = (data, { classNumber, groupNumber, search, pa
       (r.id         && r.id.toString().includes(q)) ||
       (r.fatherId   && r.fatherId.toString().includes(q)) ||
       (r.email      && r.email.toLowerCase().includes(q)) ||
+      (r.name       && r.name.toLowerCase().includes(q)) ||
       (r.personalPhone && r.personalPhone.toString().includes(q))
     );
   }

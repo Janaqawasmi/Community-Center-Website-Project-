@@ -2,19 +2,30 @@ import { getDocs, collection } from "firebase/firestore";
 import { db } from '../components/firebase';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { updateRegistration } from "../pages/admin/AdminRegistrations/registrationService"; 
 
-export const exportRegistrationsToExcel = async () => {
+export const exportRegistrationsToExcel = async ({ selected = [], setSelected }) => {
   try {
-    // 1. جلب البيانات
-    const querySnapshot = await getDocs(collection(db, "programRegistrations"));
-    const registrations = querySnapshot.docs.map(doc => doc.data());
+    let registrations = [];
+
+    if (selected.length > 0) {
+      // 1. إذا تم تحديد سجلات
+      registrations = selected;
+    } else {
+      // 2. إذا لم يتم التحديد: جلب كل التسجيلات من الكوليكشن
+      const querySnapshot = await getDocs(collection(db, "programRegistrations"));
+      registrations = querySnapshot.docs.map(doc => ({
+        firebaseId: doc.id,
+        collectionName: "programRegistrations",
+        ...doc.data()
+      }));
+    }
 
     if (registrations.length === 0) {
       alert("لا يوجد بيانات للتصدير");
       return;
     }
 
-    // 2. ترتيب الحقول بنفس الترتيب المرغوب
     const formatted = registrations.map(item => ({
       cheackDigit: item.cheackDigit || "",
       id: item.id || "",
@@ -31,50 +42,30 @@ export const exportRegistrationsToExcel = async () => {
       groupNumber: item.groupNumber || "",
       fatherCheackDigit: item.fatherCheackDigit || "",
       fatherId: item.fatherId || "",
-      fatherLastName: item.parentLastName || "", // أو عدل حسب اسم الحقل في بياناتك
+      fatherLastName: item.parentLastName || "",
       fatherName: item.fatherName || "",
       fatherPhone: item.fatherPhone || "",
     }));
 
-    // 3. ترتيب الهيدر (يجب أن يطابق الحقول في formatted)
     const header = [
       "cheackDigit", "id", "lastName", "FirstName", "gender", "birthdate", "address",
       "cityCode", "landLine", "personalPhone", "classNumber", "digit5", "groupNumber",
       "fatherCheackDigit", "fatherId", "fatherLastName", "fatherName", "fatherPhone"
     ];
 
-    // 4. العناوين بالعبرية
     const headerHebrew = [
-      "ביקורת",               // cheackDigit
-      "ת.זהות",               // id
-      "שם משפחה",             // lastName
-      "שם פרטי",              // FirstName
-      "מין",                  // gender
-      "תאריך לידה",           // birthdate
-      "כתובת",                // address
-      "קוד עיר במשרד הפנים",   // cityCode
-      "טלפון",                // landLine
-      "טלפון נייד",           // personalPhone
-      "חוג",                  // classNumber
-      "ספרה 5",               // digit5
-      "קבוצה",                // groupNumber
-      "ביקורת ראש משפחה",     // fatherCheackDigit
-      "ת.ז ראש משפחה",        // fatherId
-      "משפחה ראש משפחה",      // fatherLastName
-      "פרטי ראש משפחה",       // fatherName
-      "טלפון ראש משפחה"       // fatherPhone
+      "ביקורת", "ת.זהות", "שם משפחה", "שם פרטי", "מין", "תאריך לידה", "כתובת",
+      "קוד עיר במשרד הפנים", "טלפון", "טלפון נייד", "חוג", "ספרה 5", "קבוצה",
+      "ביקורת ראש משפחה", "ת.ז ראש משפחה", "משפחה ראש משפחה", "פרטי ראש משפחה", "טלפון ראש משפחה"
     ];
 
-    // 5. إنشاء ورقة الإكسل مع الهيدر الإنجليزي (لترتيب الأعمدة)
     const worksheet = XLSX.utils.json_to_sheet(formatted, { header });
 
-    // 6. تعديل الصف الأول ليحمل العناوين العبرية
     headerHebrew.forEach((title, idx) => {
-      const col = String.fromCharCode(65 + idx); // A, B, C, ...
+      const col = String.fromCharCode(65 + idx);
       worksheet[`${col}1`].v = title;
     });
 
-    // 7. إنشاء ملف Excel وتصديره
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
 
@@ -85,7 +76,6 @@ export const exportRegistrationsToExcel = async () => {
 
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
 
-    // 8. توليد اسم الملف مع التاريخ الحالي بالشكل Registrations_yyyy-mm-dd.xlsx
     const now = new Date();
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -93,8 +83,19 @@ export const exportRegistrationsToExcel = async () => {
     const dateStr = `${yyyy}-${mm}-${dd}`;
     const fileName = `Registrations_${dateStr}.xlsx`;
 
-    // 9. حفظ الملف
     saveAs(blob, fileName);
+
+    // 3. بعد التصدير: تأشير الكل كمؤرشف
+    await Promise.all(
+      registrations.map(async reg => {
+        const updated = { ...reg, archived: true };
+        await updateRegistration(reg.collectionName || "programRegistrations", updated);
+      })
+    );
+
+    if (setSelected) setSelected([]);
+
+    alert("تم تصدير البيانات وتحديث حالتها كمؤرشفة بنجاح");
 
   } catch (error) {
     console.error("خطأ في التصدير:", error);

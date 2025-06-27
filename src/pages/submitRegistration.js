@@ -31,7 +31,8 @@ function getRegistrationInfo() {
 }
 
 
-export async function submitRegistration(e, formData, setForm) {
+export async function submitRegistration(e, formData, setForm, overrides = {}) {
+  
   e.preventDefault();
 
   const age = calculateAge(formData.birthdate);
@@ -39,7 +40,11 @@ export async function submitRegistration(e, formData, setForm) {
   const idWithoutLast = removeLastDigit(formData.id);
   const fatherIdWithoutLast = removeLastDigit(formData.fatherId);
 
-const { collectionName, sourceCollection, docId } = getRegistrationInfo();
+const { collectionName, sourceCollection, docId } = {
+  ...getRegistrationInfo(),
+  ...overrides
+};
+
 
   if (!collectionName || !sourceCollection) {
     alert('لم يتم تحديد نوع التسجيل (دورة أو فعالية)');
