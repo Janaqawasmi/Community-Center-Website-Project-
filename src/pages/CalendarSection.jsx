@@ -194,7 +194,7 @@ const handleRegisterForEvent = (eventTitle) => {
   try {
     console.log("Event title:", eventTitle);
     // ✅ غيّر من /registration إلى /RegistrationForm
-    const registrationUrl = `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.name)}`;
+    const registrationUrl = `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.title)}`;
     console.log("Navigation URL:", registrationUrl);
     navigate(registrationUrl);
   } catch (error) {
