@@ -95,48 +95,53 @@ const handleNavClick = (path) => {
     };
     fetchSiteInfo();
   }, []);
-
-// Initialize EqualWeb accessibility script
- useEffect(() => {
  
-  if (typeof window.interdeal === 'undefined') {
-    window.interdeal = {
-      sitekey: "275cc400069738bc738aaa49ba44ec3c",
-      Position: "Left",
-      domains: {
-        js: "https://cdn.equalweb.com/",
-        acc: "https://access.equalweb.com/"
+useEffect(() => {
+  window.interdeal = {
+    sitekey: "275cc400069738bc738aaa49ba44ec3c",
+    Position: "right",
+    domains: {
+      js: "https://cdn.equalweb.com/",
+      acc: "https://access.equalweb.com/"
+    },
+    Menulang: "AR",
+    draggable: false,
+    btnStyle: {
+      vPosition: ["50%", "80%"],
+      scale: ["0.5", "0.5"],
+      color: {
+        main: "#1c4bb6",
+        second: "#ffffff"
       },
-      Menulang: "AR",
-      btnStyle: {
-        vPosition: ["80%", "80%"],
-        scale: ["0.8", "0.5"],
-        color: {
-          main: "#1c4bb6",
-          second: "#ffffff"
-        },
-        icon: {
-          outline: false,
-          type: 10,
-          shape: "semicircle"
-        }
+      icon: {
+        outline: false,
+        type: 10,
+        shape: "semicircle"
       }
-    };
-  }
+    }
+  };
 
   const script = document.createElement("script");
-  script.src = "https://cdn.equalweb.com/core/5.1.13/accessibility.js";
+  script.src = window.interdeal.domains.js + "core/5.1.13/accessibility.js";
   script.defer = true;
-  script.integrity =
-    "sha512-70/AbMe6C9H3r5hjsQleJEY4y5l9ykt4WYSgyZj/WjpY/ord/26LWfva163b9W+GwWkfwbP0iLT+h6KRl+LoXA==";
+  script.integrity = "sha512-70/AbMe6C9H3r5hjsQleJEY4y5l9ykt4WYSgyZj/WjpY/ord/26LWfva163b9W+GwWkfwbP0iLT+h6KRl+LoXA==";
   script.crossOrigin = "anonymous";
   script.setAttribute("data-cfasync", true);
-  document.body.appendChild(script);
+
+  if (document.body) {
+    document.body.appendChild(script);
+  } else {
+    document.head.appendChild(script);
+  }
 
   return () => {
-    document.body.removeChild(script);
+    if (document.body.contains(script)) {
+      document.body.removeChild(script);
+    }
   };
 }, []);
+
+
 
 
   const renderSocialIcon = (href, Icon, color) => (

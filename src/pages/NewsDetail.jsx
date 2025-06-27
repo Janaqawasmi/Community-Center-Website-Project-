@@ -10,6 +10,8 @@ import SectionScrollButton from "../components/sections/SectionScrollButton";
 import ExpandableText from '../components/ExpandableText';
 import PrettyCard from '../components/layout/PrettyCard'; 
 import RoundedButton from '../components/layout/Buttons/RoundedButton';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const categoryToSectionId = {
   "أمسية": "section_evening",
@@ -73,24 +75,9 @@ function NewsDetail() {
     <Box sx={{ direction: 'rtl', minHeight: '100vh', py: 0 }}>
       <HeroSection pageId="news" title={news.title} />
 
-<Box sx={{ display: 'flex', justifyContent: 'right', mt: 4, mb: 2, px: 4 }}>
-  <RoundedButton
-    label="تصفح المزيد من الأخبار"
-    onClick={() => {
-      if (location.pathname !== '/news') {
-        navigate('/news');
-      } else {
-        navigate('/', { replace: true });
-        setTimeout(() => navigate('/news'), 0);
-      }
-    }}
-    
-    color={newsColor}
-  />
-</Box>
 
 
-      <Container maxWidth="lg" sx={{ pt: 2, pb: 6, px: 2 }}>
+      <Container maxWidth="lg" sx={{ pt: 8, pb: 6, px: 2 }}>
         <Grid container spacing={4} alignItems="stretch">
           {/* Right: عن الخبر */}
           <Grid item xs={12} md={6}>
@@ -102,7 +89,7 @@ function NewsDetail() {
           expanded={expanded}
           sx={{ fontSize: '1.2rem', lineHeight: 2 }}
         />
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <Box sx={{ textAlign: 'center', mt: 0.000001 }}>
           <button
             onClick={() => setExpanded(prev => !prev)}
             style={{
@@ -116,9 +103,27 @@ function NewsDetail() {
           >
             
           </button>
+           <Box sx={{ display: 'flex', justifyContent: 'right', mt: 0.1, mb: 6, px: 7,pr: 0.01 }}>
+  <RoundedButton
+    label="تصفح المزيد من الأخبار"
+    onClick={() => {
+      if (location.pathname !== '/news') {
+        navigate('/news');
+      } else {
+        navigate('/', { replace: true });
+        setTimeout(() => navigate('/news'), 0);
+      }
+      
+    }}
+    color={newsColor}
+    
+  />
+</Box>
         </Box>
       </Box>
     </PrettyCard>
+   
+
   </Box>
 </Grid>
 
@@ -127,43 +132,45 @@ function NewsDetail() {
   {Array.isArray(news.Pictures) && news.Pictures.length > 0 && (
     <Box
       sx={{
-        height: 400, // ✅ fixed height in pixels
+        width:'100%',
+        height: 360, // ✅ fixed height in pixels
         borderRadius: '28px',
         overflow: 'hidden',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
       }}
     >
-      <Slider {...sliderSettings}>
-        {news.Pictures.map((url, i) => (
-          <Box
-            key={i}
-            sx={{
-              width: '100%',
-              height: '100%', // ✅ same as parent
-              display: 'flex',
-            }}
-          >
-            <img
-              src={url}
-              alt={`desc-img-${i}`}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover', // ✅ makes it fill the container
-                objectPosition: 'center',
-                display: 'block',
-              }}
-            />
-          </Box>
-        ))}
-      </Slider>
+   <Box sx={{ position: 'relative' }}>
+  <Slider {...sliderSettings}>
+    {news.Pictures.map((url, i) => (
+      <Box key={i} sx={{ width: '100%', height: 360 }}>
+        <img
+          src={url}
+          alt={`desc-img-${i}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            display: 'block',
+          }}
+        />
+      </Box>
+    ))}
+  </Slider>
+
+  {/* Optional: spacing below the slider for dots */}
+  <Box sx={{ height: 30 }} />
+</Box>
+
     </Box>
+    
   )}
 </Grid>
 
         </Grid>
       </Container>
     </Box>
+    
   );
 }
 
