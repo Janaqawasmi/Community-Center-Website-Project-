@@ -1,43 +1,37 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const sgMail = require("@sendgrid/mail");
+const { handleSendMessage } = require("./helpers/inquiry");
+const { handleProgramRegistration } = require("./helpers/programRegistration");
+const { handleEventRegistration } = require("./helpers/eventRegistration");
+const { buildEmailHtml } = require("./helpers/email");
+const cors = require("cors");
+const corsHandler = cors({ origin: true });
 
 admin.initializeApp();
 const db = admin.firestore();
 
-// ✅ Set SendGrid API key only in production
 if (process.env.FUNCTIONS_EMULATOR || process.env.NODE_ENV === "development") {
-  console.log("🚫 Skipping SendGrid key in local/dev mode");
+  console.log("Skipping SendGrid key in local/dev mode");
 } else {
   sgMail.setApiKey(functions.config().sendgrid.key);
 }
-// 🔔 Common email template builder
-const buildEmailHtml = (userName, title, itemsHtml, siteInfo) => `
-  <div dir="rtl" style="font-family: 'Segoe UI', Tahoma, sans-serif; color: #333;">
-    <h2 style="color: #4A148C;">مرحبًا ${userName}،</h2>
-    <p>شكرًا لتسجيلك في ${title} التالي:</p>
-    <ul style="line-height: 1.8;">
-      ${itemsHtml}
-    </ul>
-    <p>نتطلع لرؤيتك قريبًا بإذن الله 🌟</p>
-    <hr style="margin: 30px 0;" />
-    <div style="font-size: 13px; color: #444;">
-      <p><strong>📍 العنوان:</strong> ${siteInfo.address || ''}</p>
-      <p><strong>📞 الهاتف:</strong> ${siteInfo.phone_number || ''}</p>
-      <p><strong>📧 البريد الإلكتروني:</strong> ${siteInfo.email}</p>
-      <p><strong>📸 إنستغرام:</strong> <a href="${siteInfo.instagramLink}" target="_blank">${siteInfo.instagramLink}</a></p>
-      <p><strong>📘 فيسبوك:</strong> <a href="${siteInfo.FacebookLink}" target="_blank">${siteInfo.FacebookLink}</a></p>
-    </div>
-    <div style="margin-top: 30px;">
-      <img src="${siteInfo.logo_url}" alt="شعار المركز" style="max-width: 120px;" />
-    </div>
-  </div>
-`;
+exports.sendMessage = functions.https.onRequest(handleSendMessage);
+exports.registerProgram = functions
+  .region("us-central1")
+  .https.onRequest((req, res) => {
+    corsHandler(req, res, () => handleProgramRegistration(req, res));
+  });
 
-
+  exports.registerEvent = functions
+  .region('us-central1')
+   .https.onRequest((req, res) => {
+    corsHandler(req, res, () => handleEventRegistration(req, res));
+  });
+  
 // ✅ Program registration confirmation
 exports.sendProgramConfirmation = functions.firestore
-  .document("`programRegistrations`/{regId}")
+  .document("programRegistrations/{regId}")
   .onCreate(async (snap, context) => {
     const registration = snap.data();
     const programId = registration.docId;

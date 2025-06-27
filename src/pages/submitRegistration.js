@@ -1,11 +1,4 @@
-import { db } from '../components/firebase';
-import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where
-} from 'firebase/firestore';
+import axios from "axios";
 import { calculateAge } from './regist_logic';
 
 // 🔧 Remove last digit for validation
@@ -14,14 +7,14 @@ function removeLastDigit(num) {
   return num.toString().slice(0, -1);
 }
 
-// 🔧 Get Firestore collection info
+// 🔧 Get Firestore collection info and backend URL
 function getRegistrationInfo() {
   const params = new URLSearchParams(window.location.search);
 
   if (params.has("programId")) {
     return {
       collectionName: "programRegistrations",
-      sourceCollection: "programs",
+url: "https://us-central1-public-center-website.cloudfunctions.net/registerProgram",
       docId: params.get("programId"),
     };
   }
@@ -29,58 +22,48 @@ function getRegistrationInfo() {
   if (params.has("eventId")) {
     return {
       collectionName: "eventRegistrations",
-      sourceCollection: "Events",
+url: "https://us-central1-public-center-website.cloudfunctions.net/registerEvent",
       docId: params.get("eventId"),
     };
   }
 
-  return { collectionName: null, sourceCollection: null, docId: null };
+  return { collectionName: null, url: null, docId: null };
 }
 
-// ✅ Main function
 export async function submitRegistration(e, formData, setForm) {
   e.preventDefault();
 
+  // ✅ Keep your original logic to calculate age
   const age = calculateAge(formData.birthdate);
   const idWithoutLast = removeLastDigit(formData.id);
   const fatherIdWithoutLast = removeLastDigit(formData.fatherId);
   const checkDigit = formData.id.slice(-1);
   const fatherCheckDigit = formData.fatherId.slice(-1);
 
-  const { collectionName, sourceCollection, docId } = getRegistrationInfo();
+  const { collectionName, url, docId } = getRegistrationInfo();
 
-  if (!collectionName || !sourceCollection || !docId) {
-    return { success: false, reason: 'invalid_collection' };
+  if (!collectionName || !url || !docId) {
+    return { success: false, reason: "invalid_collection" };
   }
 
-  // 🔒 Check for duplicate registration
-  const duplicateQuery = query(
-    collection(db, collectionName),
-    where("id", "==", idWithoutLast),
-    where("docId", "==", docId)
-  );
-
-  const existing = await getDocs(duplicateQuery);
-  if (!existing.empty) {
-    return { success: false, reason: 'duplicate' };
-  }
-
-  // 📝 Prepare the registration object
+  // ✅ Prepare your formatted registration object as before
   let formattedForm = {
     ...formData,
+    recaptchaToken: formData.recaptchaToken,
     id: idWithoutLast,
     cheackDigit: checkDigit,
     fatherId: fatherIdWithoutLast,
     fatherCheackDigit: fatherCheckDigit,
     birthdate: formData.birthdate
-      ? formData.birthdate.toLocaleDateString('en-GB')
-      : '',
-    landLine: formData.landLine ? `02${formData.landLine}` : '',
-    registrationDate: new Date().toLocaleString('en-GB', {
-      dateStyle: 'short',
-      timeStyle: 'short',
+      ? formData.birthdate.toLocaleDateString("en-GB")
+      : "",
+    landLine: formData.landLine ? `02${formData.landLine}` : "",
+    registrationDate: new Date().toLocaleString("en-GB", {
+      dateStyle: "short",
+      timeStyle: "short",
     }),
     archived: false,
+    docId: docId, // 🔑 important for backend duplicate checking
   };
 
   if (age >= 18) {
@@ -95,33 +78,53 @@ export async function submitRegistration(e, formData, setForm) {
   }
 
   try {
-    await addDoc(collection(db, collectionName), formattedForm);
+    // ✅ Send the data to your backend Cloud Function instead of Firestore
+    const response = await axios.post(url, formattedForm);
 
-    if (setForm) {
-      setForm({
-        FirstName: '',
-        birthdate: '',
-        id: '',
-        cheackDigit: '',
-        email: '',
-        personalPhone: '',
-        lastName: '',
-        gender: '',
-        address: '',
-        cityCode: '',
-        landLine: '',
-        fatherCheackDigit: '',
-        fatherId: '',
-        fatherName: '',
-        fatherPhone: '',
-        parentLastName: '',
-        docId: '',
-      });
+    if (response.data.success) {
+      if (setForm) {
+        setForm({
+          FirstName: "",
+          birthdate: "",
+          id: "",
+          cheackDigit: "",
+          email: "",
+          personalPhone: "",
+          lastName: "",
+          gender: "",
+          address: "",
+          cityCode: "",
+          landLine: "",
+          fatherCheackDigit: "",
+          fatherId: "",
+          fatherName: "",
+          fatherPhone: "",
+          parentLastName: "",
+          docId: "",
+        });
+      }
+      return { success: true };
+
+
+    } else if (response.data.reason === "duplicate") {
+  return { success: false, reason: "duplicate" };
+} 
+
+
+else {
+      return { success: false, reason: "error" };
     }
-
-    return { success: true };
-  } catch (error) {
-    console.error('خطأ أثناء حفظ البيانات:', error);
-    return { success: false, reason: 'error' };
+} catch (error) {
+  if (
+    error.response?.status === 409 &&
+    error.response?.data?.reason === "duplicate"
+  ) {
+    // Don't log this as a console error because it's expected
+    return { success: false, reason: "duplicate" };
   }
+
+  console.error("❌ خطأ أثناء إرسال البيانات:", error);
+  return { success: false, reason: "error" };
+}
+
 }

@@ -5,7 +5,17 @@ import CustomDateInput from "./CustomDateInput";
 import RequiredLabel from "./RequiredLabel";
 import { calculateAge } from "../regist_logic";
 
-function StepOne({ form, setForm, errors, setErrors, handleValidatedChange, handleChange, nextStep }) {
+function StepOne({
+  form,
+  setForm,
+  errors,
+  setErrors,
+  handleValidatedChange,
+  handleChange,
+  nextStep,
+  isLoading,
+  recaptchaToken
+}) {
   const age = calculateAge(form.birthdate);
 
   return (
@@ -140,9 +150,16 @@ function StepOne({ form, setForm, errors, setErrors, handleValidatedChange, hand
       <Grid item xs={12}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
           {age >= 18 ? (
-            <Button variant="contained" color="primary" type="submit" size="large">
-              إرسال
-            </Button>
+           <Button
+  variant="contained"
+  color="primary"
+  type="submit"
+  size="large"
+  disabled={isLoading || (age >= 18 && !recaptchaToken)}
+>
+  {isLoading ? 'جاري الإرسال...' : 'إرسال'}
+</Button>
+
           ) : (
             <Button variant="contained" color="primary" onClick={nextStep} size="large">
               التالي

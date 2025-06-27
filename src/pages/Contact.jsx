@@ -26,6 +26,7 @@ export default function Contact() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [siteInfo, setSiteInfo] = useState(null);
@@ -36,9 +37,10 @@ export default function Contact() {
   const headerGradient = "linear-gradient(180deg, #00b0f0 0%, #003366 100%)";
 
   // إضافة useCallback لمنع إعادة التحميل
-    const handleCaptchaChange = useCallback((value) => {
-      setCaptchaVerified(!!value);
-    }, []);
+    const handleCaptchaChange = useCallback((token) => {
+     setCaptchaVerified(!!token);
+     setRecaptchaToken(token || "");
+     }, []);
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -132,7 +134,10 @@ useEffect(() => {
 
    setIsLoading(true);
        try {
-         await sendMessage(values);
+        await sendMessage({
+  ...values,
+  recaptchaToken: recaptchaToken,
+});
          showSnackbar("✅ تم إرسال الرسالة بنجاح");
          resetForm();
          setCaptchaVerified(false);

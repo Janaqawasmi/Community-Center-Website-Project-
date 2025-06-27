@@ -1,7 +1,13 @@
 import { Grid, TextField, Button, Box } from "@mui/material";
 
-function StepTwo({ form, errors, handleValidatedChange, prevStep }) {
-  return (
+function StepTwo({
+  form,
+  errors,
+  handleValidatedChange,
+  prevStep,
+  isLoading,
+  recaptchaToken,
+}) {  return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
         <TextField
@@ -60,9 +66,16 @@ function StepTwo({ form, errors, handleValidatedChange, prevStep }) {
           <Button variant="outlined" onClick={prevStep} size="large">
             السابق
           </Button>
-          <Button variant="contained" type="submit" size="large">
-            إرسال
-          </Button>
+        <Button
+  variant="contained"
+  color="primary"
+  type="submit"
+  size="large"
+  disabled={isLoading || !recaptchaToken}
+>
+  {isLoading ? 'جاري الإرسال...' : 'إرسال'}
+</Button>
+
         </Box>
       </Grid>
     </Grid>

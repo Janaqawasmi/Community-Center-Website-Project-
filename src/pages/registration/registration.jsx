@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom';
 import { useAnonymousAuth } from "../../components/auth/useAnonymousAuth";
 import { decrementCapacity } from "../programs/decrementCapacity";
 import PrettyCard from '../../components/layout/PrettyCard';
+import ReCAPTCHA from "react-google-recaptcha";
+import { useRef } from 'react';
 
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
@@ -18,8 +20,9 @@ function RegistrationForm() {
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
-
-
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
+const [isLoading, setIsLoading] = useState(false);
 
   const requiredFieldsByStep = [
     ['FirstName', 'birthdate', 'id', 'lastName', 'email', 'personalPhone', 'gender', 'address'],
@@ -51,6 +54,7 @@ function RegistrationForm() {
    docId: docId, // ✅ set docId initially
   });
 
+  const userIsAdult = form.birthdate && calculateAge(form.birthdate) >= 18;
   const programName = searchParams.get("program");
   const eventName = searchParams.get("event");
   const title =
@@ -107,12 +111,31 @@ const handleChange = (e) => {
 
   const prevStep = () => setStep(s => s - 1);
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
+
+    // 🚀 Run validation first!
+  const isValid = validateStep(step, form, requiredFieldsByStep, setErrors);
+
+  if (!isValid) {
+    console.log("❌ Form validation failed. Fix errors before sending.");
+    return;
+  }
+  
+  if (!recaptchaToken) {
+    setSubmitMessage("❌ يرجى التحقق من أنك لست روبوتاً.");
+    setFormSubmitted(true);
+    return;
+  }
 
   if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
     try {
-      const result = await submitRegistration(e, form, setForm);
+        setIsLoading(true);
+
+      const result = await submitRegistration(e, {
+        ...form,
+        recaptchaToken: recaptchaToken,
+      }, setForm);
 
       if (result.success) {
         if (programId) {
@@ -121,7 +144,7 @@ const handleChange = (e) => {
           await decrementCapacity({ collectionName: "Events", docId: eventId });
         }
 
-setSubmitMessage("✅ تم إرسال النموذج بنجاح!<br/>شكرًا لتسجيلك.<br/>ستصلك رسالة بريد إلكتروني تحتوي على تفاصيل التسجيل.");
+       setSubmitMessage("✅ تم إرسال النموذج بنجاح!<br/>شكرًا لتسجيلك.<br/>ستصلك رسالة بريد إلكتروني تحتوي على تفاصيل التسجيل.");
       } else if (result.reason === "duplicate") {
         setSubmitMessage("❌ تم التسجيل مسبقًا لنفس الدورة/الفعالية.");
       } else {
@@ -129,10 +152,27 @@ setSubmitMessage("✅ تم إرسال النموذج بنجاح!<br/>شكرًا 
       }
 
       setFormSubmitted(true);
+
+       // ✅ RESET THE CAPTCHA
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+      setRecaptchaToken(null);
+
+
     } catch (err) {
       console.error("❌ Submission error:", err);
       setSubmitMessage("❌ حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.");
       setFormSubmitted(true);
+
+         // ✅ RESET THE CAPTCHA even after an error
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+      setRecaptchaToken(null);
+
+    } finally {
+      setIsLoading(false);
     }
   } else {
     nextStep();
@@ -182,31 +222,84 @@ setSubmitMessage("✅ تم إرسال النموذج بنجاح!<br/>شكرًا 
   </Box>
 ) : (
 
-                <form autoComplete="off" onSubmit={handleSubmit} style={{ direction: "rtl" }}>
+ <form autoComplete="off" onSubmit={handleSubmit} style={{ direction: "rtl" }}>
               
               {/* ------- الخطوة 1 ------- */}
                 {/* حقل مخفي لحفظ docId */}
                 <input type='hidden' name='docId' value={form.docId} /> 
-                 {step === 0 && (
-                    <StepOne
-                      form={form}
-                      setForm={setForm}
-                      errors={errors}
-                      setErrors={setErrors}
-                      handleValidatedChange={handleValidatedChange}
-                      handleChange={handleChange}
-                      nextStep={nextStep}
-                    />
-                  )}
+  {step === 0 && (
+    <>
+      <StepOne
+        form={form}
+        setForm={setForm}
+        errors={errors}
+        setErrors={setErrors}
+        handleValidatedChange={handleValidatedChange}
+        handleChange={handleChange}
+        nextStep={nextStep}
+        isLoading={isLoading}
+        recaptchaToken={recaptchaToken}
+      />
+
+      {userIsAdult && (
+        <Box textAlign="center" mt={2}>
+          <ReCAPTCHA
+  ref={recaptchaRef}
+  sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
+  onChange={(token) => setRecaptchaToken(token)}
+  onErrored={() => {
+    console.error("❌ reCAPTCHA failed to load or timed out.");
+    setSubmitMessage("❌ حدث خطأ أثناء التحقق من أنك لست روبوتاً. حاول مرة أخرى.");
+    setFormSubmitted(true);
+  }}
+  onExpired={() => {
+    console.warn("reCAPTCHA expired.");
+    setRecaptchaToken(null);
+  }}
+  size="normal"
+  hl="ar"
+/>
+
+        </Box>
+      )}
+    </>
+  )}
+
                 {/* ------- الخطوة 2 ------- */}
-                  {step === 1 && (
-                    <StepTwo
-                      form={form}
-                      errors={errors}
-                      handleValidatedChange={handleValidatedChange}
-                      prevStep={prevStep}
-                    />
-                  )}
+               {step === 1 && (
+  <>
+    <StepTwo
+      form={form}
+      errors={errors}
+      handleValidatedChange={handleValidatedChange}
+      prevStep={prevStep}
+      isLoading={isLoading}
+      recaptchaToken={recaptchaToken}
+    />
+
+    {!userIsAdult && (
+      <Box textAlign="center" mt={2}>
+       <ReCAPTCHA
+  ref={recaptchaRef}
+  sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
+  onChange={(token) => setRecaptchaToken(token)}
+  onErrored={() => {
+    console.error("❌ reCAPTCHA failed to load or timed out.");
+    setSubmitMessage("❌ حدث خطأ أثناء التحقق من أنك لست روبوتاً. حاول مرة أخرى.");
+    setFormSubmitted(true);
+  }}
+  onExpired={() => {
+    console.warn("reCAPTCHA expired.");
+    setRecaptchaToken(null);
+  }}
+  size="normal"
+  hl="ar"
+/>
+
+      </Box>
+    )}
+  </>
+)}
                 </form>
               )}
             </PrettyCard>
