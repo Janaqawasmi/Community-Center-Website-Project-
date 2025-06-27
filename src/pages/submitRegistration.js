@@ -1,5 +1,7 @@
 import axios from "axios";
 import { calculateAge } from './regist_logic';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 // 🔧 Remove last digit for validation
 function removeLastDigit(num) {
@@ -77,6 +79,9 @@ export async function submitRegistration(e, formData, setForm) {
     };
   }
 
+  
+  NProgress.start(); // ✅ Start the loading bar
+
   try {
     // ✅ Send the data to your backend Cloud Function instead of Firestore
     const response = await axios.post(url, formattedForm);
@@ -125,6 +130,10 @@ else {
 
   console.error("❌ خطأ أثناء إرسال البيانات:", error);
   return { success: false, reason: "error" };
+} finally {
+  NProgress.done(); // ✅ Stop the loading bar
+}
+
 }
 
 }

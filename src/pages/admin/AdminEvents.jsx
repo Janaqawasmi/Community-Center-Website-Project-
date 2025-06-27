@@ -15,6 +15,7 @@ import AdminDashboardLayout from '../../components/AdminDashboardLayout';
 import { uploadImage } from "../../utils/uploadImage";
 import { deleteImage } from "../../utils/deleteImage";
 import { compressImage } from "../../utils/compressImage";
+import { withProgress } from '../../utils/withProgress';
 
 export default function AdminEvents() {
   const [events, setEvents] = useState([]);
@@ -44,19 +45,19 @@ export default function AdminEvents() {
   });
 
   // جلب جميع الفعاليات
-  const fetchEvents = async () => {
-    const eventsSnapshot = await getDocs(collection(db, 'Events'));
-    const eventsList = eventsSnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        isActive: data.isActive !== undefined ? data.isActive : true,
-        featured: data.featured !== undefined ? data.featured : false,
-      };
-    });
-    setEvents(eventsList);
-  };
+ const fetchEvents = withProgress(async () => {
+  const eventsSnapshot = await getDocs(collection(db, 'Events'));
+  const eventsList = eventsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      isActive: data.isActive !== undefined ? data.isActive : true,
+      featured: data.featured !== undefined ? data.featured : false,
+    };
+  });
+  setEvents(eventsList);
+});
 
   useEffect(() => {
     fetchEvents();
@@ -94,40 +95,49 @@ export default function AdminEvents() {
   }
 
   // فتح النافذة
-  const handleOpenDialog = (event = null) => {
-    if (event) {
-      setEditMode(true);
-      setCurrentId(event.id);
-      setForm({
-        ...event,
-        date: event.date && event.date.seconds ? new Date(event.date.seconds * 1000).toISOString().slice(0, 10) : "",
-        time: event.date && event.date.seconds ? new Date(event.date.seconds * 1000).toTimeString().slice(0,5) : "",
-        imageFile: undefined,
-        isActive: event.isActive !== undefined ? event.isActive : true,
-        featured: event.featured !== undefined ? event.featured : false,
-      });
-    } else {
-      setEditMode(false);
-      setCurrentId(null);
-      setForm({
-        name: "",
-        description: "",
-        date: "",
-        time: "",
-        location: "",
-        imageUrl: "",
-        capacity: "",
-        classNumber: "",
-        groupNumber: "",
-        digit5: "",
-        price: "",
-        isActive: true,
-        featured: false,
-        imageFile: undefined,
-      });
-    }
-    setOpenDialog(true);
-  };
+const handleOpenDialog = withProgress(async (event = null) => {
+  // Optional fake delay to let the loading bar show up (purely visual)
+  await new Promise(res => setTimeout(res, 200)); 
+
+  if (event) {
+    setEditMode(true);
+    setCurrentId(event.id);
+    setForm({
+      ...event,
+      date: event.date && event.date.seconds
+        ? new Date(event.date.seconds * 1000).toISOString().slice(0, 10)
+        : "",
+      time: event.date && event.date.seconds
+        ? new Date(event.date.seconds * 1000).toTimeString().slice(0, 5)
+        : "",
+      imageFile: undefined,
+      isActive: event.isActive !== undefined ? event.isActive : true,
+      featured: event.featured !== undefined ? event.featured : false,
+    });
+  } else {
+    setEditMode(false);
+    setCurrentId(null);
+    setForm({
+      name: "",
+      description: "",
+      date: "",
+      time: "",
+      location: "",
+      imageUrl: "",
+      capacity: "",
+      classNumber: "",
+      groupNumber: "",
+      digit5: "",
+      price: "",
+      isActive: true,
+      featured: false,
+      imageFile: undefined,
+    });
+  }
+
+  setOpenDialog(true);
+});
+
 
   // إغلاق النافذة
   const handleCloseDialog = () => setOpenDialog(false);
@@ -171,89 +181,93 @@ export default function AdminEvents() {
   }
 
   // إضافة فعالية جديدة
-  const handleAdd = async () => {
-    if (!validateRequiredFields()) return;
+const handleAdd = withProgress(async () => {
+  if (!validateRequiredFields()) return;
 
-    let dateValue = form.date
-      ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
-      : null;
+  let dateValue = form.date
+    ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
+    : null;
 
-    const { imageFile, ...formData } = form;
-    const docRef = await addDoc(collection(db, "Events"), {
-      ...formData,
-      date: dateValue,
-      imageUrl: "",
-      isActive: form.isActive,
-      featured: form.featured,
+  const { imageFile, ...formData } = form;
+  const docRef = await addDoc(collection(db, "Events"), {
+    ...formData,
+    date: dateValue,
+    imageUrl: "",
+    isActive: form.isActive,
+    featured: form.featured,
+  });
+
+  if (imageFile) {
+    await uploadImage({
+      file: imageFile,
+      storagePath: `events/${docRef.id}.jpg`,
+      firestorePath: ["Events", docRef.id],
+      field: "imageUrl",
     });
+  }
 
-    if (imageFile) {
-      await uploadImage({
-        file: imageFile,
-        storagePath: `events/${docRef.id}.jpg`,
-        firestorePath: ["Events", docRef.id],
-        field: "imageUrl",
-      });
-    }
-    fetchEvents();
-    handleCloseDialog();
-  };
+  fetchEvents();
+  handleCloseDialog();
+});
+
 
   // تعديل فعالية
-  const handleEdit = async () => {
-    if (!validateRequiredFields()) return;
+const handleEdit = withProgress(async () => {
+  if (!validateRequiredFields()) return;
 
-    let dateValue = form.date
-      ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
-      : null;
+  let dateValue = form.date
+    ? Timestamp.fromDate(new Date(`${form.date}T${form.time || "00:00"}`))
+    : null;
 
-    const docRef = doc(db, "Events", currentId);
-    const { imageFile, ...formToUpdate } = form;
-    let updatedData = {
-      ...formToUpdate,
-      date: dateValue,
-      isActive: form.isActive,
-      featured: form.featured,
-    };
-
-    if (imageFile) {
-      updatedData.imageUrl = "";
-    }
-
-    await updateDoc(docRef, updatedData);
-
-    if (imageFile) {
-      if (form.imageUrl) {
-        await deleteImage(form.imageUrl);
-      }
-      await uploadImage({
-        file: imageFile,
-        storagePath: `events/${currentId}.jpg`,
-        firestorePath: ["Events", currentId],
-        field: "imageUrl",
-      });
-    }
-    fetchEvents();
-    handleCloseDialog();
+  const docRef = doc(db, "Events", currentId);
+  const { imageFile, ...formToUpdate } = form;
+  let updatedData = {
+    ...formToUpdate,
+    date: dateValue,
+    isActive: form.isActive,
+    featured: form.featured,
   };
+
+  if (imageFile) {
+    updatedData.imageUrl = "";
+  }
+
+  await updateDoc(docRef, updatedData);
+
+  if (imageFile) {
+    if (form.imageUrl) {
+      await deleteImage(form.imageUrl);
+    }
+    await uploadImage({
+      file: imageFile,
+      storagePath: `events/${currentId}.jpg`,
+      firestorePath: ["Events", currentId],
+      field: "imageUrl",
+    });
+  }
+
+  fetchEvents();
+  handleCloseDialog();
+});
 
   // حذف فعالية
-  const handleDelete = async (id) => {
-    const eventToDelete = events.find(e => e.id === id);
-    if (window.confirm("هل أنت متأكدة من حذف هذه الفعالية نهائيًا؟")) {
-      await deleteDoc(doc(db, "Events", id));
-      if (eventToDelete?.imageUrl) {
-        await deleteImage(eventToDelete.imageUrl);
-      }
-      fetchEvents();
+ const handleDelete = withProgress(async (id) => {
+  const eventToDelete = events.find(e => e.id === id);
+  if (window.confirm("هل أنت متأكدة من حذف هذه الفعالية نهائيًا؟")) {
+    await deleteDoc(doc(db, "Events", id));
+    if (eventToDelete?.imageUrl) {
+      await deleteImage(eventToDelete.imageUrl);
     }
-  };
-
-  // أرشفة/فك أرشفة
-  const handleArchiveToggle = async (event) => {
-    await updateDoc(doc(db, "Events", event.id), { isActive: !event.isActive });
     fetchEvents();
-  };
+  }
+});
+
+
+const handleArchiveToggle = withProgress(async (event) => {
+  await updateDoc(doc(db, "Events", event.id), { isActive: !event.isActive });
+  fetchEvents();
+});
+
 
   // الفلترة
   const filteredEvents = events.filter(event =>
@@ -267,7 +281,10 @@ export default function AdminEvents() {
     <AdminDashboardLayout>
       <Box sx={{ my: 3 }}>
         <Typography variant="h4" sx={{ mb: 2 }}>إدارة الفعاليات</Typography>
-        <Button variant="contained" onClick={() => handleOpenDialog()} sx={{ mb: 2 }}>إضافة فعالية جديدة</Button>
+        <Button variant="contained" onClick={() => handleOpenDialog()} sx={{ mb: 2 }}>
+  إضافة فعالية جديدة
+</Button>
+
 
         {/* الفلاتر */}
         <FormControlLabel
@@ -363,7 +380,10 @@ export default function AdminEvents() {
                     </IconButton>
                   </TableCell>
                   <TableCell>
-                    <IconButton color="primary" onClick={() => handleOpenDialog(event)}><EditIcon /></IconButton>
+                    <IconButton color="primary" onClick={() => handleOpenDialog(event)}>
+  <EditIcon />
+</IconButton>
+
                   </TableCell>
                   <TableCell>
                     <IconButton color="error" onClick={() => handleDelete(event.id)}><DeleteIcon /></IconButton>

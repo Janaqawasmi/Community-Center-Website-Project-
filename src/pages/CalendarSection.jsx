@@ -4,6 +4,8 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from 'react-router-dom'; // at the top
 import { Typography,Box } from '@mui/material';
+import RegistrationForm from '../pages/registration/registration';
+
 
 export default function CalendarSection() {
   const [events, setEvents] = useState([]);
@@ -82,7 +84,6 @@ export default function CalendarSection() {
           start: eventDate,
           description: data.description || "",
           location: data.location || "",
-          capacity: data.capacity || "",
           price: data.price || 0,
           imageUrl: data.imageUrl || "",
           isActive: data.isActive !== false,
@@ -172,7 +173,6 @@ export default function CalendarSection() {
       date: event.start.toISOString(),
       description: event.description,
       location: event.location,
-      capacity: event.capacity || "",
       price: event.price || 0,
       imageUrl: event.imageUrl || "",
       type: event.type
@@ -189,11 +189,24 @@ export default function CalendarSection() {
 
 
   const navigate = useNavigate(); // inside the component
+  // دالة للتعامل مع التسجيل للفعالية
+const handleRegisterForEvent = (eventTitle) => {
+  try {
+    console.log("Event title:", eventTitle);
+    // ✅ غيّر من /registration إلى /RegistrationForm
+    const registrationUrl = `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.title)}`;
+    console.log("Navigation URL:", registrationUrl);
+    navigate(registrationUrl);
+  } catch (error) {
+    console.error("خطأ في التنقل:", error);
+    alert("حدث خطأ في فتح صفحة التسجيل");
+  }
+};
 
   if (loading) {
     return (
       <div className="loading-container">
-        <style jsx={"true"}>{`
+        <style >{`
           .loading-container {
             padding: 1rem;
             text-align: center;
@@ -207,7 +220,7 @@ export default function CalendarSection() {
   return (
     <>
     
-      <style jsx={"true"}>{`
+      <style >{`
         .calendar-container {
           max-width: 900px;
           margin: 0 auto;
@@ -429,10 +442,10 @@ export default function CalendarSection() {
         .modal-content {
           background: white;
           border-radius: 12px;
-          padding: 1rem;
+          padding: 0.6rem;
           width: 90%;
           max-width: 380px;
-          max-height: 80vh;
+          max-height: 85vh;
           overflow-y: auto;
           box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
           position: relative;
@@ -512,17 +525,6 @@ export default function CalendarSection() {
           box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
         }
         
-        .day-event-item.center-event {
-          background: #fff7ed;
-          border-right-color: #ea580c;
-          border-left-color: #fdba74;
-          border-top-color: #fdba74;
-          border-bottom-color: #fdba74;
-        }
-        
-        .day-event-item.center-event:hover {
-          background: #fef3e2;
-        }
         
         .event-time {
           background: linear-gradient(45deg, #ea580c, #f97316);
@@ -534,10 +536,68 @@ export default function CalendarSection() {
           min-width: 60px;
           text-align: center;
         }
-        
-        .day-event-item.center-event .event-time {
-          background: linear-gradient(45deg, #ea580c, #d97706);
-        }
+      
+        /* أنماط فعاليات المركز في قائمة اليوم - أزرق */
+.day-event-item.center-event {
+  background: #f0f9ff;
+  border-right-color: #0369a1;
+  border-left-color: #7dd3fc;
+  border-top-color: #7dd3fc;
+  border-bottom-color: #7dd3fc;
+}
+
+.day-event-item.center-event:hover {
+  background: #e0f2fe;
+}
+
+.day-event-item.center-event .event-title-day {
+  color: #0c4a6e;
+}
+
+.day-event-item.center-event .event-desc {
+  color: #0369a1;
+}
+
+.day-event-item.center-event .event-time {
+  background: linear-gradient(45deg, #0369a1, #0284c7);
+}
+
+.day-event-item.center-event .event-type-badge {
+  background: #f0f9ff;
+  border-color: #7dd3fc;
+  color: #0369a1;
+}
+
+/* أنماط الفعاليات الإدارية - برتقالي */
+.day-event-item.admin-event {
+  background: #fff7ed;
+  border-right-color: #ea580c;
+  border-left-color: #fdba74;
+  border-top-color: #fdba74;
+  border-bottom-color: #fdba74;
+}
+
+.day-event-item.admin-event:hover {
+  background: #fef3e2;
+}
+
+.day-event-item.admin-event .event-title-day {
+  color: #9a3412;
+}
+
+.day-event-item.admin-event .event-desc {
+  color: #ea580c;
+}
+
+.day-event-item.admin-event .event-time {
+  background: linear-gradient(45deg, #ea580c, #f97316);
+}
+
+.day-event-item.admin-event .event-type-badge {
+  background: #fff7ed;
+  border-color: #fdba74;
+  color: #ea580c;
+}
         
         .event-content {
           flex: 1;
@@ -572,40 +632,98 @@ export default function CalendarSection() {
         }
 
         .event-details {
-          display: flex;
-          flex-direction: column;
-          gap: 0.7rem;
-        }
-        
-        .event-detail-item {
-          padding: 0.7rem;
-          background: #fff7ed;
-          border-radius: 8px;
-          border-right: 3px solid #ea580c;
-          transition: all 0.3s ease;
-          border-left: 1px solid #fdba74;
-          border-top: 1px solid #fdba74;
-          border-bottom: 1px solid #fdba74;
-        }
-        
-        .event-detail-label {
-          font-weight: bold;
-          color: #ea580c;
-          margin-bottom: 0.3rem;
-          font-size: 0.75rem;
-          display: flex;
-          align-items: center;
-          gap: 0.3rem;
-        }
-        
-        .event-detail-value {
-          color: #9a3412;
-          line-height: 1.3;
-          font-size: 0.7rem;
-          margin-right: 0.8rem;
-          font-weight: 500;
-          word-wrap: break-word;
-        }
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/* الأنماط الافتراضية (للفعاليات الإدارية - برتقالي) */
+.event-detail-item {
+  padding: 0.7rem;
+  background: #fff7ed;
+  border-radius: 8px;
+  border-right: 3px solid #ea580c;
+  transition: all 0.3s ease;
+  border-left: 1px solid #fdba74;
+  border-top: 1px solid #fdba74;
+  border-bottom: 1px solid #fdba74;
+}
+
+.event-detail-label {
+  font-weight: bold;
+  color: #ea580c;
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.event-detail-value {
+  color: #9a3412;
+  line-height: 1.3;
+  font-size: 0.7rem;
+  margin-right: 0.8rem;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+/* الأنماط لفعاليات المركز - أزرق */
+.event-details.center-event .event-detail-item {
+  background: #f0f9ff;
+  border-right-color: #0369a1;
+  border-left-color: #7dd3fc;
+  border-top-color: #7dd3fc;
+  border-bottom-color: #7dd3fc;
+}
+
+.event-details.center-event .event-detail-label {
+  color: #0369a1;
+}
+
+.event-details.center-event .event-detail-value {
+  color: #0c4a6e;
+}
+
+.event-registration-section {
+  margin-top: 0.5rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+.event-registration-section.center-event {
+  border-top: 1px solid #e0f2fe;
+}
+
+.register-event-button {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.register-event-button:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+}
+
+.register-event-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(30, 58, 138, 0.3);
+}
 
         /* Media Queries للهواتف والتابلت */
         @media (max-width: 768px) {
@@ -743,8 +861,7 @@ export default function CalendarSection() {
 >
   التقويم والفعاليات
 </Typography>
-         </Box> 
-<Box sx={{ mb: 2 }}>
+         </Box>
 
       <div id="calendar-section" className="calendar-container">
         <div className="calendar-header"></div>
@@ -837,14 +954,14 @@ export default function CalendarSection() {
                 {selectedDayEvents.map((event) => (
                   <div
                     key={`${event.type}-${event.id}`}
-                    className={`day-event-item ${event.type === 'center' ? 'center-event' : ''}`}
+                    className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
                     onClick={() => {
                       setShowDayEvents(false);
                       handleEventClick(event, { stopPropagation: () => {} });
                     }}
                   >
                     <div className="event-time">
-                      {event.start.toLocaleTimeString("ar-EG", {
+                      {event.start.toLocaleTimeString("en-GB", {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: false
@@ -866,82 +983,98 @@ export default function CalendarSection() {
           </div>
         )}
         {/* Modal لعرض تفاصيل فعالية واحدة */}
-        {showDetails && (
-          <div className="modal-overlay" onClick={() => setShowDetails(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2 className="modal-title">
-                  {selectedEvent?.type === 'center' ? '📋' : '📅'} تفاصيل الفعالية
-                </h2>
-                <button 
-                  className="close-button"
-                  onClick={() => setShowDetails(false)}
-                >
-                  ✕
-                </button>
-              </div>
+{showDetails && (
+  <div className="modal-overlay" onClick={() => setShowDetails(false)}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-header">
+        <h2 className="modal-title">
+          {selectedEvent?.type === 'center'  
+           ? <>تفاصيل فعالية المركز</>
+           : <>تفاصيل فعالية إدارية</>
+        } 
+        </h2>
+        <button 
+          className="close-button"
+          onClick={() => setShowDetails(false)}
+        >
+          ✕
+        </button>
+      </div>
 
-              <div className="event-details">
-                <div className="event-detail-item">
-                  <div className="event-detail-label">📌 العنوان:</div>
-                  <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
-                </div>
-                
-                <div className="event-detail-item">
-                  <div className="event-detail-label">📅 التاريخ:</div>
-                  <div className="event-detail-value">
-                    {selectedEvent?.date
-                      ? new Date(selectedEvent.date).toLocaleString("ar-EG", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false
-                        })
-                      : "—"}
-                  </div>
-                </div>
-                
-                <div className="event-detail-item">
-                  <div className="event-detail-label">📝 الوصف:</div>
-                  <div className="event-detail-value">{selectedEvent?.description || "—"}</div>
-                </div>
-                
-                <div className="event-detail-item">
-                  <div className="event-detail-label">📍 الموقع:</div>
-                  <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
-                </div>
+      <div className={`event-details ${selectedEvent?.type === 'center' ? 'center-event' : 'admin-event'}`}>
+        <div className="event-detail-item">
+          <div className="event-detail-label">📌 العنوان:</div>
+          <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
+        </div>
+        <div className="event-detail-item">
+  <div className="event-detail-label">📅 التاريخ:</div>
+  <div className="event-detail-value">
+    {selectedEvent?.date ? (
+      <>
+        {/* اليوم بالعربي */}
+        <span>
+          {new Date(selectedEvent.date).toLocaleDateString("ar-EG", { weekday: "long" })}
+        </span>
+        {/* الساعة بالإنجليزي مع فراغ مناسب */}
+        <span style={{ margin: "0 14px" }}>
+          {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}
+        </span>
+      </>
+    ) : "—"}
+  </div>
+</div>
 
-                {/* عرض السعة والسعر إذا كانت الفعالية من نوع center */}
-                {selectedEvent?.type === 'center' && (
-                  <>
-                    {selectedEvent?.capacity && (
-                      <div className="event-detail-item">
-                        <div className="event-detail-label">👥 السعة:</div>
-                        <div className="event-detail-value">{selectedEvent.capacity}</div>
-                      </div>
-                    )}
-                    {selectedEvent?.price !== undefined && (
-                      <div className="event-detail-item">
-                        <div className="event-detail-label">💰 السعر:</div>
-                        <div className="event-detail-value">
-                          {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
+        
+      
+        
+        <div className="event-detail-item">
+          <div className="event-detail-label">📝 الوصف:</div>
+          <div className="event-detail-value">{selectedEvent?.description || "—"}</div>
+        </div>
+        
+        <div className="event-detail-item">
+          <div className="event-detail-label">📍 الموقع:</div>
+          <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
+        </div>
+
+        {/* عرض السعة والسعر إذا كانت الفعالية من نوع center */}
+        {selectedEvent?.type === 'center' && (
+          <>
+          
+            {selectedEvent?.price !== undefined && (
+              <div className="event-detail-item">
+                <div className="event-detail-label">💰 السعر:</div>
+                <div className="event-detail-value">
+                  {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
-         </Box> 
 
-
-
+      {/* زر التسجيل للفعالية - يظهر فقط لفعاليات المركز */}
+      {selectedEvent?.type === 'center' && (
+        <div className="event-registration-section center-event">
+          <button
+            className="register-event-button"
+            onClick={() => {
+              setShowDetails(false);
+              handleRegisterForEvent(selectedEvent?.id, selectedEvent?.title); 
+            }}
+          >
+             سجل الآن للفعالية
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+      </div>
 
     </>
   );
