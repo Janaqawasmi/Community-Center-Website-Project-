@@ -46,12 +46,9 @@ const navigate = useNavigate();
     const today = new Date().toDateString();
   
     if (lastViewed !== today) {
-      console.log("📊 Tracking view for:", path);
-      trackPageView(path);
+       trackPageView(path);
       localStorage.setItem(key, today);
-    } else {
-      console.log("⏳ Already tracked today:", path);
-    }
+    } 
   }, [location.pathname]);
   
 
@@ -93,7 +90,7 @@ const navigate = useNavigate();
     <Box sx={{ position: 'relative', minHeight: '100vh', direction: 'rtl', color: '#222', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <HeroSection pageId={id} />
 
-   <Container maxWidth="lg" sx={{ pt: 8, pb: 8, px: 0, position: 'relative', zIndex: 3, flex: 1 }}>
+   <Container maxWidth="lg" sx={{ pt: 2, pb: 2, px: 0, position: 'relative', zIndex: 3, flex: 1 }}>
 
    {(() => {
   const buttonData = getScrollButtonData();
@@ -104,7 +101,7 @@ const navigate = useNavigate();
       sx={{
         display: 'flex',
         justifyContent: 'right',
-        mb: 4,
+        mb: 2,
         direction: 'rtl',
       }}
     >

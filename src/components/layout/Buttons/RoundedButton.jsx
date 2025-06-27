@@ -22,24 +22,24 @@ export default function RoundedButton({
         fullWidth
         sx={{
           borderRadius: "28px",
-          px: 3,
-          py: 1.5,
+          px: {xs:1,sm:2,md:2},
+          py: 1,
           cursor: "pointer",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          borderRight: " #003366 solid 6px",
+          justifyContent: "center",
+          borderRight: " #003366 solid 5px",
           backgroundColor: "#fff",
           transition: "0.3s",
           width: "100%",
-          minHeight: "55px",
-          height: "55px",
+minHeight: { xs: "40px", sm: "50px", md: "50px" },
+          height: "auto",
           boxShadow: 1,
           textTransform: "none",
           "&:hover": {
             backgroundColor: "#f5f5f5",
             transform: "translateY(-2px)",
-            borderRight: `6px solid ${color}`,
+            borderRight: `5px solid ${color}`,
           },
         }}
         {...props}
@@ -47,7 +47,7 @@ export default function RoundedButton({
         <Typography
           sx={{
             fontWeight: "bold",
-            fontSize: "1.1rem",
+fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
             color: "black",
             whiteSpace: "nowrap",
             overflow: "hidden",

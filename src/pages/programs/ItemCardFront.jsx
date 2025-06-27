@@ -6,11 +6,7 @@ import { Card, Typography, Box, Button } from "@mui/material";
  */
 export default function ItemCardFront({ item, onFlip, config = {} , highlight}) {
   // Get date for display, or fallback to today
-const date = config.getDate
-  ? config.getDate(item)
-  : (item.date && item.date.seconds
-      ? new Date(item.date.seconds * 1000)
-      : new Date());
+ const date = config.getDate ? config.getDate(item) : (item.startDate instanceof Date ? item.startDate : new Date());
   const day = date.getDate();
   const monthName = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"][date.getMonth()];
   const year = date.getFullYear();
@@ -35,7 +31,7 @@ const date = config.getDate
 
   }}
 >
-      <Box sx={{ position: "relative", width: "100%", height: 170 }}>
+      <Box sx={{ position: "relative", width: "100%", height: 150 }}>
         <Box
           sx={{
             position: "absolute",
@@ -78,25 +74,25 @@ const date = config.getDate
         color=" #003366"
         fontWeight="bold"
         gutterBottom
-        sx={{ mt: 1 }}
+        sx={{ mt: 0.5 }}
       >
         {item.name}
       </Typography>
 
       
 
-      <Typography sx={{ fontSize: "14px", color: " #666", mt: 1 }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
+      <Typography sx={{ fontSize: "14px", color: " #666" }}>{item.description || "لا توجد تفاصيل إضافية"}</Typography>
 
-      <Box sx={{ display: "flex", alignItems: "baseline", mt: 1 }}>
-        <Typography sx={{ fontSize: "48px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
+      <Box sx={{ display: "flex", alignItems: "baseline" }}>
+        <Typography sx={{ fontSize: "38px", fontWeight: "bold", color: " #003366" }}>{day}</Typography>
         <Box sx={{ textAlign: "left", ml: 1 }}>
           <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: " #003366" }}>{monthName}</Typography>
           <Typography sx={{ fontSize: "12px", color: " #003366" }}>{year}</Typography>
         </Box>
       </Box>
 
-      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 2, mb: 1, width: "70%", mx: "auto", borderRadius: "40px", 
-        border: "2px solid #003366", color: " #003366", 
+      <Button variant="outlined" onClick={(e) => { e.stopPropagation(); onFlip(); }} sx={{ mt: 1, mb: 0.5, width: "70%", mx: "auto", borderRadius: "40px", 
+        border: "1.5px solid #003366", color: " #003366", 
         fontWeight: "bold", px: 4, textTransform: "none", ":hover": { backgroundColor: "#003366", borderColor: " #003366", color: "white" } }}>
         عرض التفاصيل
       </Button>

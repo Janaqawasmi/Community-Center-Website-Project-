@@ -1,5 +1,7 @@
 import AdminItemsManager from './AdminItemsManager';
 import AdminDashboardLayout from "../../../components/AdminDashboardLayout";
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 export default function AdminEvents() {
   return (

@@ -14,13 +14,15 @@ export const useFetchEvents = (onlyFeatured = false) => {
       try {
         const snapshot = await getDocs(collection(db, "Events"));
 
-        const data = snapshot.docs.map((docSnap) => {
+          const data = snapshot.docs.map((docSnap) => {
           const docData = docSnap.data();
+          const startDate = docData.date?.toDate?.() ?? null;
           let time = docData.time;
           if (time?.toDate) time = time.toDate();
           return {
             id: docSnap.id,
             ...docData,
+            startDate,
             time,
           };
         });
@@ -29,6 +31,8 @@ export const useFetchEvents = (onlyFeatured = false) => {
         const filtered = onlyFeatured
           ? data.filter((event) => event.featured === true)
           : data;
+ // ✅ Sort by startDate (earliest first)
+        filtered.sort((a, b) => (a.startDate || 0) - (b.startDate || 0));
 
         setEvents(filtered);
       } catch (err) {

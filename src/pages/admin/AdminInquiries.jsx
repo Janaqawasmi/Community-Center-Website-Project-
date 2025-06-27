@@ -25,6 +25,8 @@ import {
   Divider,
   Tabs,
   Tab,
+  Chip,
+  Stack,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
@@ -36,6 +38,11 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LinkIcon from "@mui/icons-material/Link";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import SettingsIcon from "@mui/icons-material/Settings";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import PersonIcon from "@mui/icons-material/Person";
+import BusinessIcon from "@mui/icons-material/Business";
+import MessageIcon from "@mui/icons-material/Message";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import MuiAlert from "@mui/material/Alert";
 import { db } from "../../components/firebase";
 import {
@@ -51,6 +58,9 @@ import AdminDashboardLayout from "../../components/AdminDashboardLayout";
 import RequireAdmin from "../../components/auth/RequireAdmin";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import ConfirmDeleteDialog from "../../components/ConfirmDeleteDialog";
+
+import { withProgress } from '../../utils/withProgress';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -101,6 +111,13 @@ export default function AdminInquiries() {
     replyText: "",
     customerEmail: "",
     customerName: "",
+  });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, inquiryId: "" });
+
+  // State لنافذة تفاصيل الاستفسار
+  const [detailsDialog, setDetailsDialog] = useState({
+    open: false,
+    inquiry: null,
   });
 
   // States لمعلومات التواصل
@@ -161,7 +178,8 @@ export default function AdminInquiries() {
     try {
       if (!docId || typeof docId !== "string") return;
 
-      await deleteDoc(doc(db, "contactMessages", docId));
+      await withProgress(() => deleteDoc(doc(db, "contactMessages", docId)));
+
       const updated = messages.filter((msg) => msg.id !== docId);
       setMessages(updated);
       setFilteredMessages(updated);
@@ -172,30 +190,30 @@ export default function AdminInquiries() {
     }
   };
 
- const sendEmailReply = async (
-  customerEmail,
-  customerName,
-  replyText,
-  originalMessage
-) => {
-  try {
-    const subject = "رد على استفسارك - المركز الجماهيري بيت حنينا";
-    const body = `السلام عليكم ورحمة الله وبركاته ${customerName}،\n\nشكراً جزيلاً لتواصلك مع المركز الجماهيري بيت حنينا.\n\n${replyText}\n\nنتطلع دائماً لخدمتك.\n\nمع أطيب التحيات،\nفريق المركز الجماهيري بيت حنينا`;
+  const sendEmailReply = async (
+    customerEmail,
+    customerName,
+    replyText,
+    originalMessage
+  ) => {
+    try {
+      const subject = "رد على استفسارك - المركز الجماهيري بيت حنينا";
+      const body = `السلام عليكم ورحمة الله وبركاته ${customerName}،\n\nشكراً جزيلاً لتواصلك مع المركز الجماهيري بيت حنينا.\n\n${replyText}\n\nنتطلع دائماً لخدمتك.\n\nمع أطيب التحيات،\nفريق المركز الجماهيري بيت حنينا`;
 
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-      customerEmail
-    )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+        customerEmail
+      )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    window.open(gmailUrl, "_blank");
+      window.open(gmailUrl, "_blank");
 
-    console.log("✅ تم فتح Gmail في المتصفح");
-    return { success: true };
-  } catch (error) {
-    console.error("❌ خطأ في فتح Gmail:", error);
-    return {
-      success: false,
-      error: error.message || "خطأ غير معروف",
-    };
+      console.log("✅ تم فتح Gmail في المتصفح");
+      return { success: true };
+    } catch (error) {
+      console.error("❌ خطأ في فتح Gmail:", error);
+      return {
+        success: false,
+        error: error.message || "خطأ غير معروف",
+      };
     }
   };
 
@@ -234,12 +252,10 @@ export default function AdminInquiries() {
 
       const message = messages.find((m) => m.id === msgId);
 
-      const emailResult = await sendEmailReply(
-        customerEmail,
-        customerName,
-        replyText,
-        message.message
-      );
+     const emailResult = await withProgress(() =>
+  sendEmailReply(customerEmail, customerName, replyText, message.message)
+);
+
 
       if (emailResult.success) {
         const docRef = doc(db, "contactMessages", msgId);
@@ -288,14 +304,44 @@ export default function AdminInquiries() {
       updated = updated.filter((m) => m.department === departmentFilter);
     }
 
-   if (replyFilter === "replied") {
-  updated = updated.filter((m) => m.emailSent === true);
-} else if (replyFilter === "unreplied") {
-  updated = updated.filter((m) => !m.emailSent);
-}
-
+    if (replyFilter === "replied") {
+      updated = updated.filter((m) => m.emailSent === true);
+    } else if (replyFilter === "unreplied") {
+      updated = updated.filter((m) => !m.emailSent);
+    }
 
     setFilteredMessages(updated);
+  };
+
+  // فتح نافذة التفاصيل
+  const openDetailsDialog = (inquiry) => {
+    setDetailsDialog({
+      open: true,
+      inquiry: inquiry,
+    });
+  };
+
+  // إغلاق نافذة التفاصيل
+  const closeDetailsDialog = () => {
+    setDetailsDialog({
+      open: false,
+      inquiry: null,
+    });
+  };
+
+  // تحديث الرد في نافذة التفاصيل
+  const updateReplyInDialog = (newReply) => {
+    const updatedMessages = messages.map((msg) =>
+      msg.id === detailsDialog.inquiry.id
+        ? { ...msg, reply: newReply }
+        : msg
+    );
+    setMessages(updatedMessages);
+    
+    setDetailsDialog({
+      ...detailsDialog,
+      inquiry: { ...detailsDialog.inquiry, reply: newReply }
+    });
   };
 
   // Functions لمعلومات التواصل
@@ -331,11 +377,14 @@ export default function AdminInquiries() {
       setSavingContactInfo(true);
       const docRef = doc(db, "siteInfo", "9ib8qFqM732MnTlg6YGz");
 
-      await updateDoc(docRef, {
-        ...values,
-        updatedAt: serverTimestamp(),
-        updatedBy: "admin",
-      });
+      await withProgress(() =>
+  updateDoc(docRef, {
+    ...values,
+    updatedAt: serverTimestamp(),
+    updatedBy: "admin",
+  })
+);
+      // تحديث الحالة المحلية
 
       setContactInfo(values);
       showSnackbar("✅ تم حفظ معلومات التواصل بنجاح");
@@ -346,11 +395,10 @@ export default function AdminInquiries() {
       setSavingContactInfo(false);
     }
   };
-
-  useEffect(() => {
-    fetchMessages();
-    fetchContactInfo();
-  }, []);
+useEffect(() => {
+  withProgress(fetchMessages);
+  withProgress(fetchContactInfo);
+}, []);
 
   useEffect(() => {
     handleFilterChange();
@@ -377,7 +425,6 @@ export default function AdminInquiries() {
                 fontFamily: "Cairo, sans-serif",
                 fontSize: { xs: "1.8rem", sm: "2.3rem" },
                 textAlign: "right",
-
               }}
             >
               إدارة التواصل والاستفسارات
@@ -423,6 +470,7 @@ export default function AdminInquiries() {
             {/* Tab 1: إدارة الاستفسارات */}
             <TabPanel value={tabValue} index={0}>
               <Box p={3}>
+                {/* Filters */}
                 <Box
                   mb={3}
                   display="flex"
@@ -435,7 +483,6 @@ export default function AdminInquiries() {
                     label="فلتر حسب القسم"
                     value={departmentFilter}
                     onChange={(e) => setDepartmentFilter(e.target.value)}
-
                     sx={{
                       minWidth: 220,
                       "& .MuiInputBase-input": {
@@ -471,11 +518,15 @@ export default function AdminInquiries() {
                   </TextField>
                 </Box>
 
+                {/* Responsive Table */}
                 <TableContainer
                   component={Paper}
-                  sx={{ boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}
+                  sx={{ 
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                    overflow: "hidden"
+                  }}
                 >
-                  <Table>
+                  <Table sx={{ tableLayout: "fixed", width: "100%" }}>
                     <TableHead
                       sx={{
                         bgcolor: "#f8fafc",
@@ -483,21 +534,42 @@ export default function AdminInquiries() {
                           fontWeight: "bold",
                           color: "#1e40af",
                           fontFamily: "Cairo, sans-serif",
+                          padding: { xs: "8px 4px", sm: "16px" },
                         },
                       }}
                     >
                       <TableRow>
-                        <TableCell>الاسم</TableCell>
-                        <TableCell>العائلة</TableCell>
-                        <TableCell>البريد</TableCell>
-                        <TableCell>الهاتف</TableCell>
-                        <TableCell>القسم</TableCell>
-                        <TableCell>الرسالة</TableCell>
-                        <TableCell>التاريخ</TableCell>
-                        <TableCell>الرد</TableCell>
-                        <TableCell align="center">الحالة</TableCell>
-                        <TableCell align="center">إرسال</TableCell>
-                        <TableCell align="center">حذف</TableCell>
+                        <TableCell sx={{ width: { xs: "35%", sm: "25%" } }}>
+                          الاسم الكامل
+                        </TableCell>
+                        <TableCell 
+                          sx={{ 
+                            width: { xs: "25%", sm: "20%" },
+                            display: { xs: 'none', sm: 'table-cell' }
+                          }}
+                        >
+                          القسم
+                        </TableCell>
+                        <TableCell 
+                          sx={{ 
+                            width: { xs: "0%", sm: "20%" },
+                            display: { xs: 'none', md: 'table-cell' }
+                          }}
+                        >
+                          التاريخ
+                        </TableCell>
+                        <TableCell 
+                          align="center" 
+                          sx={{ width: { xs: "30%", sm: "15%" } }}
+                        >
+                          الحالة
+                        </TableCell>
+                        <TableCell 
+                          align="center" 
+                          sx={{ width: { xs: "35%", sm: "20%" } }}
+                        >
+                          الإجراءات
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -507,136 +579,161 @@ export default function AdminInquiries() {
                           sx={{
                             "&:hover": {
                               backgroundColor: "#f8fafc",
+                              cursor: "pointer",
                             },
                             backgroundColor: msg.emailSent
                               ? "#f0f9ff"
                               : "inherit",
                           }}
                         >
-                          <TableCell sx={{ fontFamily: "Cairo, sans-serif" }}>
-                            {msg.first_name}
-                          </TableCell>
-                          <TableCell sx={{ fontFamily: "Cairo, sans-serif" }}>
-                            {msg.last_name}
-                          </TableCell>
-                          <TableCell sx={{ fontFamily: "Cairo, sans-serif" }}>
-                            {msg.email}
-                          </TableCell>
-                          <TableCell sx={{ fontFamily: "Cairo, sans-serif" }}>
-                            {msg.phone}
-                          </TableCell>
-                          <TableCell sx={{ fontFamily: "Cairo, sans-serif" }}>
-                            {msg.department}
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              maxWidth: "200px",
+                          <TableCell 
+                            sx={{ 
+                              fontFamily: "Cairo, sans-serif",
+                              cursor: "pointer",
+                              padding: { xs: "8px 4px", sm: "16px" },
                               overflow: "hidden",
                               textOverflow: "ellipsis",
-                              fontFamily: "Cairo, sans-serif",
+                              whiteSpace: "nowrap"
                             }}
+                            onClick={() => openDetailsDialog(msg)}
                           >
-                            {msg.message}
-                          </TableCell>
-                          <TableCell sx={{ fontFamily: "Cairo, sans-serif" }}>
-                            {msg.timestamp?.toDate
-                              ? msg.timestamp.toDate().toLocaleString("en-US")
-                              : "—"}
-                          </TableCell>
-                          <TableCell sx={{ minWidth: "200px" }}>
-                            <TextField
-                              variant="outlined"
-                              size="small"
-                              fullWidth
-                              multiline
-                              rows={2}
-                              value={msg.reply || ""}
-                              onChange={(e) => {
-                                const updated = messages.map((m) =>
-                                  m.id === msg.id
-                                    ? { ...m, reply: e.target.value }
-                                    : m
-                                );
-                                setMessages(updated);
-                              }}
-                              placeholder="اكتب ردك هنا..."
-                              disabled={msg.emailSent}
-                              sx={{
-                                "& .MuiInputBase-input": {
-                                  textAlign: "right",
-                                  direction: "rtl",
-                                  fontFamily: "Cairo, sans-serif",
-                                },
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell align="center">
-                            {msg.emailSent ? (
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: 1,
-                                  color: "#16a34a",
+                            <Box>
+                              <Typography 
+                                variant="body2" 
+                                fontWeight="bold"
+                                sx={{ 
+                                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap"
                                 }}
                               >
-                                <EmailIcon fontSize="small" />
-                                <Typography
-                                  variant="caption"
-                                  sx={{ fontFamily: "Cairo, sans-serif" }}
-                                >
-                                  تم الإرسال
-                                </Typography>
-                              </Box>
-                            ) : (
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                sx={{ fontFamily: "Cairo, sans-serif" }}
-                              >
-                                في الانتظار
+                                {`${msg.first_name} ${msg.last_name}`}
                               </Typography>
+                              <Typography 
+                                variant="caption" 
+                                color="text.secondary"
+                                sx={{ 
+                                  display: { xs: 'block', sm: 'none' },
+                                  fontSize: "0.65rem",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap"
+                                }}
+                              >
+                                {msg.department}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell 
+                            sx={{ 
+                              fontFamily: "Cairo, sans-serif",
+                              display: { xs: 'none', sm: 'table-cell' },
+                              padding: { xs: "8px 4px", sm: "16px" },
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              fontSize: { xs: "0.75rem", sm: "0.875rem" }
+                            }}
+                          >
+                            {msg.department}
+                          </TableCell>
+                          <TableCell 
+                            sx={{ 
+                              fontFamily: "Cairo, sans-serif",
+                              display: { xs: 'none', md: 'table-cell' },
+                              padding: { xs: "8px 4px", sm: "16px" },
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              fontSize: { xs: "0.75rem", sm: "0.875rem" }
+                            }}
+                          >
+                            {msg.timestamp?.toDate
+                              ? msg.timestamp.toDate().toLocaleDateString("en-US")
+                              : "—"}
+                          </TableCell>
+                          <TableCell 
+                            align="center"
+                            sx={{ 
+                              padding: { xs: "4px 2px", sm: "16px" }
+                            }}
+                          >
+                            {msg.emailSent ? (
+                              <Chip
+                                label="تم الرد"
+                                color="success"
+                                size="small"
+                                sx={{ 
+                                  fontFamily: "Cairo, sans-serif",
+                                  fontSize: { xs: "0.6rem", sm: "0.75rem" },
+                                  height: { xs: "20px", sm: "24px" },
+                                  "& .MuiChip-label": {
+                                    padding: { xs: "0 4px", sm: "0 8px" }
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <Chip
+                                label="في الانتظار"
+                                color="warning"
+                                size="small"
+                                sx={{ 
+                                  fontFamily: "Cairo, sans-serif",
+                                  fontSize: { xs: "0.6rem", sm: "0.75rem" },
+                                  height: { xs: "20px", sm: "24px" },
+                                  "& .MuiChip-label": {
+                                    padding: { xs: "0 4px", sm: "0 8px" }
+                                  }
+                                }}
+                              />
                             )}
                           </TableCell>
-                          <TableCell align="center">
-                            <IconButton
-                              color="primary"
-                              onClick={() =>
-                                handleSendReply(msg.id, msg.reply || "")
-                              }
-                              disabled={
-                                !msg.reply?.trim() ||
-                                msg.emailSent ||
-                                sendingEmail
-                              }
-                              sx={{
-                                "&:disabled": {
-                                  color: "#94a3b8",
-                                },
-                              }}
+                          <TableCell 
+                            align="center"
+                            sx={{ 
+                              padding: { xs: "4px 2px", sm: "16px" }
+                            }}
+                          >
+                            <Stack 
+                              direction="row" 
+                              spacing={{ xs: 0.5, sm: 1 }} 
+                              justifyContent="center"
                             >
-                              {sendingEmail ? (
-                                <CircularProgress size={20} />
-                              ) : (
-                                <SendIcon />
-                              )}
-                            </IconButton>
-                          </TableCell>
-                          <TableCell align="center">
-                            <IconButton
-                              color="error"
-                              onClick={() => handleDelete(msg.id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+                              <IconButton
+                                color="primary"
+                                onClick={() => openDetailsDialog(msg)}
+                                size="small"
+                                sx={{ 
+                                  padding: { xs: "4px", sm: "8px" },
+                                  "& .MuiSvgIcon-root": {
+                                    fontSize: { xs: "1rem", sm: "1.25rem" }
+                                  }
+                                }}
+                              >
+                                <VisibilityIcon />
+                              </IconButton>
+                              <IconButton
+                                color="error"
+                                onClick={() => setDeleteDialog({ open: true, inquiryId: msg.id })}
+                                size="small"
+                                sx={{ 
+                                  padding: { xs: "4px", sm: "8px" },
+                                  "& .MuiSvgIcon-root": {
+                                    fontSize: { xs: "1rem", sm: "1.25rem" }
+                                  }
+                                }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Stack>
                           </TableCell>
                         </TableRow>
                       ))}
                       {filteredMessages.length === 0 && (
                         <TableRow>
                           <TableCell
-                            colSpan={11}
+                            colSpan={5}
                             align="center"
                             sx={{
                               py: 4,
@@ -873,13 +970,6 @@ export default function AdminInquiries() {
                                 <Button
                                   type="submit"
                                   disabled={savingContactInfo}
-                                  startIcon={
-                                    savingContactInfo ? (
-                                      <CircularProgress size={20} />
-                                    ) : (
-                                      <SaveIcon />
-                                    )
-                                  }
                                   sx={{
                                     padding: "12px 40px",
                                     fontSize: "1.2rem",
@@ -917,6 +1007,204 @@ export default function AdminInquiries() {
               </Box>
             </TabPanel>
           </Paper>
+
+          {/* نافذة تفاصيل الاستفسار */}
+          <Dialog
+            open={detailsDialog.open}
+            onClose={closeDetailsDialog}
+            maxWidth="sm"
+            fullWidth
+            sx={{
+              "& .MuiDialog-paper": {
+                borderRadius: { xs: 0, sm: "12px" },
+                fontFamily: "Cairo, sans-serif",
+                maxHeight: "70vh",
+                margin: { xs: 0, sm: "24px" },
+                width: { xs: "100%", sm: "500px" },
+                maxWidth: { xs: "100%", sm: "500px" },
+              },
+            }}
+          >
+            <DialogTitle
+              sx={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: primaryColor,
+                fontFamily: "Cairo, sans-serif",
+                borderBottom: "1px solid #e2e8f0",
+                p: 1.5,
+                fontSize: "1rem",
+              }}
+            >
+              <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+                <QuestionAnswerIcon sx={{ fontSize: "1.2rem" }} />
+                تفاصيل الاستفسار
+              </Box>
+            </DialogTitle>
+            <DialogContent sx={{ direction: "rtl", fontFamily: "Cairo, sans-serif", p: 1.5 }}>
+              {detailsDialog.inquiry && (
+                <Card elevation={1} sx={{ borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                  <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
+                    <Grid container spacing={1}>
+                      {/* الاسم واسم العائلة */}
+                      <Grid item xs={6}>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.7rem" }}>
+                          الاسم
+                        </Typography>
+                        <Typography variant="body2" fontWeight="bold" sx={{ fontSize: "0.8rem" }}>
+                          {detailsDialog.inquiry.first_name}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.7rem" }}>
+                          اسم العائلة
+                        </Typography>
+                        <Typography variant="body2" fontWeight="bold" sx={{ fontSize: "0.8rem" }}>
+                          {detailsDialog.inquiry.last_name}
+                        </Typography>
+                      </Grid>
+                      
+                      {/* تاريخ الإرسال */}
+                      <Grid item xs={12}>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.7rem" }}>
+                          تاريخ الإرسال
+                        </Typography>
+                        <Typography variant="body2" fontWeight="bold" sx={{ fontSize: "0.8rem" }}>
+                          {detailsDialog.inquiry.timestamp?.toDate
+                            ? detailsDialog.inquiry.timestamp.toDate().toLocaleString("en-US")
+                            : "غير محدد"}
+                        </Typography>
+                      </Grid>
+                      
+                      {/* نص الاستفسار */}
+                      <Grid item xs={12}>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.7rem", display: "block", mb: 0.3 }}>
+                          نص الاستفسار
+                        </Typography>
+                        <Box
+                          sx={{
+                            p: 1,
+                            bgcolor: "#f8fafc",
+                            borderRadius: 1,
+                            border: "1px solid #e2e8f0",
+                            minHeight: "40px",
+                            maxHeight: "80px",
+                            overflow: "auto",
+                          }}
+                        >
+                          <Typography variant="body2" sx={{ lineHeight: 1.4, fontSize: "0.8rem" }}>
+                            {detailsDialog.inquiry.message}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                      
+                      {/* الرد على الاستفسار */}
+                      <Grid item xs={12}>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.7rem", display: "block", mb: 0.3 }}>
+                          الرد على الاستفسار
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          multiline
+                          rows={2}
+                          value={detailsDialog.inquiry.reply || ""}
+                          onChange={(e) => updateReplyInDialog(e.target.value)}
+                          placeholder="اكتب ردك هنا..."
+                          disabled={detailsDialog.inquiry.emailSent}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              textAlign: "right",
+                              direction: "rtl",
+                              fontFamily: "Cairo, sans-serif",
+                              fontSize: "0.8rem",
+                              padding: "8px",
+                            },
+                            "& .MuiOutlinedInput-root": {
+                              minHeight: "60px",
+                            },
+                            mb: 0.5,
+                          }}
+                        />
+                        <Box display="flex" alignItems="center" justifyContent="space-between">
+                          <Box>
+                            {detailsDialog.inquiry.emailSent ? (
+                              <Chip
+                                label="تم إرسال الرد"
+                                color="success"
+                                size="small"
+                                sx={{ 
+                                  fontFamily: "Cairo, sans-serif", 
+                                  fontSize: "0.65rem",
+                                  height: "22px",
+                                }}
+                              />
+                            ) : (
+                              <Chip
+                                label="في انتظار الرد"
+                                color="warning"
+                                size="small"
+                                sx={{ 
+                                  fontFamily: "Cairo, sans-serif", 
+                                  fontSize: "0.65rem",
+                                  height: "22px",
+                                }}
+                              />
+                            )}
+                          </Box>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() =>
+                              handleSendReply(detailsDialog.inquiry.id, detailsDialog.inquiry.reply || "")
+                            }
+                            disabled={
+                              !detailsDialog.inquiry.reply?.trim() ||
+                              detailsDialog.inquiry.emailSent ||
+                              sendingEmail
+                            }
+                            sx={{
+                              background: primaryColor,
+                              fontFamily: "Cairo, sans-serif",
+                              fontSize: "0.7rem",
+                              py: 0.5,
+                              px: 1.5,
+                              minWidth: "80px",
+                              height: "28px",
+                              "&:hover": {
+                                background: "#004477",
+                              },
+                            }}
+                          >
+                            {sendingEmail ? "إرسال..." : "إرسال"}
+                          </Button>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              )}
+            </DialogContent>
+            <DialogActions sx={{ padding: "8px 16px", borderTop: "1px solid #e2e8f0" }}>
+              <Button
+                onClick={closeDetailsDialog}
+                sx={{ fontFamily: "Cairo, sans-serif", fontSize: "0.8rem" }}
+              >
+                إغلاق
+              </Button>
+              <Button
+                color="error"
+                size="small"
+                onClick={() => {
+                  closeDetailsDialog();
+                  setDeleteDialog({ open: true, inquiryId: detailsDialog.inquiry?.id });
+                }}
+                startIcon={<DeleteIcon sx={{ fontSize: "0.9rem" }} />}
+                sx={{ fontFamily: "Cairo, sans-serif", fontSize: "0.8rem" }}
+              >
+                حذف
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           {/* نافذة تأكيد الإرسال */}
           <Dialog
@@ -994,9 +1282,6 @@ export default function AdminInquiries() {
                 onClick={confirmSendReply}
                 variant="contained"
                 disabled={sendingEmail}
-                startIcon={
-                  sendingEmail ? <CircularProgress size={16} /> : <EmailIcon />
-                }
                 sx={{
                   background: "#2563eb",
                   fontFamily: "Cairo, sans-serif",
@@ -1024,6 +1309,17 @@ export default function AdminInquiries() {
               {snackbar.message}
             </MuiAlert>
           </Snackbar>
+
+          {/* نافذة تأكيد الحذف */}
+          <ConfirmDeleteDialog
+            open={deleteDialog.open}
+            onClose={() => setDeleteDialog({ open: false, inquiryId: "" })}
+            onConfirm={async () => {
+              await handleDelete(deleteDialog.inquiryId);
+              setDeleteDialog({ open: false, inquiryId: "" });
+            }}
+            message="هل أنت متأكد أنك تريد حذف هذا الاستفسار؟"
+          />
         </Box>
       </AdminDashboardLayout>
     </RequireAdmin>

@@ -74,7 +74,7 @@ export default function ProgramStatsChart() {
 
 regSnapshot.forEach(doc => {
   const data = doc.data();
-  const programId = data.programId;
+  const programId = data.docId;
 
   if (filteredProgramIds.includes(programId)) {
     if (!counts[programId]) {
@@ -145,18 +145,15 @@ const exportCombinedChartsAsPDF = async () => {
   variant="outlined"
   onClick={exportCombinedChartsAsPDF}
   sx={{
-    borderRadius: "30px",
     px: 3,
     py: 1.3,
     fontSize: "1rem",
     fontWeight: "bold",
-    color: "#003366",
-    borderColor: "#003366",
     mb: 3,
     '&:hover': {
-      backgroundColor: "#003366",
-      color: "#fff",
-    },
+      backgroundColor: "rgb(50, 127, 214)",
+      color: "white",
+},
     display: "inline-flex",
     alignItems: "center",
     gap: 1,

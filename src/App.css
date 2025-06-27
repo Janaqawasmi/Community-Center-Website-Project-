@@ -11,9 +11,41 @@ body {
   font-family: 'Tajawal', sans-serif;
   direction: rtl;
 }
-#google_translate_element select {
-  background: white;
-  border: none;
-  padding: 6px;
-  font-size: 14px;
+/* Make sure the DatePicker popup appears on top of everything */
+.datepicker-popper {
+  z-index: 2500 !important;
+}
+
+.rtl-datepicker-popper {
+  z-index: 2500 !important;
+  direction: rtl;
+  margin-right: 0 !important;
+  right: 0 !important;
+}
+/* Reduce overall calendar popup height */
+.react-datepicker {
+  font-size: 0.8rem !important;
+  padding: 4px !important;
+}
+
+/* Reduce cell size */
+.react-datepicker__day,
+.react-datepicker__day-name {
+  width: 1.5rem !important;
+  line-height: 1.2rem !important;
+  margin: 1px;
+}
+
+/* Reduce header size */
+.react-datepicker__header {
+  padding: 4px !important;
+}
+
+/* Reduce month navigation height */
+.react-datepicker__current-month {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+.react-datepicker__navigation {
+  top: 10px !important;
 }

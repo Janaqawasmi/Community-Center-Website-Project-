@@ -67,6 +67,22 @@ export default function About() {
     return text.substring(0, maxLength) + '...';
   };
 
+  // دالة للتحقق من وجود محتوى في القسم
+  const hasContent = (field) => {
+    if (!aboutData) return false;
+    
+    if (field === 'goals') {
+      return aboutData.goals && Array.isArray(aboutData.goals) && aboutData.goals.length > 0;
+    }
+    
+    return aboutData[field] && aboutData[field].toString().trim().length > 0;
+  };
+
+  // دالة للتحقق من وجود عنوان للقسم
+  const hasTitle = (titleField) => {
+    return aboutData && aboutData[titleField] && aboutData[titleField].toString().trim().length > 0;
+  };
+
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -91,20 +107,17 @@ export default function About() {
   }, []);
 
   // Track page view only once per session 
-useEffect(() => {
-  const path = location.pathname;
-  const key = `viewed_${path}`;
-  const lastViewed = localStorage.getItem(key);
-  const today = new Date().toDateString();
+  useEffect(() => {
+    const path = location.pathname;
+    const key = `viewed_${path}`;
+    const lastViewed = localStorage.getItem(key);
+    const today = new Date().toDateString();
 
-  if (lastViewed !== today) {
-    console.log("📊 Tracking view for:", path);
-    trackPageView(path);
-    localStorage.setItem(key, today);
-  } else {
-    console.log("⏳ Already tracked today:", path);
-  }
-}, [location.pathname]);
+    if (lastViewed !== today) {
+      trackPageView(path);
+      localStorage.setItem(key, today);
+    } 
+  }, [location.pathname]);
 
   if (!aboutData) {
     return (
@@ -116,75 +129,78 @@ useEffect(() => {
 
   return (
     <Box mb={0} sx={{ direction: "rtl" }}>
-      <Box  mb={8} >
+      <Box mb={4}>
         <HeroSection pageId="aboutUs" />
       </Box>
 
-      <Container maxWidth="lg" sx={{ pb: 6, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
+      <Container maxWidth="lg" sx={{ pb: 2, px: 2, position: 'relative', zIndex: 3, flex: 1 }}>
         
-        {/* الفقرة التعريفية */}
-        <PrettyCard 
-          title="نبذة عن المركز" 
-          color={cardGradients.about}
-          section="about"
-        >
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              fontSize: "1.2rem", 
-              lineHeight: 2, 
-              textAlign: "justify"
-            }}
+        {/* الفقرة التعريفية - تظهر فقط إذا كان لها محتوى */}
+        {hasContent('about_us_text') && (
+          <PrettyCard 
+            title="نبذة عن المركز" 
+            color={cardGradients.about}
+            section="about"
           >
-            {aboutData.about_us_text}
-          </Typography>
-
-          {/* شعار المركز الجماهيري - يظهر دائماً */}
-          <Box sx={{ mt: 1, fontSize: "1.2rem", color: '#1976D2' }}>
-            <Grid container spacing={4} justifyContent="center">
-              <Grid item xs={4} sm={3} md={2}>
-                <Box sx={{ textAlign: "center" }}>
-                  <FaUsers size={60} style={{ color: '#1976D2' }} />
-                  <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>جمهور</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={4} sm={3} md={2}>
-                <Box sx={{ textAlign: "center" }}>
-                  <FaUserAlt size={60} style={{ color: '#1976D2' }} />
-                  <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>انسان</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={4} sm={3} md={2}>
-                <Box sx={{ textAlign: "center" }}>
-                  <FaGlobe size={60} style={{ color: '#1976D2' }} />
-                  <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>أرض</Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box sx={{ textAlign: 'center', mt: 6 }}>
-            <Typography
-              onClick={() => toggleSection('about')}
-              sx={{
-                color: cardColors.about,
-                fontWeight: 'bold',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                '&:hover': {
-                  color: '#1565c0',
-                  textDecoration: 'underline',
-                }
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontSize: "1.2rem", 
+                lineHeight: 2, 
+                textAlign: "justify"
               }}
             >
-              {expandedSections.about ? 'عرض أقل' : 'اقرأ المزيد'}
+              {aboutData.about_us_text}
             </Typography>
-          </Box>
-        </PrettyCard>
 
-        {/* رؤية */}
-        {expandedSections.about && (
+            {/* شعار المركز الجماهيري - يظهر دائماً */}
+            <Box sx={{ mt: 1, fontSize: "1.2rem", color: '#1976D2' }}>
+              <Grid container spacing={4} justifyContent="center">
+                <Grid item xs={4} sm={3} md={2}>
+                  <Box sx={{ textAlign: "center" }}>
+                    <FaUsers size={60} style={{ color: '#1976D2' }} />
+                    <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>جمهور</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={4} sm={3} md={2}>
+                  <Box sx={{ textAlign: "center" }}>
+                    <FaUserAlt size={60} style={{ color: '#1976D2' }} />
+                    <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>انسان</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={4} sm={3} md={2}>
+                  <Box sx={{ textAlign: "center" }}>
+                    <FaGlobe size={60} style={{ color: '#1976D2' }} />
+                    <Typography fontWeight="bold" sx={{ mt: 1, fontSize: "1.2rem" }}>أرض</Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Typography
+                onClick={() => toggleSection('about')}
+                sx={{
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  color: ' red',
+
+                  textDecoration: 'underline',
+                  '&:hover': {
+                    color: ' #1565c0',
+                    textDecoration: 'underline',
+                  }
+                }}
+              >
+                {expandedSections.about ? 'عرض أقل' : 'اقرأ المزيد'}
+              </Typography>
+            </Box>
+          </PrettyCard>
+        )}
+
+        {/* رؤية - تظهر فقط إذا كان لها محتوى وعنوان */}
+        {expandedSections.about && hasContent('vision') && hasTitle('vision_title') && (
           <PrettyCard 
             title={aboutData.vision_title} 
             color={cardGradients.vision}
@@ -224,8 +240,8 @@ useEffect(() => {
           </PrettyCard>
         )}
 
-        {/* رسالة */}
-        {expandedSections.about && (
+        {/* رسالة - تظهر فقط إذا كان لها محتوى وعنوان */}
+        {expandedSections.about && hasContent('message') && hasTitle('message_title') && (
           <PrettyCard 
             title={aboutData.message_title} 
             color={cardGradients.message}
@@ -265,8 +281,8 @@ useEffect(() => {
           </PrettyCard>
         )}
 
-        {/* مبررات */}
-        {expandedSections.about && (
+        {/* مبررات - تظهر فقط إذا كان لها محتوى وعنوان */}
+        {expandedSections.about && hasContent('justifications') && hasTitle('justifications_title') && (
           <PrettyCard 
             title={aboutData.justifications_title} 
             color={cardGradients.justifications}
@@ -306,8 +322,8 @@ useEffect(() => {
           </PrettyCard>
         )}
 
-        {/* أهداف */}
-        {expandedSections.about && (
+        {/* أهداف - تظهر فقط إذا كان لها محتوى وعنوان */}
+        {expandedSections.about && hasContent('goals') && hasTitle('goals_title') && (
           <PrettyCard 
             title={aboutData.goals_title} 
             color={cardGradients.goals}
@@ -318,7 +334,7 @@ useEffect(() => {
                 ? aboutData.goals 
                 : aboutData.goals?.slice(0, 3)
               )?.map((goal, index) => (
-                <Typography
+                <Box
                   component="li"
                   key={index}
                   sx={{ 
@@ -326,11 +342,27 @@ useEffect(() => {
                     mb: 1.5, 
                     color: "#444", 
                     textAlign: "right",
-                    lineHeight: 1.8
+                    lineHeight: 1.8,
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 1
                   }}
                 >
-                  {goal}
-                </Typography>
+                  <Box 
+                    sx={{
+                      color: '#444',
+                      fontSize: '1.2rem',
+                      fontWeight: 'normal',
+                      flexShrink: 0,
+                      mt: 0
+                    }}
+                  >
+                    {index + 1}.
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    {goal}
+                  </Box>
+                </Box>
               ))}
             </Box>
             {aboutData.goals && aboutData.goals.length > 3 && (
@@ -352,6 +384,22 @@ useEffect(() => {
               </Box>
             )}
           </PrettyCard>
+        )}
+
+        {/* رسالة تظهر في حالة عدم وجود محتوى في الصفحة */}
+        {!hasContent('about_us_text') && 
+         !hasContent('vision') && 
+         !hasContent('message') && 
+         !hasContent('justifications') && 
+         !hasContent('goals') && (
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
+              لا يوجد محتوى متاح حالياً
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              يرجى المراجعة لاحقاً أو التواصل مع إدارة الموقع
+            </Typography>
+          </Box>
         )}
 
       </Container>
