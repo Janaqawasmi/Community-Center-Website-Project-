@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import { validateField, validateStep, calculateAge } from '../regist_logic';
 import citiesData from '../../assets/codes.json';
@@ -7,18 +7,33 @@ import { useLocation } from 'react-router-dom';
 import { useAnonymousAuth } from "../../components/auth/useAnonymousAuth";
 import { decrementCapacity } from "../programs/decrementCapacity";
 import PrettyCard from '../../components/layout/PrettyCard';
+import ReCAPTCHA from "react-google-recaptcha";
+import { useRef } from 'react';
 
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 
 function RegistrationForm() {
   useAnonymousAuth();
-
+  const [submitMessage, setSubmitMessage] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
+const [isLoading, setIsLoading] = useState(false);
 
+  const requiredFieldsByStep = [
+    ['FirstName', 'birthdate', 'id', 'lastName', 'email', 'personalPhone', 'gender', 'address'],
+    ['fatherName', 'parentLastName', 'fatherId', 'fatherPhone'],
+  ];
+
+ const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const docId = searchParams.get("programId") || searchParams.get("eventId") || '';
+  const programId = searchParams.get("programId");
+  const eventId   = searchParams.get("eventId");
   const [form, setForm] = useState({
     FirstName: '',
     birthdate: '',
@@ -36,18 +51,12 @@ function RegistrationForm() {
     fatherName: '',
     fatherPhone: '',
     parentLastName: '',
+   docId: docId, // ✅ set docId initially
   });
 
-  const requiredFieldsByStep = [
-    ['FirstName', 'birthdate', 'id', 'lastName', 'email', 'personalPhone', 'gender', 'address'],
-    ['fatherName', 'parentLastName', 'fatherId', 'fatherPhone'],
-  ];
-
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const userIsAdult = form.birthdate && calculateAge(form.birthdate) >= 18;
   const programName = searchParams.get("program");
   const eventName = searchParams.get("event");
-
   const title =
     (programName && programName !== "undefined" && programName !== "")
       ? programName
@@ -55,7 +64,8 @@ function RegistrationForm() {
         ? eventName
         : "";
 
-  const handleChange = (e) => {
+
+const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
       const updatedForm = { ...prev, [name]: value };
@@ -78,8 +88,12 @@ function RegistrationForm() {
     if (!error) {
       setForm((prev) => {
         const updatedForm = { ...prev, [name]: value };
-        if (name === "id") updatedForm.cheackDigit = (parseInt(value) % 10).toString();
-        if (name === "fatherId") updatedForm.fatherCheackDigit = (parseInt(value) % 10).toString();
+      if (name === "id") {
+          updatedForm.cheackDigit = value ? (parseInt(value) % 10).toString() : '';
+        }
+        if (name === "fatherId") {
+          updatedForm.fatherCheackDigit = value ? (parseInt(value) % 10).toString() : '';
+        }
         return updatedForm;
       });
       setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -87,6 +101,7 @@ function RegistrationForm() {
       setErrors((prev) => ({ ...prev, [name]: error }));
     }
   };
+
 
   const nextStep = () => {
     if (validateStep(step, form, requiredFieldsByStep, setErrors)) {
@@ -96,27 +111,75 @@ function RegistrationForm() {
 
   const prevStep = () => setStep(s => s - 1);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
-      try {
-        await submitRegistration(e, form, setForm);
-        if (programName) {
-          await decrementCapacity("programs", programName);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+    // 🚀 Run validation first!
+  const isValid = validateStep(step, form, requiredFieldsByStep, setErrors);
+
+  if (!isValid) {
+    console.log("❌ Form validation failed. Fix errors before sending.");
+    return;
+  }
+  
+  if (!recaptchaToken) {
+    setSubmitMessage("❌ يرجى التحقق من أنك لست روبوتاً.");
+    setFormSubmitted(true);
+    return;
+  }
+
+  if ((step === 0 && calculateAge(form.birthdate) >= 18) || step === 1) {
+    try {
+        setIsLoading(true);
+
+      const result = await submitRegistration(e, {
+        ...form,
+        recaptchaToken: recaptchaToken,
+      }, setForm);
+
+      if (result.success) {
+        if (programId) {
+          await decrementCapacity({ collectionName: "programs", docId: programId });
         } else if (eventName) {
-          await decrementCapacity("events", eventName);
+          await decrementCapacity({ collectionName: "Events", docId: eventId });
         }
-        setFormSubmitted(true);
-        setSubmitSuccess(true);
-      } catch (err) {
-        console.error("❌ Submission failed:", err);
-        setFormSubmitted(true);
-        setSubmitSuccess(false);
+
+       setSubmitMessage("✅ تم إرسال النموذج بنجاح!<br/>شكرًا لتسجيلك.<br/>ستصلك رسالة بريد إلكتروني تحتوي على تفاصيل التسجيل.");
+      } else if (result.reason === "duplicate") {
+        setSubmitMessage("❌ تم التسجيل مسبقًا لنفس الدورة/الفعالية.");
+      } else {
+        setSubmitMessage("❌ حدث خطأ أثناء معالجة التسجيل.");
       }
-    } else {
-      nextStep();
+
+      setFormSubmitted(true);
+
+       // ✅ RESET THE CAPTCHA
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+      setRecaptchaToken(null);
+
+
+    } catch (err) {
+      console.error("❌ Submission error:", err);
+      setSubmitMessage("❌ حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.");
+      setFormSubmitted(true);
+
+         // ✅ RESET THE CAPTCHA even after an error
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+      setRecaptchaToken(null);
+
+    } finally {
+      setIsLoading(false);
     }
-  };
+  } else {
+    nextStep();
+  }
+};
+
+
 
   return (
     <>
@@ -149,36 +212,94 @@ function RegistrationForm() {
         <Grid container justifyContent="center" >
           <Grid item xs={12} sm={10} md={6} lg={6}>
             <PrettyCard title={title ? `التسجيل لـ${title}` : "التسجيل"} >
-              {formSubmitted ? (
-                <Box textAlign="center" py={6}>
-                  {submitSuccess ? (
-                    <Typography variant="h6" color="success.main">✅ تم إرسال النموذج بنجاح! شكرًا لتسجيلك.</Typography>
-                  ) : (
-                    <Typography variant="h6" color="error.main">❌ حدث خطأ أثناء الإرسال. حاول مرة أخرى لاحقًا.</Typography>
-                  )}
-                </Box>
-              ) : (
-                <form autoComplete="off" onSubmit={handleSubmit} style={{ direction: "rtl" }}>
-                  {step === 0 && (
-                    <StepOne
-                      form={form}
-                      setForm={setForm}
-                      errors={errors}
-                      setErrors={setErrors}
-                      handleValidatedChange={handleValidatedChange}
-                      handleChange={handleChange}
-                      nextStep={nextStep}
-                    />
-                  )}
+            {formSubmitted ? (
+  <Box textAlign="center" py={6}>
+   <div
+  style={{ color: submitMessage.startsWith("✅") ? "#2e7d32" : "#d32f2f", fontSize: "1.25rem" }}
+  dangerouslySetInnerHTML={{ __html: submitMessage }}
+/>
 
-                  {step === 1 && (
-                    <StepTwo
-                      form={form}
-                      errors={errors}
-                      handleValidatedChange={handleValidatedChange}
-                      prevStep={prevStep}
-                    />
-                  )}
+  </Box>
+) : (
+
+ <form autoComplete="off" onSubmit={handleSubmit} style={{ direction: "rtl" }}>
+              
+              {/* ------- الخطوة 1 ------- */}
+                {/* حقل مخفي لحفظ docId */}
+                <input type='hidden' name='docId' value={form.docId} /> 
+  {step === 0 && (
+    <>
+      <StepOne
+        form={form}
+        setForm={setForm}
+        errors={errors}
+        setErrors={setErrors}
+        handleValidatedChange={handleValidatedChange}
+        handleChange={handleChange}
+        nextStep={nextStep}
+        isLoading={isLoading}
+        recaptchaToken={recaptchaToken}
+      />
+
+      {userIsAdult && (
+        <Box textAlign="center" mt={2}>
+          <ReCAPTCHA
+  ref={recaptchaRef}
+  sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
+  onChange={(token) => setRecaptchaToken(token)}
+  onErrored={() => {
+    console.error("❌ reCAPTCHA failed to load or timed out.");
+    setSubmitMessage("❌ حدث خطأ أثناء التحقق من أنك لست روبوتاً. حاول مرة أخرى.");
+    setFormSubmitted(true);
+  }}
+  onExpired={() => {
+    console.warn("reCAPTCHA expired.");
+    setRecaptchaToken(null);
+  }}
+  size="normal"
+  hl="ar"
+/>
+
+        </Box>
+      )}
+    </>
+  )}
+
+                {/* ------- الخطوة 2 ------- */}
+               {step === 1 && (
+  <>
+    <StepTwo
+      form={form}
+      errors={errors}
+      handleValidatedChange={handleValidatedChange}
+      prevStep={prevStep}
+      isLoading={isLoading}
+      recaptchaToken={recaptchaToken}
+    />
+
+    {!userIsAdult && (
+      <Box textAlign="center" mt={2}>
+       <ReCAPTCHA
+  ref={recaptchaRef}
+  sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
+  onChange={(token) => setRecaptchaToken(token)}
+  onErrored={() => {
+    console.error("❌ reCAPTCHA failed to load or timed out.");
+    setSubmitMessage("❌ حدث خطأ أثناء التحقق من أنك لست روبوتاً. حاول مرة أخرى.");
+    setFormSubmitted(true);
+  }}
+  onExpired={() => {
+    console.warn("reCAPTCHA expired.");
+    setRecaptchaToken(null);
+  }}
+  size="normal"
+  hl="ar"
+/>
+
+      </Box>
+    )}
+  </>
+)}
                 </form>
               )}
             </PrettyCard>

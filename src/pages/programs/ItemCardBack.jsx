@@ -33,13 +33,13 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
         width: "100%",
         height: "100%",
         borderRadius: 4,
-        p: 2,
+        p: 1,
         mx: "auto",
         backgroundColor: "#ffffff",
         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
         transform: "none",
         transition: "none",
-        border: "1.5px solid #dbeafe",
+        border: "1.2px solid #dbeafe",
         overflow: "hidden",
         position: "relative", // مهم لإظهار الشريط
       }}
@@ -92,7 +92,7 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
         </Alert>
       )}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0, mt: 1 }}>
 
         <Button
           variant="outlined"
@@ -104,13 +104,13 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
               return;
             }
             setFullMsg("");
-            onRegister(item.name);
+            onRegister(item);
           }}
           sx={{
             width: "70%",
             mx: "auto",
             borderRadius: "28px",
-            border: "2px solid #003366",
+            border: "1.5px solid #003366",
             color: " #003366",
             fontWeight: "bold",
             px: 4,
@@ -135,7 +135,6 @@ export default function ItemCardBack({ item, fields, onRegister, onFlipBack, hig
           variant="text"
           onClick={e => { e.stopPropagation(); onFlipBack(); }}
           sx={{
-            mt: 0.5,
             color: "#003366",
             textDecoration: "underline",
             fontWeight: "bold"

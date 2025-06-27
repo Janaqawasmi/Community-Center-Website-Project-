@@ -64,9 +64,13 @@ useEffect(() => {
     }
   }, [programs, highlightId]);
 
-  const handleRegister = (programName) => {
-    navigate(`/RegistrationForm?program=${encodeURIComponent(programName)}`);
-  };
+ const handleRegister = (program) => {
+  // مرّر الـ id الحقيقي في الـ URL كـ programId
+ navigate(
+  `/RegistrationForm?programId=${encodeURIComponent(program.id)}&program=${encodeURIComponent(program.name)}`
+);
+
+};
 
   const highlightedProgram = programs.find((p) => p.id === highlightId);
 
