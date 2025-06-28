@@ -191,6 +191,7 @@ import { withProgress } from "../../utils/withProgress";
 
 
 export default function AdminCalendar() {
+  const [selectedDayNumber, setSelectedDayNumber] = useState(null);
   const [events, setEvents] = useState([]);
   const [centerEvents, setCenterEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -244,7 +245,8 @@ export default function AdminCalendar() {
 
   const handleDayClick = (day, dayEvents = []) => {
     if (!day) return;
-    
+    setSelectedDayNumber(day);
+
     // إذا كانت هناك فعاليات في اليوم، اعرضها
     if (dayEvents.length > 0) {
       setSelectedDayEvents(dayEvents);
@@ -288,7 +290,9 @@ export default function AdminCalendar() {
       return;
     }
 
-    const formattedTime = new Date(event.start).toISOString().slice(0, 16);
+    const formattedTime = new Date(event.start.getTime() - (event.start.getTimezoneOffset() * 60000))
+      .toISOString()
+      .slice(0, 16);
     setFormData({
       title: event.title,
       time: formattedTime,
@@ -1006,9 +1010,15 @@ export default function AdminCalendar() {
                   {days.map((day, index) => {
                     const dayEvents = getEventsForDay(day, currentDate, allEvents);
                     const todayClass = isToday(day, currentDate) ? 'today' : '';
-                    const visibleEvents = dayEvents.slice(0, CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS);
-                    const remainingEvents = dayEvents.length - CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS;
-                    
+                      // ترتيب الفعاليات لعرض center أولاً
+                    const sortedDayEvents = [...dayEvents].sort((a, b) => {
+                      if (a.type === 'center' && b.type !== 'center') return -1;
+                      if (a.type !== 'center' && b.type === 'center') return 1;
+                      return new Date(a.start) - new Date(b.start);
+                    });
+                    const visibleEvents = sortedDayEvents.slice(0, CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS);
+                    const remainingEvents = sortedDayEvents.length - CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS;
+
                     return (
                       <div
                         key={index}
@@ -1149,34 +1159,67 @@ export default function AdminCalendar() {
                 </div>
 
                 <div className="day-events-list">
-                  {selectedDayEvents.map((event) => (
-                    <div
-                      key={`${event.type}-${event.id}`}
-                      className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
-                      onClick={() => {
-                        setShowDayEvents(false);
-                        handleEventClick(event, { stopPropagation: () => {} });
-                      }}
-                    >
-                      <div className="event-time">
-                        {event.start.toLocaleTimeString("ar-EG", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false
-                        })}
-                      </div>
-                      <div className="event-content">
-                        <div className="event-title-day">{event.title}</div>
-                        {event.description && (
-                          <div className="event-desc">{event.description}</div>
-                        )}
-                      </div>
-                      <div className={`event-type-badge ${event.type}`}>
-                        {event.type === 'center' ? '📋' : '📅'}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+  {[...selectedDayEvents]
+    .sort((a, b) => {
+      // Events (center) أولاً، ثم EventsCalendar (calendar)
+      if (a.type === 'center' && b.type !== 'center') return -1;
+      if (a.type !== 'center' && b.type === 'center') return 1;
+      // حسب الوقت
+      return new Date(a.start) - new Date(b.start);
+    })
+    .map((event) => (
+      <div
+        key={`${event.type}-${event.id}`}
+        className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
+        onClick={() => {
+          setShowDayEvents(false);
+          handleEventClick(event, { stopPropagation: () => {} });
+        }}
+      >
+        <div className="event-time">
+          {event.start.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+          })}
+        </div>
+        <div className="event-content">
+          <div className="event-title-day">{event.title}</div>
+          {event.description && (
+            <div className="event-desc">{event.description}</div>
+          )}
+        </div>
+        <div className={`event-type-badge ${event.type}`}>
+          {event.type === 'center' ? '📋' : '📅'}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<Button
+  fullWidth
+  variant="contained"
+  sx={{
+    background: 'linear-gradient(45deg, #ea580c, #f97316)',
+    mt: 2,
+    fontWeight: 'bold',
+    fontSize: '1rem'
+  }}
+  onClick={() => {
+    // تجهيز التاريخ: الشهر الحالي + اليوم المختار + ساعة 9 صباحاً
+    const eventDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), selectedDayNumber, 9, 0);
+    const formatted = eventDate.toISOString().slice(0, 16);
+    setFormData({ title: "", time: formatted, description: "", location: "" });
+    setSelectedEvent(null);
+    setShowDayEvents(false);
+    setDialogOpen(true);
+  }}
+>
+  + إضافة
+</Button>
+
+
               </div>
             </div>
           )}
@@ -1206,17 +1249,23 @@ export default function AdminCalendar() {
                   <div className="event-detail-item">
                     <div className="event-detail-label">📅 التاريخ:</div>
                     <div className="event-detail-value">
-                      {selectedEvent?.date
-                        ? new Date(selectedEvent.date).toLocaleString("ar-EG", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false
-                          })
-                        : "—"}
+                      {selectedEvent?.date ? (
+  <>
+    {/* اليوم بالعربي */}
+    {new Date(selectedEvent.date).toLocaleDateString("ar-EG", {
+      weekday: "long"
+    })}
+    {/* مسافة صغيرة */}
+    <span style={{ margin: "0 14px" }}></span>
+    {/* الساعة بالإنجليزي */}
+    {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    })}
+  </>
+) : "—"}
+
                     </div>
                   </div>
                   
