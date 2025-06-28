@@ -407,7 +407,7 @@ useEffect(() => {
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
-        <Box p={4} sx={{ direction: "rtl", fontFamily: "Cairo, sans-serif" }}>
+        <Box p={0} sx={{ direction: "rtl",  }}>
           {/* Header */}
           <Box
             sx={{
@@ -422,8 +422,7 @@ useEffect(() => {
               variant="h4"
               fontWeight={500}
               sx={{
-                fontFamily: "Cairo, sans-serif",
-                fontSize: { xs: "1.8rem", sm: "2.3rem" },
+            
                 textAlign: "right",
               }}
             >

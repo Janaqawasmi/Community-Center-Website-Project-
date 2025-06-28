@@ -144,7 +144,7 @@ const filteredNews = newsList.filter(n =>
 
   return (
     <AdminDashboardLayout>
-      <Box sx={{ my: 4, px: 2 }}>
+      <Box sx={{ my: 1, px: 2 }}>
         <Typography variant="h4" gutterBottom>إدارة الأخبار</Typography>
      <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
   <TextField
