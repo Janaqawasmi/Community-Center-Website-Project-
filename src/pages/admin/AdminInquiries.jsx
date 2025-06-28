@@ -573,7 +573,15 @@ useEffect(() => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {filteredMessages.map((msg) => (
+{[...filteredMessages]
+  .sort((a, b) => {
+    if (!a.emailSent && b.emailSent) return -1;
+    if (a.emailSent && !b.emailSent) return 1;
+    const dateA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : 0;
+    const dateB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : 0;
+    return dateB - dateA;
+  })
+  .map((msg) => (
                         <TableRow
                           key={msg.id}
                           sx={{
