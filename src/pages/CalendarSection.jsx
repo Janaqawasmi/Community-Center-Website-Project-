@@ -19,8 +19,6 @@ export default function CalendarSection() {
   const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
 
- 
-
   // جلب فعاليات التقويم (EventsCalender)
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "EventsCalender"), (snapshot) => {
@@ -895,8 +893,14 @@ const handleRegisterForEvent = (eventTitle) => {
                 const dayEvents = getEventsForDay(day);
                 const todayClass = isToday(day) ? 'today' : '';
                 const maxVisibleEvents = 1;
-                const visibleEvents = dayEvents.slice(0, maxVisibleEvents);
-                const remainingEvents = dayEvents.length - maxVisibleEvents;
+                // ترتيب الفعاليات لعرض فعاليات المركز أولاً
+                const sortedDayEvents = [...dayEvents].sort((a, b) => {
+                  if (a.type === 'center' && b.type !== 'center') return -1;
+                  if (a.type !== 'center' && b.type === 'center') return 1;
+                  return new Date(a.start) - new Date(b.start);
+                });
+                const visibleEvents = sortedDayEvents.slice(0, maxVisibleEvents);
+                const remainingEvents = sortedDayEvents.length - maxVisibleEvents;
 
                 return (
                   <div
@@ -951,15 +955,22 @@ const handleRegisterForEvent = (eventTitle) => {
               </div>
 
               <div className="day-events-list">
-                {selectedDayEvents.map((event) => (
-                  <div
-                    key={`${event.type}-${event.id}`}
-                    className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
-                    onClick={() => {
-                      setShowDayEvents(false);
-                      handleEventClick(event, { stopPropagation: () => {} });
-                    }}
-                  >
+                  {[...selectedDayEvents]
+                    .sort((a, b) => {
+                       // ترتيب: center أولاً، ثم غير ذلك، ثم حسب الوقت
+                      if (a.type === 'center' && b.type !== 'center') return -1;
+                      if (a.type !== 'center' && b.type === 'center') return 1;
+                      return new Date(a.start) - new Date(b.start);
+                    })
+                    .map((event) => (
+                      <div
+                        key={`${event.type}-${event.id}`}
+                        className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
+                        onClick={() => {
+                          setShowDayEvents(false);
+                          handleEventClick(event, { stopPropagation: () => {} });
+                        }}
+                      >
                     <div className="event-time">
                       {event.start.toLocaleTimeString("en-GB", {
                         hour: "2-digit",
@@ -990,7 +1001,7 @@ const handleRegisterForEvent = (eventTitle) => {
         <h2 className="modal-title">
           {selectedEvent?.type === 'center'  
            ? <>تفاصيل فعالية المركز</>
-           : <>تفاصيل فعالية إدارية</>
+           : <>تفاصيل الحدث</>
         } 
         </h2>
         <button 
@@ -1067,7 +1078,7 @@ const handleRegisterForEvent = (eventTitle) => {
               handleRegisterForEvent(selectedEvent?.id, selectedEvent?.title); 
             }}
           >
-             سجل الآن للفعالية
+             سجل الآن 
           </button>
         </div>
       )}
