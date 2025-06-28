@@ -91,12 +91,21 @@ useEffect(() => {
             boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <img src={siteInfo.logo_url || defaultLogo} alt="Logo" style={{ width: 40 }} />
-            <Typography fontWeight="bold" color="#003366" fontSize="1rem">
-              المركز الجماهيري بيت حنينا
-            </Typography>
-          </Box>
+         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  {!isExpanded ? (
+    <Typography fontWeight="bold" color="#003366" fontSize="1rem">
+      المركز الجماهيري بيت حنينا
+    </Typography>
+  ) : (
+    <>
+      <img src={siteInfo.logo_url || defaultLogo} alt="Logo" style={{ width: 40 }} />
+      <Typography fontWeight="bold" color="#003366" fontSize="1rem">
+        المركز الجماهيري بيت حنينا
+      </Typography>
+    </>
+  )}
+</Box>
+
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Typography variant="body2" fontWeight="bold">الأقسام</Typography>
             <Typography variant="body2" fontWeight="bold">روابط مهمة</Typography>

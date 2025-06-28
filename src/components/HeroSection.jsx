@@ -65,7 +65,7 @@ export default function HeroSection({ pageId, title  }) {
             zIndex: 1,
           }}
         >
-          <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1.1rem', md: '2rem' }, }}>
+          <Typography variant="h4" fontWeight="bold" sx={{ color: "#fff", mb: 1, fontSize: { xs: '1rem', md: '2rem' }, }}>
                  {title || heroData.title}  </Typography>
                    
 

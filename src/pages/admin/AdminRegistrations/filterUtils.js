@@ -28,3 +28,20 @@ export const filterRegistrations = (data, { classNumber, groupNumber, search, pa
   }
   return filtered;
 };
+
+// دالة لترتيب التسجيلات حسب تاريخ التسجيل
+export const sortRegistrationsByDate = (data, order = "desc") => {
+  return [...data].sort((a, b) => {
+    const dateA = new Date(
+      a.createdAt?.seconds
+        ? a.createdAt.toDate?.() ?? new Date(a.createdAt.seconds * 1000)
+        : a.createdAt
+    );
+    const dateB = new Date(
+      b.createdAt?.seconds
+        ? b.createdAt.toDate?.() ?? new Date(b.createdAt.seconds * 1000)
+        : b.createdAt
+    );
+    return order === "asc" ? dateA - dateB : dateB - dateA;
+  });
+};

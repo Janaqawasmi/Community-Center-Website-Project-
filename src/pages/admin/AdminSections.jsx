@@ -590,7 +590,7 @@ const handleDragEnd = async (result) => {
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
-        <Box sx={{ padding: 4, direction: 'rtl' }}>
+        <Box sx={{ padding: 2, direction: 'rtl' }}>
           <Typography variant="h4" gutterBottom>إدارة الأقسام</Typography>
 
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>

@@ -271,10 +271,10 @@ useEffect(() => {
     alignItems: 'center',
   }}
 >
+  <CalendarIcon />
   {socialLinks.FacebookLink && renderSocialIcon(socialLinks.FacebookLink, FacebookIcon, 'black')}
   {socialLinks.WhatsAppLink && renderSocialIcon(socialLinks.WhatsAppLink, WhatsAppIcon, 'black')}
   {socialLinks.instagramLink && renderSocialIcon(socialLinks.instagramLink, InstagramIcon, 'black')}
-<CalendarIcon />
 
 
 </Box>

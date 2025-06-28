@@ -242,7 +242,7 @@ const handleSubmit = async (e) => {
       />
 
       {userIsAdult && (
-        <Box textAlign="center" mt={2}>
+        <Box textAlign="center" mt={1}>
           <ReCAPTCHA
   ref={recaptchaRef}
   sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"
@@ -278,7 +278,7 @@ const handleSubmit = async (e) => {
     />
 
     {!userIsAdult && (
-      <Box textAlign="center" mt={2}>
+      <Box textAlign="center" mt={1}>
        <ReCAPTCHA
   ref={recaptchaRef}
   sitekey="6Le2DxsrAAAAAHoYVOpDRby_DGrmAQzu8IB32mdQ"

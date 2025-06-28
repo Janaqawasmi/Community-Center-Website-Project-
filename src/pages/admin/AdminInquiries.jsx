@@ -407,7 +407,7 @@ useEffect(() => {
   return (
     <RequireAdmin>
       <AdminDashboardLayout>
-        <Box p={4} sx={{ direction: "rtl", fontFamily: "Cairo, sans-serif" }}>
+        <Box p={0} sx={{ direction: "rtl",  }}>
           {/* Header */}
           <Box
             sx={{
@@ -422,8 +422,7 @@ useEffect(() => {
               variant="h4"
               fontWeight={500}
               sx={{
-                fontFamily: "Cairo, sans-serif",
-                fontSize: { xs: "1.8rem", sm: "2.3rem" },
+            
                 textAlign: "right",
               }}
             >
@@ -573,7 +572,15 @@ useEffect(() => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {filteredMessages.map((msg) => (
+{[...filteredMessages]
+  .sort((a, b) => {
+    if (!a.emailSent && b.emailSent) return -1;
+    if (a.emailSent && !b.emailSent) return 1;
+    const dateA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : 0;
+    const dateB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : 0;
+    return dateB - dateA;
+  })
+  .map((msg) => (
                         <TableRow
                           key={msg.id}
                           sx={{

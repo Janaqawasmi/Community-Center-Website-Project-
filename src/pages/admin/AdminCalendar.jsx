@@ -191,6 +191,8 @@ import { withProgress } from "../../utils/withProgress";
 
 
 export default function AdminCalendar() {
+  const [programEvents, setProgramEvents] = useState([]);
+  const [selectedDayNumber, setSelectedDayNumber] = useState(null);
   const [events, setEvents] = useState([]);
   const [centerEvents, setCenterEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -222,6 +224,7 @@ export default function AdminCalendar() {
     return () => unsubscribe();
   }, []);
 
+  
   // جلب فعاليات المركز
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "Events"), (snapshot) => {
@@ -236,6 +239,61 @@ export default function AdminCalendar() {
     return () => unsubscribe();
   }, []);
 
+
+  // جلب الدورات (Programs)
+useEffect(() => {
+  const unsubscribe = onSnapshot(collection(db, "programs"), (snapshot) => {
+    const formatted = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      
+      let programDate = new Date();
+      
+      try {
+        if (data.date && typeof data.date === 'object' && data.date.toDate) {
+          programDate = data.date.toDate();
+          if (data.time && typeof data.time === 'string') {
+            const [hours, minutes] = data.time.split(':');
+            programDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+          }
+        }
+        else if (typeof data.date === 'string' && data.date.includes('-')) {
+          if (data.time && typeof data.time === 'string') {
+            const dateTimeString = `${data.date}T${data.time}:00`;
+            programDate = new Date(dateTimeString);
+          } else {
+            programDate = new Date(data.date + 'T09:00:00');
+          }
+        }
+        
+        if (isNaN(programDate.getTime())) {
+          programDate = new Date();
+        }
+        
+      } catch (error) {
+        console.error("خطأ في معالجة تاريخ الدورة:", error);
+        programDate = new Date();
+      }
+
+      return {
+        id: doc.id,
+        type: "program",
+        title: data.name || "دورة",
+        start: programDate,
+        description: data.description || "",
+        location: data.location || "",
+        price: data.price || 0,
+        instructor: data.instructor_name || "",
+        capacity: data.capacity || 0,
+        isActive: data.isActive !== false
+      };
+    });
+    
+    setProgramEvents(formatted.filter(program => program.isActive));
+  });
+
+  return () => unsubscribe();
+}, []);
+
   const navigateMonth = (direction) => {
     const newDate = new Date(currentDate);
     newDate.setMonth(currentDate.getMonth() + direction);
@@ -244,7 +302,8 @@ export default function AdminCalendar() {
 
   const handleDayClick = (day, dayEvents = []) => {
     if (!day) return;
-    
+    setSelectedDayNumber(day);
+
     // إذا كانت هناك فعاليات في اليوم، اعرضها
     if (dayEvents.length > 0) {
       setSelectedDayEvents(dayEvents);
@@ -270,34 +329,37 @@ export default function AdminCalendar() {
   };
 
   const handleEventClick = (event, e) => {
-    e.stopPropagation();
-    
-    if (event.type === "center") {
-      setSelectedEvent({
-        id: event.id,
-        title: event.title,
-        date: event.start.toISOString(),
-        description: event.description,
-        location: event.location,
-        capacity: event.capacity || "",
-        price: event.price || 0,
-        imageUrl: event.imageUrl || "",
-        type: event.type
-      });
-      setShowDetails(true);
-      return;
-    }
-
-    const formattedTime = new Date(event.start).toISOString().slice(0, 16);
-    setFormData({
+  e.stopPropagation();
+  
+  if (event.type === "center" || event.type === "program") {
+    setSelectedEvent({
+      id: event.id,
       title: event.title,
-      time: formattedTime,
+      date: event.start.toISOString(),
       description: event.description,
-      location: event.location
+      location: event.location,
+      capacity: event.capacity || "",
+      price: event.price || 0,
+      imageUrl: event.imageUrl || "",
+      instructor: event.instructor || "",
+      type: event.type
     });
-    setSelectedEvent({ id: event.id, type: event.type });
-    setDialogOpen(true);
-  };
+    setShowDetails(true);
+    return;
+  }
+
+  const formattedTime = new Date(event.start.getTime() - (event.start.getTimezoneOffset() * 60000))
+    .toISOString()
+    .slice(0, 16);
+  setFormData({
+    title: event.title,
+    time: formattedTime,
+    description: event.description,
+    location: event.location
+  });
+  setSelectedEvent({ id: event.id, type: event.type });
+  setDialogOpen(true);
+};
 
   const handleSave = async () => {
     try {
@@ -347,8 +409,7 @@ export default function AdminCalendar() {
   };
 
   // دمج الفعاليات
-  const allEvents = [...events, ...centerEvents];
-  const days = getDaysInMonth(currentDate);
+  const allEvents = [...events, ...centerEvents, ...programEvents];  const days = getDaysInMonth(currentDate);
   const monthName = CALENDAR_CONSTANTS.MONTH_NAMES[currentDate.getMonth()];
   const year = currentDate.getFullYear();
 
@@ -960,6 +1021,66 @@ export default function AdminCalendar() {
               padding: 0.1rem;
             }
           }
+            .event-item.program-event {
+  background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+  border: 1px solid #86efac;
+  border-right: 2px solid #16a34a;
+  color: #15803d;
+}
+
+.event-item.program-event:hover {
+  background: linear-gradient(135deg, #f0fdf4 0%, #4ade80 100%);
+  border-color: #16a34a;
+  color: white;
+}
+
+/* أنماط الدورات في قائمة اليوم - أخضر */
+.day-event-item.program-event {
+  background: #f0fdf4;
+  border-right-color: #16a34a;
+  border-left-color: #86efac;
+  border-top-color: #86efac;
+  border-bottom-color: #86efac;
+}
+
+.day-event-item.program-event:hover {
+  background: #dcfce7;
+}
+
+.day-event-item.program-event .event-title-day {
+  color: #15803d;
+}
+
+.day-event-item.program-event .event-desc {
+  color: #16a34a;
+}
+
+.day-event-item.program-event .event-time {
+  background: linear-gradient(45deg, #16a34a, #22c55e);
+}
+
+.day-event-item.program-event .event-type-badge {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #16a34a;
+}
+
+/* الأنماط لتفاصيل الدورات - أخضر */
+.event-details.program-event .event-detail-item {
+  background: #f0fdf4;
+  border-right-color: #16a34a;
+  border-left-color: #86efac;
+  border-top-color: #86efac;
+  border-bottom-color: #86efac;
+}
+
+.event-details.program-event .event-detail-label {
+  color: #16a34a;
+}
+
+.event-details.program-event .event-detail-value {
+  color: #15803d;
+}
         `}</style>
         
         <Container maxWidth="xl" sx={{ mt: 3 }}>
@@ -1006,9 +1127,17 @@ export default function AdminCalendar() {
                   {days.map((day, index) => {
                     const dayEvents = getEventsForDay(day, currentDate, allEvents);
                     const todayClass = isToday(day, currentDate) ? 'today' : '';
-                    const visibleEvents = dayEvents.slice(0, CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS);
-                    const remainingEvents = dayEvents.length - CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS;
-                    
+                     // ترتيب الفعاليات لعرض الدورات أولاً، ثم center، ثم calendar
+const sortedDayEvents = [...dayEvents].sort((a, b) => {
+  if (a.type === 'program' && b.type !== 'program') return -1;
+  if (a.type !== 'program' && b.type === 'program') return 1;
+  if (a.type === 'center' && b.type !== 'center' && b.type !== 'program') return -1;
+  if (a.type !== 'center' && b.type === 'center' && a.type !== 'program') return 1;
+  return new Date(a.start) - new Date(b.start);
+});
+                    const visibleEvents = sortedDayEvents.slice(0, CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS);
+                    const remainingEvents = sortedDayEvents.length - CALENDAR_CONSTANTS.MAX_VISIBLE_EVENTS;
+
                     return (
                       <div
                         key={index}
@@ -1025,8 +1154,10 @@ export default function AdminCalendar() {
                             {visibleEvents.map((event) => (
                               <div
                                 key={`${event.type}-${event.id}`}
-                                className={`event-item ${event.type === 'center' ? 'center-event' : ''}`}
-                                onClick={(e) => handleEventClick(event, e)}
+className={`event-item ${
+  event.type === 'program' ? 'program-event' : 
+  event.type === 'center' ? 'center-event' : ''
+}`}                                onClick={(e) => handleEventClick(event, e)}
                               >
                                 <span className="event-title">{event.title}</span>
                               </div>
@@ -1149,34 +1280,71 @@ export default function AdminCalendar() {
                 </div>
 
                 <div className="day-events-list">
-                  {selectedDayEvents.map((event) => (
-                    <div
-                      key={`${event.type}-${event.id}`}
-                      className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
-                      onClick={() => {
-                        setShowDayEvents(false);
-                        handleEventClick(event, { stopPropagation: () => {} });
-                      }}
-                    >
-                      <div className="event-time">
-                        {event.start.toLocaleTimeString("ar-EG", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false
-                        })}
-                      </div>
-                      <div className="event-content">
-                        <div className="event-title-day">{event.title}</div>
-                        {event.description && (
-                          <div className="event-desc">{event.description}</div>
-                        )}
-                      </div>
-                      <div className={`event-type-badge ${event.type}`}>
-                        {event.type === 'center' ? '📋' : '📅'}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+  {[...selectedDayEvents]
+  .sort((a, b) => {
+    // Programs أولاً، ثم center، ثم calendar
+    if (a.type === 'program' && b.type !== 'program') return -1;
+    if (a.type !== 'program' && b.type === 'program') return 1;
+    if (a.type === 'center' && b.type !== 'center' && b.type !== 'program') return -1;
+    if (a.type !== 'center' && b.type === 'center' && a.type !== 'program') return 1;
+    return new Date(a.start) - new Date(b.start);
+  })
+    .map((event) => (
+      <div
+        key={`${event.type}-${event.id}`}
+className={`day-event-item ${
+  event.type === 'program' ? 'program-event' : 
+  event.type === 'center' ? 'center-event' : 
+  'admin-event'
+}`}        onClick={() => {
+          setShowDayEvents(false);
+          handleEventClick(event, { stopPropagation: () => {} });
+        }}
+      >
+        <div className="event-time">
+          {event.start.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+          })}
+        </div>
+        <div className="event-content">
+          <div className="event-title-day">{event.title}</div>
+          {event.description && (
+            <div className="event-desc">{event.description}</div>
+          )}
+        </div>
+        <div className={`event-type-badge ${event.type}`}>
+  {event.type === 'program' ? '📚' : event.type === 'center' ? '📋' : '📅'}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<Button
+  fullWidth
+  variant="contained"
+  sx={{
+    background: 'linear-gradient(45deg, #ea580c, #f97316)',
+    mt: 2,
+    fontWeight: 'bold',
+    fontSize: '1rem'
+  }}
+  onClick={() => {
+    // تجهيز التاريخ: الشهر الحالي + اليوم المختار + ساعة 9 صباحاً
+    const eventDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), selectedDayNumber, 9, 0);
+    const formatted = eventDate.toISOString().slice(0, 16);
+    setFormData({ title: "", time: formatted, description: "", location: "" });
+    setSelectedEvent(null);
+    setShowDayEvents(false);
+    setDialogOpen(true);
+  }}
+>
+  + إضافة
+</Button>
+
+
               </div>
             </div>
           )}
@@ -1187,8 +1355,10 @@ export default function AdminCalendar() {
               <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                   <h2 className="modal-title">
-                    {selectedEvent?.type === 'center' ? '📋' : '📅'} تفاصيل الفعالية
-                  </h2>
+  {selectedEvent?.type === 'program' ? '📚 تفاصيل الدورة' :
+   selectedEvent?.type === 'center' ? '📋 تفاصيل الفعالية' :
+   '📅 تفاصيل الحدث'}
+</h2>
                   <button 
                     className="close-button"
                     onClick={() => setShowDetails(false)}
@@ -1197,59 +1367,114 @@ export default function AdminCalendar() {
                   </button>
                 </div>
 
-                <div className={`event-details ${selectedEvent?.type === 'center' ? 'center-event' : 'admin-event'}`}>
-                  <div className="event-detail-item">
-                    <div className="event-detail-label">📌 العنوان:</div>
-                    <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
-                  </div>
-                  
-                  <div className="event-detail-item">
-                    <div className="event-detail-label">📅 التاريخ:</div>
-                    <div className="event-detail-value">
-                      {selectedEvent?.date
-                        ? new Date(selectedEvent.date).toLocaleString("ar-EG", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false
-                          })
-                        : "—"}
-                    </div>
-                  </div>
-                  
-                  <div className="event-detail-item">
-                    <div className="event-detail-label">📝 الوصف:</div>
-                    <div className="event-detail-value">{selectedEvent?.description || "—"}</div>
-                  </div>
-                  
-                  <div className="event-detail-item">
-                    <div className="event-detail-label">📍 الموقع:</div>
-                    <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
-                  </div>
+<div className={`event-details ${
+  selectedEvent?.type === 'program' ? 'program-event' : 
+  selectedEvent?.type === 'center' ? 'center-event' : 
+  'admin-event'
+}`}>
+  
+  {/* للدورات - عرض مبسط */}
+  {selectedEvent?.type === 'program' ? (
+    <>
+      <div className="event-detail-item">
+        <div className="event-detail-label">📌 العنوان:</div>
+        <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
+      </div>
+      
+      <div className="event-detail-item">
+        <div className="event-detail-label">🕐 الوقت:</div>
+        <div className="event-detail-value">
+          {selectedEvent?.date ? (
+            <>
+              {new Date(selectedEvent.date).toLocaleDateString("ar-EG", {
+                weekday: "long"
+              })}
+              <span style={{ margin: "0 14px" }}></span>
+              {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+              })}
+            </>
+          ) : "—"}
+        </div>
+      </div>
+      
+      {selectedEvent?.instructor && (
+        <div className="event-detail-item">
+          <div className="event-detail-label">👨‍🏫 المدرب:</div>
+          <div className="event-detail-value">{selectedEvent.instructor}</div>
+        </div>
+      )}
+      
+      {selectedEvent?.price !== undefined && (
+        <div className="event-detail-item">
+          <div className="event-detail-label">💰 السعر:</div>
+          <div className="event-detail-value">
+            {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
+          </div>
+        </div>
+      )}
+    </>
+  ) : (
+    /* للفعاليات الأخرى - عرض كامل */
+    <>
+      <div className="event-detail-item">
+        <div className="event-detail-label">📌 العنوان:</div>
+        <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
+      </div>
+      
+      <div className="event-detail-item">
+        <div className="event-detail-label">📅 التاريخ:</div>
+        <div className="event-detail-value">
+          {selectedEvent?.date ? (
+            <>
+              {new Date(selectedEvent.date).toLocaleDateString("ar-EG", {
+                weekday: "long"
+              })}
+              <span style={{ margin: "0 14px" }}></span>
+              {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+              })}
+            </>
+          ) : "—"}
+        </div>
+      </div>
+      
+      <div className="event-detail-item">
+        <div className="event-detail-label">📝 الوصف:</div>
+        <div className="event-detail-value">{selectedEvent?.description || "—"}</div>
+      </div>
+      
+      <div className="event-detail-item">
+        <div className="event-detail-label">📍 الموقع:</div>
+        <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
+      </div>
 
-                  {/* عرض السعة والسعر إذا كانت الفعالية من نوع center */}
-                  {selectedEvent?.type === 'center' && (
-                    <>
-                      {selectedEvent?.capacity && (
-                        <div className="event-detail-item">
-                          <div className="event-detail-label">👥 السعة:</div>
-                          <div className="event-detail-value">{selectedEvent.capacity}</div>
-                        </div>
-                      )}
-                      {selectedEvent?.price !== undefined && (
-                        <div className="event-detail-item">
-                          <div className="event-detail-label">💰 السعر:</div>
-                          <div className="event-detail-value">
-                            {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
+      {/* عرض السعة والسعر إذا كانت الفعالية من نوع center */}
+      {selectedEvent?.type === 'center' && (
+        <>
+          {selectedEvent?.capacity && (
+            <div className="event-detail-item">
+              <div className="event-detail-label">👥 السعة:</div>
+              <div className="event-detail-value">{selectedEvent.capacity}</div>
+            </div>
+          )}
+          {selectedEvent?.price !== undefined && (
+            <div className="event-detail-item">
+              <div className="event-detail-label">💰 السعر:</div>
+              <div className="event-detail-value">
+                {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </>
+  )}
+</div>
               </div>
             </div>
           )}
