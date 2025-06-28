@@ -99,8 +99,8 @@ function StepOne({
           helperText={errors.gender}
         >
           <MenuItem value="">اختر الجنس</MenuItem>
-          <MenuItem value="ذكر">ذكر</MenuItem>
-          <MenuItem value="أنثى">أنثى</MenuItem>
+          <MenuItem value="זכר">ذكر</MenuItem>
+          <MenuItem value="נקבה">أنثى</MenuItem>
         </TextField>
       </Grid>
 

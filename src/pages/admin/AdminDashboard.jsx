@@ -31,7 +31,7 @@ export default function AdminDashboard() {
               fullWidth
               onClick={() => navigate('/admin/program-stats')}
             >
-              📈 عدد المسجلين في كل برنامج
+              📈تحليل البيانات 
             </Button>
 
             <Button

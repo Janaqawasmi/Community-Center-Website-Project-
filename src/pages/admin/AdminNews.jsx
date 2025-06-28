@@ -16,6 +16,8 @@ import LinkIcon from '@mui/icons-material/Link';
 const categories = ['دورة', 'أمسية', 'فعالية', 'برنامج'];
 
 export default function AdminNews() {
+  const [searchQuery, setSearchQuery] = useState('');
+
   const [newsList, setNewsList] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -133,23 +135,50 @@ const [picturesUrlInput, setPicturesUrlInput] = useState('');
     }
   };
 
-  const filteredNews = newsList.filter(n =>
-    (!filterCategory || n.category === filterCategory) &&
-    (!filterDate || n.date === filterDate)
-  );
+const filteredNews = newsList.filter(n =>
+  (!filterCategory || n.category === filterCategory) &&
+  (!filterDate || n.date === filterDate) &&
+  (!searchQuery || n.title?.toLowerCase().includes(searchQuery.toLowerCase()))
+);
+
 
   return (
     <AdminDashboardLayout>
       <Box sx={{ my: 4, px: 2 }}>
         <Typography variant="h4" gutterBottom>إدارة الأخبار</Typography>
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          <TextField label="تاريخ" type="date" InputLabelProps={{ shrink: true }} value={filterDate} onChange={e => setFilterDate(e.target.value)} />
-          <TextField label="الفئة" select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} sx={{ minWidth: 160 }}>
-            <MenuItem value="">الكل</MenuItem>
-            {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
-          </TextField>
-          <Button variant="contained" onClick={() => handleOpenDialog()}>إضافة خبر جديد</Button>
-        </Box>
+     <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+  <TextField
+    label="بحث عن عنوان الخبر"
+    variant="outlined"
+    value={searchQuery}
+    onChange={e => setSearchQuery(e.target.value)}
+    sx={{ minWidth: 250 }}
+    size="small"
+  />
+  <TextField
+    label="تاريخ"
+    type="date"
+    InputLabelProps={{ shrink: true }}
+    value={filterDate}
+    onChange={e => setFilterDate(e.target.value)}
+    size="small"
+  />
+  <TextField
+    label="الفئة"
+    select
+    value={filterCategory}
+    onChange={e => setFilterCategory(e.target.value)}
+    sx={{ minWidth: 160 }}
+    size="small"
+  >
+    <MenuItem value="">الكل</MenuItem>
+    {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
+  </TextField>
+  <Button variant="contained" onClick={() => handleOpenDialog()}>
+    إضافة خبر جديد
+  </Button>
+</Box>
+
 
         <TableContainer component={Paper}>
           <Table>
