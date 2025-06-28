@@ -133,9 +133,11 @@ const handleSubmit = async (e) => {
         setIsLoading(true);
 
       const result = await submitRegistration(e, {
-        ...form,
-        recaptchaToken: recaptchaToken,
-      }, setForm);
+  ...form,
+  recaptchaToken: recaptchaToken,
+  birthdate: form.birthdate ? new Date(form.birthdate) : null, // ✅ تحويل لتاريخ
+}, setForm);
+
 
       if (result.success) {
         if (programId) {
