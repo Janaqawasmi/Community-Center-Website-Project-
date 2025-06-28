@@ -34,6 +34,8 @@ const [picturesUrlInput, setPicturesUrlInput] = useState('');
     fullDescription: '',
     featured: false,
   });
+const generateSlug = (title) =>
+  title.trim().replace(/\s+/g, "-").replace(/[^\w\u0600-\u06FF\-]/g, "").toLowerCase();
 
   useEffect(() => {
     fetchNews();
@@ -106,24 +108,36 @@ const [picturesUrlInput, setPicturesUrlInput] = useState('');
     setForm(prev => ({ ...prev, pictures: [...prev.pictures, ...uploaded] }));
   };
 
-  const handleSave = async () => {
-    const { title, date, category, mainImage, pictures, fullDescription, featured } = form;
-    if (!title || !date || !category || !mainImage || !pictures.length || !fullDescription) {
-      alert('يرجى تعبئة جميع الحقول المطلوبة');
-      return;
-    }
-    const data = {
-      title, date, category, mainImage, Pictures: pictures, full_description: fullDescription,
-      featured, createdAt: Timestamp.now()
-    };
-    if (editMode) {
-      await updateDoc(doc(db, 'News', currentId), data);
-    } else {
-      await addDoc(collection(db, 'News'), data);
-    }
-    fetchNews();
-    handleCloseDialog();
+const handleSave = async () => {
+  const { title, date, category, mainImage, pictures, fullDescription, featured } = form;
+  if (!title || !date || !category || !mainImage || !pictures.length || !fullDescription) {
+    alert('يرجى تعبئة جميع الحقول المطلوبة');
+    return;
+  }
+
+  const slug = generateSlug(title);
+
+  const data = {
+    title,
+    date,
+    category,
+    mainImage,
+    Pictures: pictures,
+    full_description: fullDescription,
+    featured,
+    slug,
+    createdAt: Timestamp.now()
   };
+
+  if (editMode) {
+    await updateDoc(doc(db, 'News', currentId), data);
+  } else {
+    await addDoc(collection(db, 'News'), data);
+  }
+
+  fetchNews();
+  handleCloseDialog();
+};
 
   const handleDelete = (id) => {
     const confirmDelete = window.confirm('هل انت متاكد انك تريد حذف هذا الخبر؟');

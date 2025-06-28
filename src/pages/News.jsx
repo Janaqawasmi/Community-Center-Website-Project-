@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { fetchNews } from '../utils/fetchNews';
 import NewsCard from './NewsCard';
 import GradientSearchBar from "../components/layout/common/GradientSearchBar";
-
+import { trackPageView } from '../components/Data Analysis/utils/trackPageView';
 import HeroSection from "../components/HeroSection"; // ⬅️ (already imported)
 import {
   Box,
@@ -14,12 +14,25 @@ import {
 
 function News() {
   const [newsItems, setNewsItems] = useState([]);
-
+useEffect(() => {
+  if (news?.slug) {
+    trackPageView(`/news/${news.slug}`);
+  }
+}, [news]);
   useEffect(() => {
     const getNews = async () => {
-      const data = await fetchNews();
-      setNewsItems(data);
-    };
+  const data = await fetchNews();
+
+  // ✅ Sort from earliest to latest (sooner at top)
+  const sorted = [...data].sort((a, b) => {
+    const dateA = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const dateB = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return dateA - dateB; // ascending: earliest to latest
+  });
+
+  setNewsItems(sorted);
+};
+
     getNews();
   }, []);
 
