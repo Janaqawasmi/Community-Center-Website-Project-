@@ -630,10 +630,10 @@ const handleRegisterForEvent = (eventTitle) => {
         }
 
         .event-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
 
 /* الأنماط الافتراضية (للفعاليات الإدارية - برتقالي) */
 .event-detail-item {
