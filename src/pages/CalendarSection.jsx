@@ -248,7 +248,7 @@ const handleRegisterForEvent = (eventTitle) => {
     let registrationUrl;
     
     if (selectedEvent.type === 'program') {
-      registrationUrl = `/RegistrationForm?program=${encodeURIComponent(selectedEvent.title)}`;
+      registrationUrl = `/RegistrationForm?programId=${encodeURIComponent(selectedEvent.id)}&program=${encodeURIComponent(selectedEvent.title)}`;
     } else {
       registrationUrl = `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.title)}`;
     }
