@@ -16,9 +16,6 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import { fetchRegistrations } from "./registrationService";
-import { filterRegistrations } from "./filterUtils";
-import { getDocs, collection } from "firebase/firestore";
 import { db } from "../../../components/firebase.js";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
@@ -28,6 +25,10 @@ import { handleConfirmDelete } from "./Confirms";
 import {exportRegistrationsToExcel} from "../../../utils/exportToExcel";
 import { PersonProgramsViewer } from "./PersonProgramsDialog.jsx";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { onSnapshot, getDoc, doc, collection } from "firebase/firestore";
+import { filterRegistrations, sortRegistrationsByDate } from "./filterUtils";
+
+
 
 
 
@@ -40,62 +41,89 @@ export default function AdminRegistrationsTable({ collectionName, label, archive
   const [paidOnly, setPaidOnly] = useState(null);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState([]);
-  const [classOptions, setClassOptions] = useState([]);
-  const [groupOptions, setGroupOptions] = useState([]);
   const [editOpen, setEditOpen] = useState(false);
 const [editTarget, setEditTarget] = useState(null);
 const [deleteOpen, setDeleteOpen] = useState(false);
 const [digit5Options, setDigit5Options] = useState([]);
 const [digit5, setDigit5] = useState("");
+const [sortOrder, setSortOrder] = useState("desc");
+const [classOptions, setClassOptions] = useState([]);
+const [groupOptions, setGroupOptions] = useState([]);
 
+
+
+useEffect(() => {
+  const filteredData = filterRegistrations(data, {
+    classNumber,
+    groupNumber,
+    search,
+    paidOnly,
+    archivedOnly,
+  });
+
+  const sortedData = sortRegistrationsByDate(filteredData, sortOrder);
+  setFiltered(sortedData);
+  setSelected([]);
+}, [data, classNumber, groupNumber, search, paidOnly, archivedOnly, sortOrder]);
 
 
 
   // جلب التسجيلات من الكوليكشن المحدد
   useEffect(() => {
-    (async () => {
-      const regs = await fetchRegistrations(collectionName);
-      setData(regs.map(r => ({ ...r, archived: r.archived ?? false })));
-    })();
-  }, [collectionName]);
+  let unsubProgram = null;
+  let unsubEvent = null;
 
-  // جلب قيم الفلاتر (classNumber, groupNumber) من كولكشنات التعريف: programs أو Events
-  useEffect(() => {
-    (async () => {
-      const defColl = collectionName.includes("program")
-        ? "programs"
-        : "Events";
-      const snap = await getDocs(collection(db, defColl));
-      const classes = new Set();
-      const groups = new Set();
-      const digit5s = new Set();
+  const listenToCollection = (name) => {
+    return onSnapshot(collection(db, name), async (snapshot) => {
+      const docsWithDetails = await Promise.all(
+        snapshot.docs.map(async (docSnap) => {
+          const data = docSnap.data();
+          const firebaseId = docSnap.id;
+          const docId = data.docId;
 
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        if (d.classNumber != null) classes.add(d.classNumber);
-        if (d.groupNumber != null) groups.add(d.groupNumber);
-        if (d.digit5 != null) digit5s.add(d.digit5);
+          if (!docId) {
+            return { firebaseId, ...data, classNumber: "", groupNumber: "", name: "", digit5: "" };
+          }
+
+          const defColl = name === "programRegistrations" ? "programs" : "Events";
+          const defSnap = await getDoc(doc(db, defColl, docId));
+          const defData = defSnap.exists() ? defSnap.data() : {};
+
+          return {
+            firebaseId,
+            ...data,
+            classNumber: defData.classNumber ?? "",
+            groupNumber: defData.groupNumber ?? "",
+            name: defData.name ?? "",
+            digit5: defData.digit5 ?? "",
+            collectionName: name,
+            archived: data.archived ?? false,
+          };
+        })
+      );
+      setData((prevData) => {
+        const other = prevData.filter(d => d.collectionName !== name);
+        return [...other, ...docsWithDetails];
       });
-      setClassOptions([...classes]);
-      setGroupOptions([...groups]);
-      setDigit5Options([...digit5s]);
-    })();
-  }, [collectionName]);
+    });
+  };
 
-  // تطبيق الفلاتر عند تغيّر أي قيمة
-  useEffect(() => {
-    setFiltered(
-      filterRegistrations(data, {
-        classNumber,
-        groupNumber,
-        search,
-        paidOnly,
-        archivedOnly,
-      })
-    );
-    setSelected([]);
-  }, [data, classNumber, groupNumber, search, paidOnly, archivedOnly]);
+  if (collectionName === "all") {
+    unsubProgram = listenToCollection("programRegistrations");
+    unsubEvent = listenToCollection("eventRegistrations");
+  } else {
+    unsubProgram = listenToCollection(collectionName);
+  }
 
+  return () => {
+    if (unsubProgram) unsubProgram();
+    if (unsubEvent) unsubEvent();
+  };
+}, [collectionName]);
+
+
+
+  
   // إدارة اختيار الصفوف
   const handleSelectAll = e =>
     setSelected(e.target.checked ? filtered.map(r => r.firebaseId) : []);
@@ -177,6 +205,20 @@ const [digit5, setDigit5] = useState("");
           </Select>
         </FormControl>
 
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+  <InputLabel id="sort-order-label">ترتيب التاريخ</InputLabel>
+  <Select
+    labelId="sort-order-label"
+    label="ترتيب التاريخ"
+    value={sortOrder}
+    onChange={(e) => setSortOrder(e.target.value)}
+  >
+    <MenuItem value="desc">من الأحدث إلى الأقدم</MenuItem>
+    <MenuItem value="asc">من الأقدم إلى الأحدث</MenuItem>
+  </Select>
+</FormControl>
+
+
         {/* حقل البحث */}
         <TextField
           size="small"
@@ -186,7 +228,10 @@ const [digit5, setDigit5] = useState("");
           sx={{ minWidth: 200 }}
         />
 
-        {!archivedOnly && (
+      
+      </Box>
+
+       {!archivedOnly && (
 <Box
   sx={{
     display: "flex",
@@ -202,16 +247,18 @@ const [digit5, setDigit5] = useState("");
       '&:hover': { backgroundColor: 'darkgreen' },
       width: { xs: '100%', sm: 'auto' },
     }}
-    onClick={() => exportRegistrationsToExcel({ selected, setSelected })}
+onClick={() =>
+  exportRegistrationsToExcel({
+    selected: selected.length > 0 ? selected : filtered,
+    setSelected
+  })
+}
   >
     تصدير إلى Excel
   </Button>
 </Box>
 
 )}
-
-        
-      </Box>
 
 
 {selected.length > 0 && (
