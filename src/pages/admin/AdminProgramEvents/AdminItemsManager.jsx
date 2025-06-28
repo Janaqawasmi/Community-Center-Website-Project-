@@ -59,6 +59,10 @@ export default function AdminItemsManager({
   const [showEditConfirm, setShowEditConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 const [itemToDelete, setItemToDelete] = useState(null);
+const [showImageDeleteConfirm, setShowImageDeleteConfirm] = useState(false);
+
+const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
+const [itemToArchive, setItemToArchive] = useState(null);
 
 
 
@@ -370,11 +374,15 @@ const handleAdd = async () => {
                   {item.featured ? <span style={{ color: "green", fontWeight: "bold" }}>✔</span> : ""}
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleArchiveToggle(item)}>
-                    {item.isActive === false
-                      ? <UnarchiveIcon titleAccess="استعادة" />
-                      : <ArchiveIcon titleAccess="أرشفة" />}
-                  </IconButton>
+                  <IconButton onClick={() => {
+  setItemToArchive(item);
+  setShowArchiveConfirm(true);
+}}>
+  {item.isActive === false
+    ? <UnarchiveIcon titleAccess="استعادة" />
+    : <ArchiveIcon titleAccess="أرشفة" />}
+</IconButton>
+
                 </TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleOpenDialog(item)}><EditIcon /></IconButton>
@@ -484,15 +492,14 @@ value={form.category || []}
                 <Typography variant="body2" color="textSecondary">تم تحميل صورة:</Typography>
                 <img src={form.imageUrl} alt="صورة" style={{ width: 100, borderRadius: 4, marginTop: 4 }} />
                 <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                  onClick={async () => {
-                    await deleteImage(form.imageUrl);
-                    setForm(prev => ({ ...prev, imageUrl: "", imageFile: undefined }));
-                  }}
-                  style={{ marginRight: 8 }}
-                >حذف الصورة</Button>
+  variant="outlined"
+  color="error"
+  size="small"
+  onClick={() => setShowImageDeleteConfirm(true)}
+>
+  حذف الصورة
+</Button>
+
               </Box>
             )}
           </Box>
@@ -562,6 +569,32 @@ if (hasFormChanged(editMode, currentId, form, items, fields)) {
     }
   }}
 />
+<ConfirmDeleteDialog
+  open={showImageDeleteConfirm}
+  onClose={() => setShowImageDeleteConfirm(false)}
+  message="هل أنت متأكد من حذف الصورة؟"
+  onConfirm={async () => {
+    await deleteImage(form.imageUrl);
+    setForm(prev => ({ ...prev, imageUrl: "", imageFile: undefined }));
+    setShowImageDeleteConfirm(false);
+  }}
+/>
+
+<ConfirmEditDialog
+  open={showArchiveConfirm}
+  onClose={() => setShowArchiveConfirm(false)}
+  message={`هل أنت متأكد من ${itemToArchive?.isActive ? 'أرشفة' : 'استعادة'} هذه ${itemLabel}؟`}
+  onConfirm={async () => {
+    await updateDoc(doc(db, collectionName, itemToArchive.id), {
+      isActive: !itemToArchive.isActive
+    });
+    setShowArchiveConfirm(false);
+    setItemToArchive(null);
+    fetchItems();
+  }}
+/>
+
+
 
 
     </Box>
