@@ -19,7 +19,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useRef } from 'react';
 
-const COLORS = ['#003366', '#b67bb2'];
+const COLORS = [' #1565C0', ' #b67bb2'];
 
 export default function ProgramStatsChart() {
   const startOfYear = dayjs().startOf('year');
@@ -56,7 +56,8 @@ export default function ProgramStatsChart() {
 
         programsSnapshot.forEach(doc => {
           const data = doc.data();
-          const startDate = data.startDate?.toDate?.();
+          const startDate = data.date?.toDate?.();
+
           const matchesCategory = !selectedCategory || (Array.isArray(data.category) && data.category.includes(selectedCategory));
 
           if (startDate && startDate >= fromDate.toDate() && startDate <= toDate.toDate() && matchesCategory) {
@@ -140,30 +141,16 @@ const exportCombinedChartsAsPDF = async () => {
 };
 
   return (
-    <Box dir="rtl">
-      <Button
-  variant="outlined"
-  onClick={exportCombinedChartsAsPDF}
-  sx={{
-    px: 3,
-    py: 1.3,
-    fontSize: "1rem",
-    fontWeight: "bold",
-    mb: 3,
-    '&:hover': {
-      backgroundColor: "rgb(50, 127, 214)",
-      color: "white",
-},
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 1,
-    direction: "rtl",
-  }}
->
-  📄 تصدير كملف PDF
-</Button>
-      <Box display="flex" flexWrap="wrap" gap={2} mb={2} justifyContent="center">
-       
+   <Box dir="rtl">
+    <Box
+      display="flex"
+      flexWrap="wrap"
+      gap={2}
+      mb={2}
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
         <DateRangePicker
           fromDate={fromDate}
           toDate={toDate}
@@ -180,11 +167,40 @@ const exportCombinedChartsAsPDF = async () => {
           >
             <MenuItem value="">الكل</MenuItem>
             {categories.map((category, index) => (
-              <MenuItem key={index} value={category}>{category}</MenuItem>
+              <MenuItem key={index} value={category}>
+                {category}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Box>
+
+      <Box sx={{ flexShrink: 0 }}>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={exportCombinedChartsAsPDF}
+          sx={{
+            ml: 20,
+            mt: { xs: 0, sm: -4 },
+            px: 1,
+            py: 0.5,
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap',
+            backgroundColor: '#003366',
+             border:'none',
+            color:"white",
+      '&:hover': {  backgroundColor: ' #002244',  color:"white", border:'none'},
+      width: { xs: '100%', sm: 'auto' },
+            display: 'inline-flex',
+            alignItems: 'center',
+            direction: 'rtl',
+          }}
+        >
+          📄 تصدير كملف PDF
+        </Button>
+      </Box>
+    </Box>
 
       <Box ref={combinedChartRef}  sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
         <Box sx={{ width: '100%', maxWidth: 700, minHeight: 400 }} dir="ltr">
@@ -219,8 +235,9 @@ const exportCombinedChartsAsPDF = async () => {
     }}
     wrapperStyle={{ direction: 'rtl' }}
   />
-  <Bar dataKey="male" stackId="a" fill="#003366" name="ذكور" />
-  <Bar dataKey="female" stackId="a" fill="#b67bb2" name="إناث" />
+<Bar dataKey="male" stackId="a" fill="#1565C0" name="ذكور" />
+<Bar dataKey="female" stackId="a" fill="#b67bb2" name="إناث" />
+
   <Bar dataKey="registrations" stackId="a" fill="transparent">
     <LabelList dataKey="registrations" position="right" formatter={(value) => `${value} مشارك`} />
   </Bar>
@@ -233,29 +250,48 @@ const exportCombinedChartsAsPDF = async () => {
 
         <Box sx={{ width: 300, height: 300, mt: 5 }}>
           <ResponsiveContainer width="100%" height="100%">
-         <PieChart>
+  <PieChart>
   <Pie
     data={genderChartData}
     cx="50%"
     cy="50%"
     innerRadius={60}
     outerRadius={100}
-    fill="#8884d8"
+    fill=" #8884d8"
     paddingAngle={3}
     dataKey="value"
+    label={({ name, percent, x, y }) => (
+      <text
+        x={x}
+        y={y}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize={16}
+        fill=" #333"
+      >
+        {`${name} ${(percent * 100).toFixed(1)}%`}
+      </text>
+    )}
   >
     {genderChartData.map((entry, index) => (
-      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+      <Cell
+        key={`cell-${index}`}
+        fill={COLORS[index % COLORS.length]}
+      />
     ))}
   </Pie>
   <Legend />
-<Tooltip 
-  formatter={(value) => {
-    const percent = totalParticipants > 0 ? ((value / totalParticipants) * 100).toFixed(1) : 0;
-    return [`${percent}%`, 'النسبة'];
-  }} 
-/>
+  <Tooltip
+    formatter={(value) => {
+      const percent =
+        totalParticipants > 0
+          ? ((value / totalParticipants) * 100).toFixed(1)
+          : 0;
+      return [`${percent}%`, 'النسبة'];
+    }}
+  />
 </PieChart>
+
 
           </ResponsiveContainer>
         </Box>
