@@ -8,6 +8,7 @@ import RegistrationForm from '../pages/registration/registration';
 
 
 export default function CalendarSection() {
+  const [programEvents, setProgramEvents] = useState([]);
   const [events, setEvents] = useState([]);
   const [centerEvents, setCenterEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -18,8 +19,6 @@ export default function CalendarSection() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
-
- 
 
   // جلب فعاليات التقويم (EventsCalender)
   useEffect(() => {
@@ -97,6 +96,60 @@ export default function CalendarSection() {
     return () => unsubscribe();
   }, []);
 
+  // جلب الدورات (Programs)
+useEffect(() => {
+  const unsubscribe = onSnapshot(collection(db, "programs"), (snapshot) => {
+    const formatted = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      
+      let programDate = new Date();
+      
+      try {
+        if (data.date && typeof data.date === 'object' && data.date.toDate) {
+          programDate = data.date.toDate();
+          if (data.time && typeof data.time === 'string') {
+            const [hours, minutes] = data.time.split(':');
+            programDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+          }
+        }
+        else if (typeof data.date === 'string' && data.date.includes('-')) {
+          if (data.time && typeof data.time === 'string') {
+            const dateTimeString = `${data.date}T${data.time}:00`;
+            programDate = new Date(dateTimeString);
+          } else {
+            programDate = new Date(data.date + 'T09:00:00');
+          }
+        }
+        
+        if (isNaN(programDate.getTime())) {
+          programDate = new Date();
+        }
+        
+      } catch (error) {
+        console.error("خطأ في معالجة تاريخ الدورة:", error);
+        programDate = new Date();
+      }
+
+      return {
+        id: doc.id,
+        title: data.name || "دورة",
+        start: programDate,
+        description: data.description || "",
+        location: data.location || "",
+        price: data.price || 0,
+        instructor: data.instructor_name || "",
+        capacity: data.capacity || 0,
+        isActive: data.isActive !== false,
+        type: "program"
+      };
+    });
+    
+    setProgramEvents(formatted.filter(program => program.isActive));
+  });
+
+  return () => unsubscribe();
+}, []);
+
   const isAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL?.toLowerCase();
 
   const getDaysInMonth = (date) => {
@@ -126,27 +179,27 @@ export default function CalendarSection() {
     setCurrentDate(newDate);
   };
 
-  const getEventsForDay = (day) => {
-    if (!day) return [];
+ const getEventsForDay = (day) => {
+  if (!day) return [];
+  
+  const allEvents = [...events, ...centerEvents, ...programEvents];
+  
+  return allEvents.filter(event => {
+    const eventDate = new Date(event.start);
+    const eventDay = eventDate.getDate();
+    const eventMonth = eventDate.getMonth();
+    const eventYear = eventDate.getFullYear();
     
-    const allEvents = [...events, ...centerEvents];
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
     
-    return allEvents.filter(event => {
-      const eventDate = new Date(event.start);
-      const eventDay = eventDate.getDate();
-      const eventMonth = eventDate.getMonth();
-      const eventYear = eventDate.getFullYear();
-      
-      const currentMonth = currentDate.getMonth();
-      const currentYear = currentDate.getFullYear();
-      
-      return (
-        eventDay === day &&
-        eventMonth === currentMonth &&
-        eventYear === currentYear
-      );
-    });
-  };
+    return (
+      eventDay === day &&
+      eventMonth === currentMonth &&
+      eventYear === currentYear
+    );
+  });
+};
 
   const isToday = (day) => {
     if (!day) return false;
@@ -172,9 +225,8 @@ export default function CalendarSection() {
       title: event.title,
       date: event.start.toISOString(),
       description: event.description,
-      location: event.location,
       price: event.price || 0,
-      imageUrl: event.imageUrl || "",
+       instructor: event.instructor || "",
       type: event.type
     });
     setShowDetails(true);
@@ -193,8 +245,14 @@ export default function CalendarSection() {
 const handleRegisterForEvent = (eventTitle) => {
   try {
     console.log("Event title:", eventTitle);
-    // ✅ غيّر من /registration إلى /RegistrationForm
-    const registrationUrl = `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.title)}`;
+    let registrationUrl;
+    
+    if (selectedEvent.type === 'program') {
+      registrationUrl = `/RegistrationForm?programId=${encodeURIComponent(selectedEvent.id)}&program=${encodeURIComponent(selectedEvent.title)}`;
+    } else {
+      registrationUrl = `/RegistrationForm?eventId=${encodeURIComponent(selectedEvent.id)}&event=${encodeURIComponent(selectedEvent.title)}`;
+    }
+    
     console.log("Navigation URL:", registrationUrl);
     navigate(registrationUrl);
   } catch (error) {
@@ -568,6 +626,38 @@ const handleRegisterForEvent = (eventTitle) => {
   color: #0369a1;
 }
 
+
+/* أنماط الدورات في قائمة اليوم - أخضر */
+.day-event-item.program-event {
+  background: #f0fdf4;
+  border-right-color: #16a34a;
+  border-left-color: #86efac;
+  border-top-color: #86efac;
+  border-bottom-color: #86efac;
+}
+
+.day-event-item.program-event:hover {
+  background: #dcfce7;
+}
+
+.day-event-item.program-event .event-title-day {
+  color: #15803d;
+}
+
+.day-event-item.program-event .event-desc {
+  color: #16a34a;
+}
+
+.day-event-item.program-event .event-time {
+  background: linear-gradient(45deg, #16a34a, #22c55e);
+}
+
+.day-event-item.program-event .event-type-badge {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #16a34a;
+}
+
 /* أنماط الفعاليات الإدارية - برتقالي */
 .day-event-item.admin-event {
   background: #fff7ed;
@@ -632,10 +722,10 @@ const handleRegisterForEvent = (eventTitle) => {
         }
 
         .event-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
 
 /* الأنماط الافتراضية (للفعاليات الإدارية - برتقالي) */
 .event-detail-item {
@@ -725,6 +815,27 @@ const handleRegisterForEvent = (eventTitle) => {
   box-shadow: 0 2px 10px rgba(30, 58, 138, 0.3);
 }
 
+
+/* الأنماط لتفاصيل الدورات - أخضر */
+.event-details.program-event .event-detail-item {
+  background: #f0fdf4;
+  border-right-color: #16a34a;
+  border-left-color: #86efac;
+  border-top-color: #86efac;
+  border-bottom-color: #86efac;
+}
+
+.event-details.program-event .event-detail-label {
+  color: #16a34a;
+}
+
+.event-details.program-event .event-detail-value {
+  color: #15803d;
+}
+
+.event-registration-section.program-event {
+  border-top: 1px solid #dcfce7;
+}
         /* Media Queries للهواتف والتابلت */
         @media (max-width: 768px) {
           .calendar-container {
@@ -849,6 +960,19 @@ const handleRegisterForEvent = (eventTitle) => {
             padding: 0.1rem;
           }
         }
+          
+          .event-item.program-event {
+  background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+  border: 1px solid #86efac;
+  border-right: 2px solid #16a34a;
+  color: #15803d;
+}
+
+.event-item.program-event:hover {
+  background: linear-gradient(135deg, #f0fdf4 0%, #4ade80 100%);
+  border-color: #16a34a;
+  color: white;
+}
       `}</style>
 <Box sx={{ mt: { xs: 4, md: 4 }, px: { xs: 2, md: 30 } }}>
 
@@ -895,8 +1019,16 @@ const handleRegisterForEvent = (eventTitle) => {
                 const dayEvents = getEventsForDay(day);
                 const todayClass = isToday(day) ? 'today' : '';
                 const maxVisibleEvents = 1;
-                const visibleEvents = dayEvents.slice(0, maxVisibleEvents);
-                const remainingEvents = dayEvents.length - maxVisibleEvents;
+                // ترتيب الفعاليات لعرض الدورات أولاً، ثم فعاليات المركز، ثم الإدارية
+const sortedDayEvents = [...dayEvents].sort((a, b) => {
+  if (a.type === 'program' && b.type !== 'program') return -1;
+  if (a.type !== 'program' && b.type === 'program') return 1;
+  if (a.type === 'center' && b.type !== 'center' && b.type !== 'program') return -1;
+  if (a.type !== 'center' && b.type === 'center' && a.type !== 'program') return 1;
+  return new Date(a.start) - new Date(b.start);
+});
+                const visibleEvents = sortedDayEvents.slice(0, maxVisibleEvents);
+                const remainingEvents = sortedDayEvents.length - maxVisibleEvents;
 
                 return (
                   <div
@@ -913,7 +1045,7 @@ const handleRegisterForEvent = (eventTitle) => {
                         {visibleEvents.map((event) => (
                           <div
                             key={`${event.type}-${event.id}`}
-                            className={`event-item ${event.type === 'center' ? 'center-event' : ''}`}
+                           className={`event-item ${event.type === 'center' ? 'center-event' : event.type === 'program' ? 'program-event' : ''}`}
                             onClick={(e) => handleEventClick(event, e)}
                           >
                             <span className="event-title">{event.title}</span>
@@ -951,15 +1083,27 @@ const handleRegisterForEvent = (eventTitle) => {
               </div>
 
               <div className="day-events-list">
-                {selectedDayEvents.map((event) => (
-                  <div
-                    key={`${event.type}-${event.id}`}
-                    className={`day-event-item ${event.type === 'center' ? 'center-event' : 'admin-event'}`}
-                    onClick={() => {
-                      setShowDayEvents(false);
-                      handleEventClick(event, { stopPropagation: () => {} });
-                    }}
-                  >
+                  {[...selectedDayEvents]
+  .sort((a, b) => {
+     // ترتيب: program أولاً، ثم center، ثم غير ذلك، ثم حسب الوقت
+    if (a.type === 'program' && b.type !== 'program') return -1;
+    if (a.type !== 'program' && b.type === 'program') return 1;
+    if (a.type === 'center' && b.type !== 'center' && b.type !== 'program') return -1;
+    if (a.type !== 'center' && b.type === 'center' && a.type !== 'program') return 1;
+    return new Date(a.start) - new Date(b.start);
+  })
+                    .map((event) => (
+                      <div
+                        key={`${event.type}-${event.id}`}
+className={`day-event-item ${
+  event.type === 'program' ? 'program-event' : 
+  event.type === 'center' ? 'center-event' : 
+  'admin-event'
+}`}                        onClick={() => {
+                          setShowDayEvents(false);
+                          handleEventClick(event, { stopPropagation: () => {} });
+                        }}
+                      >
                     <div className="event-time">
                       {event.start.toLocaleTimeString("en-GB", {
                         hour: "2-digit",
@@ -974,8 +1118,8 @@ const handleRegisterForEvent = (eventTitle) => {
                       )}
                     </div>
                     <div className={`event-type-badge ${event.type}`}>
-                      {event.type === 'center' ? '📋' : '📅'}
-                    </div>
+  {event.type === 'program' ? '📚' : event.type === 'center' ? '📋' : '📅'}
+</div>
                   </div>
                 ))}
               </div>
@@ -988,11 +1132,11 @@ const handleRegisterForEvent = (eventTitle) => {
     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
       <div className="modal-header">
         <h2 className="modal-title">
-          {selectedEvent?.type === 'center'  
-           ? <>تفاصيل فعالية المركز</>
-           : <>تفاصيل فعالية إدارية</>
-        } 
-        </h2>
+  {selectedEvent?.type === 'program' ? <>تفاصيل الدورة</> :
+   selectedEvent?.type === 'center' ? <>تفاصيل فعالية المركز</> :
+   <>تفاصيل الحدث</>
+  } 
+</h2>
         <button 
           className="close-button"
           onClick={() => setShowDetails(false)}
@@ -1001,65 +1145,109 @@ const handleRegisterForEvent = (eventTitle) => {
         </button>
       </div>
 
-      <div className={`event-details ${selectedEvent?.type === 'center' ? 'center-event' : 'admin-event'}`}>
-        <div className="event-detail-item">
-          <div className="event-detail-label">📌 العنوان:</div>
-          <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
-        </div>
-        <div className="event-detail-item">
-  <div className="event-detail-label">📅 التاريخ:</div>
-  <div className="event-detail-value">
-    {selectedEvent?.date ? (
-      <>
-        {/* اليوم بالعربي */}
-        <span>
-          {new Date(selectedEvent.date).toLocaleDateString("ar-EG", { weekday: "long" })}
-        </span>
-        {/* الساعة بالإنجليزي مع فراغ مناسب */}
-        <span style={{ margin: "0 14px" }}>
-          {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          })}
-        </span>
-      </>
-    ) : "—"}
-  </div>
-</div>
-
-        
+<div className={`event-details ${
+  selectedEvent?.type === 'program' ? 'program-event' : 
+  selectedEvent?.type === 'center' ? 'center-event' : 
+  'admin-event'
+}`}>
+  
+  {/* للدورات - عرض مبسط */}
+  {selectedEvent?.type === 'program' ? (
+    <>
+      <div className="event-detail-item">
+        <div className="event-detail-label">📌 العنوان:</div>
+        <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
+      </div>
       
-        
-        <div className="event-detail-item">
-          <div className="event-detail-label">📝 الوصف:</div>
-          <div className="event-detail-value">{selectedEvent?.description || "—"}</div>
+      <div className="event-detail-item">
+        <div className="event-detail-label">🕐 الوقت:</div>
+        <div className="event-detail-value">
+          {selectedEvent?.date ? (
+            <>
+              <span>
+                {new Date(selectedEvent.date).toLocaleDateString("ar-EG", { weekday: "long" })}
+              </span>
+              <span style={{ margin: "0 14px" }}>
+                {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
+              </span>
+            </>
+          ) : "—"}
         </div>
-        
+      </div>
+      
+      {selectedEvent?.instructor && (
         <div className="event-detail-item">
-          <div className="event-detail-label">📍 الموقع:</div>
-          <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
+          <div className="event-detail-label">👨‍🏫 المدرب:</div>
+          <div className="event-detail-value">{selectedEvent.instructor}</div>
         </div>
-
-        {/* عرض السعة والسعر إذا كانت الفعالية من نوع center */}
-        {selectedEvent?.type === 'center' && (
-          <>
-          
-            {selectedEvent?.price !== undefined && (
-              <div className="event-detail-item">
-                <div className="event-detail-label">💰 السعر:</div>
-                <div className="event-detail-value">
-                  {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
-                </div>
-              </div>
-            )}
-          </>
-        )}
+      )}
+      
+      {selectedEvent?.price !== undefined && (
+        <div className="event-detail-item">
+          <div className="event-detail-label">💰 السعر:</div>
+          <div className="event-detail-value">
+            {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
+          </div>
+        </div>
+      )}
+    </>
+  ) : (
+    /* للفعاليات الأخرى - عرض كامل */
+    <>
+      <div className="event-detail-item">
+        <div className="event-detail-label">📌 العنوان:</div>
+        <div className="event-detail-value">{selectedEvent?.title || "—"}</div>
+      </div>
+      <div className="event-detail-item">
+        <div className="event-detail-label">📅 التاريخ:</div>
+        <div className="event-detail-value">
+          {selectedEvent?.date ? (
+            <>
+              <span>
+                {new Date(selectedEvent.date).toLocaleDateString("ar-EG", { weekday: "long" })}
+              </span>
+              <span style={{ margin: "0 14px" }}>
+                {new Date(selectedEvent.date).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
+              </span>
+            </>
+          ) : "—"}
+        </div>
+      </div>
+      
+      <div className="event-detail-item">
+        <div className="event-detail-label">📝 الوصف:</div>
+        <div className="event-detail-value">{selectedEvent?.description || "—"}</div>
+      </div>
+      
+      <div className="event-detail-item">
+        <div className="event-detail-label">📍 الموقع:</div>
+        <div className="event-detail-value">{selectedEvent?.location || "—"}</div>
       </div>
 
+      {selectedEvent?.type === 'center' && selectedEvent?.price !== undefined && (
+        <div className="event-detail-item">
+          <div className="event-detail-label">💰 السعر:</div>
+          <div className="event-detail-value">
+            {selectedEvent.price === 0 ? "مجاني" : `${selectedEvent.price} شيكل`}
+          </div>
+        </div>
+      )}
+    </>
+  )}
+</div>
+
       {/* زر التسجيل للفعالية - يظهر فقط لفعاليات المركز */}
-      {selectedEvent?.type === 'center' && (
-        <div className="event-registration-section center-event">
+      {/* زر التسجيل للفعالية - يظهر لفعاليات المركز والدورات */}
+{(selectedEvent?.type === 'center' || selectedEvent?.type === 'program') && (
+  <div className={`event-registration-section ${selectedEvent?.type === 'center' ? 'center-event' : 'program-event'}`}>
           <button
             className="register-event-button"
             onClick={() => {
@@ -1067,7 +1255,7 @@ const handleRegisterForEvent = (eventTitle) => {
               handleRegisterForEvent(selectedEvent?.id, selectedEvent?.title); 
             }}
           >
-             سجل الآن للفعالية
+             سجل الآن 
           </button>
         </div>
       )}
