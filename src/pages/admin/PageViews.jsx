@@ -15,13 +15,15 @@ export default function PageViews() {
         </Typography>
 
         <Tabs value={tab} onChange={(e, v) => setTab(v)} centered>
-          <Tab label="إحصائيات عامة" />
           <Tab label="إحصائيات شهرية" />
+          <Tab label="إحصائيات عامة" />
+
         </Tabs>
 
         <Box sx={{ mt: 3 }}>
-          {tab === 0 && <AdminAnalytics />}
-          {tab === 1 && <MonthlyViews />}
+          {tab === 0 && <MonthlyViews />}
+          {tab === 1 && <AdminAnalytics />}
+
         </Box>
       </Box>
     </AdminDashboardLayout>
