@@ -180,16 +180,26 @@ const fetchUniquePages = async () => {
         <Button
           onClick={handleExportPDF}
           variant="outlined"
-          startIcon={<PictureAsPdfIcon />}
           sx={{
-            borderRadius: '999px',
-            borderColor: '#004080',
-            color: '#004080',
-            px: 3,
-            fontWeight: 'bold'
-          }}
+    px: 1,
+    py: 0.5,
+    fontSize: "1rem",
+    fontWeight: "bold",
+    color: "white",
+    backgroundColor: '#003366',
+
+    mb: 3,
+    '&:hover': {
+           backgroundColor: ' #002244',
+      color: "white",
+    },
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 1,
+    direction: "rtl",
+  }}
         >
-          تصدير كملف PDF
+          📄 تصدير كملف PDF
         </Button>
       </Box>
 
@@ -245,9 +255,10 @@ const fetchUniquePages = async () => {
                   cx="50%"
                   cy="50%"
                   dataKey="value"
+                  
                 >
-                  <Cell fill="#0088FE" />
-                  <Cell fill="#e0e0e0" />
+                  <Cell fill=" #0088FE" />
+                  <Cell fill=" #e0e0e0" />
                 </Pie>
               </PieChart>
               <Typography variant="h5" sx={{ mt: -15, fontWeight: 'bold' }}>{pageSharePercent}%</Typography>

@@ -99,17 +99,17 @@ return (
   variant="outlined"
   onClick={exportCombinedChartsAsPDF}
   sx={{
-    borderRadius: "30px",
-    px: 3,
-    py: 1.3,
+    px: 1,
+    py: 0.5,
     fontSize: "1rem",
     fontWeight: "bold",
-    color: "#003366",
-    borderColor: "#003366",
+    color: "white",
+    backgroundColor: '#003366',
+
     mb: 3,
     '&:hover': {
-      backgroundColor: "#003366",
-      color: "#fff",
+           backgroundColor: ' #002244',
+      color: "white",
     },
     display: "inline-flex",
     alignItems: "center",
@@ -145,7 +145,7 @@ return (
   </Typography>
 </Box>
 
-       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 ,mt:10}}>
   <TextField
     label="ابحث عن مسار..."
     variant="outlined"
