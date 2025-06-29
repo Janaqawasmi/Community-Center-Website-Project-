@@ -86,51 +86,42 @@ const fetchUniquePages = async () => {
 
 
   const fetchMonthlyViews = async (pagePath) => {
-    setLoading(true);
-    const encodedId = encodeURIComponent(pagePath);
-    const docRef = doc(db, 'pageViews', encodedId);
-    const snap = await getDoc(docRef);
+  setLoading(true);
+  const encodedId = encodeURIComponent(pagePath);
+  const docRef = doc(db, 'pageViews', encodedId);
+  const snap = await getDoc(docRef);
 
-    if (snap.exists()) {
-      const data = snap.data();
-      const monthlyViews = {};
-      Object.entries(data).forEach(([key, value]) => {
-        if (key.startsWith("monthlyViews.")) {
-          const monthKey = key.split("monthlyViews.")[1];
-          monthlyViews[monthKey] = value;
-        }
-      });
+  if (snap.exists()) {
+    const data = snap.data();
+    const monthlyViews = data.monthlyViews || {};
 
-      const currentMonth = new Date();
-      const currentKey = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`;
-      const prevKey = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()).padStart(2, '0')}`;
+    const allMonths = Array.from({ length: 12 }, (_, i) => {
+      const month = String(i + 1).padStart(2, '0');
+      return `2025-${month}`;
+    });
 
-      const allMonths = Array.from({ length: 12 }, (_, i) => {
-        const month = String(i + 1).padStart(2, '0');
-        return `2025-${month}`;
-      });
+    const monthLabels = {
+      '01': 'يناير', '02': 'فبراير', '03': 'مارس', '04': 'أبريل',
+      '05': 'مايو', '06': 'يونيو', '07': 'يوليو', '08': 'أغسطس',
+      '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
+    };
 
-      const monthLabels = {
-        '01': 'يناير', '02': 'فبراير', '03': 'مارس', '04': 'أبريل',
-        '05': 'مايو', '06': 'يونيو', '07': 'يوليو', '08': 'أغسطس',
-        '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
+    const chartData = allMonths.map(monthKey => {
+      const [_, month] = monthKey.split("-");
+      return {
+        month: monthLabels[month],
+        views: monthlyViews[monthKey] || 0
       };
+    });
 
-      const chartData = allMonths.map(monthKey => {
-        const [_, month] = monthKey.split("-");
-        return {
-          month: monthLabels[month],
-          views: monthlyViews[monthKey] || 0
-        };
-      });
+    setMonthlyData(chartData);
+  } else {
+    setMonthlyData([]);
+  }
 
-      setMonthlyData(chartData);
-    } else {
-      setMonthlyData([]);
-    }
+  setLoading(false);
+};
 
-    setLoading(false);
-  };
 
   const calculateSharePercent = async () => {
     if (!selectedPage) return;
@@ -140,9 +131,8 @@ const fetchUniquePages = async () => {
 
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
-      const sum = Object.entries(data)
-        .filter(([k]) => k.startsWith("monthlyViews."))
-        .reduce((acc, [_, val]) => acc + val, 0);
+      const sum = Object.values(data?.monthlyViews || {}).reduce((a, b) => a + b, 0);
+
       total += sum;
       if (decodeURIComponent(docSnap.id) === selectedPage) {
         selected = sum;
@@ -159,7 +149,7 @@ const fetchUniquePages = async () => {
     snapshot.forEach(docSnap => {
       const page = decodeURIComponent(docSnap.id);
       const data = docSnap.data();
-      const views = data?.[`monthlyViews.${selectedYear}-${selectedMonth}`] || 0;
+       const views = data?.monthlyViews?.[`${selectedYear}-${selectedMonth}`] || 0;
       if (views > 0) counts[page] = views;
     });
 

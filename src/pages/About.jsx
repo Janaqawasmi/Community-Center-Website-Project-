@@ -83,43 +83,49 @@ export default function About() {
     return aboutData && aboutData[titleField] && aboutData[titleField].toString().trim().length > 0;
   };
 
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      offset: 100,
-      easing: 'ease-in-out',
-      once: true,
-    });
+ // Initialize AOS
+useEffect(() => {
+  AOS.init({
+    duration: 800,
+    offset: 100,
+    easing: 'ease-in-out',
+    once: true,
+  });
+}, []);
+
+// Track page view on load
 useEffect(() => {
   trackPageView('/about');
 }, []);
-    const fetchAboutData = async () => {
-      try {
-        const docRef = doc(db, "siteInfo", "about us");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setAboutData(docSnap.data());
-        }
-      } catch (error) {
-        console.error("Error fetching about data:", error);
+
+// Fetch about data
+useEffect(() => {
+  const fetchAboutData = async () => {
+    try {
+      const docRef = doc(db, "siteInfo", "about us");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setAboutData(docSnap.data());
       }
-    };
+    } catch (error) {
+      console.error("Error fetching about data:", error);
+    }
+  };
 
-    fetchAboutData();
-  }, []);
+  fetchAboutData();
+}, []);
+  // // Track page view only once per session 
+  // useEffect(() => {
+  //   const path = location.pathname;
+  //   const key = `viewed_${path}`;
+  //   const lastViewed = localStorage.getItem(key);
+  //   const today = new Date().toDateString();
 
-  // Track page view only once per session 
-  useEffect(() => {
-    const path = location.pathname;
-    const key = `viewed_${path}`;
-    const lastViewed = localStorage.getItem(key);
-    const today = new Date().toDateString();
-
-    if (lastViewed !== today) {
-      trackPageView(path);
-      localStorage.setItem(key, today);
-    } 
-  }, [location.pathname]);
+  //   if (lastViewed !== today) {
+  //     trackPageView(path);
+  //     localStorage.setItem(key, today);
+  //   } 
+  // }, [location.pathname]);
 
   if (!aboutData) {
     return (

@@ -3,7 +3,7 @@ import { fetchNews } from '../utils/fetchNews';
 import NewsCard from './NewsCard';
 import GradientSearchBar from "../components/layout/common/GradientSearchBar";
 import { trackPageView } from '../components/Data Analysis/utils/trackPageView';
-import HeroSection from "../components/HeroSection"; // ⬅️ (already imported)
+import HeroSection from "../components/HeroSection";
 import {
   Box,
   Container,
@@ -14,11 +14,12 @@ import {
 
 function News() {
   const [newsItems, setNewsItems] = useState([]);
-useEffect(() => {
-  if (news?.slug) {
-    trackPageView(`/news/${news.slug}`);
-  }
-}, [news]);
+  
+  useEffect(() => {
+    trackPageView('/news');
+  }, []);
+
+
   useEffect(() => {
     const getNews = async () => {
   const data = await fetchNews();

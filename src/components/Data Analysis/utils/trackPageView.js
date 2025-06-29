@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, increment } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
 import { db } from "../../firebase";
 
 export async function trackPageView(path) {
@@ -13,19 +13,24 @@ export async function trackPageView(path) {
   try {
     const snap = await getDoc(docRef);
 
-    const updateData = {
-      viewCount: increment(1),
-      [`monthlyViews.${monthKey}`]: increment(1)
-    };
-
-    await setDoc(docRef, snap.exists() ? updateData : {
-      ...updateData,
-      path: path
-    }, { merge: true });
-
-    console.log("✅ Page view updated or created:", updateData);
+    if (snap.exists()) {
+      await updateDoc(docRef, {
+        viewCount: increment(1),
+        [`monthlyViews.${monthKey}`]: increment(1),
+      });
+      console.log("✅ Page view updated");
+    } else {
+      await setDoc(docRef, {
+        path,
+        viewCount: 1,
+        monthlyViews: {
+          [monthKey]: 1
+        }
+      });
+      console.log("✅ Page view created");
+    }
 
   } catch (error) {
-    console.error("🔥 Error tracking page view:", error);
+    console.error("🔥 Error tracking page view:", error.message);
   }
 }
