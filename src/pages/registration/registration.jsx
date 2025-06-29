@@ -186,29 +186,27 @@ const handleSubmit = async (e) => {
  {/* Optional: Page Banner or Header Space */}
     <Box sx={{ height: "0px", mb: 0 }} />
      {/* Background with gradient or subtle image */}
-    <Box
-      sx={{
-        background: "linear-gradient(135deg, #f8f9fa 0%, #e0e0e0 100%)",
-        py: { xs: 4, sm: 6 },
-        px: { xs: 2, sm: 4 },
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        direction: 'rtl',
-        '& .MuiInputLabel-root': {
-          textAlign: 'right',
-          right: 20,
-          left: 'unset',
-          width: '100%',
-          direction: 'rtl',
-        },
-        '& label.Mui-focused, & label.MuiInputLabel-shrink': {
-          left: 0,
-          right: 'unset',
-          textAlign: 'left',
-        }
-      }}
-    >
+     <Box sx={{
+    minHeight: "100vh",
+    background: "linear-gradient(135deg, #f8f9fa 0%, #e0e0e0 100%)",
+    py: { xs: 4, sm: 6 },
+    px: { xs: 2, sm: 4 },
+    display: 'flex',
+    justifyContent: 'center',
+    direction: 'rtl',
+    '& .MuiInputLabel-root': {
+      textAlign: 'right',
+      right: 20,
+      left: 'unset',
+      width: '100%',
+      direction: 'rtl',
+    },
+    '& label.Mui-focused, & label.MuiInputLabel-shrink': {
+      left: 0,
+      right: 'unset',
+      textAlign: 'left',
+    }
+  }}>
         <Grid container justifyContent="center" >
           <Grid item xs={12} sm={10} md={6} lg={6}>
             <PrettyCard title={title ? `التسجيل لـ${title}` : "التسجيل"} >
