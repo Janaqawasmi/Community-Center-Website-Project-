@@ -161,6 +161,9 @@ const filteredNews = newsList.filter(n =>
       <Box sx={{ my: 1, px: 2 }}>
         <Typography variant="h4" gutterBottom>إدارة الأخبار</Typography>
      <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+   <Button variant="contained" onClick={() => handleOpenDialog()}>
+    إضافة خبر جديد
+  </Button>
   <TextField
     label="بحث عن عنوان الخبر"
     variant="outlined"
@@ -188,9 +191,7 @@ const filteredNews = newsList.filter(n =>
     <MenuItem value="">الكل</MenuItem>
     {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
   </TextField>
-  <Button variant="contained" onClick={() => handleOpenDialog()}>
-    إضافة خبر جديد
-  </Button>
+ 
 </Box>
 
 
