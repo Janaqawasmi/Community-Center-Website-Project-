@@ -131,12 +131,12 @@ const fetchUniquePages = async () => {
 
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
-      const sum = Object.values(data?.monthlyViews || {}).reduce((a, b) => a + b, 0);
+     const views = data?.viewCount || 0;
+total += views;
 
-      total += sum;
-      if (decodeURIComponent(docSnap.id) === selectedPage) {
-        selected = sum;
-      }
+  if (decodeURIComponent(docSnap.id) === selectedPage) {
+  selected = views;
+}
     });
 
     const percent = total === 0 ? 0 : ((selected / total) * 100).toFixed(1);
