@@ -99,16 +99,18 @@ return (
   variant="outlined"
   onClick={exportCombinedChartsAsPDF}
   sx={{
-    borderRadius: "0px",
+    borderRadius: "30px",
     px: 3,
     py: 1.3,
     fontSize: "1rem",
     fontWeight: "bold",
+    color: "#003366",
+    borderColor: "#003366",
     mb: 3,
     '&:hover': {
-      backgroundColor: "rgb(50, 127, 214)",
-      color: "white",
-},
+      backgroundColor: "#003366",
+      color: "#fff",
+    },
     display: "inline-flex",
     alignItems: "center",
     gap: 1,
@@ -117,102 +119,155 @@ return (
 >
   📄 تصدير كملف PDF
 </Button>
+<Box
+  sx={{
+    backgroundColor: "#f0fdf4",
+    p: 3,
+    borderRadius: 3,
+    textAlign: "center",
+    mb: 3,
+    boxShadow: 1,
+  }}
+>
+  <Typography variant="subtitle1" sx={{ color: "#4caf50", mb: 1 }}>
+    إجمالي المشاهدات
+  </Typography>
 
-        <TextField
-            label="ابحث عن مسار..."
-            variant="outlined"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            fullWidth
-            sx={{ mb: 3 }}
-        />
+  <Typography
+    variant="h2"
+    sx={{ fontWeight: "bold", color: "#2e7d32", fontSize: { xs: "2.5rem", md: "4rem" } }}
+  >
+    {pageViews.reduce((sum, p) => sum + (p.viewCount || 0), 0).toLocaleString()}
+  </Typography>
+
+  <Typography variant="body2" sx={{ mt: 1, color: "#66bb6a" }}>
+    ↑ 22% عن الأسبوع الماضي {/* You can change or remove this part */}
+  </Typography>
+</Box>
+
+       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+  <TextField
+    label="ابحث عن مسار..."
+    variant="outlined"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    sx={{ width: 250 }}
+  />
+</Box>
+
         {filteredViews.length > 0 && (
             <>
-            <Box ref={combinedChartRef}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                    🔍 أكثر الصفحات مشاهدة (Top Pages)
-                </Typography>
-
-                <ResponsiveContainer width="100%" height={300}>
-                   <BarChart data={sortedViews.slice(0, 10)} 
-                   layout="vertical" margin={{ top: 10, right: 30, left: 30, bottom: 10 }}>
-                        <XAxis type="number" />
-                   <YAxis
-  type="category"
-  dataKey="path"
-  interval={0}
-  tick={{
-    fontSize: 13,
-    textAnchor: "start",
-    dx: -10,
+        <Box
+  ref={combinedChartRef}
+  sx={{
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    gap: 4,
+    mb: 4,
   }}
-  tickFormatter={(value) =>
-    pathTitleMap[value] ? pathTitleMap[value] : decodeURIComponent(value)
-  }
-  width={200}
-/>
-
-                        <ReTooltip  />
-                        <Bar dataKey="viewCount" fill="#8884d8" />
-                    </BarChart>
-                </ResponsiveContainer>
-{/* 🥧 Pie chart visualization: View Distribution */}
-<Box sx={{ mt: 4 }}>
-  <Typography variant="h6" sx={{ mb: 2 }}>
-    🥧 توزيع المشاهدات (View Distribution)
-  </Typography>
-  <ResponsiveContainer width="100%" height={300}>
-    <PieChart>
-      <Pie
-        data={sortedViews.slice(0, 6)}
-        dataKey="viewCount"
-        nameKey="path"
-        outerRadius={100}
-        labelLine={false}
+>
+  {/* Left: Bar Chart */}
+  <Box flex={1}>
+    <Typography variant="h6" sx={{ mb: 2 }}>
+      🔍 أكثر الصفحات مشاهدة (Top Pages)
+    </Typography>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart
+        data={sortedViews.slice(0, 10)}
+        layout="vertical"
+        margin={{ top: 10, right: 30, left: 30, bottom: 10 }}
       >
-        {sortedViews.slice(0, 6).map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-{/* ✅ This shows the readable label and views on hover */}
-  <ReTooltip
-  formatter={(value, name, props) => {
-    const total = sortedViews.slice(0, 6).reduce((sum, entry) => sum + entry.viewCount, 0);
-    const percent = ((value / total) * 100).toFixed(1);
-    const label = pathTitleMap[name] || decodeURIComponent(name);
-    return [`${value} مشاهدات (${percent}%)`, label];
-  }}
-/>
+        <XAxis type="number" />
+        <YAxis
+          type="category"
+          dataKey="path"
+          interval={0}
+          tick={{
+            fontSize: 13,
+            textAnchor: "start",
+            dx: -10,
+          }}
+          tickFormatter={(value) =>
+            pathTitleMap[value] ? pathTitleMap[value] : decodeURIComponent(value)
+          }
+          width={200}
+        />
+        <ReTooltip />
+        <Bar dataKey="viewCount" fill="#8884d8" />
+      </BarChart>
+    </ResponsiveContainer>
+  </Box>
 
-    <Legend
-  formatter={(value) =>
-    pathTitleMap[value] ? pathTitleMap[value] : decodeURIComponent(value)
-  }
-      />
-    </PieChart>
-  </ResponsiveContainer>
+  {/* Right: Search + Pie Chart */}
+  <Box flex={1}>
+   
+
+    <Typography variant="h6" sx={{ mb: 2 }}>
+      🥧 توزيع المشاهدات (View Distribution)
+    </Typography>
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
+        <Pie
+          data={sortedViews.slice(0, 6)}
+          dataKey="viewCount"
+          nameKey="path"
+          outerRadius={100}
+          labelLine={false}
+        >
+          {sortedViews.slice(0, 6).map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <ReTooltip
+          formatter={(value, name) => {
+            const total = sortedViews.slice(0, 6).reduce((sum, entry) => sum + entry.viewCount, 0);
+            const percent = ((value / total) * 100).toFixed(1);
+            const label = pathTitleMap[name] || decodeURIComponent(name);
+            return [`${value} مشاهدات (${percent}%)`, label];
+          }}
+        />
+        <Legend
+          formatter={(value) =>
+            pathTitleMap[value] ? pathTitleMap[value] : decodeURIComponent(value)
+          }
+        />
+      </PieChart>
+    </ResponsiveContainer>
+  </Box>
 </Box>
-</Box>
+
 
             </>
         )}
+<Typography
+  variant="h4"
+  sx={{
+    mt: 4,
+    mb: 2,
+    fontWeight: "bold",
+    color: "#003366",
+    textAlign: "right",
+  }}
+>
+  📊 تفاصيل مشاهدات الصفحات باستخدام جدول
+</Typography>
 
-<TableContainer component={Paper} sx={{ mt: 4, borderRadius: 2, boxShadow: 2 }}>
-  <Table>
-    <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
+<TableContainer component={Paper} sx={{ mt: 4, borderRadius: 1, boxShadow: 1 }}>
+  <Table size="small">
+    <TableHead sx={{ backgroundColor: "#f9f9f9" }}>
       <TableRow>
-        <TableCell sx={{ width: 50 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
+        <TableCell sx={{ width: 40, px: 1 }}>
+          <Typography variant="body2" fontWeight="bold">
             #
           </Typography>
         </TableCell>
-        <TableCell sx={{ minWidth: 300 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
+        <TableCell sx={{ minWidth: 200, px: 1 }}>
+          <Typography variant="body2" fontWeight="bold">
             المسار
           </Typography>
         </TableCell>
-        <TableCell align="right" sx={{ minWidth: 120 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
+        <TableCell align="right" sx={{ minWidth: 80, px: 1 }}>
+          <Typography variant="body2" fontWeight="bold">
             عدد المشاهدات
           </Typography>
         </TableCell>
@@ -221,22 +276,21 @@ return (
 
     <TableBody>
       {sortedViews.map((page, index) => {
-  const decodedPath = page.path
-  ? pathTitleMap[page.path] || decodeURIComponent(page.path)
-  : "/" + decodeURIComponent(page.id);
+        const decodedPath = page.path
+          ? pathTitleMap[page.path] || decodeURIComponent(page.path)
+          : "/" + decodeURIComponent(page.id);
 
         return (
           <TableRow
             key={page.id}
             sx={{
-              backgroundColor: index % 2 === 0 ? "#fafafa" : "white",
               "&:hover": { backgroundColor: "#f0f0f0" },
+              "& td": { py: 0.8, px: 1 }, // tighter padding
+              fontSize: "13px"
             }}
           >
             <TableCell>
-              <Typography variant="body2" fontWeight="medium">
-                {index + 1}
-              </Typography>
+              <Typography variant="body2">{index + 1}</Typography>
             </TableCell>
             <TableCell>
               <Tooltip title={decodedPath}>
@@ -246,7 +300,7 @@ return (
               </Tooltip>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="body2" fontFamily="monospace" fontWeight="medium">
+              <Typography variant="body2" fontFamily="monospace">
                 {page.viewCount}
               </Typography>
             </TableCell>
@@ -256,6 +310,7 @@ return (
     </TableBody>
   </Table>
 </TableContainer>
+
 
 
     </Box>

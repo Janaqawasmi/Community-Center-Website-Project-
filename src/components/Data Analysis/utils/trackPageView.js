@@ -1,27 +1,30 @@
-//src\components\Data Analysis\utils\trackPageView.js
-import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
-import { db } from "../../firebase"; // adjust as needed
+import { doc, getDoc, setDoc, increment } from "firebase/firestore";
+import { db } from "../../firebase";
 
 export async function trackPageView(path) {
   console.log("📡 trackPageView called with:", path);
+
   const safeId = encodeURIComponent(path);
   const docRef = doc(db, "pageViews", safeId);
 
+  const now = new Date();
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
   try {
     const snap = await getDoc(docRef);
-    console.log("📄 Does document exist?", snap.exists());
 
-    if (snap.exists()) {
-      const updateData = { viewCount: increment(1) };
-      console.log("🔁 Updating with:", updateData);
-      await updateDoc(docRef, updateData);
-      console.log("✅ Document updated.");
-    } else {
-      const createData = { path: path, viewCount: 1 };
-      console.log("🆕 Creating with:", createData);
-      await setDoc(docRef, createData);
-      console.log("✅ Document created.");
-    }
+    const updateData = {
+      viewCount: increment(1),
+      [`monthlyViews.${monthKey}`]: increment(1)
+    };
+
+    await setDoc(docRef, snap.exists() ? updateData : {
+      ...updateData,
+      path: path
+    }, { merge: true });
+
+    console.log("✅ Page view updated or created:", updateData);
+
   } catch (error) {
     console.error("🔥 Error tracking page view:", error);
   }

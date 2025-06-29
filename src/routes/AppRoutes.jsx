@@ -26,9 +26,11 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminInquiries from '../pages/admin/AdminInquiries';
 import ProgramStatsPage from '../pages/admin/ProgramStatsPage';
 import AnalyticsPage from '../pages/admin/AnalyticsPage'; 
+import MonthlyViews from '../pages/admin/MonthlyViews'; // ✅ NEW
 import { useEffect } from 'react'; // ✅ ADD THIS
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import PageViews from '../pages/admin/PageViews';
 
 function AppRoutes({ sections }) {
   const location = useLocation();
@@ -60,6 +62,7 @@ function AppRoutes({ sections }) {
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/calendar" element={<CalendarSection />} />
+          
         </Route>
      
      
@@ -107,6 +110,14 @@ function AppRoutes({ sections }) {
   element={
     <ProtectedAdminRoute>
       <AdminSections />
+    </ProtectedAdminRoute>
+  }
+/>
+<Route
+  path="/admin/page-views"
+  element={
+    <ProtectedAdminRoute>
+      <PageViews />
     </ProtectedAdminRoute>
   }
 />
@@ -253,7 +264,17 @@ function AppRoutes({ sections }) {
             </ProtectedAdminRoute>
           }
         />
+        <Route
+  path="/admin/monthly-views"
+  element={
+    <ProtectedAdminRoute>
+      <MonthlyViews />
+    </ProtectedAdminRoute>
+  }
+/>
+
       </Routes>
+      
     </>
   );
 }

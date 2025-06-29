@@ -35,12 +35,15 @@ export default function AdminDashboard() {
             </Button>
 
             <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => navigate('/admin/analytics')}
-            >
-              📊 إحصائيات عدد المشاهدات
-            </Button>
+  variant="outlined"
+  fullWidth
+  sx={{ mb: 2 }}
+  onClick={() => navigate('/admin/page-views')}
+>
+  📊 إحصائيات عدد المشاهدات
+</Button>
+
+             
           </Stack>
         </Box>
       </AdminDashboardLayout>

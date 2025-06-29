@@ -90,7 +90,9 @@ export default function About() {
       easing: 'ease-in-out',
       once: true,
     });
-
+useEffect(() => {
+  trackPageView('/about');
+}, []);
     const fetchAboutData = async () => {
       try {
         const docRef = doc(db, "siteInfo", "about us");

@@ -12,6 +12,7 @@ import PrettyCard from '../components/layout/PrettyCard';
 import RoundedButton from '../components/layout/Buttons/RoundedButton';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { trackPageView } from '../components/Data Analysis/utils/trackPageView';
 
 const categoryToSectionId = {
   "أمسية": "section_evening",
@@ -31,15 +32,22 @@ function NewsDetail() {
     const fetchNews = async () => {
       const docRef = doc(db, 'News', id);
       const docSnap = await getDoc(docRef);
+      
       if (docSnap.exists()) {
         setNews({ id: docSnap.id, ...docSnap.data() });
       } else {
         console.error('News not found');
       }
+      
     };
     fetchNews();
   }, [id]);
-
+useEffect(() => {
+  if (news) {
+    const path = news.slug ? `/news/${news.slug}` : `/news/${id}`;
+    trackPageView(path);
+  }
+}, [news, id]);
   if (!news)
     return <p style={{ textAlign: 'center', marginTop: '50px' }}>جاري التحميل...</p>;
 
